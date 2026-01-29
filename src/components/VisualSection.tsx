@@ -1,16 +1,16 @@
-import visualImage from "@/assets/visual-impulse.png";
+import popartImage from "@/assets/sborka-popart.png";
 
 const VisualSection = () => {
   return (
     <section className="py-section-sm md:py-section">
       <div className="section-container">
         <div className="relative">
-          {/* Abstract illustration container */}
-          <div className="aspect-[16/9] md:aspect-[21/9] bg-card flex items-center justify-center overflow-hidden">
+          {/* Pop-art illustration container */}
+          <div className="aspect-[16/9] md:aspect-[21/9] bg-card flex items-center justify-center overflow-hidden rounded-sm">
             <img 
-              src={visualImage} 
-              alt="Абстрактная иллюстрация импульса к действию" 
-              className="w-full h-full object-contain"
+              src={popartImage} 
+              alt="СБОРКА - поп-арт иллюстрация" 
+              className="w-full h-full object-cover"
             />
           </div>
           
