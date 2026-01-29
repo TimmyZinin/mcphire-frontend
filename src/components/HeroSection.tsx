@@ -15,10 +15,7 @@ const HeroSection = () => {
       </video>
       
       {/* Overlay gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/60" />
-      
-      {/* Background stripes */}
-      <div className="absolute inset-0 stripe-bg opacity-30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
       
       <div className="section-container relative z-10">
         <div className="space-y-8 md:space-y-12">
