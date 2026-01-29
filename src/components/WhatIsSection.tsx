@@ -1,3 +1,5 @@
+import illustrationSystem from "@/assets/illustration-system.jpg";
+
 const WhatIsSection = () => {
   const items = [
     "группа людей в похожем состоянии",
@@ -10,43 +12,55 @@ const WhatIsSection = () => {
   return (
     <section className="section-accent">
       <div className="section-container">
-        <div className="space-y-12">
-          {/* Heading */}
-          <div className="space-y-4">
-            <h2 className="heading-lg text-primary-foreground">
-              Сборка — это не мотивация.
-            </h2>
-            <p className="heading-md text-primary-foreground/80">Это система.</p>
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Illustration */}
+          <div className="order-2 lg:order-1">
+            <img 
+              src={illustrationSystem} 
+              alt="Система и структура"
+              className="w-full h-auto border-4 border-primary-foreground"
+            />
           </div>
           
-          {/* Subtext */}
-          <div className="space-y-2 text-xl md:text-2xl text-primary-foreground/80">
-            <p>Мы не вдохновляем.</p>
-            <p className="text-primary-foreground font-bold">Мы собираем.</p>
-          </div>
-          
-          {/* Items list */}
-          <div className="space-y-4">
-            <p className="text-lg text-primary-foreground/60 uppercase tracking-wider">Сборка — это:</p>
-            <ul className="space-y-3">
-              {items.map((item, index) => (
-                <li 
-                  key={index} 
-                  className="flex items-center gap-4 text-lg md:text-xl text-primary-foreground"
-                >
-                  <span className="w-2 h-2 bg-primary-foreground flex-shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          {/* Quote */}
-          <div className="border-l-4 border-primary-foreground pl-6 py-2 space-y-2">
-            <p className="text-xl md:text-2xl text-primary-foreground/80">Здесь не лечат.</p>
-            <p className="text-xl md:text-2xl text-primary-foreground font-bold">
-              Здесь помогают собраться и действовать.
-            </p>
+          {/* Content */}
+          <div className="space-y-12 order-1 lg:order-2">
+            {/* Heading */}
+            <div className="space-y-4">
+              <h2 className="heading-lg text-primary-foreground">
+                Сборка — это не мотивация.
+              </h2>
+              <p className="heading-md text-primary-foreground/80">Это система.</p>
+            </div>
+            
+            {/* Subtext */}
+            <div className="space-y-2 text-xl md:text-2xl text-primary-foreground/80">
+              <p>Мы не вдохновляем.</p>
+              <p className="text-primary-foreground font-bold">Мы собираем.</p>
+            </div>
+            
+            {/* Items list */}
+            <div className="space-y-4">
+              <p className="text-lg text-primary-foreground/60 uppercase tracking-wider">Сборка — это:</p>
+              <ul className="space-y-3">
+                {items.map((item, index) => (
+                  <li 
+                    key={index} 
+                    className="flex items-center gap-4 text-lg md:text-xl text-primary-foreground"
+                  >
+                    <span className="w-2 h-2 bg-primary-foreground flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            {/* Quote */}
+            <div className="border-l-4 border-primary-foreground pl-6 py-2 space-y-2">
+              <p className="text-xl md:text-2xl text-primary-foreground/80">Здесь не лечат.</p>
+              <p className="text-xl md:text-2xl text-primary-foreground font-bold">
+                Здесь помогают собраться и действовать.
+              </p>
+            </div>
           </div>
         </div>
       </div>
