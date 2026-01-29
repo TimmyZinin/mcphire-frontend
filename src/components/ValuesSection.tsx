@@ -10,19 +10,22 @@ const ValuesSection = () => {
   ];
 
   return (
-    <section className="section-accent relative overflow-hidden">
+    <section className="section-secondary relative overflow-hidden">
       {/* Background image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-15"
+        className="absolute inset-0 bg-cover bg-center opacity-10"
         style={{ backgroundImage: `url(${bgValues})` }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/95 to-primary/90" />
+      
+      {/* Decorative elements */}
+      <div className="absolute top-10 left-10 text-primary text-4xl">★</div>
+      <div className="absolute bottom-10 right-10 text-primary text-3xl">★</div>
       
       <div className="section-container relative z-10">
         <div className="space-y-12">
           {/* Heading */}
-          <h2 className="heading-lg text-primary-foreground">
-            Принципы Сборки
+          <h2 className="heading-lg text-secondary-foreground">
+            Принципы <span className="text-primary">Сборки</span>
           </h2>
           
           {/* Values */}
@@ -30,12 +33,16 @@ const ValuesSection = () => {
             {values.map((value, index) => (
               <div 
                 key={index}
-                className="flex items-center gap-6 border-b border-primary-foreground/20 pb-6 last:border-0"
+                className="flex items-center gap-6 bg-foreground p-4 md:p-6 comic-panel"
+                style={{ transform: `rotate(${index % 2 === 0 ? -0.5 : 0.5}deg)` }}
               >
-                <span className="text-4xl md:text-5xl font-bold text-primary-foreground/30">
+                <span 
+                  className="text-4xl md:text-5xl font-display text-primary"
+                  style={{ textShadow: '2px 2px 0 hsl(0 0% 0%)' }}
+                >
                   {String(index + 1).padStart(2, '0')}
                 </span>
-                <p className="text-xl md:text-2xl text-primary-foreground font-medium">
+                <p className="text-xl md:text-2xl text-background font-medium">
                   {value}
                 </p>
               </div>

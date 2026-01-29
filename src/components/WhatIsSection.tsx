@@ -10,40 +10,43 @@ const WhatIsSection = () => {
   ];
 
   return (
-    <section className="section-accent relative overflow-hidden">
+    <section className="section-dark relative overflow-hidden">
       {/* Background image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-15"
+        className="absolute inset-0 bg-cover bg-center opacity-10"
         style={{ backgroundImage: `url(${bgWhatIs})` }}
       />
-      <div className="absolute inset-0 bg-gradient-to-l from-primary/90 via-primary/95 to-primary" />
+      
+      {/* Decorative stars */}
+      <div className="absolute top-10 right-10 text-secondary text-3xl">★</div>
+      <div className="absolute bottom-10 left-10 text-accent text-2xl">★</div>
       
       <div className="section-container relative z-10">
         <div className="space-y-12">
           {/* Heading */}
           <div className="space-y-4">
-            <h2 className="heading-lg text-primary-foreground">
+            <h2 className="heading-lg text-secondary">
               Сборка — это не мотивация.
             </h2>
-            <p className="heading-md text-primary-foreground/80">Это система.</p>
+            <p className="heading-md text-accent">Это система.</p>
           </div>
           
-          {/* Subtext */}
-          <div className="space-y-2 text-xl md:text-2xl text-primary-foreground/80">
-            <p>Мы не вдохновляем.</p>
-            <p className="text-primary-foreground font-bold">Мы собираем.</p>
+          {/* Subtext in comic panel */}
+          <div className="comic-panel bg-foreground p-6 inline-block max-w-md">
+            <p className="text-background text-xl">Мы не вдохновляем.</p>
+            <p className="text-primary font-bold text-2xl">Мы собираем.</p>
           </div>
           
           {/* Items list */}
           <div className="space-y-4">
-            <p className="text-lg text-primary-foreground/60 uppercase tracking-wider">Сборка — это:</p>
+            <p className="text-lg text-muted-foreground uppercase tracking-wider">Сборка — это:</p>
             <ul className="space-y-3">
               {items.map((item, index) => (
                 <li 
                   key={index} 
-                  className="flex items-center gap-4 text-lg md:text-xl text-primary-foreground"
+                  className="flex items-center gap-4 text-lg md:text-xl text-foreground"
                 >
-                  <span className="w-2 h-2 bg-primary-foreground flex-shrink-0" />
+                  <span className="text-secondary font-bold">★</span>
                   {item}
                 </li>
               ))}
@@ -51,9 +54,9 @@ const WhatIsSection = () => {
           </div>
           
           {/* Quote */}
-          <div className="border-l-4 border-primary-foreground pl-6 py-2 space-y-2">
-            <p className="text-xl md:text-2xl text-primary-foreground/80">Здесь не лечат.</p>
-            <p className="text-xl md:text-2xl text-primary-foreground font-bold">
+          <div className="bg-secondary p-6 max-w-xl comic-panel">
+            <p className="text-xl md:text-2xl text-secondary-foreground">Здесь не лечат.</p>
+            <p className="text-xl md:text-2xl text-secondary-foreground font-bold">
               Здесь помогают собраться и действовать.
             </p>
           </div>
