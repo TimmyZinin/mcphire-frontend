@@ -30,19 +30,20 @@ const HowItWorksSection = () => {
   ];
 
   return (
-    <section className="section-secondary relative overflow-hidden">
+    <section className="section-dark border-t-4 border-secondary relative overflow-hidden">
       {/* Background image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-10"
+        className="absolute inset-0 bg-cover bg-center opacity-20"
         style={{ backgroundImage: `url(${bgHowItWorks})` }}
       />
+      <div className="absolute inset-0 bg-gradient-to-l from-background via-background/90 to-background/80" />
       
       <div className="section-container relative z-10">
         <div className="space-y-12">
           {/* Heading */}
-          <h2 className="heading-lg text-secondary-foreground">
+          <h2 className="heading-lg">
             Как устроена{" "}
-            <span className="text-primary">Сборка</span>
+            <span className="text-accent">Сборка</span>
           </h2>
           
           {/* Steps */}
@@ -52,14 +53,14 @@ const HowItWorksSection = () => {
                 key={index}
                 className="flex gap-6 items-start"
               >
-                <div className="step-number flex-shrink-0" style={{ transform: `rotate(${index % 2 === 0 ? -3 : 3}deg)` }}>
+                <div className="step-number flex-shrink-0">
                   {step.number}
                 </div>
                 <div className="space-y-2 pt-2">
-                  <h3 className="text-2xl md:text-3xl font-bold text-secondary-foreground uppercase tracking-tight font-display">
+                  <h3 className="text-2xl md:text-3xl font-bold text-foreground uppercase tracking-tight">
                     {step.title}
                   </h3>
-                  <p className="text-lg md:text-xl text-secondary-foreground/80">
+                  <p className="text-lg md:text-xl text-muted-foreground">
                     {step.description}
                   </p>
                 </div>

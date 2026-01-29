@@ -8,45 +8,40 @@ const SupportSection = () => {
   ];
 
   return (
-    <section className="section-dark relative overflow-hidden">
+    <section className="section-secondary relative overflow-hidden">
       {/* Background image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-15"
+        className="absolute inset-0 bg-cover bg-center opacity-20"
         style={{ backgroundImage: `url(${bgSupport})` }}
       />
-      
-      {/* Decorative stars */}
-      <div className="absolute top-10 left-10 text-secondary text-3xl">★</div>
-      <div className="absolute top-20 right-20 text-accent text-4xl">★</div>
-      <div className="absolute bottom-10 right-10 text-secondary text-2xl">★</div>
+      <div className="absolute inset-0 bg-gradient-to-t from-secondary via-secondary/95 to-secondary/90" />
       
       <div className="section-container relative z-10">
         <div className="space-y-12 text-center">
           {/* Heading */}
-          <h2 className="heading-lg text-secondary">
+          <h2 className="heading-lg text-secondary-foreground">
             Когда нужно собраться —{" "}
-            <span className="block mt-2 text-foreground">это нормально</span>
+            <span className="block mt-2">это нормально</span>
           </h2>
           
-          {/* Text in speech bubble */}
-          <div className="quote-block max-w-2xl mx-auto text-left">
-            <p className="text-background">
+          {/* Text */}
+          <div className="space-y-4 max-w-2xl mx-auto">
+            <p className="text-xl md:text-2xl text-secondary-foreground/80">
               Ты не обязан быть сильным всё время.
             </p>
-            <p className="text-primary font-bold text-2xl">
+            <p className="text-xl md:text-2xl text-secondary-foreground font-bold">
               Но ты можешь собраться.
             </p>
           </div>
           
           {/* Points */}
-          <div className="flex flex-col md:flex-row justify-center gap-6 md:gap-8">
+          <div className="flex flex-col md:flex-row justify-center gap-6 md:gap-12">
             {points.map((point, index) => (
               <div 
                 key={index}
-                className="bg-secondary text-secondary-foreground px-8 py-4 comic-panel"
-                style={{ transform: `rotate(${index === 0 ? -3 : index === 2 ? 3 : 0}deg)` }}
+                className="bg-background/10 backdrop-blur-sm px-8 py-4"
               >
-                <span className="text-xl md:text-2xl font-display uppercase tracking-wider">
+                <span className="text-xl md:text-2xl text-secondary-foreground font-bold uppercase tracking-wider">
                   {point}
                 </span>
               </div>

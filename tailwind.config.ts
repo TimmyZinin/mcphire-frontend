@@ -18,7 +18,6 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Space Grotesk', 'system-ui', 'sans-serif'],
-        display: ['Bangers', 'cursive'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -71,22 +70,17 @@ export default {
         },
         "pulse-glow": {
           "0%, 100%": { 
-            boxShadow: "0 0 20px hsl(var(--secondary) / 0.5), 4px 4px 0 hsl(0 0% 0%)" 
+            boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" 
           },
           "50%": { 
-            boxShadow: "0 0 40px hsl(var(--secondary) / 0.8), 4px 4px 0 hsl(0 0% 0%)" 
+            boxShadow: "0 0 40px hsl(var(--primary) / 0.8)" 
           },
-        },
-        "float": {
-          "0%, 100%": { transform: "translateY(0) rotate(-2deg)" },
-          "50%": { transform: "translateY(-10px) rotate(2deg)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
-        "float": "float 3s ease-in-out infinite",
       },
     },
   },
