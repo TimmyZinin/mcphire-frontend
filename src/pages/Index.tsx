@@ -8,6 +8,7 @@ import ValuesSection from "@/components/ValuesSection";
 import WebinarsSection from "@/components/WebinarsSection";
 import SupportSection from "@/components/SupportSection";
 import FinalCTASection from "@/components/FinalCTASection";
+import FoundersSection from "@/components/FoundersSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -20,6 +21,7 @@ const Index = () => {
       <FormatsSection />
       <ForWhomSection />
       <ValuesSection />
+      <FoundersSection />
       <WebinarsSection />
       <SupportSection />
       <FinalCTASection />
