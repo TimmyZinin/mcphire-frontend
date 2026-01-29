@@ -9,11 +9,11 @@ const FormatsSection = () => {
   ];
 
   return (
-    <section className="section-dark border-t-4 border-primary">
+    <section className="section-secondary">
       <div className="section-container">
         <div className="space-y-12">
           {/* Heading */}
-          <h2 className="heading-lg text-foreground">
+          <h2 className="heading-lg text-secondary-foreground">
             Что внутри
           </h2>
           
@@ -22,10 +22,10 @@ const FormatsSection = () => {
             {formats.map((format, index) => (
               <div 
                 key={index}
-                className="flex items-center gap-4 bg-card border-4 border-primary/20 p-4 md:p-6 hover:border-primary transition-colors"
+                className="flex items-center gap-4 bg-background/10 p-4 md:p-6"
               >
-                <span className="text-2xl text-primary">→</span>
-                <span className="text-lg md:text-xl text-foreground font-medium">
+                <span className="text-2xl text-secondary-foreground">→</span>
+                <span className="text-lg md:text-xl text-secondary-foreground font-medium">
                   {format}
                 </span>
               </div>
