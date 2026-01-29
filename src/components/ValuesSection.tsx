@@ -1,3 +1,5 @@
+import bgValues from "@/assets/bg-values.jpg";
+
 const ValuesSection = () => {
   const values = [
     "Дисциплина важнее вдохновения",
@@ -8,8 +10,15 @@ const ValuesSection = () => {
   ];
 
   return (
-    <section className="section-accent">
-      <div className="section-container">
+    <section className="section-accent relative overflow-hidden">
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-15"
+        style={{ backgroundImage: `url(${bgValues})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/95 to-primary/90" />
+      
+      <div className="section-container relative z-10">
         <div className="space-y-12">
           {/* Heading */}
           <h2 className="heading-lg text-primary-foreground">

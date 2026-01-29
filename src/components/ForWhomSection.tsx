@@ -1,3 +1,5 @@
+import bgForWhom from "@/assets/bg-for-whom.jpg";
+
 const ForWhomSection = () => {
   const forWhom = [
     "Middle / Senior специалисты",
@@ -14,8 +16,15 @@ const ForWhomSection = () => {
   ];
 
   return (
-    <section className="section-dark border-t-4 border-accent">
-      <div className="section-container">
+    <section className="section-dark border-t-4 border-accent relative overflow-hidden">
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{ backgroundImage: `url(${bgForWhom})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-l from-background via-background/90 to-background/80" />
+      
+      <div className="section-container relative z-10">
         <div className="space-y-16">
           {/* For whom */}
           <div className="space-y-8">

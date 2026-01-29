@@ -1,7 +1,16 @@
+import bgFinalCta from "@/assets/bg-final-cta.jpg";
+
 const FinalCTASection = () => {
   return (
-    <section className="section-dark border-t-4 border-primary py-24 md:py-32">
-      <div className="section-container">
+    <section className="section-dark border-t-4 border-primary py-24 md:py-32 relative overflow-hidden">
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-25"
+        style={{ backgroundImage: `url(${bgFinalCta})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/70" />
+      
+      <div className="section-container relative z-10">
         <div className="space-y-12 text-center">
           {/* Heading */}
           <h2 className="heading-xl text-primary">
