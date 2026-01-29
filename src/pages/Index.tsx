@@ -1,21 +1,29 @@
 import HeroSection from "@/components/HeroSection";
-import ContextSection from "@/components/ContextSection";
+import ProblemSection from "@/components/ProblemSection";
 import WhatIsSection from "@/components/WhatIsSection";
-import VisualSection from "@/components/VisualSection";
-import FoundersSection from "@/components/FoundersSection";
+import HowItWorksSection from "@/components/HowItWorksSection";
+import FormatsSection from "@/components/FormatsSection";
 import ForWhomSection from "@/components/ForWhomSection";
+import ValuesSection from "@/components/ValuesSection";
+import WebinarsSection from "@/components/WebinarsSection";
+import SupportSection from "@/components/SupportSection";
 import FinalCTASection from "@/components/FinalCTASection";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
     <main className="min-h-screen">
       <HeroSection />
-      <ContextSection />
+      <ProblemSection />
       <WhatIsSection />
-      <VisualSection />
-      <FoundersSection />
+      <HowItWorksSection />
+      <FormatsSection />
       <ForWhomSection />
+      <ValuesSection />
+      <WebinarsSection />
+      <SupportSection />
       <FinalCTASection />
+      <Footer />
     </main>
   );
 };

@@ -1,35 +1,52 @@
-import { Send } from "lucide-react";
-
 const HeroSection = () => {
   return (
-    <section className="min-h-[85vh] flex flex-col justify-center py-section-sm md:py-section">
-      <div className="section-container">
-        <div className="space-y-8 md:space-y-10">
+    <section className="min-h-screen flex flex-col justify-center section-dark relative overflow-hidden">
+      {/* Background stripes */}
+      <div className="absolute inset-0 stripe-bg opacity-50" />
+      
+      <div className="section-container relative z-10">
+        <div className="space-y-8 md:space-y-12">
           {/* Main title */}
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-semibold tracking-tighter leading-none">
-            СБОРКА
+          <h1 className="heading-xl">
+            <span className="text-primary">СБОРКА.</span>
           </h1>
           
+          <p className="heading-md text-foreground max-w-3xl">
+            Когда нужно собраться —{" "}
+            <span className="text-primary">это нормально.</span>
+          </p>
+          
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-muted-foreground tracking-tight max-w-md">
-            Когда нужно собраться
+          <div className="space-y-2 text-xl md:text-2xl text-muted-foreground max-w-2xl">
+            <p>Рынок сложный.</p>
+            <p>Работа ищется дольше.</p>
+            <p className="text-foreground font-medium">Ты не сломан — ты в процессе.</p>
+          </div>
+          
+          {/* Description */}
+          <p className="text-lg md:text-xl text-foreground max-w-2xl leading-relaxed">
+            Сборка — это пространство, где люди{" "}
+            <span className="text-primary font-bold">возвращают себе дисциплину, ясность и уверенность</span>{" "}
+            в поиске работы и карьере.
           </p>
           
-          {/* Short description */}
-          <p className="text-base md:text-lg text-foreground/80 max-w-lg leading-relaxed">
-            Клуб для тех, кто не ищет мотивацию, а возвращает рабочее состояние.
-          </p>
-          
-          {/* CTA */}
-          <div className="pt-4">
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <a 
               href="https://t.me/sborka_club" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="cta-telegram"
+              className="cta-primary animate-pulse-glow"
             >
-              <Send className="w-4 h-4" />
-              Подписаться на Telegram
+              Присоединиться к Сборке
+            </a>
+            <a 
+              href="https://t.me/sborka_club" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="cta-secondary"
+            >
+              Записаться на вебинар
             </a>
           </div>
         </div>
