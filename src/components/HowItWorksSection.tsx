@@ -1,3 +1,5 @@
+import bgHowItWorks from "@/assets/bg-how-it-works.jpg";
+
 const HowItWorksSection = () => {
   const steps = [
     {
@@ -28,8 +30,15 @@ const HowItWorksSection = () => {
   ];
 
   return (
-    <section className="section-dark border-t-4 border-secondary">
-      <div className="section-container">
+    <section className="section-dark border-t-4 border-secondary relative overflow-hidden">
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{ backgroundImage: `url(${bgHowItWorks})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-l from-background via-background/90 to-background/80" />
+      
+      <div className="section-container relative z-10">
         <div className="space-y-12">
           {/* Heading */}
           <h2 className="heading-lg">

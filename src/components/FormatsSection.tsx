@@ -1,3 +1,5 @@
+import bgFormats from "@/assets/bg-formats.jpg";
+
 const FormatsSection = () => {
   const formats = [
     "Открытые и закрытые вебинары",
@@ -9,8 +11,15 @@ const FormatsSection = () => {
   ];
 
   return (
-    <section className="section-secondary">
-      <div className="section-container">
+    <section className="section-secondary relative overflow-hidden">
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{ backgroundImage: `url(${bgFormats})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/95 to-secondary/90" />
+      
+      <div className="section-container relative z-10">
         <div className="space-y-12">
           {/* Heading */}
           <h2 className="heading-lg text-secondary-foreground">
@@ -22,7 +31,7 @@ const FormatsSection = () => {
             {formats.map((format, index) => (
               <div 
                 key={index}
-                className="flex items-center gap-4 bg-background/10 p-4 md:p-6"
+                className="flex items-center gap-4 bg-background/10 p-4 md:p-6 backdrop-blur-sm"
               >
                 <span className="text-2xl text-secondary-foreground">→</span>
                 <span className="text-lg md:text-xl text-secondary-foreground font-medium">

@@ -1,3 +1,5 @@
+import bgSupport from "@/assets/bg-support.jpg";
+
 const SupportSection = () => {
   const points = [
     "опора",
@@ -6,8 +8,15 @@ const SupportSection = () => {
   ];
 
   return (
-    <section className="section-secondary">
-      <div className="section-container">
+    <section className="section-secondary relative overflow-hidden">
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{ backgroundImage: `url(${bgSupport})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-secondary via-secondary/95 to-secondary/90" />
+      
+      <div className="section-container relative z-10">
         <div className="space-y-12 text-center">
           {/* Heading */}
           <h2 className="heading-lg text-secondary-foreground">
@@ -30,7 +39,7 @@ const SupportSection = () => {
             {points.map((point, index) => (
               <div 
                 key={index}
-                className="bg-background/10 px-8 py-4"
+                className="bg-background/10 backdrop-blur-sm px-8 py-4"
               >
                 <span className="text-xl md:text-2xl text-secondary-foreground font-bold uppercase tracking-wider">
                   {point}

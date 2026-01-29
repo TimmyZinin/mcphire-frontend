@@ -1,3 +1,5 @@
+import bgWebinars from "@/assets/bg-webinars.jpg";
+
 const WebinarsSection = () => {
   const topics = [
     "«Почему сейчас не отвечают на резюме»",
@@ -12,8 +14,15 @@ const WebinarsSection = () => {
   ];
 
   return (
-    <section className="section-dark border-t-4 border-primary">
-      <div className="section-container">
+    <section className="section-dark border-t-4 border-primary relative overflow-hidden">
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{ backgroundImage: `url(${bgWebinars})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/80" />
+      
+      <div className="section-container relative z-10">
         <div className="space-y-12">
           {/* Heading */}
           <h2 className="heading-lg">
@@ -44,7 +53,7 @@ const WebinarsSection = () => {
               {topics.map((topic, index) => (
                 <div 
                   key={index}
-                  className="bg-card p-4 md:p-6 border-l-4 border-secondary"
+                  className="bg-card/80 backdrop-blur-sm p-4 md:p-6 border-l-4 border-secondary"
                 >
                   <p className="text-lg md:text-xl text-foreground font-medium">
                     {topic}

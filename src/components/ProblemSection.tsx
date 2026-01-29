@@ -1,3 +1,5 @@
+import bgProblem from "@/assets/bg-problem.jpg";
+
 const ProblemSection = () => {
   const problems = [
     "отправлять десятки резюме без ответа",
@@ -7,8 +9,15 @@ const ProblemSection = () => {
   ];
 
   return (
-    <section className="section-dark border-t-4 border-primary">
-      <div className="section-container">
+    <section className="section-dark border-t-4 border-primary relative overflow-hidden">
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{ backgroundImage: `url(${bgProblem})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/70" />
+      
+      <div className="section-container relative z-10">
         <div className="space-y-12">
           {/* Heading */}
           <h2 className="heading-lg">

@@ -1,3 +1,5 @@
+import bgWhatIs from "@/assets/bg-what-is.jpg";
+
 const WhatIsSection = () => {
   const items = [
     "группа людей в похожем состоянии",
@@ -8,8 +10,15 @@ const WhatIsSection = () => {
   ];
 
   return (
-    <section className="section-accent">
-      <div className="section-container">
+    <section className="section-accent relative overflow-hidden">
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-15"
+        style={{ backgroundImage: `url(${bgWhatIs})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-l from-primary/90 via-primary/95 to-primary" />
+      
+      <div className="section-container relative z-10">
         <div className="space-y-12">
           {/* Heading */}
           <div className="space-y-4">
