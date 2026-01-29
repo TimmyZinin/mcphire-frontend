@@ -1,8 +1,24 @@
+import heroVideo from "@/assets/hero-video.mp4";
+
 const HeroSection = () => {
   return (
     <section className="min-h-screen flex flex-col justify-center section-dark relative overflow-hidden">
+      {/* Background video */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover opacity-30"
+      >
+        <source src={heroVideo} type="video/mp4" />
+      </video>
+      
+      {/* Overlay gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/60" />
+      
       {/* Background stripes */}
-      <div className="absolute inset-0 stripe-bg opacity-50" />
+      <div className="absolute inset-0 stripe-bg opacity-30" />
       
       <div className="section-container relative z-10">
         <div className="space-y-8 md:space-y-12">
