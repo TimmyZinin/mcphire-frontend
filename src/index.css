@@ -26,8 +26,8 @@
     --primary: 75 100% 50%;
     --primary-foreground: 0 0% 0%;
 
-    /* Secondary - hot pink */
-    --secondary: 330 100% 50%;
+    /* Secondary - dark charcoal (no pink) */
+    --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 100%;
 
     /* Muted */
@@ -116,7 +116,7 @@
   }
 
   .section-secondary {
-    @apply bg-secondary text-secondary-foreground py-16 md:py-24;
+    @apply bg-card text-foreground py-16 md:py-24 border-t-4 border-primary;
   }
 
   /* Heading styles */
