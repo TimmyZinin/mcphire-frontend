@@ -20,12 +20,16 @@ const FoundersSection = () => {
   ];
 
   return (
-    <section className="section-dark border-t-4 border-secondary">
-      <div className="section-container">
+    <section className="section-dark relative overflow-hidden">
+      {/* Decorative stars */}
+      <div className="absolute top-10 right-20 text-secondary text-4xl animate-float">★</div>
+      <div className="absolute bottom-20 left-10 text-accent text-3xl animate-float" style={{ animationDelay: '0.5s' }}>★</div>
+      
+      <div className="section-container relative z-10">
         <div className="space-y-12">
           {/* Heading */}
-          <h2 className="heading-lg">
-            Кто <span className="text-primary">собирает</span>
+          <h2 className="heading-lg text-secondary">
+            Кто стоит за <span className="text-foreground">Сборкой</span>
           </h2>
           
           {/* Founders grid */}
@@ -33,32 +37,30 @@ const FoundersSection = () => {
             {founders.map((founder, index) => (
               <div 
                 key={index}
-                className="bg-card border-4 border-border hover:border-primary transition-colors duration-300"
+                className="bg-foreground p-6 comic-panel"
+                style={{ transform: `rotate(${index % 2 === 0 ? -1 : 1}deg)` }}
               >
                 {/* Photo */}
-                <div className="aspect-square overflow-hidden">
+                <div className="mb-6 overflow-hidden border-4 border-background">
                   <img 
                     src={founder.image} 
                     alt={founder.name}
-                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                    className="w-full aspect-square object-cover object-top"
                   />
                 </div>
                 
                 {/* Info */}
-                <div className="p-6 space-y-4">
-                  <div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-primary uppercase tracking-tight">
-                      {founder.name}
-                    </h3>
-                    <p className="text-lg text-secondary font-medium mt-1">
-                      {founder.role}
-                    </p>
-                    <p className="text-sm text-muted-foreground uppercase tracking-wider mt-1">
-                      {founder.subtitle}
-                    </p>
-                  </div>
-                  
-                  <p className="text-foreground/80 leading-relaxed">
+                <div className="space-y-3">
+                  <h3 className="text-2xl md:text-3xl font-display text-primary" style={{ textShadow: '2px 2px 0 hsl(0 0% 0%)' }}>
+                    {founder.name}
+                  </h3>
+                  <p className="text-lg font-bold text-secondary bg-secondary-foreground inline-block px-2">
+                    {founder.role}
+                  </p>
+                  <p className="text-sm text-background/60 uppercase tracking-wider">
+                    {founder.subtitle}
+                  </p>
+                  <p className="text-background text-lg leading-relaxed">
                     {founder.description}
                   </p>
                 </div>

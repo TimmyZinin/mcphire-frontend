@@ -14,30 +14,29 @@ const WebinarsSection = () => {
   ];
 
   return (
-    <section className="section-dark border-t-4 border-primary relative overflow-hidden">
+    <section className="section-accent relative overflow-hidden">
       {/* Background image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-20"
+        className="absolute inset-0 bg-cover bg-center opacity-10"
         style={{ backgroundImage: `url(${bgWebinars})` }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/80" />
       
       <div className="section-container relative z-10">
         <div className="space-y-12">
           {/* Heading */}
-          <h2 className="heading-lg">
+          <h2 className="heading-lg text-secondary">
             Начни с{" "}
-            <span className="text-accent">открытого вебинара</span>
+            <span className="text-foreground">открытого вебинара</span>
           </h2>
           
           {/* Description */}
           <div className="space-y-6">
-            <p className="text-xl md:text-2xl text-muted-foreground">
+            <p className="text-xl md:text-2xl text-primary-foreground/80">
               Мы регулярно проводим вебинары и Q&A, где:
             </p>
             <ul className="space-y-3">
               {features.map((feature, index) => (
-                <li key={index} className="list-acid">
+                <li key={index} className="list-acid text-primary-foreground">
                   {feature}
                 </li>
               ))}
@@ -46,16 +45,17 @@ const WebinarsSection = () => {
           
           {/* Topics */}
           <div className="space-y-6">
-            <p className="text-lg text-muted-foreground uppercase tracking-wider">
+            <p className="text-lg text-primary-foreground/60 uppercase tracking-wider">
               Пример тем:
             </p>
             <div className="space-y-4">
               {topics.map((topic, index) => (
                 <div 
                   key={index}
-                  className="bg-card/80 backdrop-blur-sm p-4 md:p-6 border-l-4 border-secondary"
+                  className="bg-foreground p-4 md:p-6 comic-panel"
+                  style={{ transform: `rotate(${index % 2 === 0 ? -0.5 : 0.5}deg)` }}
                 >
-                  <p className="text-lg md:text-xl text-foreground font-medium">
+                  <p className="text-lg md:text-xl text-background font-medium">
                     {topic}
                   </p>
                 </div>
@@ -68,7 +68,7 @@ const WebinarsSection = () => {
             href="https://t.me/sborka_club" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="cta-primary inline-block"
+            className="cta-secondary inline-block"
           >
             Записаться на ближайший вебинар
           </a>

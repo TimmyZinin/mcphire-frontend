@@ -1,4 +1,5 @@
 import heroVideo from "@/assets/hero-video.mp4";
+import logoSborka from "@/assets/logo-sborka.png";
 
 const HeroSection = () => {
   return (
@@ -9,39 +10,45 @@ const HeroSection = () => {
         muted
         loop
         playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-30"
+        className="absolute inset-0 w-full h-full object-cover opacity-20"
       >
         <source src={heroVideo} type="video/mp4" />
       </video>
       
-      {/* Overlay gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-transparent to-background" />
+      
+      {/* Decorative stars */}
+      <div className="absolute top-20 left-10 text-secondary text-4xl animate-float">★</div>
+      <div className="absolute top-40 right-20 text-accent text-3xl animate-float" style={{ animationDelay: '0.5s' }}>★</div>
+      <div className="absolute bottom-40 left-20 text-secondary text-2xl animate-float" style={{ animationDelay: '1s' }}>★</div>
+      <div className="absolute bottom-20 right-10 text-accent text-4xl animate-float" style={{ animationDelay: '1.5s' }}>★</div>
       
       <div className="section-container relative z-10">
         <div className="space-y-8 md:space-y-12">
-          {/* Main title */}
-          <h1 className="heading-xl">
-            <span className="text-primary">СБОРКА.</span>
-          </h1>
+          {/* Logo */}
+          <div className="max-w-md md:max-w-lg lg:max-w-xl">
+            <img 
+              src={logoSborka} 
+              alt="СБОРКА - Когда нужно собраться" 
+              className="w-full h-auto drop-shadow-2xl"
+            />
+          </div>
           
-          <p className="heading-md text-foreground max-w-3xl">
-            Когда нужно собраться —{" "}
-            <span className="text-primary">это нормально.</span>
-          </p>
-          
-          {/* Subtitle */}
-          <div className="space-y-2 text-xl md:text-2xl text-muted-foreground max-w-2xl">
-            <p>Рынок сложный.</p>
-            <p>Работа ищется дольше.</p>
-            <p className="text-foreground font-medium">Ты не сломан — ты в процессе.</p>
+          {/* Subtitle in speech bubble style */}
+          <div className="bg-foreground text-background p-4 md:p-6 inline-block border-4 border-background max-w-2xl relative comic-panel">
+            <p className="text-xl md:text-2xl font-bold">
+              Клуб карьерной устойчивости для тех, кто готов действовать
+            </p>
           </div>
           
           {/* Description */}
-          <p className="text-lg md:text-xl text-foreground max-w-2xl leading-relaxed">
-            Сборка — это пространство, где люди{" "}
-            <span className="text-primary font-bold">возвращают себе дисциплину, ясность и уверенность</span>{" "}
-            в поиске работы и карьере.
-          </p>
+          <div className="space-y-2 text-xl md:text-2xl max-w-2xl">
+            <p className="text-muted-foreground">Рынок сложный. Работа ищется дольше.</p>
+            <p className="text-foreground font-bold bg-secondary text-secondary-foreground inline-block px-3 py-1">
+              Ты не сломан — ты в процессе.
+            </p>
+          </div>
           
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
