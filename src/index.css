@@ -247,6 +247,54 @@
   animation: shards 4s ease-in-out infinite;
 }
 
+/* Circle orbit animations */
+@keyframes orbit {
+  0% {
+    transform: rotate(0deg) translateX(100px) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(100px) rotate(-360deg);
+  }
+}
+
+@keyframes orbit-reverse {
+  0% {
+    transform: rotate(0deg) translateX(80px) rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg) translateX(80px) rotate(360deg);
+  }
+}
+
+@keyframes ping-slow {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.animate-orbit {
+  animation: orbit 15s linear infinite;
+  transform-origin: center;
+}
+
+.animate-orbit-reverse {
+  animation: orbit-reverse 12s linear infinite;
+  transform-origin: center;
+}
+
+.animate-ping-slow {
+  animation: ping-slow 3s ease-out infinite;
+}
+
 /* Glitch hover effect for headings */
 @keyframes glitch {
   0%, 100% {

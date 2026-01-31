@@ -5,31 +5,31 @@ const PricingSection = () => {
     {
       name: "СТАРТ",
       price: "5 500",
-      description: "Формат, в котором начинается движение.",
+      description: "Для тех, кто готов начать системный поиск.",
       highlighted: false,
     },
     {
       name: "ПРОРЫВ",
       price: "9 500",
-      description: "Больше внимания. Быстрее прогресс.",
-      badge: "Самый выбираемый",
+      description: "Максимум внимания. Быстрый результат.",
+      badge: "Популярный выбор",
       highlighted: true,
     },
     {
       name: "VIP",
       price: "15 000",
-      description: "Максимальная включённость. Места ограничены.",
+      description: "Персональная работа. Гарантия результата.",
       highlighted: false,
     },
   ];
 
   const features = [
     { name: "Групповые сессии", start: "2/нед", proryv: "2/нед", vip: "2/нед" },
-    { name: "Закрытый чат", start: true, proryv: true, vip: true },
-    { name: "Материалы и записи", start: true, proryv: true, vip: true },
-    { name: "Трекинг в Telegram", start: true, proryv: true, vip: true },
-    { name: "Личный разбор резюме", start: false, proryv: "1/мес", vip: "2/мес" },
-    { name: "Личный созвон", start: false, proryv: false, vip: true },
+    { name: "Закрытый чат участников", start: true, proryv: true, vip: true },
+    { name: "Записи и материалы", start: true, proryv: true, vip: true },
+    { name: "Ежедневный трекинг", start: true, proryv: true, vip: true },
+    { name: "Персональный разбор резюме", start: false, proryv: "1/мес", vip: "2/мес" },
+    { name: "Личный созвон с экспертом", start: false, proryv: false, vip: true },
     { name: "Симуляция собеседования", start: false, proryv: false, vip: true },
   ];
 
@@ -44,17 +44,25 @@ const PricingSection = () => {
   };
 
   return (
-    <section id="pricing" className="section-white">
-      <div className="section-container">
+    <section id="pricing" className="section-white relative overflow-hidden">
+      {/* Decorative circles */}
+      <div className="absolute right-0 top-0 translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-20">
+        <svg width="400" height="400" viewBox="0 0 400 400">
+          <circle cx="200" cy="200" r="180" fill="none" stroke="#DFFF00" strokeWidth="3" />
+          <circle cx="200" cy="200" r="120" fill="none" stroke="#DFFF00" strokeWidth="2" />
+        </svg>
+      </div>
+      
+      <div className="section-container relative z-10">
         <div className="space-y-8">
           {/* Heading */}
           <h2 className="heading-xl glitch-hover">
-            ФОРМАТЫ<br />
-            УЧАСТИЯ
+            ВЫБЕРИ СВОЙ<br />
+            ФОРМАТ
           </h2>
           
           <p className="text-muted-foreground text-lg">
-            Доступ открывается сразу после оплаты через Tribute.
+            Доступ открывается сразу после оплаты. Отмена в любой момент.
           </p>
           
           {/* Pricing cards */}
@@ -90,7 +98,7 @@ const PricingSection = () => {
                 {/* CTA Button */}
                 <div className="mt-auto space-y-2">
                   <button className="cta-primary w-full">
-                    ВСТУПИТЬ
+                    НАЧАТЬ
                   </button>
                   <p className="text-xs text-center opacity-70">
                     {plan.price} ₽ / месяц
@@ -124,16 +132,16 @@ const PricingSection = () => {
             </table>
           </div>
           
-          {/* Value proposition */}
+          {/* Guarantee */}
           <div className="border-2 border-foreground p-6 md:p-8 space-y-4">
             <h4 className="text-lg md:text-xl font-black uppercase">
-              Важно
+              Гарантия результата
             </h4>
             <p className="text-muted-foreground">
-              Одна сильная корректировка стратегии часто экономит месяцы поиска.
+              Если за 2 месяца работы в СБОРКЕ ты не получишь ни одного оффера — мы вернём деньги.
             </p>
             <p className="font-bold">
-              Работа, найденная раньше, почти всегда окупает участие.
+              Без вопросов. Мы уверены в системе.
             </p>
           </div>
         </div>

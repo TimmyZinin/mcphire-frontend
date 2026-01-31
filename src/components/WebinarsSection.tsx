@@ -1,22 +1,31 @@
 const WebinarsSection = () => {
   const topics = [
-    "что реально происходит на рынке",
-    "почему откликов мало",
-    "где кандидаты теряют офферы",
-    "что менять прямо сейчас",
+    "Почему отклики молчат (и как это исправить)",
+    "3 ошибки в резюме, которые стоят офферов",
+    "Как LinkedIn может работать на тебя 24/7",
+    "Что отличает успешных соискателей от остальных",
   ];
 
   return (
-    <section className="section-white">
-      <div className="section-container">
+    <section className="section-white relative overflow-hidden">
+      {/* Decorative circles */}
+      <div className="absolute left-0 top-1/3 -translate-x-1/2 pointer-events-none opacity-15">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="90" fill="none" stroke="#DFFF00" strokeWidth="3" />
+          <circle cx="100" cy="100" r="50" fill="#DFFF00" opacity="0.3" />
+        </svg>
+      </div>
+      
+      <div className="section-container relative z-10">
         <div className="space-y-8">
           {/* Heading */}
           <h2 className="heading-xl glitch-hover">
-            ТОЧКА ВХОДА
+            НАЧНИ С<br />
+            ВЕБИНАРА
           </h2>
           
           <h3 className="text-xl md:text-2xl font-bold">
-            Начни с открытого вебинара.
+            Бесплатно. Без воды. 60 минут практики.
           </h3>
           
           {/* Topics */}
@@ -34,7 +43,7 @@ const WebinarsSection = () => {
           </div>
           
           <p className="text-lg text-muted-foreground">
-            Без приукрашивания.
+            После вебинара ты поймёшь, подходит ли тебе СБОРКА.
           </p>
           
           {/* CTA */}
