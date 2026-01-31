@@ -1,31 +1,40 @@
 import { ScrollReveal } from "@/hooks/useScrollReveal";
 
 const WhatIsSection = () => {
-  const principles = ["СТРУКТУРА", "РИТМ", "ОТВЕТСТВЕННОСТЬ", "ДВИЖЕНИЕ"];
+  const principles = ["СТРАТЕГИЯ", "РИТМ", "ОБРАТНАЯ СВЯЗЬ", "РЕЗУЛЬТАТ"];
 
   return (
-    <section className="section-white">
-      <div className="section-container">
+    <section className="section-white relative overflow-hidden">
+      {/* Decorative circles - left side */}
+      <div className="absolute left-0 top-1/3 -translate-x-1/2 pointer-events-none opacity-40">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="80" fill="none" stroke="#DFFF00" strokeWidth="3" />
+          <circle cx="100" cy="100" r="50" fill="none" stroke="#DFFF00" strokeWidth="2" />
+          <circle cx="100" cy="100" r="20" fill="#DFFF00" opacity="0.6" />
+        </svg>
+      </div>
+      
+      <div className="section-container relative z-10">
         <div className="space-y-8">
           {/* Heading */}
           <ScrollReveal>
             <h2 className="heading-xl glitch-hover">
-              ЭТО РАБОЧАЯ<br />
-              СРЕДА.
+              ЭТО НЕ КУРС.<br />
+              ЭТО СИСТЕМА.
             </h2>
           </ScrollReveal>
           
           {/* Body */}
           <ScrollReveal delay={100}>
             <div className="space-y-4 text-lg md:text-xl text-muted-foreground max-w-2xl">
-              <p>Не разговорный клуб.</p>
-              <p>Не теоретическая программа.</p>
+              <p>Не мотивационные лекции.</p>
+              <p>Не теория про «как надо».</p>
             </div>
           </ScrollReveal>
           
           <ScrollReveal delay={200}>
             <p className="text-lg md:text-xl max-w-2xl">
-              Среда, в которой появляется:
+              Практическая система, которая даёт:
             </p>
           </ScrollReveal>
           
@@ -46,9 +55,9 @@ const WhatIsSection = () => {
           {/* Summary */}
           <ScrollReveal delay={400}>
             <div className="space-y-2 text-lg md:text-xl max-w-2xl pt-4">
-              <p>Здесь говорят прямо.</p>
-              <p>Показывают слабые места.</p>
-              <p className="font-bold">Помогают их закрыть.</p>
+              <p>Эксперты видят твои слепые зоны.</p>
+              <p>Группа держит в тонусе.</p>
+              <p className="font-bold">Ты получаешь результат, а не очередной сертификат.</p>
             </div>
           </ScrollReveal>
         </div>

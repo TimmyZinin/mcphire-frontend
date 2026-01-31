@@ -6,53 +6,63 @@ const FormatsSection = () => {
   const formats = [
     {
       name: "Прожарка резюме",
-      description: "Жёсткий разбор. Без комплиментов.",
+      description: "Честный разбор. Узнаешь, что на самом деле видят рекрутеры.",
       lead: "ведёт Кристина",
     },
     {
       name: "Hot seat разборы",
-      description: "Твоя ситуация — в центре внимания группы.",
+      description: "Твоя ситуация — в центре внимания группы. Получаешь конкретные решения.",
       lead: null,
     },
     {
       name: "LinkedIn-сессии",
-      description: "Профиль, который работает на тебя.",
+      description: "Профиль, который работает на тебя 24/7.",
       lead: "ведёт Тим",
     },
     {
-      name: "Карьерный трекинг",
-      description: "Ежедневная отчётность. Публично.",
+      name: "Симуляции интервью",
+      description: "Практика сложных вопросов. Обратная связь от экспертов.",
       lead: null,
     },
     {
       name: "AI-инструменты",
-      description: "Автоматизация рутины поиска.",
+      description: "Автоматизация рутины. Больше откликов за меньшее время.",
       lead: "ведёт Тим",
     },
   ];
 
   const infrastructure = [
-    "групповые рабочие сессии 2 раза в неделю",
-    "закрытый чат без мусора",
-    "записи всех сессий",
-    "сильное профессиональное окружение",
+    "2 групповые сессии в неделю с экспертами",
+    "Закрытый чат участников (только действующие соискатели)",
+    "Записи всех сессий с таймкодами",
+    "База знаний: шаблоны, скрипты, чек-листы",
   ];
 
   const images = [formatsLaptop, formatsHands, formatsWorkspace];
 
   return (
-    <section className="section-white">
-      <div className="section-container">
+    <section className="section-white relative overflow-hidden">
+      {/* Decorative circles */}
+      <div className="absolute right-0 bottom-0 translate-x-1/3 translate-y-1/3 pointer-events-none opacity-15">
+        <svg width="350" height="350" viewBox="0 0 350 350">
+          <circle cx="175" cy="175" r="160" fill="none" stroke="#DFFF00" strokeWidth="2" />
+          <circle cx="175" cy="175" r="120" fill="none" stroke="#DFFF00" strokeWidth="2" />
+          <circle cx="175" cy="175" r="80" fill="none" stroke="#DFFF00" strokeWidth="2" />
+          <circle cx="175" cy="175" r="40" fill="#DFFF00" opacity="0.2" />
+        </svg>
+      </div>
+      
+      <div className="section-container relative z-10">
         <div className="space-y-12">
           {/* Heading with images */}
           <div className="grid lg:grid-cols-2 gap-8 items-start">
             <div className="space-y-4">
               <h2 className="heading-xl glitch-hover">
                 ЧТО ВНУТРИ<br />
-                КЛУБА
+                СИСТЕМЫ
               </h2>
               <p className="text-muted-foreground text-lg">
-                Рабочая среда, где люди действуют вместе.
+                Инструменты, которые превращают хаотичный поиск в системную работу.
               </p>
             </div>
             
@@ -97,7 +107,7 @@ const FormatsSection = () => {
 
           {/* Infrastructure list */}
           <div className="space-y-4">
-            <h3 className="heading-md">Инфраструктура</h3>
+            <h3 className="heading-md glitch-hover">Инфраструктура</h3>
             <ul className="space-y-3">
               {infrastructure.map((item, index) => (
                 <li key={index} className="list-arrow">
@@ -109,7 +119,7 @@ const FormatsSection = () => {
           
           {/* Summary */}
           <p className="text-xl md:text-2xl font-bold pt-4 border-t-2 border-foreground">
-            Это не курс. Это инфраструктура для тех, кто готов работать.
+            Всё, что нужно для системного поиска — в одном месте.
           </p>
         </div>
       </div>
