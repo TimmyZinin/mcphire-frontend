@@ -15,8 +15,8 @@ const StickyHeader = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 bg-background border-b border-foreground transition-all duration-300 ${
-        isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+      className={`fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm transition-all duration-300 ${
+        isVisible ? "translate-y-0 opacity-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]" : "-translate-y-full opacity-0"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
