@@ -46,7 +46,7 @@ const HeroSection = () => {
           <div className="space-y-8">
             {/* Logo/Title - white on black */}
             <h1 className="heading-hero text-background">
-              [ СБОРКА ]
+              СБОРКА
             </h1>
             
             {/* Subtitle */}
