@@ -22,11 +22,11 @@ const WhatIsSection = () => {
           </p>
           
           {/* Chips */}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-4">
             {principles.map((principle, index) => (
               <span 
                 key={index} 
-                className="inline-block px-5 py-3 border-2 border-primary text-sm md:text-base font-bold uppercase tracking-wide transition-all duration-200 hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 hover:shadow-[0_8px_20px_-4px_rgba(223,255,0,0.4)] cursor-default"
+                className="inline-block px-6 py-4 border-3 border-primary bg-primary/5 text-base md:text-lg font-black uppercase tracking-wide transition-all duration-200 hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 hover:shadow-[0_8px_20px_-4px_rgba(223,255,0,0.5)] cursor-default"
               >
                 {principle}
               </span>
