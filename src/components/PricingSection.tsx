@@ -1,32 +1,17 @@
+import { Check, Minus } from "lucide-react";
+
 const PricingSection = () => {
   const plans = [
     {
       name: "СТАРТ",
       price: "5 500",
       description: "Формат, в котором начинается движение.",
-      features: [
-        "стратегические вебинары",
-        "групповые сессии",
-        "разборы резюме",
-        "закрытый чат",
-        "трекинг",
-        "практические задания",
-      ],
-      badge: null,
       highlighted: false,
     },
     {
       name: "ПРОРЫВ",
       price: "9 500",
       description: "Больше внимания. Быстрее прогресс.",
-      features: [
-        "всё из Старта",
-        "личный разбор резюме",
-        "индивидуальная обратная связь",
-        "помощь со стратегией",
-        "подготовка к интервью",
-        "приоритет в разборах",
-      ],
       badge: "Самый выбираемый",
       highlighted: true,
     },
@@ -34,17 +19,29 @@ const PricingSection = () => {
       name: "VIP",
       price: "15 000",
       description: "Максимальная включённость. Места ограничены.",
-      features: [
-        "всё из Прорыва",
-        "персональные встречи",
-        "глубокая проработка стратегии",
-        "симуляции интервью",
-        "приоритетная поддержка",
-      ],
-      badge: null,
       highlighted: false,
     },
   ];
+
+  const features = [
+    { name: "Групповые сессии", start: "2/нед", proryv: "2/нед", vip: "2/нед" },
+    { name: "Закрытый чат", start: true, proryv: true, vip: true },
+    { name: "Материалы и записи", start: true, proryv: true, vip: true },
+    { name: "Трекинг в Telegram", start: true, proryv: true, vip: true },
+    { name: "Личный разбор резюме", start: false, proryv: "1/мес", vip: "2/мес" },
+    { name: "Личный созвон", start: false, proryv: false, vip: true },
+    { name: "Симуляция собеседования", start: false, proryv: false, vip: true },
+  ];
+
+  const renderFeatureValue = (value: boolean | string) => {
+    if (value === true) {
+      return <Check className="w-5 h-5 text-success mx-auto" />;
+    }
+    if (value === false) {
+      return <Minus className="w-5 h-5 text-muted-foreground mx-auto" />;
+    }
+    return <span className="text-sm font-bold">{value}</span>;
+  };
 
   return (
     <section className="section-white">
@@ -66,7 +63,7 @@ const PricingSection = () => {
               <div 
                 key={index}
                 className={`
-                  p-6 md:p-8 space-y-6 relative border-2
+                  p-6 md:p-8 flex flex-col relative border-2
                   ${plan.highlighted 
                     ? 'border-foreground bg-primary' 
                     : 'border-foreground bg-background'
@@ -81,32 +78,17 @@ const PricingSection = () => {
                 )}
                 
                 {/* Plan name */}
-                <div>
-                  <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
-                    {plan.name}
-                  </h3>
-                </div>
+                <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight mb-2">
+                  {plan.name}
+                </h3>
                 
                 {/* Description */}
-                <p className="text-sm opacity-70">
+                <p className="text-sm opacity-70 mb-6">
                   {plan.description}
                 </p>
                 
-                {/* Features */}
-                <ul className="space-y-2">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li 
-                      key={featureIndex}
-                      className="flex items-start gap-2 text-sm"
-                    >
-                      <span className="flex-shrink-0">→</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                
                 {/* CTA Button */}
-                <div className="mt-auto pt-4 space-y-2">
+                <div className="mt-auto space-y-2">
                   <button className="cta-primary w-full">
                     ПРИСОЕДИНИТЬСЯ
                   </button>
@@ -116,6 +98,30 @@ const PricingSection = () => {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Features comparison table */}
+          <div className="border-2 border-foreground overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b-2 border-foreground">
+                  <th className="text-left p-4 font-black uppercase text-sm">Что входит</th>
+                  <th className="p-4 font-black uppercase text-sm text-center w-24">Старт</th>
+                  <th className="p-4 font-black uppercase text-sm text-center w-24 bg-primary">Прорыв</th>
+                  <th className="p-4 font-black uppercase text-sm text-center w-24">VIP</th>
+                </tr>
+              </thead>
+              <tbody>
+                {features.map((feature, index) => (
+                  <tr key={index} className={index !== features.length - 1 ? "border-b border-foreground/20" : ""}>
+                    <td className="p-4 text-sm">{feature.name}</td>
+                    <td className="p-4 text-center">{renderFeatureValue(feature.start)}</td>
+                    <td className="p-4 text-center bg-primary/30">{renderFeatureValue(feature.proryv)}</td>
+                    <td className="p-4 text-center">{renderFeatureValue(feature.vip)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
           
           {/* Value proposition */}
