@@ -26,26 +26,26 @@ const FAQSection = () => {
   ];
 
   return (
-    <section className="section-dark border-t-4 border-border">
+    <section className="section-white">
       <div className="section-container">
-        <div className="space-y-10 max-w-3xl mx-auto">
+        <div className="space-y-8 max-w-2xl">
           {/* Heading */}
-          <h2 className="heading-lg text-center">
+          <h2 className="heading-xl">
             FAQ
           </h2>
           
           {/* Accordion */}
-          <Accordion type="single" collapsible className="space-y-4">
+          <Accordion type="single" collapsible className="space-y-2">
             {faqs.map((faq, index) => (
               <AccordionItem 
                 key={index} 
                 value={`item-${index}`}
-                className="border-4 border-border bg-card px-6"
+                className="border-2 border-foreground px-6 bg-background"
               >
-                <AccordionTrigger className="text-lg md:text-xl font-bold text-foreground hover:text-primary py-6">
+                <AccordionTrigger className="text-lg font-bold hover:no-underline py-4">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-lg text-muted-foreground pb-6">
+                <AccordionContent className="text-muted-foreground pb-4">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>

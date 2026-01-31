@@ -1,61 +1,40 @@
-import bgWhatIs from "@/assets/bg-what-is.jpg";
-
 const WhatIsSection = () => {
-  const items = [
-    "структура",
-    "ритм",
-    "ответственность",
-    "движение",
-  ];
+  const principles = ["СТРУКТУРА", "РИТМ", "ОТВЕТСТВЕННОСТЬ", "ДВИЖЕНИЕ"];
 
   return (
-    <section className="section-accent relative overflow-hidden">
-      {/* Background image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center opacity-15"
-        style={{ backgroundImage: `url(${bgWhatIs})` }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-l from-primary/90 via-primary/95 to-primary" />
-      
-      <div className="section-container relative z-10">
-        <div className="space-y-10">
+    <section className="section-white">
+      <div className="section-container">
+        <div className="space-y-8">
           {/* Heading */}
-          <h2 className="heading-lg text-primary-foreground">
-            СБОРКА — это рабочая система.
+          <h2 className="heading-xl">
+            ЭТО РАБОЧАЯ<br />
+            СРЕДА.
           </h2>
           
-          {/* What it's not */}
-          <div className="space-y-2 text-xl md:text-2xl text-primary-foreground/80">
+          {/* Body */}
+          <div className="space-y-4 text-lg md:text-xl text-muted-foreground max-w-2xl">
             <p>Не разговорный клуб.</p>
             <p>Не теоретическая программа.</p>
           </div>
           
-          {/* What it is */}
-          <div className="space-y-6">
-            <p className="text-lg text-primary-foreground/60 uppercase tracking-wider">
-              Среда, в которой появляется:
-            </p>
-            <div className="flex flex-wrap gap-4">
-              {items.map((item, index) => (
-                <div 
-                  key={index}
-                  className="bg-primary-foreground/10 backdrop-blur-sm px-6 py-3"
-                >
-                  <span className="text-xl md:text-2xl text-primary-foreground font-bold uppercase">
-                    {item}
-                  </span>
-                </div>
-              ))}
-            </div>
+          <p className="text-lg md:text-xl max-w-2xl">
+            Среда, в которой появляется:
+          </p>
+          
+          {/* Chips */}
+          <div className="flex flex-wrap gap-3">
+            {principles.map((principle, index) => (
+              <span key={index} className="chip">
+                {principle}
+              </span>
+            ))}
           </div>
           
-          {/* Quote */}
-          <div className="border-l-4 border-primary-foreground pl-6 py-2 space-y-2">
-            <p className="text-xl md:text-2xl text-primary-foreground/80">Здесь говорят прямо.</p>
-            <p className="text-xl md:text-2xl text-primary-foreground/80">Показывают слабые места.</p>
-            <p className="text-xl md:text-2xl text-primary-foreground font-bold">
-              Помогают их закрыть.
-            </p>
+          {/* Summary */}
+          <div className="space-y-2 text-lg md:text-xl max-w-2xl pt-4">
+            <p>Здесь говорят прямо.</p>
+            <p>Показывают слабые места.</p>
+            <p className="font-bold">Помогают их закрыть.</p>
           </div>
         </div>
       </div>

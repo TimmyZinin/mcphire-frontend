@@ -1,5 +1,3 @@
-import bgWebinars from "@/assets/bg-webinars.jpg";
-
 const WebinarsSection = () => {
   const topics = [
     "что реально происходит на рынке",
@@ -9,40 +7,33 @@ const WebinarsSection = () => {
   ];
 
   return (
-    <section className="section-dark border-t-4 border-primary relative overflow-hidden">
-      {/* Background image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center opacity-20"
-        style={{ backgroundImage: `url(${bgWebinars})` }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/80" />
-      
-      <div className="section-container relative z-10">
-        <div className="space-y-10">
+    <section className="section-white">
+      <div className="section-container">
+        <div className="space-y-8">
           {/* Heading */}
-          <h2 className="heading-lg">
-            Точка входа
+          <h2 className="heading-xl">
+            ТОЧКА ВХОДА
           </h2>
           
-          <h3 className="heading-md text-accent">
+          <h3 className="text-xl md:text-2xl font-bold">
             Начни с открытого вебинара.
           </h3>
           
           {/* Topics */}
-          <div className="space-y-6">
-            <p className="text-lg text-muted-foreground uppercase tracking-wider">
+          <div className="space-y-4">
+            <p className="text-muted-foreground uppercase tracking-wider text-sm">
               Разберём:
             </p>
             <ul className="space-y-3">
               {topics.map((topic, index) => (
-                <li key={index} className="list-acid text-foreground">
+                <li key={index} className="list-arrow">
                   {topic}
                 </li>
               ))}
             </ul>
           </div>
           
-          <p className="text-xl text-muted-foreground">
+          <p className="text-lg text-muted-foreground">
             Без приукрашивания.
           </p>
           
