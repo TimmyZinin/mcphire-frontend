@@ -15,7 +15,7 @@ const HeroSection = () => {
           
           {/* Tagline */}
           <p className="text-lg md:text-xl lg:text-2xl max-w-2xl leading-relaxed">
-            Здесь перестают ныть и начинают пахать.
+            СОБЕРИСЬ. НАЧНИ РАБОТАТЬ.
           </p>
           
           {/* CTAs */}
