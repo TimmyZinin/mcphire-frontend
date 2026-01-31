@@ -2,11 +2,10 @@ import bgWhatIs from "@/assets/bg-what-is.jpg";
 
 const WhatIsSection = () => {
   const items = [
-    "группа людей в похожем состоянии",
-    "регулярные вебинары и Q&A",
-    "разборы резюме, кейсов, ситуаций",
-    "дисциплина, трекинг и ответственность",
-    "спокойная, взрослая поддержка",
+    "структура",
+    "ритм",
+    "ответственность",
+    "движение",
   ];
 
   return (
@@ -19,42 +18,43 @@ const WhatIsSection = () => {
       <div className="absolute inset-0 bg-gradient-to-l from-primary/90 via-primary/95 to-primary" />
       
       <div className="section-container relative z-10">
-        <div className="space-y-12">
+        <div className="space-y-10">
           {/* Heading */}
-          <div className="space-y-4">
-            <h2 className="heading-lg text-primary-foreground">
-              Сборка — это не мотивация.
-            </h2>
-            <p className="heading-md text-primary-foreground/80">Это система.</p>
-          </div>
+          <h2 className="heading-lg text-primary-foreground">
+            СБОРКА — это рабочая система.
+          </h2>
           
-          {/* Subtext */}
+          {/* What it's not */}
           <div className="space-y-2 text-xl md:text-2xl text-primary-foreground/80">
-            <p>Мы не вдохновляем.</p>
-            <p className="text-primary-foreground font-bold">Мы собираем.</p>
+            <p>Не разговорный клуб.</p>
+            <p>Не теоретическая программа.</p>
           </div>
           
-          {/* Items list */}
-          <div className="space-y-4">
-            <p className="text-lg text-primary-foreground/60 uppercase tracking-wider">Сборка — это:</p>
-            <ul className="space-y-3">
+          {/* What it is */}
+          <div className="space-y-6">
+            <p className="text-lg text-primary-foreground/60 uppercase tracking-wider">
+              Среда, в которой появляется:
+            </p>
+            <div className="flex flex-wrap gap-4">
               {items.map((item, index) => (
-                <li 
-                  key={index} 
-                  className="flex items-center gap-4 text-lg md:text-xl text-primary-foreground"
+                <div 
+                  key={index}
+                  className="bg-primary-foreground/10 backdrop-blur-sm px-6 py-3"
                 >
-                  <span className="w-2 h-2 bg-primary-foreground flex-shrink-0" />
-                  {item}
-                </li>
+                  <span className="text-xl md:text-2xl text-primary-foreground font-bold uppercase">
+                    {item}
+                  </span>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
           
           {/* Quote */}
           <div className="border-l-4 border-primary-foreground pl-6 py-2 space-y-2">
-            <p className="text-xl md:text-2xl text-primary-foreground/80">Здесь не лечат.</p>
+            <p className="text-xl md:text-2xl text-primary-foreground/80">Здесь говорят прямо.</p>
+            <p className="text-xl md:text-2xl text-primary-foreground/80">Показывают слабые места.</p>
             <p className="text-xl md:text-2xl text-primary-foreground font-bold">
-              Здесь помогают собраться и действовать.
+              Помогают их закрыть.
             </p>
           </div>
         </div>

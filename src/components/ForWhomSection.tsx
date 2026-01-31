@@ -2,17 +2,18 @@ import bgForWhom from "@/assets/bg-for-whom.jpg";
 
 const ForWhomSection = () => {
   const forWhom = [
-    "Middle / Senior специалисты",
-    "Руководители и тимлиды",
-    "Люди в поиске работы",
-    "Люди в карьерном тупике",
-    "Те, кто устал от мотивационных курсов",
+    "middle и senior специалистам",
+    "руководителям",
+    "тем, кто застрял между этапами",
+    "тем, кто устал искать вслепую",
+    "тем, кто готов работать",
   ];
 
   const notFor = [
-    "тем, кто ждёт «волшебную кнопку»",
-    "тем, кто хочет быстрых обещаний",
-    "тем, кто не готов работать",
+    "если хочешь, чтобы работу нашли за тебя",
+    "если ищешь волшебную кнопку",
+    "если не готов менять подход",
+    "если удобнее жаловаться, чем действовать",
   ];
 
   return (
@@ -29,13 +30,13 @@ const ForWhomSection = () => {
           {/* For whom */}
           <div className="space-y-8">
             <h2 className="heading-lg">
-              Кому подойдёт{" "}
-              <span className="text-primary">Сборка</span>
+              Кому{" "}
+              <span className="text-primary">подойдёт</span>
             </h2>
             
             <ul className="space-y-4">
               {forWhom.map((item, index) => (
-                <li key={index} className="list-acid">
+                <li key={index} className="list-acid text-foreground">
                   {item}
                 </li>
               ))}
@@ -45,7 +46,7 @@ const ForWhomSection = () => {
           {/* Not for */}
           <div className="space-y-8">
             <h3 className="heading-md text-destructive">
-              Не подойдёт
+              Кому не сюда
             </h3>
             
             <ul className="space-y-4">

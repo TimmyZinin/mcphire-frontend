@@ -2,15 +2,10 @@ import bgWebinars from "@/assets/bg-webinars.jpg";
 
 const WebinarsSection = () => {
   const topics = [
-    "«Почему сейчас не отвечают на резюме»",
-    "«Как искать работу в 2025 году»",
-    "«Что HR реально смотрит на собеседовании»",
-  ];
-
-  const features = [
-    "отвечаем на вопросы рынка",
-    "разбираем реальные ситуации",
-    "говорим честно, без приукрашивания",
+    "что реально происходит на рынке",
+    "почему откликов мало",
+    "где кандидаты теряют офферы",
+    "что менять прямо сейчас",
   ];
 
   return (
@@ -23,45 +18,33 @@ const WebinarsSection = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/80" />
       
       <div className="section-container relative z-10">
-        <div className="space-y-12">
+        <div className="space-y-10">
           {/* Heading */}
           <h2 className="heading-lg">
-            Начни с{" "}
-            <span className="text-accent">открытого вебинара</span>
+            Точка входа
           </h2>
           
-          {/* Description */}
+          <h3 className="heading-md text-accent">
+            Начни с открытого вебинара.
+          </h3>
+          
+          {/* Topics */}
           <div className="space-y-6">
-            <p className="text-xl md:text-2xl text-muted-foreground">
-              Мы регулярно проводим вебинары и Q&A, где:
+            <p className="text-lg text-muted-foreground uppercase tracking-wider">
+              Разберём:
             </p>
             <ul className="space-y-3">
-              {features.map((feature, index) => (
-                <li key={index} className="list-acid">
-                  {feature}
+              {topics.map((topic, index) => (
+                <li key={index} className="list-acid text-foreground">
+                  {topic}
                 </li>
               ))}
             </ul>
           </div>
           
-          {/* Topics */}
-          <div className="space-y-6">
-            <p className="text-lg text-muted-foreground uppercase tracking-wider">
-              Пример тем:
-            </p>
-            <div className="space-y-4">
-              {topics.map((topic, index) => (
-                <div 
-                  key={index}
-                  className="bg-card/80 backdrop-blur-sm p-4 md:p-6 border-l-4 border-secondary"
-                >
-                  <p className="text-lg md:text-xl text-foreground font-medium">
-                    {topic}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+          <p className="text-xl text-muted-foreground">
+            Без приукрашивания.
+          </p>
           
           {/* CTA */}
           <a 
@@ -70,7 +53,7 @@ const WebinarsSection = () => {
             rel="noopener noreferrer"
             className="cta-primary inline-block"
           >
-            Записаться на ближайший вебинар
+            Записаться на вебинар
           </a>
         </div>
       </div>

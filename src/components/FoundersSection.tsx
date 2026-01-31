@@ -5,16 +5,12 @@ const FoundersSection = () => {
   const founders = [
     {
       name: "Тим Зинин",
-      role: "CMO с 20-летним опытом",
-      subtitle: "Фаундер Botanica School",
-      description: "Помогаю взломать рынок и получить лиды на твоё резюме. Расскажу про построение личного бренда и как привлекать на себя рекрутеров.",
+      description: "Маркетолог с 20+ годами опыта. Работал на глобальных рынках. Понимает, как компании принимают решения о найме.",
       image: timPhoto,
     },
     {
       name: "Кристина Жукова",
-      role: "Co-founder & CEO at EXZEV",
-      subtitle: "Executive Search",
-      description: "Нахожу «тех самых» лидеров и помогаю выстраивать структуру для кратного роста. Оптимизирую найм: внедряю системные процессы, экономящие время собственника. Оцениваю кадров, анализирую рынок по окладу.",
+      description: "HR-лидер. Знает, почему кандидатов не берут — и что с этим делать.",
       image: kristinaPhoto,
     },
   ];
@@ -22,10 +18,11 @@ const FoundersSection = () => {
   return (
     <section className="section-dark border-t-4 border-secondary">
       <div className="section-container">
-        <div className="space-y-12">
+        <div className="space-y-10">
           {/* Heading */}
           <h2 className="heading-lg">
-            Кто <span className="text-primary">собирает</span>
+            Кто ведёт{" "}
+            <span className="text-primary">Сборку</span>
           </h2>
           
           {/* Founders grid */}
@@ -46,25 +43,22 @@ const FoundersSection = () => {
                 
                 {/* Info */}
                 <div className="p-6 space-y-4">
-                  <div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-primary uppercase tracking-tight">
-                      {founder.name}
-                    </h3>
-                    <p className="text-lg text-secondary font-medium mt-1">
-                      {founder.role}
-                    </p>
-                    <p className="text-sm text-muted-foreground uppercase tracking-wider mt-1">
-                      {founder.subtitle}
-                    </p>
-                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-primary uppercase tracking-tight">
+                    {founder.name}
+                  </h3>
                   
-                  <p className="text-foreground/80 leading-relaxed">
+                  <p className="text-foreground/80 leading-relaxed text-lg">
                     {founder.description}
                   </p>
                 </div>
               </div>
             ))}
           </div>
+          
+          {/* Summary */}
+          <p className="text-xl md:text-2xl text-foreground font-bold text-center">
+            <span className="text-primary">СБОРКУ</span> ведут практики.
+          </p>
         </div>
       </div>
     </section>

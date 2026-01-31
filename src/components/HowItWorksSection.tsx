@@ -3,29 +3,24 @@ import bgHowItWorks from "@/assets/bg-how-it-works.jpg";
 const HowItWorksSection = () => {
   const steps = [
     {
-      number: "1",
-      title: "Вход",
-      description: "Ты приходишь на открытый вебинар или Q&A.",
+      title: "Диагностика",
+      description: "понимаем твою точку А.",
     },
     {
-      number: "2",
-      title: "Фокус",
-      description: "Мы разбираем твою ситуацию: рынок, позицию, стратегию.",
+      title: "Стратегия",
+      description: "формируем план поиска.",
     },
     {
-      number: "3",
       title: "Работа",
-      description: "Регулярные встречи, задания, разборы, трекинг.",
+      description: "созвоны, задания, разборы.",
     },
     {
-      number: "4",
-      title: "Поддержка",
-      description: "Ты не один. Люди рядом — в таком же процессе.",
+      title: "Среда",
+      description: "вокруг люди твоего уровня.",
     },
     {
-      number: "5",
       title: "Результат",
-      description: "Ясность, структура, спокойствие и движение вперёд.",
+      description: "больше ясности, меньше хаоса.",
     },
   ];
 
@@ -39,30 +34,28 @@ const HowItWorksSection = () => {
       <div className="absolute inset-0 bg-gradient-to-l from-background via-background/90 to-background/80" />
       
       <div className="section-container relative z-10">
-        <div className="space-y-12">
+        <div className="space-y-10">
           {/* Heading */}
           <h2 className="heading-lg">
             Как устроена{" "}
-            <span className="text-accent">Сборка</span>
+            <span className="text-secondary">работа</span>
           </h2>
           
           {/* Steps */}
-          <div className="space-y-8">
+          <div className="space-y-6">
             {steps.map((step, index) => (
               <div 
                 key={index}
-                className="flex gap-6 items-start"
+                className="flex gap-4 items-baseline"
               >
-                <div className="step-number flex-shrink-0">
-                  {step.number}
-                </div>
-                <div className="space-y-2 pt-2">
-                  <h3 className="text-2xl md:text-3xl font-bold text-foreground uppercase tracking-tight">
+                <span className="text-primary font-bold text-2xl">→</span>
+                <div>
+                  <span className="text-xl md:text-2xl font-bold text-foreground uppercase">
                     {step.title}
-                  </h3>
-                  <p className="text-lg md:text-xl text-muted-foreground">
-                    {step.description}
-                  </p>
+                  </span>
+                  <span className="text-xl md:text-2xl text-muted-foreground">
+                    {" — "}{step.description}
+                  </span>
                 </div>
               </div>
             ))}
