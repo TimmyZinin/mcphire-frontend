@@ -1,41 +1,48 @@
 const HeroSection = () => {
   return (
     <section className="min-h-screen flex items-center bg-background relative overflow-hidden">
-      {/* Animated decorative geometric elements */}
-      
-      {/* Large circle - top right */}
-      <div className="absolute -top-32 -right-32 w-96 h-96 border-[3px] border-primary rounded-full opacity-60 animate-pulse-scale" />
-      
-      {/* Small filled circle - left */}
-      <div className="absolute top-1/4 -left-8 w-16 h-16 bg-primary rounded-full animate-float-slow" />
-      
-      {/* Square - bottom left */}
-      <div className="absolute bottom-32 left-20 w-12 h-12 border-2 border-primary animate-float-medium" style={{ animationDelay: '1s' }} />
-      
-      {/* Horizontal line - top */}
-      <div className="absolute top-40 left-0 w-1/3 h-[2px] bg-primary animate-slide-horizontal" />
-      
-      {/* Vertical line - right side */}
-      <div className="absolute top-0 right-1/4 w-[2px] h-1/2 bg-primary animate-slide-vertical" />
-      
-      {/* Small square - right */}
-      <div className="absolute top-1/3 right-16 w-8 h-8 bg-primary opacity-80 animate-float-medium" style={{ animationDelay: '2s' }} />
-      
-      {/* Rotating circle outline - bottom */}
-      <div className="absolute bottom-20 left-1/3 w-24 h-24 border-2 border-primary rounded-full opacity-40 animate-rotate-slow" />
-      
-      {/* Cross element - bottom right */}
-      <div className="absolute bottom-48 right-32 hidden lg:block animate-float-slow" style={{ animationDelay: '3s' }}>
-        <div className="w-24 h-[2px] bg-primary" />
-        <div className="w-[2px] h-24 bg-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+      {/* BACKGROUND LAYER - Far elements (small, slow, blurred, low opacity) */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-[10%] left-[5%] w-4 h-4 bg-primary rounded-full opacity-20 blur-[1px] animate-float-slow" style={{ animationDelay: '0s' }} />
+        <div className="absolute top-[60%] right-[15%] w-3 h-3 border border-primary opacity-15 blur-[1px] animate-float-slow" style={{ animationDelay: '2s' }} />
+        <div className="absolute bottom-[20%] left-[40%] w-6 h-6 border border-primary rounded-full opacity-15 blur-[1px] animate-rotate-slow" />
+        <div className="absolute top-[30%] right-[40%] w-2 h-2 bg-primary opacity-20 blur-[1px] animate-float-medium" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-[40%] right-[60%] w-32 h-[1px] bg-primary opacity-10 blur-[1px] animate-slide-horizontal" style={{ animationDelay: '3s' }} />
       </div>
       
-      {/* Diagonal line */}
-      <div className="absolute bottom-0 left-1/4 w-64 h-[2px] bg-primary animate-diagonal-drift origin-left opacity-50" />
+      {/* MIDDLE LAYER - Medium distance elements */}
+      <div className="absolute inset-0 z-[1]">
+        <div className="absolute -top-32 -right-32 w-96 h-96 border-[3px] border-primary rounded-full opacity-30 animate-pulse-scale" />
+        <div className="absolute bottom-[15%] left-[8%] w-8 h-8 border-2 border-primary opacity-30 animate-float-medium" style={{ animationDelay: '1.5s' }} />
+        <div className="absolute top-[45%] right-[8%] w-6 h-6 bg-primary opacity-25 animate-float-slow" style={{ animationDelay: '4s' }} />
+        <div className="absolute top-32 left-0 w-1/4 h-[1px] bg-primary opacity-20 animate-slide-horizontal" />
+        <div className="absolute top-0 right-[30%] w-[1px] h-1/3 bg-primary opacity-15 animate-slide-vertical" />
+        <div className="absolute bottom-[30%] left-[25%] w-20 h-20 border border-primary rounded-full opacity-20 animate-rotate-slow" style={{ animationDuration: '25s' }} />
+      </div>
       
-      {/* Additional floating elements */}
-      <div className="absolute top-1/2 left-10 w-4 h-4 bg-primary rounded-full opacity-60 animate-float-medium" style={{ animationDelay: '0.5s' }} />
-      <div className="absolute top-20 right-1/3 w-6 h-6 border-2 border-primary opacity-50 animate-float-slow" style={{ animationDelay: '4s' }} />
+      {/* FOREGROUND LAYER - Close elements (large, fast, sharp, higher opacity) */}
+      <div className="absolute inset-0 z-[2]">
+        <div className="absolute top-[20%] -left-6 w-16 h-16 bg-primary rounded-full opacity-70 animate-float-medium" style={{ animationDelay: '0.5s' }} />
+        <div className="absolute bottom-24 left-16 w-12 h-12 border-2 border-primary opacity-60 animate-float-slow" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-40 left-0 w-1/3 h-[2px] bg-primary opacity-50 animate-slide-horizontal" />
+        <div className="absolute top-0 right-1/4 w-[2px] h-1/2 bg-primary opacity-40 animate-slide-vertical" />
+        <div className="absolute top-[28%] right-12 w-10 h-10 bg-primary opacity-70 animate-float-medium" style={{ animationDelay: '3s' }} />
+        
+        {/* Cross element */}
+        <div className="absolute bottom-40 right-24 hidden lg:block animate-float-slow opacity-60" style={{ animationDelay: '1s' }}>
+          <div className="w-20 h-[2px] bg-primary" />
+          <div className="w-[2px] h-20 bg-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+        </div>
+        
+        {/* Diagonal line */}
+        <div className="absolute bottom-0 left-[20%] w-48 h-[2px] bg-primary animate-diagonal-drift origin-left opacity-50" />
+      </div>
+      
+      {/* CLOSEST LAYER - Accent elements */}
+      <div className="absolute inset-0 z-[3] pointer-events-none">
+        <div className="absolute top-[15%] left-[15%] w-3 h-3 bg-primary rounded-full opacity-90 animate-float-medium" />
+        <div className="absolute bottom-[35%] right-[5%] w-4 h-4 bg-primary opacity-80 animate-float-slow" style={{ animationDelay: '2.5s' }} />
+      </div>
       
       <div className="w-full max-w-7xl mx-auto px-6 md:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
