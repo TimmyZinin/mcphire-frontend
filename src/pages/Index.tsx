@@ -5,6 +5,7 @@ import ResultsSection from "@/components/ResultsSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import FormatsSection from "@/components/FormatsSection";
 import TypicalWeekSection from "@/components/TypicalWeekSection";
+import DailyTrackingSection from "@/components/DailyTrackingSection";
 import ForWhomSection from "@/components/ForWhomSection";
 import FoundersSection from "@/components/FoundersSection";
 import WebinarsSection from "@/components/WebinarsSection";
@@ -23,6 +24,7 @@ const Index = () => {
       <HowItWorksSection />
       <FormatsSection />
       <TypicalWeekSection />
+      <DailyTrackingSection />
       <ForWhomSection />
       <FoundersSection />
       <WebinarsSection />
