@@ -67,13 +67,13 @@ const HeroSection = () => {
           </h1>
           
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl lg:text-3xl font-bold uppercase tracking-tight text-foreground">
-            Закрытый клуб карьерной дисциплины
+          <p className="text-lg md:text-xl lg:text-2xl font-medium text-foreground max-w-2xl mx-auto">
+            Не курс. Не коучинг. Инфраструктура для карьерного движения.
           </p>
           
           {/* Tagline */}
-          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto">
-            СОБЕРИСЬ. НАЧНИ РАБОТАТЬ.
+          <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto">
+            Здесь перестают жаловаться и начинают действовать.
           </p>
           
           {/* CTA Buttons */}
