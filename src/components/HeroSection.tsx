@@ -77,23 +77,23 @@ const HeroSection = () => {
           </p>
           
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
             <a 
               href="https://t.me/sborka_club" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-full sm:w-auto px-10 py-5 bg-primary text-primary-foreground font-black text-lg uppercase tracking-tight hover:bg-foreground hover:text-background transition-colors text-center"
+              className="px-12 py-5 bg-primary text-primary-foreground font-black text-lg uppercase tracking-tight hover:bg-foreground hover:text-background transition-colors"
             >
-              ВСТУПИТЬ В КЛУБ
+              ВОЙТИ В СБОРКУ
             </a>
             
             <a 
               href="https://t.me/sborka_club" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-full sm:w-auto px-10 py-5 border-3 border-foreground text-foreground font-bold text-lg uppercase tracking-tight hover:bg-foreground hover:text-background transition-colors text-center"
+              className="text-muted-foreground hover:text-foreground transition-colors text-base"
             >
-              Бесплатный вебинар →
+              или начни с бесплатного вебинара →
             </a>
           </div>
         </div>
