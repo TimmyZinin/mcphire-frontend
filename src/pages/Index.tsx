@@ -1,14 +1,15 @@
 import HeroSection from "@/components/HeroSection";
 import ProblemSection from "@/components/ProblemSection";
 import WhatIsSection from "@/components/WhatIsSection";
+import ResultsSection from "@/components/ResultsSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import FormatsSection from "@/components/FormatsSection";
 import ForWhomSection from "@/components/ForWhomSection";
-import ValuesSection from "@/components/ValuesSection";
-import WebinarsSection from "@/components/WebinarsSection";
-import SupportSection from "@/components/SupportSection";
-import FinalCTASection from "@/components/FinalCTASection";
 import FoundersSection from "@/components/FoundersSection";
+import WebinarsSection from "@/components/WebinarsSection";
+import PricingSection from "@/components/PricingSection";
+import FAQSection from "@/components/FAQSection";
+import FinalCTASection from "@/components/FinalCTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -17,13 +18,14 @@ const Index = () => {
       <HeroSection />
       <ProblemSection />
       <WhatIsSection />
+      <ResultsSection />
       <HowItWorksSection />
       <FormatsSection />
       <ForWhomSection />
-      <ValuesSection />
       <FoundersSection />
       <WebinarsSection />
-      <SupportSection />
+      <PricingSection />
+      <FAQSection />
       <FinalCTASection />
       <Footer />
     </main>

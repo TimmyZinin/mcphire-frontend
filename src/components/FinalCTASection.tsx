@@ -11,18 +11,20 @@ const FinalCTASection = () => {
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/70" />
       
       <div className="section-container relative z-10">
-        <div className="space-y-12 text-center">
-          {/* Heading */}
-          <h2 className="heading-xl text-primary">
-            Готов собраться?
-          </h2>
-          
-          {/* Subheading */}
-          <div className="space-y-2 text-xl md:text-2xl text-muted-foreground">
-            <p>Без мотивации.</p>
-            <p>Без обещаний.</p>
-            <p className="text-foreground font-medium">Системно и по-взрослому.</p>
+        <div className="space-y-10 text-center">
+          {/* Options */}
+          <div className="space-y-4">
+            <h2 className="heading-md text-muted-foreground">
+              Можно продолжать дёргаться.
+            </h2>
+            <h2 className="heading-lg text-primary">
+              Можно собраться и начать работать.
+            </h2>
           </div>
+          
+          <p className="text-2xl text-foreground font-medium">
+            Решение за тобой.
+          </p>
           
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
@@ -40,7 +42,7 @@ const FinalCTASection = () => {
               rel="noopener noreferrer"
               className="cta-secondary"
             >
-              Начать с вебинара
+              Попасть на вебинар
             </a>
           </div>
         </div>

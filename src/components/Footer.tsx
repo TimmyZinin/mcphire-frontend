@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="bg-card py-12 border-t border-border">
+    <footer className="bg-card py-12 border-t-4 border-border">
       <div className="section-container">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           {/* Logo / Brand */}
@@ -9,32 +9,18 @@ const Footer = () => {
               Сборка
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Карьерная устойчивость
+              Клуб карьерной дисциплины
             </p>
           </div>
           
-          {/* Links */}
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
-            <a 
-              href="https://t.me/sborka_club" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="hover:text-primary transition-colors"
-            >
-              Telegram
-            </a>
-            <span className="text-border">|</span>
-            <a 
-              href="#" 
-              className="hover:text-primary transition-colors"
-            >
-              Политика конфиденциальности
-            </a>
-          </div>
+          {/* Info */}
+          <p className="text-sm text-muted-foreground text-center">
+            Доступ осуществляется по подписке через Tribute.
+          </p>
           
           {/* Copyright */}
           <p className="text-sm text-muted-foreground">
-            © Сборка {new Date().getFullYear()}
+            © СБОРКА 2026
           </p>
         </div>
       </div>
