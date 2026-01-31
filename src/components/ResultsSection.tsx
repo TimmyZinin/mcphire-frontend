@@ -1,5 +1,3 @@
-import bgResults from "@/assets/bg-results.jpg";
-
 const ResultsSection = () => {
   const results = [
     "перестают метаться",
@@ -10,39 +8,31 @@ const ResultsSection = () => {
   ];
 
   return (
-    <section className="section-dark border-t-4 border-accent relative overflow-hidden">
-      {/* Background image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center opacity-20"
-        style={{ backgroundImage: `url(${bgResults})` }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/80" />
-      
-      <div className="section-container relative z-10">
-        <div className="space-y-10">
+    <section className="section-white">
+      <div className="section-container">
+        <div className="space-y-8">
           {/* Heading */}
-          <h2 className="heading-lg">
-            Что меняется{" "}
-            <span className="text-accent">внутри</span>
+          <h2 className="heading-xl">
+            ЧТО МЕНЯЕТСЯ<br />
+            ВНУТРИ
           </h2>
           
-          <p className="text-xl md:text-2xl text-muted-foreground">
+          <p className="text-lg md:text-xl text-muted-foreground">
             Через несколько недель участники обычно:
           </p>
           
           {/* Results list */}
-          <ul className="space-y-4">
+          <ul className="space-y-3">
             {results.map((result, index) => (
-              <li key={index} className="list-acid text-foreground">
+              <li key={index} className="list-arrow">
                 {result}
               </li>
             ))}
           </ul>
           
           {/* Main point */}
-          <p className="text-2xl md:text-3xl text-foreground font-bold">
-            Главное — снова появляется{" "}
-            <span className="text-primary">движение</span>.
+          <p className="text-xl md:text-2xl font-bold pt-4">
+            Главное — снова появляется движение.
           </p>
         </div>
       </div>

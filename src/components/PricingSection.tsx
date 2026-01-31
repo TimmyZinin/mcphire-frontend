@@ -13,7 +13,7 @@ const PricingSection = () => {
         "трекинг",
         "практические задания",
       ],
-      badge: "Самый выбираемый формат",
+      badge: "Самый выбираемый",
       highlighted: true,
     },
     {
@@ -36,7 +36,7 @@ const PricingSection = () => {
       name: "VIP",
       subtitle: null,
       price: "29 900",
-      description: "Максимальная включённость. Количество мест ограничено.",
+      description: "Максимальная включённость. Места ограничены.",
       features: [
         "всё из Премиум",
         "персональные встречи",
@@ -50,19 +50,18 @@ const PricingSection = () => {
   ];
 
   return (
-    <section className="section-dark border-t-4 border-primary">
+    <section className="section-white">
       <div className="section-container">
-        <div className="space-y-10">
+        <div className="space-y-8">
           {/* Heading */}
-          <div className="space-y-4">
-            <h2 className="heading-lg">
-              Форматы{" "}
-              <span className="text-primary">участия</span>
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Доступ открывается сразу после оплаты через Tribute.
-            </p>
-          </div>
+          <h2 className="heading-xl">
+            ФОРМАТЫ<br />
+            УЧАСТИЯ
+          </h2>
+          
+          <p className="text-muted-foreground text-lg">
+            Доступ открывается сразу после оплаты через Tribute.
+          </p>
           
           {/* Pricing cards */}
           <div className="grid md:grid-cols-3 gap-6">
@@ -70,29 +69,27 @@ const PricingSection = () => {
               <div 
                 key={index}
                 className={`
-                  bg-card p-6 md:p-8 space-y-6 relative
+                  p-6 md:p-8 space-y-6 relative border-2
                   ${plan.highlighted 
-                    ? 'border-4 border-primary' 
-                    : 'border-4 border-border'
+                    ? 'border-foreground bg-primary' 
+                    : 'border-foreground bg-background'
                   }
                 `}
               >
                 {/* Badge */}
                 {plan.badge && (
-                  <div className="absolute -top-4 left-4 bg-primary text-primary-foreground px-4 py-1 text-sm font-bold uppercase">
+                  <div className="absolute -top-3 left-4 bg-foreground text-background px-3 py-1 text-xs font-bold uppercase">
                     {plan.badge}
                   </div>
                 )}
                 
                 {/* Plan name */}
                 <div>
-                  <h3 className={`text-2xl md:text-3xl font-bold uppercase tracking-tight ${
-                    plan.highlighted ? 'text-primary' : 'text-foreground'
-                  }`}>
+                  <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
                     {plan.name}
                   </h3>
                   {plan.subtitle && (
-                    <p className="text-sm text-muted-foreground uppercase tracking-wider mt-1">
+                    <p className="text-xs uppercase tracking-wider mt-1 opacity-70">
                       {plan.subtitle}
                     </p>
                   )}
@@ -100,25 +97,25 @@ const PricingSection = () => {
                 
                 {/* Price */}
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl md:text-5xl font-bold text-foreground">
+                  <span className="text-4xl md:text-5xl font-black">
                     {plan.price}
                   </span>
-                  <span className="text-muted-foreground">₽ / месяц</span>
+                  <span className="text-sm opacity-70">₽ / месяц</span>
                 </div>
                 
                 {/* Description */}
-                <p className="text-muted-foreground">
+                <p className="text-sm opacity-70">
                   {plan.description}
                 </p>
                 
                 {/* Features */}
-                <ul className="space-y-3">
+                <ul className="space-y-2">
                   {plan.features.map((feature, featureIndex) => (
                     <li 
                       key={featureIndex}
-                      className="flex items-start gap-3 text-foreground/80"
+                      className="flex items-start gap-2 text-sm"
                     >
-                      <span className="text-primary flex-shrink-0">→</span>
+                      <span className="flex-shrink-0">→</span>
                       {feature}
                     </li>
                   ))}
@@ -128,14 +125,14 @@ const PricingSection = () => {
           </div>
           
           {/* Value proposition */}
-          <div className="bg-card border-4 border-secondary p-6 md:p-8 space-y-4">
-            <h4 className="text-xl md:text-2xl font-bold text-secondary uppercase">
+          <div className="border-2 border-foreground p-6 md:p-8 space-y-4">
+            <h4 className="text-lg md:text-xl font-black uppercase">
               Важно
             </h4>
-            <p className="text-lg text-foreground/80">
+            <p className="text-muted-foreground">
               Одна сильная корректировка стратегии часто экономит месяцы поиска.
             </p>
-            <p className="text-lg text-foreground font-medium">
+            <p className="font-bold">
               Работа, найденная раньше, почти всегда окупает участие.
             </p>
           </div>

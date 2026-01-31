@@ -1,56 +1,61 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* СБОРКА Design System - Acid Pop-Art / Bold & Aggressive
+/* СБОРКА Design System - MINIMAL BRUTALIST
+   White background, black text, yellow accent (#DFFF00)
    All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    /* Core palette - acid pop-art */
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
+    /* Core palette - minimal brutalist */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
 
-    /* Cards */
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 100%;
+    /* Cards - white */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
 
-    /* Popover */
-    --popover: 0 0% 5%;
-    --popover-foreground: 0 0% 100%;
+    /* Popover - white */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
 
-    /* Primary - electric lime */
-    --primary: 75 100% 50%;
+    /* Primary - bright yellow #DFFF00 = hsl(68, 100%, 50%) */
+    --primary: 68 100% 50%;
     --primary-foreground: 0 0% 0%;
 
-    /* Secondary - hot pink */
-    --secondary: 330 100% 50%;
+    /* Secondary - black */
+    --secondary: 0 0% 0%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Muted */
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
+    /* Muted - light gray */
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
 
-    /* Accent - electric blue */
-    --accent: 195 100% 50%;
+    /* Accent - same as primary for consistency */
+    --accent: 68 100% 50%;
     --accent-foreground: 0 0% 0%;
 
-    /* Destructive - acid red */
-    --destructive: 0 100% 50%;
+    /* Success - green for checkmarks */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    /* Destructive - red */
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders and inputs */
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 75 100% 50%;
+    /* Borders and inputs - black */
+    --border: 0 0% 0%;
+    --input: 0 0% 90%;
+    --ring: 68 100% 50%;
 
     --radius: 0;
 
     /* Typography */
-    --font-sans: 'Space Grotesk', system-ui, sans-serif;
+    --font-sans: 'Inter', system-ui, sans-serif;
   }
 }
 
@@ -79,136 +84,84 @@
 }
 
 @layer components {
-  /* Primary CTA - electric lime */
+  /* Primary CTA - bright yellow */
   .cta-primary {
-    @apply inline-flex items-center justify-center gap-3;
-    @apply px-8 py-4 md:px-10 md:py-5;
+    @apply inline-flex items-center justify-center;
+    @apply px-8 py-4 md:px-12 md:py-5;
     @apply bg-primary text-primary-foreground;
-    @apply font-bold text-lg md:text-xl uppercase tracking-wider;
-    @apply transition-all duration-200;
-    @apply hover:bg-secondary hover:text-secondary-foreground;
-    @apply border-4 border-primary hover:border-secondary;
+    @apply font-black text-lg md:text-xl uppercase tracking-tight;
+    @apply transition-all duration-150;
+    @apply hover:bg-foreground hover:text-background;
   }
 
-  /* Secondary CTA - outline */
-  .cta-secondary {
-    @apply inline-flex items-center justify-center gap-3;
-    @apply px-8 py-4 md:px-10 md:py-5;
-    @apply bg-transparent text-foreground;
-    @apply font-bold text-lg md:text-xl uppercase tracking-wider;
-    @apply transition-all duration-200;
-    @apply border-4 border-foreground;
-    @apply hover:bg-foreground hover:text-background;
+  /* Secondary CTA - text link style */
+  .cta-text {
+    @apply inline-flex items-center gap-2;
+    @apply text-foreground font-medium;
+    @apply underline underline-offset-4 decoration-2;
+    @apply hover:text-muted-foreground;
+    @apply transition-colors duration-150;
   }
 
   /* Section container */
   .section-container {
-    @apply max-w-6xl mx-auto px-6 md:px-8;
+    @apply max-w-5xl mx-auto px-6 md:px-8;
   }
 
-  /* Section styling */
-  .section-dark {
-    @apply bg-background py-16 md:py-24;
+  /* Section with divider */
+  .section-white {
+    @apply bg-background py-16 md:py-24 border-t border-foreground;
   }
 
-  .section-accent {
-    @apply bg-primary text-primary-foreground py-16 md:py-24;
+  /* Section black (for final CTA) */
+  .section-black {
+    @apply bg-foreground text-background py-16 md:py-24;
   }
 
-  .section-secondary {
-    @apply bg-secondary text-secondary-foreground py-16 md:py-24;
+  /* Heading styles - VERY LARGE */
+  .heading-hero {
+    @apply text-[80px] md:text-[150px] lg:text-[200px] font-black uppercase tracking-tighter leading-[0.85];
   }
 
-  /* Heading styles */
   .heading-xl {
-    @apply text-5xl md:text-7xl lg:text-8xl font-bold uppercase tracking-tighter leading-none;
+    @apply text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.9];
   }
 
   .heading-lg {
-    @apply text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight leading-tight;
+    @apply text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tight leading-tight;
   }
 
   .heading-md {
-    @apply text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-tight;
+    @apply text-xl md:text-2xl lg:text-3xl font-bold uppercase tracking-tight;
   }
 
-  /* Quote block */
-  .quote-block {
-    @apply border-l-4 border-primary pl-6 py-2;
-    @apply text-xl md:text-2xl font-medium;
+  /* Tag/chip with black border */
+  .chip {
+    @apply inline-block px-4 py-2 border-2 border-foreground text-sm md:text-base font-bold uppercase tracking-wide;
   }
 
-  /* List item with marker */
-  .list-acid {
-    @apply flex items-start gap-4 text-lg md:text-xl;
+  /* List with arrow */
+  .list-arrow {
+    @apply flex items-start gap-3 text-base md:text-lg;
   }
 
-  .list-acid::before {
+  .list-arrow::before {
     content: "→";
-    @apply text-primary font-bold flex-shrink-0;
+    @apply font-bold flex-shrink-0;
   }
 
-  /* Step number */
-  .step-number {
-    @apply w-16 h-16 md:w-20 md:h-20;
-    @apply bg-primary text-primary-foreground;
-    @apply flex items-center justify-center;
-    @apply text-3xl md:text-4xl font-bold;
+  /* List with green arrow */
+  .list-arrow-green::before {
+    @apply text-green-600;
   }
 
-  /* Glitch effect for headings */
-  .glitch {
-    position: relative;
+  /* List with red X */
+  .list-x {
+    @apply flex items-start gap-3 text-base md:text-lg text-muted-foreground;
   }
 
-  .glitch::before,
-  .glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .glitch::before {
-    left: 2px;
-    text-shadow: -2px 0 hsl(var(--secondary));
-    clip: rect(24px, 550px, 90px, 0);
-    animation: glitch-anim-1 2s infinite linear alternate-reverse;
-  }
-
-  .glitch::after {
-    left: -2px;
-    text-shadow: 2px 0 hsl(var(--accent));
-    clip: rect(85px, 550px, 140px, 0);
-    animation: glitch-anim-2 2s infinite linear alternate-reverse;
-  }
-
-  @keyframes glitch-anim-1 {
-    0% { clip: rect(42px, 9999px, 44px, 0); }
-    25% { clip: rect(12px, 9999px, 59px, 0); }
-    50% { clip: rect(48px, 9999px, 29px, 0); }
-    75% { clip: rect(56px, 9999px, 91px, 0); }
-    100% { clip: rect(92px, 9999px, 12px, 0); }
-  }
-
-  @keyframes glitch-anim-2 {
-    0% { clip: rect(65px, 9999px, 100px, 0); }
-    25% { clip: rect(23px, 9999px, 45px, 0); }
-    50% { clip: rect(72px, 9999px, 15px, 0); }
-    75% { clip: rect(5px, 9999px, 78px, 0); }
-    100% { clip: rect(35px, 9999px, 62px, 0); }
-  }
-
-  /* Stripe pattern background */
-  .stripe-bg {
-    background: repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 10px,
-      hsl(var(--primary) / 0.1) 10px,
-      hsl(var(--primary) / 0.1) 20px
-    );
+  .list-x::before {
+    content: "✕";
+    @apply text-red-500 font-bold flex-shrink-0;
   }
 }

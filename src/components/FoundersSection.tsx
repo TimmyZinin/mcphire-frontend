@@ -5,49 +5,45 @@ const FoundersSection = () => {
   const founders = [
     {
       name: "Тим Зинин",
-      description: "Маркетолог с 20+ годами опыта. Работал на глобальных рынках. Понимает, как компании принимают решения о найме.",
+      description: "Маркетолог с 20+ годами опыта. Понимает, как компании принимают решения о найме.",
       image: timPhoto,
     },
     {
       name: "Кристина Жукова",
-      description: "HR-лидер. Знает, почему кандидатов не берут — и что с этим делать.",
+      description: "HR-лидер. Знает, почему кандидатов не берут.",
       image: kristinaPhoto,
     },
   ];
 
   return (
-    <section className="section-dark border-t-4 border-secondary">
+    <section className="section-white">
       <div className="section-container">
-        <div className="space-y-10">
+        <div className="space-y-8">
           {/* Heading */}
-          <h2 className="heading-lg">
-            Кто ведёт{" "}
-            <span className="text-primary">Сборку</span>
+          <h2 className="heading-xl">
+            КТО ВЕДЁТ<br />
+            СБОРКУ
           </h2>
           
           {/* Founders grid */}
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+          <div className="grid md:grid-cols-2 gap-8">
             {founders.map((founder, index) => (
-              <div 
-                key={index}
-                className="bg-card border-4 border-border hover:border-primary transition-colors duration-300"
-              >
+              <div key={index} className="space-y-4">
                 {/* Photo */}
-                <div className="aspect-square overflow-hidden">
+                <div className="aspect-square overflow-hidden border border-foreground">
                   <img 
                     src={founder.image} 
                     alt={founder.name}
-                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                    className="w-full h-full object-cover grayscale"
                   />
                 </div>
                 
                 {/* Info */}
-                <div className="p-6 space-y-4">
-                  <h3 className="text-2xl md:text-3xl font-bold text-primary uppercase tracking-tight">
+                <div className="space-y-2">
+                  <h3 className="text-xl md:text-2xl font-black uppercase">
                     {founder.name}
                   </h3>
-                  
-                  <p className="text-foreground/80 leading-relaxed text-lg">
+                  <p className="text-muted-foreground text-lg">
                     {founder.description}
                   </p>
                 </div>
@@ -56,8 +52,8 @@ const FoundersSection = () => {
           </div>
           
           {/* Summary */}
-          <p className="text-xl md:text-2xl text-foreground font-bold text-center">
-            <span className="text-primary">СБОРКУ</span> ведут практики.
+          <p className="text-xl md:text-2xl font-bold pt-4">
+            СБОРКУ ведут практики.
           </p>
         </div>
       </div>
