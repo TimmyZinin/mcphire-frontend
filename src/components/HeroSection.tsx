@@ -26,7 +26,7 @@ const HeroSection = () => {
               rel="noopener noreferrer"
               className="cta-primary"
             >
-              Войти в Сборку
+              ВСТУПИТЬ В КЛУБ
             </a>
             <a 
               href="https://t.me/sborka_club" 

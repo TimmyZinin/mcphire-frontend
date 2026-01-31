@@ -35,7 +35,7 @@ const PricingSection = () => {
 
   const renderFeatureValue = (value: boolean | string) => {
     if (value === true) {
-      return <Check className="w-5 h-5 text-success mx-auto" />;
+      return <Check className="w-5 h-5 text-primary mx-auto" />;
     }
     if (value === false) {
       return <Minus className="w-5 h-5 text-muted-foreground mx-auto" />;
@@ -90,7 +90,7 @@ const PricingSection = () => {
                 {/* CTA Button */}
                 <div className="mt-auto space-y-2">
                   <button className="cta-primary w-full">
-                    ПРИСОЕДИНИТЬСЯ
+                    ВСТУПИТЬ
                   </button>
                   <p className="text-xs text-center opacity-70">
                     {plan.price} ₽ / месяц
