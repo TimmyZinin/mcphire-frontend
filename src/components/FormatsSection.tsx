@@ -1,3 +1,7 @@
+import formatsLaptop from "@/assets/formats-laptop.jpg";
+import formatsHands from "@/assets/formats-hands.jpg";
+import formatsWorkspace from "@/assets/formats-workspace.jpg";
+
 const FormatsSection = () => {
   const formats = [
     {
@@ -34,19 +38,39 @@ const FormatsSection = () => {
     "сильное профессиональное окружение",
   ];
 
+  const images = [formatsLaptop, formatsHands, formatsWorkspace];
+
   return (
     <section className="section-white">
       <div className="section-container">
         <div className="space-y-12">
-          {/* Heading */}
-          <div className="space-y-4">
-            <h2 className="heading-xl">
-              ЧТО ВНУТРИ<br />
-              КЛУБА
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Рабочая среда, где люди действуют вместе.
-            </p>
+          {/* Heading with images */}
+          <div className="grid lg:grid-cols-2 gap-8 items-start">
+            <div className="space-y-4">
+              <h2 className="heading-xl">
+                ЧТО ВНУТРИ<br />
+                КЛУБА
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                Рабочая среда, где люди действуют вместе.
+              </p>
+            </div>
+            
+            {/* Image grid */}
+            <div className="grid grid-cols-3 gap-2">
+              {images.map((img, index) => (
+                <div 
+                  key={index} 
+                  className="aspect-square overflow-hidden border-2 border-foreground"
+                >
+                  <img 
+                    src={img} 
+                    alt="Рабочая атмосфера" 
+                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
           
           {/* Formats grid */}
