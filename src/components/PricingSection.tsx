@@ -44,7 +44,7 @@ const PricingSection = () => {
   };
 
   return (
-    <section className="section-white">
+    <section id="pricing" className="section-white">
       <div className="section-container">
         <div className="space-y-8">
           {/* Heading */}

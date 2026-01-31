@@ -16,7 +16,7 @@ const ProblemSection = () => {
           <ScrollReveal delay={100}>
             <div className="space-y-4 text-lg md:text-xl text-muted-foreground max-w-2xl">
               <p>Никто не придёт и не сделает за тебя.</p>
-              <p>Ни коуч. Ни ментор. Ни карьерный клуб.</p>
+              <p>Ни коуч. Ни ментор. Ни мотивационный спикер.</p>
             </div>
           </ScrollReveal>
           

@@ -68,7 +68,7 @@ const HeroSection = () => {
           
           {/* Subtitle */}
           <p className="text-lg md:text-xl lg:text-2xl font-medium text-foreground max-w-2xl mx-auto">
-            Не курс. Не коучинг. Не очередной карьерный клуб. Рабочая среда для тех, кто устал ждать.
+            Клуб карьерной дисциплины. Для тех, кто ищет работу, но не может заставить себя. Мы даём пинок + знания + окружение + трекинг.
           </p>
           
           {/* Tagline */}
@@ -79,18 +79,14 @@ const HeroSection = () => {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
             <a 
-              href="https://t.me/sborka_club" 
-              target="_blank" 
-              rel="noopener noreferrer"
+              href="#pricing"
               className="px-12 py-5 bg-primary text-primary-foreground font-black text-lg uppercase tracking-tight hover:bg-foreground hover:text-background transition-colors"
             >
               ВОЙТИ В СБОРКУ
             </a>
             
             <a 
-              href="https://t.me/sborka_club" 
-              target="_blank" 
-              rel="noopener noreferrer"
+              href="#pricing"
               className="text-muted-foreground hover:text-foreground transition-colors text-base"
             >
               или начни с бесплатного вебинара →
