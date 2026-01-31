@@ -3,22 +3,27 @@ const FormatsSection = () => {
     {
       name: "Прожарка резюме",
       description: "Жёсткий разбор. Без комплиментов.",
+      lead: "ведёт Кристина",
     },
     {
       name: "Hot seat разборы",
       description: "Твоя ситуация — в центре внимания группы.",
+      lead: null,
     },
     {
       name: "LinkedIn-сессии",
       description: "Профиль, который работает на тебя.",
+      lead: "ведёт Тим",
     },
     {
       name: "Карьерный трекинг",
       description: "Ежедневная отчётность. Публично.",
+      lead: null,
     },
     {
       name: "AI-инструменты",
       description: "Автоматизация рутины поиска.",
+      lead: "ведёт Тим",
     },
   ];
 
@@ -57,6 +62,11 @@ const FormatsSection = () => {
                 <p className="text-sm text-muted-foreground">
                   {format.description}
                 </p>
+                {format.lead && (
+                  <p className="text-xs font-bold uppercase text-primary-foreground bg-foreground inline-block px-2 py-1">
+                    {format.lead}
+                  </p>
+                )}
               </div>
             ))}
           </div>
