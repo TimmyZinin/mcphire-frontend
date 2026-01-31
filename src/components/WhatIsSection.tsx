@@ -24,7 +24,10 @@ const WhatIsSection = () => {
           {/* Chips */}
           <div className="flex flex-wrap gap-3">
             {principles.map((principle, index) => (
-              <span key={index} className="chip">
+              <span 
+                key={index} 
+                className="inline-block px-5 py-3 border-2 border-primary text-sm md:text-base font-bold uppercase tracking-wide transition-all duration-200 hover:bg-primary hover:text-primary-foreground cursor-default"
+              >
                 {principle}
               </span>
             ))}
