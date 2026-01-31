@@ -35,7 +35,7 @@ const ForWhomSection = () => {
           
           {/* Not for */}
           <div className="space-y-6">
-            <h3 className="heading-lg text-muted-foreground">
+            <h3 className="heading-lg text-foreground">
               НЕ СЮДА
             </h3>
             
