@@ -9,7 +9,7 @@ const WhatIsSection = () => {
         <div className="space-y-8">
           {/* Heading */}
           <ScrollReveal>
-            <h2 className="heading-xl">
+            <h2 className="heading-xl glitch-hover">
               ЭТО РАБОЧАЯ<br />
               СРЕДА.
             </h2>
