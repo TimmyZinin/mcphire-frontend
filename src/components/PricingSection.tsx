@@ -1,9 +1,8 @@
 const PricingSection = () => {
   const plans = [
     {
-      name: "СТАНДАРТ",
-      subtitle: "ОСНОВА СБОРКИ",
-      price: "9 900",
+      name: "СТАРТ",
+      price: "5 500",
       description: "Формат, в котором начинается движение.",
       features: [
         "стратегические вебинары",
@@ -13,32 +12,30 @@ const PricingSection = () => {
         "трекинг",
         "практические задания",
       ],
-      badge: "Самый выбираемый",
-      highlighted: true,
+      badge: null,
+      highlighted: false,
     },
     {
-      name: "ПРЕМИУМ",
-      subtitle: null,
-      price: "15 900",
+      name: "ПРОРЫВ",
+      price: "9 500",
       description: "Больше внимания. Быстрее прогресс.",
       features: [
-        "всё из Стандарта",
+        "всё из Старта",
         "личный разбор резюме",
         "индивидуальная обратная связь",
         "помощь со стратегией",
         "подготовка к интервью",
         "приоритет в разборах",
       ],
-      badge: null,
-      highlighted: false,
+      badge: "Самый выбираемый",
+      highlighted: true,
     },
     {
       name: "VIP",
-      subtitle: null,
-      price: "29 900",
+      price: "15 000",
       description: "Максимальная включённость. Места ограничены.",
       features: [
-        "всё из Премиум",
+        "всё из Прорыва",
         "персональные встречи",
         "глубокая проработка стратегии",
         "симуляции интервью",
@@ -88,19 +85,6 @@ const PricingSection = () => {
                   <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
                     {plan.name}
                   </h3>
-                  {plan.subtitle && (
-                    <p className="text-xs uppercase tracking-wider mt-1 opacity-70">
-                      {plan.subtitle}
-                    </p>
-                  )}
-                </div>
-                
-                {/* Price */}
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl md:text-5xl font-black">
-                    {plan.price}
-                  </span>
-                  <span className="text-sm opacity-70">₽ / месяц</span>
                 </div>
                 
                 {/* Description */}
@@ -120,6 +104,16 @@ const PricingSection = () => {
                     </li>
                   ))}
                 </ul>
+                
+                {/* CTA Button */}
+                <div className="mt-auto pt-4 space-y-2">
+                  <button className="cta-primary w-full">
+                    ПРИСОЕДИНИТЬСЯ
+                  </button>
+                  <p className="text-xs text-center opacity-70">
+                    {plan.price} ₽ / месяц
+                  </p>
+                </div>
               </div>
             ))}
           </div>
