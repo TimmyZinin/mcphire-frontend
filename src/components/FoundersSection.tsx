@@ -21,8 +21,8 @@ const FoundersSection = () => {
         <div className="space-y-8">
           {/* Heading */}
           <h2 className="heading-xl">
-            КТО ВЕДЁТ<br />
-            СБОРКУ
+            СБОРКУ ВЕДУТ<br />
+            ПРАКТИКИ
           </h2>
           
           {/* Founders grid */}
