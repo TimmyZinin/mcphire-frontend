@@ -68,7 +68,7 @@ const HeroSection = () => {
           
           {/* Subtitle */}
           <p className="text-lg md:text-xl lg:text-2xl font-medium text-foreground max-w-2xl mx-auto">
-            Не курс. Не коучинг. Инфраструктура для карьерного движения.
+            Не курс. Не коучинг. Не очередной карьерный клуб. Рабочая среда для тех, кто устал ждать.
           </p>
           
           {/* Tagline */}
