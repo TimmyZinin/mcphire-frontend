@@ -5,15 +5,17 @@ const HeroSection = () => {
         <div className="space-y-8 md:space-y-12">
           {/* Main title - HUGE */}
           <h1 className="heading-hero text-foreground">
-            СБОРКА
+            [ СБОРКА ]
           </h1>
+          
+          {/* Subtitle */}
+          <p className="text-xl md:text-2xl lg:text-3xl font-bold uppercase tracking-tight">
+            Закрытый клуб карьерной дисциплины
+          </p>
           
           {/* Tagline */}
           <p className="text-lg md:text-xl lg:text-2xl max-w-2xl leading-relaxed">
-            Не курс. Не коучинг.{" "}
-            <span className="font-bold">Инфраструктура для карьерного движения.</span>
-            <br />
-            Здесь перестают жаловаться и начинают действовать.
+            Здесь перестают ныть и начинают пахать.
           </p>
           
           {/* CTAs */}
