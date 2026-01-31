@@ -26,7 +26,7 @@ const WhatIsSection = () => {
             {principles.map((principle, index) => (
               <span 
                 key={index} 
-                className="inline-block px-5 py-3 border-2 border-primary text-sm md:text-base font-bold uppercase tracking-wide transition-all duration-200 hover:bg-primary hover:text-primary-foreground cursor-default"
+                className="inline-block px-5 py-3 border-2 border-primary text-sm md:text-base font-bold uppercase tracking-wide transition-all duration-200 hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 hover:shadow-[0_8px_20px_-4px_rgba(223,255,0,0.4)] cursor-default"
               >
                 {principle}
               </span>
