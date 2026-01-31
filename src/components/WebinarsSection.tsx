@@ -11,7 +11,7 @@ const WebinarsSection = () => {
       <div className="section-container">
         <div className="space-y-8">
           {/* Heading */}
-          <h2 className="heading-xl">
+          <h2 className="heading-xl glitch-hover">
             ТОЧКА ВХОДА
           </h2>
           

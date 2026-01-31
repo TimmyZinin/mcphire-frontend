@@ -8,7 +8,7 @@ const FinalCTASection = () => {
             <p className="text-xl md:text-2xl text-background/60">
               Можно продолжать дёргаться.
             </p>
-            <h2 className="heading-xl text-background">
+            <h2 className="heading-xl text-background glitch-hover">
               МОЖНО СОБРАТЬСЯ<br />
               И НАЧАТЬ РАБОТАТЬ.
             </h2>

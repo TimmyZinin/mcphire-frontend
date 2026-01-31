@@ -47,7 +47,7 @@ const FormatsSection = () => {
           {/* Heading with images */}
           <div className="grid lg:grid-cols-2 gap-8 items-start">
             <div className="space-y-4">
-              <h2 className="heading-xl">
+              <h2 className="heading-xl glitch-hover">
                 ЧТО ВНУТРИ<br />
                 КЛУБА
               </h2>

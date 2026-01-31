@@ -12,7 +12,7 @@ const HowItWorksSection = () => {
       <div className="section-container">
         <div className="space-y-8">
           {/* Heading */}
-          <h2 className="heading-xl">
+          <h2 className="heading-xl glitch-hover">
             КАК УСТРОЕНА<br />
             РАБОТА
           </h2>

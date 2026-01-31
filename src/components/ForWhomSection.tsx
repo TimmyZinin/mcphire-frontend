@@ -23,7 +23,7 @@ const ForWhomSection = () => {
         <div className="space-y-12">
           {/* For whom */}
           <div className="space-y-6">
-            <h2 className="heading-xl">
+            <h2 className="heading-xl glitch-hover">
               ПОДОЙДЁТ
             </h2>
             
@@ -38,7 +38,7 @@ const ForWhomSection = () => {
           
           {/* Not for */}
           <div className="space-y-6">
-            <h3 className="heading-lg text-foreground">
+            <h3 className="heading-lg text-foreground glitch-hover">
               СБОРКА — НЕ ДЛЯ ВСЕХ
             </h3>
             

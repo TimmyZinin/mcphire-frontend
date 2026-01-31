@@ -15,7 +15,7 @@ const DailyTrackingSection = () => {
       <div className="section-container">
         <div className="space-y-8">
           {/* Heading */}
-          <h2 className="heading-xl">
+          <h2 className="heading-xl glitch-hover">
             ЕЖЕДНЕВНЫЙ<br />
             ТРЕКИНГ
           </h2>

@@ -30,7 +30,7 @@ const FAQSection = () => {
       <div className="section-container">
         <div className="space-y-8 max-w-2xl">
           {/* Heading */}
-          <h2 className="heading-xl">
+          <h2 className="heading-xl glitch-hover">
             FAQ
           </h2>
           
