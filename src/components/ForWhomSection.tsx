@@ -1,3 +1,5 @@
+import { X } from "lucide-react";
+
 const ForWhomSection = () => {
   const forWhom = [
     "middle и senior специалистам",
@@ -41,7 +43,8 @@ const ForWhomSection = () => {
             
             <ul className="space-y-3">
               {notFor.map((item, index) => (
-                <li key={index} className="list-x">
+                <li key={index} className="flex items-start gap-3 text-base md:text-lg text-muted-foreground">
+                  <X className="w-5 h-5 mt-0.5 flex-shrink-0 text-muted-foreground/60" strokeWidth={2.5} />
                   {item}
                 </li>
               ))}
