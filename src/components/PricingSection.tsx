@@ -27,7 +27,7 @@ const PricingSection = () => {
     { name: "Групповые сессии", start: "2/нед", proryv: "2/нед", vip: "2/нед" },
     { name: "Закрытый чат участников", start: true, proryv: true, vip: true },
     { name: "Записи и материалы", start: true, proryv: true, vip: true },
-    { name: "Ежедневный трекинг", start: true, proryv: true, vip: true },
+    { name: "Командное соревнование", start: true, proryv: true, vip: true },
     { name: "Персональный разбор резюме", start: false, proryv: "1/мес", vip: "2/мес" },
     { name: "Личный созвон с экспертом", start: false, proryv: false, vip: true },
     { name: "Симуляция собеседования", start: false, proryv: false, vip: true },

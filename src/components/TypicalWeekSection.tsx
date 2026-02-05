@@ -1,10 +1,10 @@
 const TypicalWeekSection = () => {
   const schedule = [
     {
-      days: "ПН — ПТ",
-      time: "ежедневно",
-      activity: "Трекинг задач",
-      description: "Утром — задача. Вечером — отчёт. Публично в чате.",
+      days: "СРЕДА",
+      time: "15:00",
+      activity: "Групповая сессия",
+      description: "Разборы ситуаций, ответы на вопросы, работа над стратегией.",
     },
     {
       days: "СРЕДА",
@@ -44,7 +44,7 @@ const TypicalWeekSection = () => {
           </p>
           
           {/* Schedule */}
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             {schedule.map((item, index) => (
               <div 
                 key={index}
