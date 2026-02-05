@@ -100,7 +100,7 @@ const HeroSection = () => {
           
           {/* Subtitle */}
           <p className="text-lg md:text-xl lg:text-2xl font-medium text-foreground max-w-2xl mx-auto">
-            Система для тех, кто устал от отказов и молчания рекрутеров. Мы превращаем хаотичный поиск в системную работу.
+            Поиск работы — это не кабала. Это командная игра, где ты соревнуешься за оффер.
           </p>
           
           {/* Tagline */}

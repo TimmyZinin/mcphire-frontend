@@ -5,20 +5,20 @@ const PricingSection = () => {
     {
       name: "СТАРТ",
       price: "5 500",
-      description: "Для тех, кто готов начать системный поиск.",
+      description: "Еженедельные стримы + Командное соревнование + Чат и материалы",
       highlighted: false,
     },
     {
       name: "ПРОРЫВ",
       price: "9 500",
-      description: "Максимум внимания. Быстрый результат.",
+      description: "Всё из СТАРТ + Практика (разборы, симуляции, лаборатории)",
       badge: "Популярный выбор",
       highlighted: true,
     },
     {
       name: "VIP",
       price: "15 000",
-      description: "Персональная работа. Гарантия результата.",
+      description: "Всё из ПРОРЫВ + Персональная работа с экспертом",
       highlighted: false,
     },
   ];
