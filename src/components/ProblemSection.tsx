@@ -37,6 +37,9 @@ const ProblemSection = () => {
         <div className="space-y-8">
           {/* Heading */}
           <ScrollReveal>
+            <p className="text-lg md:text-xl text-muted-foreground mb-4">
+              3 месяца без офферов? 50 откликов без ответа?
+            </p>
             <h2 className="heading-xl glitch-hover">
               ПОЧЕМУ ПОИСК ЗАТЯГИВАЕТСЯ
             </h2>

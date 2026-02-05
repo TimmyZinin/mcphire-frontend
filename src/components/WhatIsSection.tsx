@@ -1,7 +1,7 @@
 import { ScrollReveal } from "@/hooks/useScrollReveal";
 
 const WhatIsSection = () => {
-  const principles = ["СТРАТЕГИЯ", "РИТМ", "ОБРАТНАЯ СВЯЗЬ", "РЕЗУЛЬТАТ"];
+  const principles = ["HH", "LINKEDIN", "TELEGRAM-ЧАТЫ", "ПРЯМЫЕ ВЫХОДЫ"];
 
   return (
     <section className="section-white relative overflow-hidden">
@@ -19,8 +19,8 @@ const WhatIsSection = () => {
           {/* Heading */}
           <ScrollReveal>
             <h2 className="heading-xl glitch-hover">
-              ЭТО НЕ КУРС.<br />
-              ЭТО СИСТЕМА.
+              СРЕДА ДЛЯ<br />
+              АКТИВНОГО ПОИСКА
             </h2>
           </ScrollReveal>
           
@@ -29,6 +29,7 @@ const WhatIsSection = () => {
             <div className="space-y-4 text-lg md:text-xl text-muted-foreground max-w-2xl">
               <p>Не мотивационные лекции.</p>
               <p>Не теория про «как надо».</p>
+              <p>HH, LinkedIn, Telegram-чаты, прямые выходы на нанимающих менеджеров.</p>
             </div>
           </ScrollReveal>
           
