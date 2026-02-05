@@ -4,6 +4,7 @@ import ProblemSection from "@/components/ProblemSection";
 import WhatIsSection from "@/components/WhatIsSection";
 import ResultsSection from "@/components/ResultsSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
+import GamificationSection from "@/components/GamificationSection";
 import FormatsSection from "@/components/FormatsSection";
 import TypicalWeekSection from "@/components/TypicalWeekSection";
 import DailyTrackingSection from "@/components/DailyTrackingSection";
@@ -24,6 +25,7 @@ const Index = () => {
       <WhatIsSection />
       <ResultsSection />
       <HowItWorksSection />
+      <GamificationSection />
       <FormatsSection />
       <TypicalWeekSection />
       <DailyTrackingSection />
