@@ -7,6 +7,7 @@ const PricingSection = () => {
       price: "5 500",
       description: "Еженедельные стримы + Командное соревнование + Чат и материалы",
       highlighted: false,
+      link: "https://t.me/tribute/app?startapp=sNBT",
     },
     {
       name: "ПРОРЫВ",
@@ -14,12 +15,14 @@ const PricingSection = () => {
       description: "Всё из СТАРТ + Практика (разборы, симуляции, лаборатории)",
       badge: "Популярный выбор",
       highlighted: true,
+      link: "https://t.me/tribute/app?startapp=sNBY",
     },
     {
       name: "VIP",
       price: "15 000",
       description: "Всё из ПРОРЫВ + Персональная работа с экспертом",
       highlighted: false,
+      link: "https://t.me/tribute/app?startapp=sNC0",
     },
   ];
 
@@ -29,7 +32,7 @@ const PricingSection = () => {
     { name: "Записи и материалы", start: true, proryv: true, vip: true },
     { name: "Командное соревнование", start: true, proryv: true, vip: true },
     { name: "Персональный разбор резюме", start: false, proryv: "1/мес", vip: "2/мес" },
-    { name: "Личный созвон с экспертом", start: false, proryv: false, vip: true },
+    { name: "Личный созвон с экспертом", start: false, proryv: false, vip: "1/2 нед." },
     { name: "Симуляция собеседования", start: false, proryv: false, vip: true },
   ];
 
@@ -97,9 +100,9 @@ const PricingSection = () => {
                 
                 {/* CTA Button */}
                 <div className="mt-auto space-y-2">
-                  <button className="cta-primary w-full">
+                  <a href={plan.link} target="_blank" rel="noopener noreferrer" className="cta-primary w-full block text-center">
                     НАЧАТЬ
-                  </button>
+                  </a>
                   <p className="text-xs text-center opacity-70">
                     {plan.price} ₽ / месяц
                   </p>
