@@ -15,23 +15,40 @@ import FAQSection from "@/components/FAQSection";
 import FinalCTASection from "@/components/FinalCTASection";
 import Footer from "@/components/Footer";
 
+const LimeDivider = () => (
+  <div className="w-full" style={{ height: 2, backgroundColor: "#DFFF00" }} />
+);
+
 const Index = () => {
   return (
     <main className="min-h-screen">
       <StickyHeader />
       <HeroSection />
+      <LimeDivider />
       <ProblemSection />
+      <LimeDivider />
       <WhatIsSection />
+      <LimeDivider />
       <ResultsSection />
+      <LimeDivider />
       <HowItWorksSection />
+      <LimeDivider />
       <GamificationSection />
+      <LimeDivider />
       <FormatsSection />
+      <LimeDivider />
       <TypicalWeekSection />
+      <LimeDivider />
       <ForWhomSection />
+      <LimeDivider />
       <FoundersSection />
+      <LimeDivider />
       <WebinarsSection />
+      <LimeDivider />
       <PricingSection />
+      <LimeDivider />
       <FAQSection />
+      <LimeDivider />
       <FinalCTASection />
       <Footer />
     </main>
