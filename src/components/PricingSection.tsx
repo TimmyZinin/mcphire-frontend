@@ -35,7 +35,7 @@ const PricingSection = () => {
 
   const renderFeatureValue = (value: boolean | string) => {
     if (value === true) {
-      return <Check className="w-5 h-5 text-primary mx-auto" />;
+      return <Check className="w-5 h-5 mx-auto" style={{ color: "#DFFF00" }} />;
     }
     if (value === false) {
       return <Minus className="w-5 h-5 text-muted-foreground mx-auto" />;
