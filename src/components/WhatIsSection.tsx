@@ -19,17 +19,17 @@ const WhatIsSection = () => {
           {/* Heading */}
           <ScrollReveal>
             <h2 className="heading-xl glitch-hover">
-              СРЕДА ДЛЯ<br />
-              АКТИВНОГО ПОИСКА
+              КОМАНДНАЯ ИГРА<br />
+              В ПОИСК РАБОТЫ
             </h2>
           </ScrollReveal>
           
           {/* Body */}
           <ScrollReveal delay={100}>
             <div className="space-y-4 text-lg md:text-xl text-muted-foreground max-w-2xl">
-              <p>Не мотивационные лекции.</p>
-              <p>Не теория про «как надо».</p>
-              <p>HH, LinkedIn, Telegram-чаты, прямые выходы на нанимающих менеджеров.</p>
+              <p>Сборка превращает рутину поиска в командный спринт.</p>
+              <p>Ты не один — рядом команда, баллы, соревнование и азарт.</p>
+              <p>Искать работу наконец-то весело.</p>
             </div>
           </ScrollReveal>
           
