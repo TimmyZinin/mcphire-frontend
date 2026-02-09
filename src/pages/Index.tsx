@@ -4,7 +4,7 @@ import ProblemSection from "@/components/ProblemSection";
 import WhatIsSection from "@/components/WhatIsSection";
 import ResultsSection from "@/components/ResultsSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
-import GamificationSection from "@/components/GamificationSection";
+import WhyItWorksSection from "@/components/WhyItWorksSection";
 import FormatsSection from "@/components/FormatsSection";
 import TypicalWeekSection from "@/components/TypicalWeekSection";
 import ForWhomSection from "@/components/ForWhomSection";
@@ -33,7 +33,7 @@ const Index = () => {
       <LimeDivider />
       <HowItWorksSection />
       <LimeDivider />
-      <GamificationSection />
+      <WhyItWorksSection />
       <LimeDivider />
       <FormatsSection />
       <LimeDivider />

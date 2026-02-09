@@ -2,23 +2,35 @@ import { ScrollReveal } from "@/hooks/useScrollReveal";
 
 const HowItWorksSection = () => {
   const steps = [
-    { title: "ДИАГНОСТИКА", description: "Понимаем, где ты сейчас. Разбираем резюме, стратегию, позиционирование." },
-    { title: "СТРАТЕГИЯ", description: "Формируем чёткий план поиска: куда, как и зачем откликаться." },
-    { title: "РАБОТА", description: "Регулярные созвоны, задания, разборы. Никакой теории без практики." },
-    { title: "СРЕДА", description: "Вокруг — люди твоего уровня. Поддержка, конкуренция, движение." },
-    { title: "РЕЗУЛЬТАТ", description: "Больше ясности, больше откликов, меньше хаоса. Оффер ближе." },
+    {
+      title: "КОМАНДА",
+      description:
+        "Тебя определяют в команду из 4-5 человек. Вместе вы проходите спринты, тренируете собеседования, проверяете резюме друг друга. Команда не даёт тебе слиться.",
+    },
+    {
+      title: "СПРИНТЫ",
+      description:
+        "Каждую неделю новый спринт с конкретными целями: отправить X откликов, пройти Y собеседований, обновить резюме. Пятница — подведение итогов. Лидерборд обновляется.",
+    },
+    {
+      title: "БАЛЛЫ И СОРЕВНОВАНИЕ",
+      description:
+        "Каждое действие = очки. Отклик +2. Собеседование +15. Оффер +50. Пропустил встречу — минус 5. Команды соревнуются. Топ-3 получают призы.",
+    },
+    {
+      title: "ЭКСПЕРТ ВНУТРИ",
+      description:
+        "Кристина — HR с опытом найма. 2 раза в неделю прожаривает резюме, разбирает стратегии, симулирует собеседования. Не утешает — говорит правду.",
+    },
+    {
+      title: "TMA — ТВОЙ ПРОГРЕСС",
+      description:
+        "Telegram Mini App — твой личный кабинет. Баллы, streak, лидерборд, задачи спринта. Всё в одном месте. Внутри Telegram, без лишних приложений.",
+    },
   ];
 
   return (
     <section className="section-white relative overflow-hidden">
-      <div className="absolute left-0 bottom-1/4 -translate-x-1/3 pointer-events-none opacity-25">
-        <svg width="220" height="220" viewBox="0 0 220 220" className="animate-float-slow">
-          <circle cx="110" cy="110" r="100" fill="none" stroke="#DFFF00" strokeWidth="3" />
-          <circle cx="110" cy="110" r="65" fill="none" stroke="#DFFF00" strokeWidth="2" strokeDasharray="8,6" />
-          <circle cx="110" cy="110" r="30" fill="#DFFF00" opacity="0.5" />
-        </svg>
-      </div>
-
       <div className="section-container relative z-10">
         <div className="space-y-10">
           <ScrollReveal>
@@ -35,20 +47,27 @@ const HowItWorksSection = () => {
                   className="p-8 h-full"
                   style={{
                     backgroundColor: "#000000",
-                    border: "1px solid #333",
+                    border: "1px solid #333333",
                     borderTop: "4px solid #DFFF00",
-                    borderRadius: 0,
                   }}
                 >
                   <h3
-                    className="text-xl md:text-2xl uppercase mb-3"
-                    style={{ color: "#DFFF00", fontWeight: 900 }}
+                    className="uppercase mb-3"
+                    style={{
+                      color: "#DFFF00",
+                      fontWeight: 900,
+                      fontSize: "20px",
+                    }}
                   >
                     {step.title}
                   </h3>
                   <p
-                    className="text-base leading-relaxed"
-                    style={{ color: "#FFFFFF", fontWeight: 400 }}
+                    style={{
+                      color: "#FFFFFF",
+                      fontWeight: 400,
+                      fontSize: "16px",
+                      lineHeight: 1.6,
+                    }}
                   >
                     {step.description}
                   </p>

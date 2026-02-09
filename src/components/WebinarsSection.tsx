@@ -48,7 +48,7 @@ const WebinarsSection = () => {
           
           {/* CTA */}
           <a 
-            href="https://t.me/sborka_club" 
+            href="https://t.me/sborka_career_bot" 
             target="_blank" 
             rel="noopener noreferrer"
             className="cta-primary inline-block"
