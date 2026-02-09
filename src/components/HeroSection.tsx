@@ -118,7 +118,9 @@ const HeroSection = () => {
             </a>
             
             <a 
-              href="#pricing"
+              href="https://t.me/sborka_career_bot"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors text-base"
             >
               или начни с бесплатного вебинара →

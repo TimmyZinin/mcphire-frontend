@@ -27,9 +27,7 @@ const StickyHeader = () => {
 
         {/* CTA Button */}
         <a
-          href="https://t.me/sborka_club"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="#pricing"
           className="px-6 py-2.5 bg-primary text-primary-foreground font-bold text-sm uppercase tracking-tight hover:bg-foreground hover:text-background transition-colors"
         >
           ВСТУПИТЬ

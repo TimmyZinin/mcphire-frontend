@@ -1,7 +1,3 @@
-import formatsLaptop from "@/assets/formats-laptop.jpg";
-import formatsHands from "@/assets/formats-hands.jpg";
-import formatsWorkspace from "@/assets/formats-workspace.jpg";
-
 const FormatsSection = () => {
   const formats = [
     {
@@ -38,7 +34,7 @@ const FormatsSection = () => {
     "База знаний: шаблоны, скрипты, чек-листы",
   ];
 
-  const images = [formatsLaptop, formatsHands, formatsWorkspace];
+  
 
   return (
     <section className="section-white relative overflow-hidden">
@@ -54,33 +50,15 @@ const FormatsSection = () => {
       
       <div className="section-container relative z-10">
         <div className="space-y-12">
-          {/* Heading with images */}
-          <div className="grid lg:grid-cols-2 gap-8 items-start">
-            <div className="space-y-4">
-              <h2 className="heading-xl glitch-hover">
-                ЧТО ВНУТРИ<br />
-                СИСТЕМЫ
-              </h2>
-              <p className="text-muted-foreground text-lg">
-                Инструменты, которые превращают хаотичный поиск в системную работу.
-              </p>
-            </div>
-            
-            {/* Image grid */}
-            <div className="grid grid-cols-3 gap-2">
-              {images.map((img, index) => (
-                <div 
-                  key={index} 
-                  className="aspect-square overflow-hidden border-2 border-foreground"
-                >
-                  <img 
-                    src={img} 
-                    alt="Рабочая атмосфера" 
-                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
-                  />
-                </div>
-              ))}
-            </div>
+          {/* Heading */}
+          <div className="space-y-4">
+            <h2 className="heading-xl glitch-hover">
+              ЧТО ВНУТРИ<br />
+              СИСТЕМЫ
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Инструменты, которые превращают хаотичный поиск в системную работу.
+            </p>
           </div>
           
           {/* Formats grid */}
