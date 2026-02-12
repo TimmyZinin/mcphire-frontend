@@ -134,19 +134,6 @@ const PricingSection = () => {
               </tbody>
             </table>
           </div>
-          
-          {/* Guarantee */}
-          <div className="border-2 border-foreground p-6 md:p-8 space-y-4">
-            <h4 className="text-lg md:text-xl font-black uppercase">
-              Гарантия результата
-            </h4>
-            <p className="text-muted-foreground">
-              Если за 2 месяца работы в СБОРКЕ ты не получишь ни одного оффера — мы вернём деньги.
-            </p>
-            <p className="font-bold">
-              Без вопросов. Мы уверены в системе.
-            </p>
-          </div>
         </div>
       </div>
     </section>
