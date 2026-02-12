@@ -75,7 +75,7 @@ const FormatsSection = () => {
                   {format.description}
                 </p>
                 {format.lead && (
-                  <p className="text-xs font-bold uppercase text-primary-foreground bg-foreground inline-block px-2 py-1">
+                  <p className="text-xs font-bold uppercase text-background bg-foreground inline-block px-2 py-1">
                     {format.lead}
                   </p>
                 )}
