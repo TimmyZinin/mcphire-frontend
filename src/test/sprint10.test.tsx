@@ -61,7 +61,7 @@ describe("Sprint 10 + 5.1: Website", () => {
     it("shows progress bar with levels", () => {
       render(<HeroSection />);
       expect(screen.getByTestId("hero-progress")).toBeTruthy();
-      expect(screen.getByText("Разминка")).toBeTruthy();
+      expect(screen.getByText("Подготовка")).toBeTruthy();
       expect(screen.getByText("ОФФЕР")).toBeTruthy();
     });
 

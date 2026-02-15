@@ -45,7 +45,7 @@ const HowItWorksSection = () => {
           <ScrollReveal delay={50}>
             <div className="overflow-hidden rounded-2xl shadow-xl max-w-2xl">
               <img
-                src="/images/session_new.webp"
+                src="/images/session_v3.webp"
                 alt="Групповая сессия в лофте — команда работает над стратегией"
                 className="w-full h-auto object-cover"
                 loading="lazy"

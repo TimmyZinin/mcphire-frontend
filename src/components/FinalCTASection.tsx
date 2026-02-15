@@ -32,7 +32,7 @@ const FinalCTASection = () => {
           {/* Corgi walk photo — positive vibes */}
           <div className="overflow-hidden rounded-2xl shadow-xl max-w-md">
             <img
-              src="/images/stride_new.webp"
+              src="/images/stride_v3.webp"
               alt="Уверенная девушка шагает навстречу рассвету — твой ход"
               className="w-full h-auto object-cover"
               loading="lazy"
