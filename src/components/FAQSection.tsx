@@ -38,9 +38,9 @@ const FAQSection = () => {
       {/* Decorative circles */}
       <div className="absolute right-0 top-1/4 translate-x-1/2 pointer-events-none opacity-10">
         <svg width="300" height="300" viewBox="0 0 300 300">
-          <circle cx="150" cy="150" r="140" fill="none" stroke="#DFFF00" strokeWidth="2" />
-          <circle cx="150" cy="150" r="100" fill="none" stroke="#DFFF00" strokeWidth="2" />
-          <circle cx="150" cy="150" r="60" fill="none" stroke="#DFFF00" strokeWidth="2" />
+          <circle cx="150" cy="150" r="140" fill="none" stroke="#4ECDC4" strokeWidth="2" />
+          <circle cx="150" cy="150" r="100" fill="none" stroke="#4ECDC4" strokeWidth="2" />
+          <circle cx="150" cy="150" r="60" fill="none" stroke="#4ECDC4" strokeWidth="2" />
         </svg>
       </div>
       

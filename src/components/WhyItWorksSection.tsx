@@ -10,7 +10,7 @@ const WhyItWorksSection = () => {
         <ScrollReveal>
           <h2
             className="heading-xl glitch-hover mb-10"
-            style={{ color: "#DFFF00" }}
+            style={{ color: "#4ECDC4" }}
           >
             ПОЧЕМУ ЭТО
             <br />
