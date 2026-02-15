@@ -68,8 +68,8 @@ const FormatsSection = () => {
           {/* Rooftop work photo */}
           <div className="overflow-hidden rounded-2xl shadow-xl max-w-xl">
             <img
-              src="/images/rooftop_work.png"
-              alt="Участник работает на террасе с видом на город"
+              src="/images/formats_new.webp"
+              alt="Девушка на видеозвонке с ноутбуком — онлайн-формат СБОРКИ"
               className="w-full h-auto object-cover"
               loading="lazy"
             />

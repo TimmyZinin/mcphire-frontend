@@ -52,8 +52,8 @@ const GamificationSection = () => {
           <ScrollReveal delay={150}>
             <div className="overflow-hidden rounded-2xl shadow-xl max-w-xl">
               <img
-                src="/images/coffee_chat.png"
-                alt="Команда обсуждает стратегию в уютном кафе"
+                src="/images/team_new.webp"
+                alt="Команда СБОРКИ с корги — энергия, дружба и драйв"
                 className="w-full h-auto object-cover"
                 loading="lazy"
               />

@@ -46,8 +46,8 @@ const TypicalWeekSection = () => {
           {/* Focus photo */}
           <div className="overflow-hidden rounded-2xl shadow-xl max-w-lg">
             <img
-              src="/images/street_focus.png"
-              alt="Участник работает за ноутбуком в летнем уличном кафе"
+              src="/images/focus_new.webp"
+              alt="Мужчина в наушниках за ноутбуком — deep work в потоке"
               className="w-full h-auto object-cover"
               loading="lazy"
             />

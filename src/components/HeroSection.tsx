@@ -79,8 +79,8 @@ const HeroSection = () => {
           {/* Group photo */}
           <div className="overflow-hidden rounded-2xl shadow-xl max-w-2xl mx-auto">
             <img
-              src="/images/hero_group.png"
-              alt="Группа участников СБОРКИ работает вместе в летнем кафе"
+              src="/images/hero_new.webp"
+              alt="Уверенный мужчина на крыше ночного города — энергия и стиль СБОРКИ"
               className="w-full h-auto object-cover"
             />
           </div>

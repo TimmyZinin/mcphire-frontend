@@ -40,8 +40,8 @@ const ResultsSection = () => {
           <ScrollReveal delay={50}>
             <div className="overflow-hidden rounded-2xl shadow-xl max-w-2xl mx-auto">
               <img
-                src="/images/celebration_offer.png"
-                alt="Участница СБОРКИ празднует оффер с друзьями на улице"
+                src="/images/victory_new.webp"
+                alt="Девушка празднует победу на мосту на закате — момент триумфа"
                 className="w-full h-auto object-cover"
                 loading="lazy"
               />
