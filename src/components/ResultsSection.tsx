@@ -1,5 +1,7 @@
 import { ScrollReveal } from "@/hooks/useScrollReveal";
 
+const STAT_COLORS = ['#4ECDC4', '#45B7D1', '#FF6B6B'];
+
 const ResultsSection = () => {
   const results = [
     { number: "6-8", label: "недель до оффера в среднем" },
@@ -11,37 +13,47 @@ const ResultsSection = () => {
     "3x больше откликов на резюме",
     "Первое интервью за 2 недели",
     "Понимание своей реальной стоимости на рынке",
-    "перестают бояться переговоров о зарплате",
-    "получают офферы на 20-40% выше рынка",
+    "Перестают бояться переговоров о зарплате",
+    "Получают офферы на 20-40% выше рынка",
   ];
 
   return (
     <section className="section-white relative overflow-hidden">
-      {/* Decorative circles - right side */}
-      <div className="absolute right-0 bottom-1/4 translate-x-1/3 pointer-events-none opacity-30">
+      {/* Decorative circles — NRC palette */}
+      <div className="absolute right-0 bottom-1/4 translate-x-1/3 pointer-events-none opacity-20">
         <svg width="250" height="250" viewBox="0 0 250 250" className="animate-float-slow">
-          <circle cx="125" cy="125" r="100" fill="none" stroke="#DFFF00" strokeWidth="4" />
-          <circle cx="125" cy="125" r="70" fill="none" stroke="#DFFF00" strokeWidth="3" strokeDasharray="10,5" />
-          <circle cx="125" cy="125" r="40" fill="#DFFF00" opacity="0.4" />
+          <circle cx="125" cy="125" r="100" fill="none" stroke="#4ECDC4" strokeWidth="2" />
+          <circle cx="125" cy="125" r="70" fill="none" stroke="#45B7D1" strokeWidth="1.5" strokeDasharray="10,5" />
         </svg>
       </div>
-      
+
       <div className="section-container relative z-10">
         <div className="space-y-10">
-          {/* Heading */}
           <ScrollReveal>
-            <h2 className="heading-xl glitch-hover">
+            <h2 className="heading-xl">
               РЕЗУЛЬТАТЫ<br />
               УЧАСТНИКОВ
             </h2>
           </ScrollReveal>
-          
-          {/* Stats */}
+
+          {/* Hero photo — offer celebration */}
+          <ScrollReveal delay={50}>
+            <div className="overflow-hidden rounded-2xl shadow-xl max-w-2xl mx-auto">
+              <img
+                src="/images/offer.png"
+                alt="Участница СБОРКИ получила оффер"
+                className="w-full h-auto object-cover"
+                loading="lazy"
+              />
+            </div>
+          </ScrollReveal>
+
+          {/* Stats — Large numbers NRC style */}
           <ScrollReveal delay={100}>
             <div className="grid md:grid-cols-3 gap-6">
               {results.map((result, index) => (
-                <div key={index} className="border-2 border-foreground p-6 text-center">
-                  <div className="text-4xl md:text-5xl font-black text-primary mb-2">
+                <div key={index} className="rounded-2xl border border-border/30 bg-card shadow-lg p-8 text-center">
+                  <div className="text-5xl md:text-6xl font-black mb-3" style={{ color: STAT_COLORS[index] }}>
                     {result.number}
                   </div>
                   <div className="text-sm md:text-base text-muted-foreground uppercase tracking-wide">
@@ -51,14 +63,13 @@ const ResultsSection = () => {
               ))}
             </div>
           </ScrollReveal>
-          
+
           <ScrollReveal delay={200}>
             <p className="text-lg md:text-xl text-muted-foreground">
               Что меняется после участия в СБОРКЕ:
             </p>
           </ScrollReveal>
-          
-          {/* Results list */}
+
           <ScrollReveal delay={300}>
             <ul className="space-y-3">
               {changes.map((change, index) => (
@@ -68,8 +79,7 @@ const ResultsSection = () => {
               ))}
             </ul>
           </ScrollReveal>
-          
-          {/* Main point */}
+
           <ScrollReveal delay={400}>
             <p className="text-xl md:text-2xl font-bold pt-4">
               Не просто находят работу — находят работу, которую хотят.

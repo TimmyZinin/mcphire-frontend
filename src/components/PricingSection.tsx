@@ -92,15 +92,15 @@ const PricingSection = () => {
               <div
                 key={index}
                 className={`
-                  p-6 md:p-8 flex flex-col relative border-2 rounded-lg
+                  p-6 md:p-8 flex flex-col relative rounded-2xl transition-shadow duration-200
                   ${plan.highlighted
-                    ? 'border-foreground bg-primary'
-                    : 'border-foreground bg-background'
+                    ? 'bg-[hsl(174,62%,55%)] text-[#1A1A1A] shadow-xl shadow-[hsla(174,62%,55%,0.25)]'
+                    : 'bg-background shadow-lg border border-border hover:shadow-xl'
                   }
                 `}
               >
                 {plan.badge && (
-                  <div className="absolute -top-3 left-4 bg-foreground text-background px-3 py-1 text-xs font-bold uppercase rounded">
+                  <div className="absolute -top-3 left-4 bg-[#1A1A1A] text-white px-3 py-1 text-xs font-bold uppercase rounded-full">
                     {plan.badge}
                   </div>
                 )}
@@ -126,10 +126,10 @@ const PricingSection = () => {
           </div>
 
           {/* Features comparison table */}
-          <div className="border-2 border-foreground overflow-x-auto rounded-lg">
+          <div className="border border-border overflow-x-auto rounded-2xl shadow-md">
             <table className="w-full">
               <thead>
-                <tr className="border-b-2 border-foreground">
+                <tr className="border-b border-border">
                   <th className="text-left p-4 font-black uppercase text-sm">Что входит</th>
                   <th className="p-4 font-black uppercase text-sm text-center w-24">Старт</th>
                   <th className="p-4 font-black uppercase text-sm text-center w-24 bg-primary">Прорыв</th>
@@ -138,7 +138,7 @@ const PricingSection = () => {
               </thead>
               <tbody>
                 {features.map((feature, index) => (
-                  <tr key={index} className={index !== features.length - 1 ? "border-b border-foreground/20" : ""}>
+                  <tr key={index} className={index !== features.length - 1 ? "border-b border-border" : ""}>
                     <td className="p-4 text-sm">{feature.name}</td>
                     <td className="p-4 text-center">{renderFeatureValue(feature.start)}</td>
                     <td className="p-4 text-center bg-primary/30">{renderFeatureValue(feature.proryv)}</td>
