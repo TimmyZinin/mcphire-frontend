@@ -34,8 +34,8 @@ const WhatIsSection = () => {
           <ScrollReveal delay={150}>
             <div className="overflow-hidden rounded-2xl shadow-xl max-w-xl">
               <img
-                src="/images/buddy_pair.png"
-                alt="Buddy-пара работает вместе в кафе"
+                src="/images/park_buddy.png"
+                alt="Buddy-пара работает вместе в летнем парке"
                 className="w-full h-auto object-cover"
                 loading="lazy"
               />

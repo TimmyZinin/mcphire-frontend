@@ -76,6 +76,15 @@ const HeroSection = () => {
             </div>
           </div>
 
+          {/* Group photo */}
+          <div className="overflow-hidden rounded-2xl shadow-xl max-w-2xl mx-auto">
+            <img
+              src="/images/hero_group.png"
+              alt="Группа участников СБОРКИ работает вместе в летнем кафе"
+              className="w-full h-auto object-cover"
+            />
+          </div>
+
           {/* Subtitle */}
           <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto">
             Не скорость — а постоянство. Средний участник получает оффер за 6-8 недель.
@@ -88,16 +97,14 @@ const HeroSection = () => {
               className="cta-primary-nrc"
               data-testid="hero-cta"
             >
-              НАЧАТЬ МАРАФОН
+              НАЧАТЬ БЕСПЛАТНО
             </a>
 
             <a
-              href="https://t.me/sborka_career_bot?start=ref_trial"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors text-base"
+              href="#webinar"
+              className="inline-flex items-center justify-center px-8 py-4 border-2 border-[#4ECDC4] text-[#4ECDC4] font-bold text-base uppercase tracking-tight hover:bg-[#4ECDC4] hover:text-background transition-colors rounded-lg"
             >
-              или попробуй 7 дней бесплатно →
+              Вебинар 17 февраля →
             </a>
           </div>
         </div>

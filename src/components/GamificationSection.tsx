@@ -4,15 +4,15 @@ import { Trophy, Zap, Users, Star } from "lucide-react";
 const GamificationSection = () => {
   const teams = [
     {
-      name: "ЦЕХ ТИТАН",
+      name: "КОМАНДА ТЕМП",
       icon: Zap,
-      description: "Сила. Скорость. Результат.",
+      description: "Энергия. Скорость. Результат.",
       color: "#4ECDC4",
     },
     {
-      name: "ЦЕХ АТЛАНТ",
+      name: "КОМАНДА МАРАФОН",
       icon: Trophy,
-      description: "Выносливость. Стратегия. Победа.",
+      description: "Выносливость. Стратегия. Стабильность.",
       color: "#45B7D1",
     },
   ];
@@ -44,8 +44,20 @@ const GamificationSection = () => {
 
           <ScrollReveal delay={100}>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
-              Присоединяйся к одному из цехов. Соревнуйся за очки вместе с командой.
+              Присоединяйся к команде. Соревнуйся за очки и поддерживай друг друга.
             </p>
+          </ScrollReveal>
+
+          {/* Coffee chat photo */}
+          <ScrollReveal delay={150}>
+            <div className="overflow-hidden rounded-2xl shadow-xl max-w-xl">
+              <img
+                src="/images/coffee_chat.png"
+                alt="Команда обсуждает стратегию в уютном кафе"
+                className="w-full h-auto object-cover"
+                loading="lazy"
+              />
+            </div>
           </ScrollReveal>
 
           {/* Teams — NRC card style */}

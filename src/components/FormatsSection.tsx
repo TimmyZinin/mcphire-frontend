@@ -3,16 +3,16 @@ const LEVEL_COLORS = ['#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'];
 const FormatsSection = () => {
   const formats = [
     {
-      name: "Прожарка резюме",
-      description: "Честный разбор. Узнаешь, что на самом деле видят рекрутеры.",
+      name: "Экспертный разбор резюме",
+      description: "Узнаешь, что на самом деле видят рекрутеры. Конкретные рекомендации по улучшению.",
       lead: "ведёт Кристина",
       icon: "📄",
     },
     {
-      name: "Hot seat разборы",
+      name: "Групповые разборы",
       description: "Твоя ситуация — в центре внимания группы. Получаешь конкретные решения.",
       lead: null,
-      icon: "🔥",
+      icon: "💡",
     },
     {
       name: "LinkedIn-сессии",
@@ -63,6 +63,16 @@ const FormatsSection = () => {
             <p className="text-muted-foreground text-lg">
               Инструменты, которые превращают хаотичный поиск в системную работу.
             </p>
+          </div>
+
+          {/* Rooftop work photo */}
+          <div className="overflow-hidden rounded-2xl shadow-xl max-w-xl">
+            <img
+              src="/images/rooftop_work.png"
+              alt="Участник работает на террасе с видом на город"
+              className="w-full h-auto object-cover"
+              loading="lazy"
+            />
           </div>
 
           {/* Formats grid — NRC card style */}

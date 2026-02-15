@@ -18,7 +18,7 @@ const TypicalWeekSection = () => {
       days: "СУББОТА",
       time: "12:00",
       activity: "Практическая сессия",
-      description: "Прожарка резюме, LinkedIn-профилей, симуляция интервью.",
+      description: "Разбор резюме, LinkedIn-профилей, симуляция интервью.",
     },
   ];
 
@@ -46,8 +46,8 @@ const TypicalWeekSection = () => {
           {/* Focus photo */}
           <div className="overflow-hidden rounded-2xl shadow-xl max-w-lg">
             <img
-              src="/images/focus.png"
-              alt="Участник сфокусирован на работе в наушниках"
+              src="/images/street_focus.png"
+              alt="Участник работает за ноутбуком в летнем уличном кафе"
               className="w-full h-auto object-cover"
               loading="lazy"
             />

@@ -21,12 +21,22 @@ const FinalCTASection = () => {
         <div className="space-y-8">
           <div className="space-y-4">
             <p className="text-xl md:text-2xl text-background/60">
-              Можно ждать. Можно надеяться. Можно откладывать.
+              Каждый день — шанс приблизиться к офферу.
             </p>
             <h2 className="heading-xl text-background">
               А МОЖНО НАЧАТЬ<br />
               МАРАФОН.
             </h2>
+          </div>
+
+          {/* Corgi walk photo — positive vibes */}
+          <div className="overflow-hidden rounded-2xl shadow-xl max-w-md">
+            <img
+              src="/images/corgi_walk.png"
+              alt="Участница на прогулке с корги — баланс работы и жизни"
+              className="w-full h-auto object-cover"
+              loading="lazy"
+            />
           </div>
 
           <p className="text-xl md:text-2xl text-background/80 max-w-2xl">

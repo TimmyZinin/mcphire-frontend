@@ -16,30 +16,31 @@ const ProblemSection = () => {
         <div className="space-y-8">
           <ScrollReveal>
             <p className="text-lg md:text-xl text-muted-foreground mb-4">
-              3 месяца без офферов? 50 откликов без ответа?
+              Знакомо? Откликаешься, а в ответ — тишина.
             </p>
             <h2 className="heading-xl">
-              ПОЧЕМУ ПОИСК ЗАТЯГИВАЕТСЯ
+              ПОИСК РАБОТЫ —<br />
+              ЭТО МАРАФОН
             </h2>
           </ScrollReveal>
 
           <ScrollReveal delay={100}>
             <div className="space-y-4 text-lg md:text-xl text-muted-foreground max-w-2xl">
-              <p>Ты откликаешься. Молчание.</p>
-              <p>Проходишь собеседование. Отказ без объяснений.</p>
-              <p>Пробуешь новые подходы. Ничего не меняется.</p>
+              <p>Отклики уходят в пустоту. Собеседования не конвертируются.</p>
+              <p>Новые подходы не дают результата.</p>
+              <p>Не потому что рынок плохой — а потому что одному сложнее.</p>
             </div>
           </ScrollReveal>
 
           <ScrollReveal delay={200}>
             <p className="text-lg md:text-xl font-bold max-w-2xl">
-              Проблема не в рынке. Проблема в том, что ты действуешь хаотично.
+              Поиску нужна система. А системе — команда.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={300}>
             <p className="text-xl md:text-2xl font-bold" style={{ color: '#4ECDC4' }}>
-              Системе нужна система.
+              Вместе — быстрее и веселее.
             </p>
           </ScrollReveal>
         </div>

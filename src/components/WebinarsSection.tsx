@@ -18,13 +18,13 @@ const WebinarsSection = () => {
 
       <div className="section-container relative z-10">
         <div className="space-y-8">
-          <h2 className="heading-xl">
+          <h2 className="heading-xl" id="webinar">
             НАЧНИ С<br />
             ВЕБИНАРА
           </h2>
 
           <h3 className="text-xl md:text-2xl font-bold">
-            Бесплатно. Без воды. 60 минут практики.
+            17 февраля, 15:00 МСК. Бесплатно. 60 минут практики.
           </h3>
 
           {/* Topics */}

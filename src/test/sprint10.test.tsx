@@ -67,12 +67,12 @@ describe("Sprint 10 + 5.1: Website", () => {
 
     it("has NRC-style CTA", () => {
       render(<HeroSection />);
-      expect(screen.getByTestId("hero-cta")).toHaveTextContent("НАЧАТЬ МАРАФОН");
+      expect(screen.getByTestId("hero-cta")).toHaveTextContent("НАЧАТЬ БЕСПЛАТНО");
     });
 
-    it("shows trial link", () => {
+    it("shows webinar link", () => {
       render(<HeroSection />);
-      expect(screen.getByText(/7 дней бесплатно/)).toBeTruthy();
+      expect(screen.getByText(/Вебинар 17 февраля/)).toBeTruthy();
     });
 
     it("does NOT use lime colors", () => {

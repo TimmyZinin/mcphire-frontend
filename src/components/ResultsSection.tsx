@@ -4,9 +4,9 @@ const STAT_COLORS = ['#4ECDC4', '#45B7D1', '#FF6B6B'];
 
 const ResultsSection = () => {
   const results = [
-    { number: "6-8", label: "недель до оффера в среднем" },
-    { number: "3x", label: "больше откликов от рекрутеров" },
-    { number: "87%", label: "участников получают оффер за 2 месяца" },
+    { number: "6-8", label: "недель — цель до первого оффера" },
+    { number: "3x", label: "рост откликов при системном подходе" },
+    { number: "5-6", label: "часов в неделю — минимум для результата" },
   ];
 
   const changes = [
@@ -31,8 +31,8 @@ const ResultsSection = () => {
         <div className="space-y-10">
           <ScrollReveal>
             <h2 className="heading-xl">
-              РЕЗУЛЬТАТЫ<br />
-              УЧАСТНИКОВ
+              К ЧЕМУ<br />
+              СТРЕМИМСЯ
             </h2>
           </ScrollReveal>
 
@@ -40,8 +40,8 @@ const ResultsSection = () => {
           <ScrollReveal delay={50}>
             <div className="overflow-hidden rounded-2xl shadow-xl max-w-2xl mx-auto">
               <img
-                src="/images/offer.png"
-                alt="Участница СБОРКИ получила оффер"
+                src="/images/celebration_offer.png"
+                alt="Участница СБОРКИ празднует оффер с друзьями на улице"
                 className="w-full h-auto object-cover"
                 loading="lazy"
               />
@@ -66,7 +66,7 @@ const ResultsSection = () => {
 
           <ScrollReveal delay={200}>
             <p className="text-lg md:text-xl text-muted-foreground">
-              Что меняется после участия в СБОРКЕ:
+              Что даёт системный подход к поиску:
             </p>
           </ScrollReveal>
 
