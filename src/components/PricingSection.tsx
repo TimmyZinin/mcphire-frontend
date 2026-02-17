@@ -5,14 +5,14 @@ const PricingSection = () => {
     {
       name: "СТАРТ",
       price: "4 900",
-      description: "Групповые сессии + Команда + Чат и материалы",
+      description: "Стримы и лекции + Канал + Записи материалов",
       highlighted: false,
       link: "https://t.me/tribute/app?startapp=sNBT",
     },
     {
       name: "ПРОРЫВ",
       price: "9 900",
-      description: "Всё из СТАРТ + Практика (разборы, симуляции, лаборатории)",
+      description: "Всё из СТАРТ + Групповая работа до 25 чел + Чат участников",
       badge: "Популярный выбор",
       highlighted: true,
       link: "https://t.me/tribute/app?startapp=sNBY",
@@ -20,18 +20,19 @@ const PricingSection = () => {
     {
       name: "VIP",
       price: "15 900",
-      description: "Всё из ПРОРЫВ + Персональная работа с экспертом",
+      description: "Всё из ПРОРЫВ + Персональные звонки с экспертом + Все чаты",
       highlighted: false,
       link: "https://t.me/tribute/app?startapp=sNC0",
     },
   ];
 
   const features = [
-    { name: "Групповые сессии", start: "2/нед", proryv: "2/нед", vip: "2/нед" },
-    { name: "Закрытый чат участников", start: true, proryv: true, vip: true },
-    { name: "Записи и материалы", start: true, proryv: true, vip: true },
-    { name: "Командное соревнование", start: true, proryv: true, vip: true },
-    { name: "Buddy-система", start: true, proryv: true, vip: true },
+    { name: "Стримы и лекции", start: true, proryv: true, vip: true },
+    { name: "Канал с записями и материалами", start: true, proryv: true, vip: true },
+    { name: "Групповые сессии", start: false, proryv: "2/нед", vip: "2/нед" },
+    { name: "Закрытый чат участников", start: false, proryv: true, vip: true },
+    { name: "Командное соревнование", start: false, proryv: true, vip: true },
+    { name: "Buddy-система", start: false, proryv: true, vip: true },
     { name: "Персональный разбор резюме", start: false, proryv: "1/мес", vip: "2/мес" },
     { name: "Личный созвон с экспертом", start: false, proryv: false, vip: "1/2 нед." },
     { name: "Симуляция собеседования", start: false, proryv: false, vip: true },
