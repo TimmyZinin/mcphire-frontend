@@ -277,7 +277,7 @@ const HeroSection = () => {
               href="#webinar"
               className="inline-flex items-center justify-center px-8 py-4 border-2 border-[#4ECDC4] text-[#4ECDC4] font-bold text-base uppercase tracking-tight hover:bg-[#4ECDC4] hover:text-background transition-colors rounded-lg"
             >
-              Вебинар 17 февраля →
+              Вебинар 19 февраля →
             </a>
           </div>
         </div>

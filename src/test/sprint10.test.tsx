@@ -72,7 +72,7 @@ describe("Sprint 10 + 5.1: Website", () => {
 
     it("shows webinar link", () => {
       render(<HeroSection />);
-      expect(screen.getByText(/Вебинар 17 февраля/)).toBeTruthy();
+      expect(screen.getByText(/Вебинар 19 февраля/)).toBeTruthy();
     });
 
     it("does NOT use lime colors", () => {
