@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СБОРКА — Контент-план Кристины | 17-21 февраля</title>
+<style>
+  :root {
+    --teal: #4ECDC4;
+    --dark: #1A1A1A;
+    --bg: #F5F5F7;
+    --card: #FFFFFF;
+    --muted: #888;
+    --linkedin: #0A66C2;
+    --threads: #000000;
+    --border: #E5E5E5;
+    --green: #34C759;
+    --orange: #FF9500;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
+
+  header {
+    text-align: center;
+    padding: 40px 20px 30px;
+    background: var(--dark);
+    color: white;
+  }
+  header h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; }
+  header p { color: var(--teal); font-size: 15px; margin-top: 6px; font-weight: 600; }
+  header .dates { color: #aaa; font-size: 13px; margin-top: 4px; }
+
+  .instructions {
+    background: var(--card);
+    border-left: 4px solid var(--teal);
+    padding: 16px 20px;
+    margin: 20px 0;
+    border-radius: 0 12px 12px 0;
+    font-size: 14px;
+  }
+  .instructions strong { color: var(--teal); }
+
+  .links-bar {
+    background: var(--card);
+    padding: 14px 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    border: 1px solid var(--border);
+  }
+  .links-bar code {
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    word-break: break-all;
+  }
+
+  .day { margin-bottom: 32px; }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--dark);
+  }
+  .day-num {
+    background: var(--dark);
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .day-info h2 { font-size: 20px; font-weight: 800; line-height: 1.2; }
+  .day-info .theme { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .day-info .date { font-size: 13px; color: var(--teal); font-weight: 700; }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .posts-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 22px; }
+  }
+
+  .post-card {
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: box-shadow 0.2s;
+  }
+  .post-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+
+  .post-header {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+  }
+  .post-header.linkedin { background: var(--linkedin); }
+  .post-header.threads { background: var(--threads); }
+  .post-header .platform-icon { font-size: 18px; }
+  .post-header .time { margin-left: auto; font-weight: 500; font-size: 12px; opacity: 0.8; }
+
+  .post-body { padding: 16px; }
+  .post-body .post-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .post-text {
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-line;
+    color: #333;
+    user-select: all;
+    cursor: text;
+  }
+
+  .post-footer {
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .copy-btn {
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    width: 100%;
+  }
+  .copy-btn:hover { filter: brightness(1.1); }
+  .copy-btn:active { transform: scale(0.97); }
+  .copy-btn.copied { background: var(--green); }
+
+  .tip {
+    background: #FFF8E1;
+    border: 1px solid #FFE082;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+  .tip strong { color: var(--orange); }
+
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  footer .update-time { color: var(--teal); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>КОНТЕНТ-ПЛАН КРИСТИНЫ</h1>
+  <p>СБОРКА — клуб карьерной дисциплины</p>
+  <div class="dates">17 — 21 февраля 2026 | LinkedIn + Threads</div>
+</header>
+
+<div class="container">
+
+  <div class="instructions">
+    <strong>Как пользоваться:</strong> Нажми "Скопировать текст" под постом, вставь в LinkedIn / Threads. Публикуй в рекомендованное время. Тексты готовы к публикации, можно корректировать под себя.
+  </div>
+
+  <div class="links-bar">
+    <strong>Ссылки для CTA (копируй в посты):</strong><br>
+    Бот: <code>https://t.me/Sborka_work_bot</code><br>
+    Бесплатная неделя: <code>https://t.me/Sborka_work_bot?start=ref_trial</code><br>
+    Сайт: <code>https://sborka.work</code><br>
+    Tribute СТАРТ: <code>https://t.me/tribute/app?startapp=sNBT</code>
+  </div>
+
+  <!-- ======================== ДЕНЬ 1 ======================== -->
+  <div class="day">
+    <div class="day-header">
+      <div class="day-num">1</div>
+      <div class="day-info">
+        <div class="date">Понедельник, 17 февраля</div>
+        <h2>Первая встреча СБОРКИ</h2>
+        <div class="theme">Встреча в 18:00 МСК. Тим расскажет, как устроен клуб и зачем мы его запускаем</div>
+      </div>
+    </div>
+
+    <div class="posts-grid">
+      <div class="post-card">
+        <div class="post-header linkedin">
+          <span class="platform-icon">in</span> LinkedIn
+          <span class="time">12:00 — до встречи</span>
+        </div>
+        <div class="post-body">
+          <div class="post-title">Анонс первой встречи</div>
+          <div class="post-text" id="d1-linkedin">Сегодня в 18:00 по Москве мы проводим первую встречу СБОРКИ — для близкого круга.
+
+Мы с Тимом долго готовили этот проект. СБОРКА — клуб карьерной дисциплины. Группы по 5 человек, buddy-пара, спринты с конкретными целями. Место, где поиск работы перестаёт быть одиноким занятием.
+
+На встрече Тим расскажет:
+— Зачем мы запускаем СБОРКУ и как к этому пришли
+— Как устроена система: группы, buddy-пары, спринты
+— Что ждёт участников в первую неделю
+— Ответы на вопросы
+
+Это не вебинар и не продающая презентация. Это разговор с близким кругом — теми, кому мы доверяем и с кем хотим запустить клуб. Бесплатно. 60 минут.
+
+Регистрация через бота: https://t.me/Sborka_work_bot
+
+Если у тебя есть друзья, которым это может быть полезно, перешли этот пост.</div>
+        </div>
+        <div class="post-footer">
+          <button class="copy-btn" onclick="copyText('d1-linkedin', this)">Скопировать текст</button>
+        </div>
+      </div>
+
+      <div class="post-card">
+        <div class="post-header threads">
+          <span class="platform-icon">@</span> Threads
+          <span class="time">13:00 — короткий тизер</span>
+        </div>
+        <div class="post-body">
+          <div class="post-title">Тизер встречи</div>
+          <div class="post-text" id="d1-threads">Сегодня в 18:00 МСК — первая встреча СБОРКИ. Для близкого круга.
+
+Тим расскажет, зачем мы запускаем клуб карьерной дисциплины, как он устроен и что ждёт участников. Не вебинар, а честный разговор с теми, с кем хотим это начать.
+
+Бесплатно. Регистрация через бота. Ссылка в профиле.</div>
+        </div>
+        <div class="post-footer">
+          <button class="copy-btn" onclick="copyText('d1-threads', this)">Скопировать текст</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>Совет:</strong> После встречи (вечером ~19:30) можно выложить пост в Threads: "Только что провели первую встречу СБОРКИ с близким кругом! Столько вопросов и энергии! Следующая — четверг 15:00 МСК. Регистрация: t.me/Sborka_work_bot"
+    </div>
+  </div>
+
+  <!-- ======================== ДЕНЬ 2 ======================== -->
+  <div class="day">
+    <div class="day-header">
+      <div class="day-num">2</div>
+      <div class="day-info">
+        <div class="date">Вторник, 18 февраля</div>
+        <h2>Итоги первой встречи + экспертный контент</h2>
+        <div class="theme">Тема дня: что обсуждали + главный инсайт</div>
+      </div>
+    </div>
+
+    <div class="posts-grid">
+      <div class="post-card">
+        <div class="post-header linkedin">
+          <span class="platform-icon">in</span> LinkedIn
+          <span class="time">10:00 — утро</span>
+        </div>
+        <div class="post-body">
+          <div class="post-title">Рекап первой встречи</div>
+          <div class="post-text" id="d2-linkedin">Вчера провели первую встречу СБОРКИ. Тим рассказал, как устроен клуб и зачем мы это делаем. А я поняла одну вещь из разговора с людьми, которые ищут работу прямо сейчас.
+
+Главная проблема не в резюме. И не в рынке.
+
+Главная проблема: люди делают правильные вещи, но делают их в одиночку. Без обратной связи. Без системы. Без понимания, работает их стратегия или нет.
+
+Один из участников сказал: "Я отправляю 10 откликов в день и не понимаю, почему ничего не происходит". Мы разобрали его подход за 5 минут. Оказалось, что резюме написано для другой роли. Он этого не видел, потому что некому было сказать.
+
+Вот для этого и нужна команда.
+
+СБОРКА — клуб карьерной дисциплины. Группы по 5 человек, buddy-пара, спринты с конкретными целями.
+
+Следующая встреча — четверг, 20 февраля, 15:00 МСК. Приходи: https://t.me/Sborka_work_bot
+
+Первая неделя бесплатно: https://t.me/Sborka_work_bot?start=ref_trial</div>
+        </div>
+        <div class="post-footer">
+          <button class="copy-btn" onclick="copyText('d2-linkedin', this)">Скопировать текст</button>
+        </div>
+      </div>
+
+      <div class="post-card">
+        <div class="post-header threads">
+          <span class="platform-icon">@</span> Threads
+          <span class="time">12:00 — обед</span>
+        </div>
+        <div class="post-body">
+          <div class="post-title">Инсайт со встречи</div>
+          <div class="post-text" id="d2-threads">Вчера на встрече СБОРКИ человек сказал: "Отправляю 10 откликов в день, ничего не происходит".
+
+Разобрали за 5 минут. Резюме было написано для другой роли. Он этого не видел, потому что некому было подсказать.
+
+Вот зачем нужна обратная связь. Вот зачем нужна команда.
+
+Следующая встреча — четверг 15:00 МСК. СБОРКА. Первая неделя бесплатно.</div>
+        </div>
+        <div class="post-footer">
+          <button class="copy-btn" onclick="copyText('d2-threads', this)">Скопировать текст</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== ДЕНЬ 3 ======================== -->
+  <div class="day">
+    <div class="day-header">
+      <div class="day-num">3</div>
+      <div class="day-info">
+        <div class="date">Среда, 19 февраля</div>
+        <h2>Экспертный пост: взгляд рекрутера</h2>
+        <div class="theme">Тема дня: ценный контент из HR-опыта + напоминание о встрече завтра</div>
+      </div>
+    </div>
+
+    <div class="posts-grid">
+      <div class="post-card">
+        <div class="post-header linkedin">
+          <span class="platform-icon">in</span> LinkedIn
+          <span class="time">09:00 — раннее утро</span>
+        </div>
+        <div class="post-body">
+          <div class="post-title">Экспертный контент</div>
+          <div class="post-text" id="d3-linkedin">За 15 лет в HR я просмотрела больше 50 000 резюме. Вот 3 вещи, которые рекрутер видит за первые 6 секунд.
+
+1. Заголовок. Не "в поиске работы", а конкретная роль. "Product Manager, B2B SaaS" говорит мне больше, чем "Ищу интересные проекты". Я должна за секунду понять, подходишь ты или нет.
+
+2. Последний опыт. Не список обязанностей, а результаты. "Увеличил конверсию на 40%" работает. "Отвечал за маркетинг" не работает. Рекрутер ищет доказательства, что ты умеешь делать то, что нужно.
+
+3. Логика карьеры. Переходы между компаниями должны читаться. Если из маркетинга в продукт, а потом в HR, мне нужна одна строчка объяснения. Без неё я подумаю, что ты сам не знаешь, чего хочешь.
+
+Это база. И я вижу, что даже опытные специалисты (Senior, Lead) допускают эти ошибки.
+
+В СБОРКЕ мы разбираем резюме каждого участника. Не шаблонные советы, а конкретная обратная связь от человека, который сидел по ту сторону стола.
+
+Завтра, четверг, 15:00 МСК — следующая встреча. Приходи: https://t.me/Sborka_work_bot
+
+Попробуй бесплатную неделю: https://t.me/Sborka_work_bot?start=ref_trial</div>
+        </div>
+        <div class="post-footer">
+          <button class="copy-btn" onclick="copyText('d3-linkedin', this)">Скопировать текст</button>
+        </div>
+      </div>
+
+      <div class="post-card">
+        <div class="post-header threads">
+          <span class="platform-icon">@</span> Threads
+          <span class="time">12:00 — обед</span>
+        </div>
+        <div class="post-body">
+          <div class="post-title">Quick tip</div>
+          <div class="post-text" id="d3-threads">Рекрутер тратит 6 секунд на резюме. Вот что он видит:
+
+1. Заголовок. "Product Manager, B2B SaaS" > "В поиске работы"
+2. Последний опыт. Результаты > обязанности
+3. Логика переходов. Без объяснения = красный флаг
+
+50 000 резюме за 15 лет. Эти три вещи решают, откроют ли твоё резюме дальше первого экрана.
+
+Завтра в 15:00 МСК — встреча СБОРКИ. Разбираем резюме и стратегии поиска.</div>
+        </div>
+        <div class="post-footer">
+          <button class="copy-btn" onclick="copyText('d3-threads', this)">Скопировать текст</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>Совет:</strong> Этот пост можно сопроводить каруселью или картинкой "3 вещи, которые рекрутер видит за 6 секунд". Попроси Тима сделать через AI Corp.
+    </div>
+  </div>
+
+  <!-- ======================== ДЕНЬ 4 ======================== -->
+  <div class="day">
+    <div class="day-header">
+      <div class="day-num">4</div>
+      <div class="day-info">
+        <div class="date">Четверг, 20 февраля</div>
+        <h2>День второй встречи + сила группы</h2>
+        <div class="theme">Встреча в 15:00 МСК. Тема: почему вместе, а не в одиночку</div>
+      </div>
+    </div>
+
+    <div class="posts-grid">
+      <div class="post-card">
+        <div class="post-header linkedin">
+          <span class="platform-icon">in</span> LinkedIn
+          <span class="time">10:00 — утром до встречи</span>
+        </div>
+        <div class="post-body">
+          <div class="post-title">Зачем команда + анонс встречи</div>
+          <div class="post-text" id="d4-linkedin">Есть исследование, которое меня когда-то удивило.
+
+Люди, которые ищут работу с группой поддержки, находят её в 3 раза быстрее. Не потому что кто-то ищет за них. А потому что группа делает три вещи:
+
+Во-первых, обратная связь. Ты не видишь свои слепые зоны. Группа видит. Резюме, pitch, стратегия поиска. Когда 4 человека говорят "тут непонятно", ты наконец слышишь.
+
+Во-вторых, ритм. Когда ты один, легко пропустить день. Потом два. Потом неделю. В группе есть ритм: спринты, чек-ины, общие цели. Ты не можешь просто исчезнуть, потому что команда ждёт.
+
+В-третьих, нормализация. Поиск работы стрессовый. Когда рядом люди, которые проходят через то же самое, становится легче. Это не слабость, это факт.
+
+Мы с Тимом построили СБОРКУ именно на этом. Группы по 5 человек. Buddy-пара для ежедневной поддержки. 2-недельные спринты с конкретными целями.
+
+Сегодня в 15:00 МСК — встреча СБОРКИ. Приходи: https://t.me/Sborka_work_bot
+
+Бесплатная неделя: https://t.me/Sborka_work_bot?start=ref_trial</div>
+        </div>
+        <div class="post-footer">
+          <button class="copy-btn" onclick="copyText('d4-linkedin', this)">Скопировать текст</button>
+        </div>
+      </div>
+
+      <div class="post-card">
+        <div class="post-header threads">
+          <span class="platform-icon">@</span> Threads
+          <span class="time">11:00 — до встречи</span>
+        </div>
+        <div class="post-body">
+          <div class="post-title">Факт + анонс встречи</div>
+          <div class="post-text" id="d4-threads">Поиск работы с группой поддержки = результат в 3 раза быстрее.
+
+Не потому что кто-то ищет за тебя. А потому что:
+- Обратная связь: группа видит твои слепые зоны
+- Ритм: не пропускаешь дни, потому что команда ждёт
+- Нормализация: рядом люди, которые понимают
+
+Сегодня 15:00 МСК — встреча СБОРКИ. Ссылка в профиле.</div>
+        </div>
+        <div class="post-footer">
+          <button class="copy-btn" onclick="copyText('d4-threads', this)">Скопировать текст</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== ДЕНЬ 5 ======================== -->
+  <div class="day">
+    <div class="day-header">
+      <div class="day-num">5</div>
+      <div class="day-info">
+        <div class="date">Пятница, 21 февраля</div>
+        <h2>Личная история + мягкий CTA</h2>
+        <div class="theme">Тема дня: зачем я это делаю</div>
+      </div>
+    </div>
+
+    <div class="posts-grid">
+      <div class="post-card">
+        <div class="post-header linkedin">
+          <span class="platform-icon">in</span> LinkedIn
+          <span class="time">10:00 — утро</span>
+        </div>
+        <div class="post-body">
+          <div class="post-title">Личная история</div>
+          <div class="post-text" id="d5-linkedin">Мне часто пишут люди, которые ищут работу. Не за консультацией, просто рассказать.
+
+"Кристина, я уже 4 месяца ищу. Отправила 200 откликов. 3 собеседования. 0 офферов. Не понимаю, что не так."
+
+И каждый раз я вижу одно и то же: человек делает всё правильно. Резюме нормальное. Опыт есть. Мотивация есть. Но стратегия хаотичная, обратной связи нет, и через 3 месяца приходит усталость.
+
+Я 15 лет помогала компаниям нанимать людей. И в какой-то момент поняла: я хочу помогать людям, которые ищут. Не разовой консультацией, а системой. Потому что разовая консультация даёт понимание на неделю. А система даёт результат.
+
+Так появилась СБОРКА. Клуб, где поиск работы становится командным марафоном. С группой, buddy-парой, спринтами и конкретными целями на каждую неделю.
+
+Мы только запустились. Первые участники уже начали спринт. Если ты сейчас ищешь работу или знаешь кого-то, кто ищет, попробуй бесплатную неделю.
+
+https://t.me/Sborka_work_bot?start=ref_trial
+
+Не потому что это волшебная таблетка. А потому что вместе быстрее.</div>
+        </div>
+        <div class="post-footer">
+          <button class="copy-btn" onclick="copyText('d5-linkedin', this)">Скопировать текст</button>
+        </div>
+      </div>
+
+      <div class="post-card">
+        <div class="post-header threads">
+          <span class="platform-icon">@</span> Threads
+          <span class="time">14:00 — день</span>
+        </div>
+        <div class="post-body">
+          <div class="post-title">Пятничный CTA</div>
+          <div class="post-text" id="d5-threads">"4 месяца ищу работу. 200 откликов. 3 собеседования. 0 офферов."
+
+Мне пишут такое каждую неделю. И каждый раз проблема не в человеке. А в том, что он ищет один, без обратной связи, без системы.
+
+Мы сделали СБОРКУ, чтобы это изменить. Клуб карьерной дисциплины. Группы, buddy, спринты.
+
+Бесплатная неделя. Попробуй и реши сам: ссылка в профиле.</div>
+        </div>
+        <div class="post-footer">
+          <button class="copy-btn" onclick="copyText('d5-threads', this)">Скопировать текст</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>Совет на пятницу:</strong> Хорошее время попросить людей переслать пост. "Если знаешь кого-то, кто сейчас ищет работу, перешли." Работает лучше любого таргета.
+    </div>
+  </div>
+
+  <!-- ======================== РАСПИСАНИЕ ВСТРЕЧ ======================== -->
+  <div class="day">
+    <div class="day-header">
+      <div class="day-num" style="background: var(--teal);">!</div>
+      <div class="day-info">
+        <h2>Расписание встреч СБОРКИ</h2>
+        <div class="theme">Ближайшие встречи</div>
+      </div>
+    </div>
+
+    <div style="background: var(--card); border-radius: 16px; padding: 20px; border: 1px solid var(--border);">
+      <div style="font-size: 14px; line-height: 1.8;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 8px 12px; font-weight: 700;">Пн, 17 февраля</td>
+            <td style="padding: 8px 12px;">18:00 МСК</td>
+            <td style="padding: 8px 12px;">Первая встреча. Тим: как устроена СБОРКА</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; font-weight: 700;">Чт, 20 февраля</td>
+            <td style="padding: 8px 12px;">15:00 МСК</td>
+            <td style="padding: 8px 12px;">Вторая встреча</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== ОБЩИЙ РИТМ ======================== -->
+  <div class="day">
+    <div class="day-header">
+      <div class="day-num" style="background: var(--teal);">i</div>
+      <div class="day-info">
+        <h2>Общие правила</h2>
+        <div class="theme">Частота, стиль, что важно помнить</div>
+      </div>
+    </div>
+
+    <div style="background: var(--card); border-radius: 16px; padding: 20px; border: 1px solid var(--border);">
+      <div style="font-size: 14px; line-height: 1.8;">
+        <p><strong>Частота публикаций:</strong></p>
+        <ul style="margin: 8px 0 16px 20px;">
+          <li><strong>LinkedIn:</strong> 1 пост в день, утро (09:00-10:00 МСК)</li>
+          <li><strong>Threads:</strong> 1 пост в день, обед/день (12:00-14:00 МСК)</li>
+        </ul>
+
+        <p><strong>Формат LinkedIn:</strong></p>
+        <ul style="margin: 8px 0 16px 20px;">
+          <li>1500-2500 символов. Первые 2 строки решают, прочитают ли дальше</li>
+          <li>Начинай с проблемы или факта, не с себя</li>
+          <li>CTA в конце: ссылка на бота + "перешли другу"</li>
+        </ul>
+
+        <p><strong>Формат Threads:</strong></p>
+        <ul style="margin: 8px 0 16px 20px;">
+          <li>300-500 символов. Коротко. Один инсайт</li>
+          <li>Без длинных вступлений</li>
+          <li>"Ссылка в профиле" вместо прямой ссылки (Threads режет)</li>
+        </ul>
+
+        <p><strong>Главное:</strong></p>
+        <ul style="margin: 8px 0 0 20px;">
+          <li>Тон: как старший коллега, который помогает. Не как коуч, не как продавец</li>
+          <li>Всегда конкретика: цифры, примеры, ситуации</li>
+          <li>CTA мягкий: "попробуй", "загляни", "перешли другу"</li>
+          <li>Никогда: "последний шанс", "осталось 2 места", давление</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>СБОРКА — клуб карьерной дисциплины</p>
+  <p class="update-time">Обновлено: 17 февраля 2026, 12:15</p>
+</footer>
+
+<script>
+function copyText(id, btn) {
+  const el = document.getElementById(id);
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Скопировано!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Скопировать текст';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('copy');
+    btn.textContent = 'Скопировано!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Скопировать текст';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>

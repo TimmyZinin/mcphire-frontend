@@ -1,9 +1,9 @@
 const WebinarsSection = () => {
   const topics = [
-    "Почему отклики молчат (и как это исправить)",
-    "3 ошибки в резюме, которые стоят офферов",
-    "Как LinkedIn может работать на тебя 24/7",
-    "Что отличает успешных соискателей от остальных",
+    "Как устроена СБОРКА и зачем мы это запускаем",
+    "Как работает система: группы, buddy-пары, спринты",
+    "Что ждёт участников в первую неделю",
+    "Ответы на вопросы",
   ];
 
   return (
@@ -19,18 +19,18 @@ const WebinarsSection = () => {
       <div className="section-container relative z-10">
         <div className="space-y-8">
           <h2 className="heading-xl" id="webinar">
-            НАЧНИ С<br />
-            ВЕБИНАРА
+            ПЕРВАЯ<br />
+            ВСТРЕЧА
           </h2>
 
           <h3 className="text-xl md:text-2xl font-bold">
-            17 февраля, 15:00 МСК. Бесплатно. 60 минут практики.
+            17 февраля, 18:00 МСК. Бесплатно. Регистрация через бота.
           </h3>
 
           {/* Topics */}
           <div className="space-y-4">
             <p className="text-muted-foreground uppercase tracking-wider text-sm">
-              Разберём:
+              На встрече:
             </p>
             <ul className="space-y-3">
               {topics.map((topic, index) => (
@@ -42,7 +42,7 @@ const WebinarsSection = () => {
           </div>
 
           <p className="text-lg text-muted-foreground">
-            После вебинара ты поймёшь, подходит ли тебе СБОРКА.
+            Приходи, познакомься с командой и узнай, как всё работает.
           </p>
 
           {/* CTA — NRC style */}
@@ -52,7 +52,7 @@ const WebinarsSection = () => {
             rel="noopener noreferrer"
             className="cta-primary-nrc inline-block"
           >
-            Записаться на вебинар
+            Зарегистрироваться
           </a>
         </div>
       </div>
