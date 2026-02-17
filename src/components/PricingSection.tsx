@@ -76,7 +76,7 @@ const PricingSection = () => {
               Пригласи 5 друзей — получи неделю СТАРТ бесплатно
             </p>
             <a
-              href="https://t.me/sborka_career_bot?start=ref_trial"
+              href="https://t.me/Sborka_work_bot?start=ref_trial"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block mt-2 text-sm underline"
