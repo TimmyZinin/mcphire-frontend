@@ -7,7 +7,7 @@ const WebinarsSection = () => {
   ];
 
   return (
-    <section className="section-white relative overflow-hidden">
+    <section id="webinar" className="section-white relative overflow-hidden">
       {/* Decorative circles — NRC palette */}
       <div className="absolute left-0 top-1/3 -translate-x-1/2 pointer-events-none opacity-10">
         <svg width="200" height="200" viewBox="0 0 200 200">
@@ -18,7 +18,7 @@ const WebinarsSection = () => {
 
       <div className="section-container relative z-10">
         <div className="space-y-8">
-          <h2 className="heading-xl" id="webinar">
+          <h2 className="heading-xl">
             ПЕРВАЯ<br />
             ВСТРЕЧА
           </h2>
@@ -47,7 +47,7 @@ const WebinarsSection = () => {
 
           {/* CTA — NRC style */}
           <a
-            href="https://t.me/Sborka_work_bot"
+            href="https://t.me/Sborka_work_bot?start=webinar2_site"
             target="_blank"
             rel="noopener noreferrer"
             className="cta-primary-nrc inline-block"

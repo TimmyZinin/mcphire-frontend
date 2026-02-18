@@ -23,7 +23,7 @@ const TypicalWeekSection = () => {
       tiers: ["proryv", "vip"],
     },
     {
-      days: "ЧЕТВЕРГ",
+      days: "ПЯТНИЦА",
       time: "15:00",
       activity: "Групповая сессия",
       description: "Разборы ситуаций, ответы на вопросы, работа над стратегией.",

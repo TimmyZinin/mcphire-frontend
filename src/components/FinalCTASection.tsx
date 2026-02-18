@@ -51,6 +51,7 @@ const FinalCTASection = () => {
             >
               Начать марафон
             </a>
+            {/* Hidden until referral program is enabled
             <a
               href="https://t.me/Sborka_work_bot?start=ref_trial"
               target="_blank"
@@ -59,6 +60,7 @@ const FinalCTASection = () => {
             >
               7 дней бесплатно
             </a>
+            */}
           </div>
         </div>
       </div>

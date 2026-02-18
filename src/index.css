@@ -71,6 +71,11 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Offset anchors for sticky header */
+  [id] {
+    scroll-margin-top: 80px;
+  }
+
   body {
     @apply bg-background text-foreground;
     letter-spacing: -0.02em;

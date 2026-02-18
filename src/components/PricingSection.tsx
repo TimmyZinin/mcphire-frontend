@@ -71,7 +71,7 @@ const PricingSection = () => {
             Каждый тариф — свой ритм марафона. Начни с комфортного.
           </p>
 
-          {/* Trial CTA */}
+          {/* Trial CTA — hidden until referral program is enabled
           <div className="bg-muted p-4 rounded-lg text-center" data-testid="trial-cta">
             <p className="font-bold">
               Пригласи 5 друзей — получи неделю СТАРТ бесплатно
@@ -86,6 +86,7 @@ const PricingSection = () => {
               Узнать подробнее →
             </a>
           </div>
+          */}
 
           {/* Pricing cards */}
           <div className="grid md:grid-cols-3 gap-6">
