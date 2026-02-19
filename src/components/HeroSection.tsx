@@ -274,12 +274,12 @@ const HeroSection = () => {
             </a>
 
             <a
-              href="https://t.me/Sborka_work_bot?start=webinar2_site"
+              href="https://t.me/Sborka_work_bot?start=webinar3_site"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-8 py-4 border-2 border-[#4ECDC4] text-[#4ECDC4] font-bold text-base uppercase tracking-tight hover:bg-[#4ECDC4] hover:text-background transition-colors rounded-lg"
             >
-              Вебинар 19 февраля →
+              Вебинар 24 февраля →
             </a>
           </div>
         </div>

@@ -1,8 +1,8 @@
 const WebinarsSection = () => {
   const topics = [
-    "Как устроена СБОРКА и зачем мы это запускаем",
-    "Как работает система: группы, buddy-пары, спринты",
-    "Что ждёт участников в первую неделю",
+    "Пошаговая система поиска работы за 30-60 дней",
+    "Какие инструменты реально работают в 2026",
+    "AI в поиске работы: что автоматизировать, а что нет",
     "Ответы на вопросы",
   ];
 
@@ -19,12 +19,12 @@ const WebinarsSection = () => {
       <div className="section-container relative z-10">
         <div className="space-y-8">
           <h2 className="heading-xl">
-            ПЕРВАЯ<br />
-            ВСТРЕЧА
+            ОТКРЫТЫЙ<br />
+            ВЕБИНАР
           </h2>
 
           <h3 className="text-xl md:text-2xl font-bold">
-            19 февраля, 18:00 МСК. Бесплатно. Регистрация через бота.
+            24 февраля, 18:00 МСК. Бесплатно. Регистрация через бота.
           </h3>
 
           {/* Topics */}
@@ -42,12 +42,12 @@ const WebinarsSection = () => {
           </div>
 
           <p className="text-lg text-muted-foreground">
-            Приходи, познакомься с командой и узнай, как всё работает.
+            Приходи и узнай, как построить систему поиска работы, которая приведёт к офферу.
           </p>
 
           {/* CTA — NRC style */}
           <a
-            href="https://t.me/Sborka_work_bot?start=webinar2_site"
+            href="https://t.me/Sborka_work_bot?start=webinar3_site"
             target="_blank"
             rel="noopener noreferrer"
             className="cta-primary-nrc inline-block"

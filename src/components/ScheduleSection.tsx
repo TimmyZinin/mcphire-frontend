@@ -148,11 +148,6 @@ const ScheduleSection = () => {
             <h3 className="heading-md">Ближайшие занятия</h3>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="space-y-1">
-                <p className="text-sm font-bold uppercase text-primary">19 февраля, 18:00</p>
-                <p className="font-bold">Как устроен найм в 2026</p>
-                <p className="text-sm text-muted-foreground">Открытый вебинар</p>
-              </div>
-              <div className="space-y-1">
                 <p className="text-sm font-bold uppercase text-primary">24 февраля, 18:00</p>
                 <p className="font-bold">Система поиска работы за 30-60 дней</p>
                 <p className="text-sm text-muted-foreground">Открытый вебинар</p>
@@ -161,6 +156,11 @@ const ScheduleSection = () => {
                 <p className="text-sm font-bold uppercase text-primary">26 февраля, 18:00</p>
                 <p className="font-bold">Живой разбор профилей</p>
                 <p className="text-sm text-muted-foreground">Открытый вебинар</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-bold uppercase text-primary">3 марта, 18:00</p>
+                <p className="font-bold">Первое занятие клуба</p>
+                <p className="text-sm text-muted-foreground">Только для участников</p>
               </div>
             </div>
           </div>
