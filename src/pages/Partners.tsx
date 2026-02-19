@@ -27,7 +27,7 @@ const Partners = () => {
             Получай 20% с каждой оплаты в течение 6 месяцев.
           </p>
           <a
-            href="https://t.me/Sborka_work_bot?start=partner"
+            href="https://t.me/Sborka_partners_bot"
             className="cta-primary-nrc"
             target="_blank"
             rel="noopener noreferrer"
@@ -46,7 +46,7 @@ const Partners = () => {
               {
                 step: "01",
                 title: "Получи ссылку",
-                desc: "Напиши боту @Sborka_work_bot команду /start partner. Бот выдаст персональную партнёрскую ссылку.",
+                desc: "Напиши боту @Sborka_partners_bot. Бот автоматически выдаст персональную партнёрскую ссылку.",
               },
               {
                 step: "02",
@@ -152,7 +152,7 @@ const Partners = () => {
               },
               {
                 q: "Как отслеживаются рефералы?",
-                a: "Каждый партнёр получает уникальную ссылку вида t.me/Sborka_work_bot?start=ref_XXXXX. Когда человек переходит по ней и оплачивает подписку, система автоматически привязывает его к партнёру.",
+                a: "Каждый партнёр получает уникальную ссылку вида t.me/Sborka_work_bot?start=ref_XXXXX. Когда человек переходит по ней и оплачивает подписку, система автоматически привязывает его к вам.",
               },
               {
                 q: "Как происходят выплаты?",
@@ -184,7 +184,7 @@ const Partners = () => {
             Получи партнёрскую ссылку за 30 секунд. Без регистрации, без анкет.
           </p>
           <a
-            href="https://t.me/Sborka_work_bot?start=partner"
+            href="https://t.me/Sborka_partners_bot"
             className="cta-primary-nrc"
             target="_blank"
             rel="noopener noreferrer"
@@ -207,7 +207,7 @@ const Partners = () => {
             </p>
             <p>
               2. Партнёром может стать любое дееспособное лицо старше 18 лет. Регистрация
-              в программе осуществляется через бота @Sborka_work_bot в Telegram.
+              в программе осуществляется через бота @Sborka_partners_bot в Telegram.
             </p>
             <p>
               3. Партнёр получает уникальную реферальную ссылку и делится ею со своей аудиторией.
