@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className="bg-background py-8 border-t border-foreground">
@@ -7,13 +9,18 @@ const Footer = () => {
             <p className="font-bold text-foreground">СБОРКА</p>
             <p>Клуб карьерной дисциплины</p>
           </div>
-          
+
+          <div className="flex flex-col md:flex-row gap-3 md:gap-6">
+            <p>
+              Доступ осуществляется по подписке через Tribute.
+            </p>
+            <Link to="/partners" className="hover:text-foreground transition-colors">
+              Партнёрская программа
+            </Link>
+          </div>
+
           <p>
-            Доступ осуществляется по подписке через Tribute.
-          </p>
-          
-          <p>
-            © СБОРКА 2026
+            &copy; СБОРКА 2026
           </p>
         </div>
       </div>
