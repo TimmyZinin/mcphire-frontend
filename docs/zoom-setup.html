@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройка Zoom для СБОРКИ — Инструкция</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: #1a1a2e;
+            background: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 780px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: #1a1a2e;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+        .info-box {
+            background: #e8f4fd;
+            border-left: 4px solid #2196F3;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+        .info-box strong { color: #1565C0; }
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            font-size: 15px;
+        }
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            font-size: 15px;
+        }
+        h2 {
+            font-size: 22px;
+            margin: 36px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+            color: #1a1a2e;
+        }
+        h3 {
+            font-size: 18px;
+            margin: 24px 0 12px;
+            color: #333;
+        }
+        .step {
+            margin: 24px 0;
+            padding: 20px 24px;
+            background: #fafbfc;
+            border-radius: 12px;
+            border: 1px solid #e8e8e8;
+        }
+        .step-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: #2196F3;
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        .step-title {
+            font-size: 17px;
+            font-weight: 600;
+            display: inline;
+            vertical-align: middle;
+        }
+        .step p, .step ul, .step ol {
+            margin-top: 12px;
+        }
+        ol, ul {
+            padding-left: 24px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 14px;
+            color: #d63384;
+        }
+        .copy-block {
+            position: relative;
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 12px 0;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .copy-block:hover {
+            background: #2a2a3e;
+        }
+        .copy-block::after {
+            content: 'Нажми чтобы скопировать';
+            position: absolute;
+            top: 4px;
+            right: 8px;
+            font-size: 11px;
+            color: #888;
+            font-family: -apple-system, sans-serif;
+        }
+        .copy-block.copied::after {
+            content: 'Скопировано!';
+            color: #4caf50;
+        }
+        .screenshot-placeholder {
+            background: #f5f5f5;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            color: #999;
+            margin: 12px 0;
+            font-size: 14px;
+        }
+        .field-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+        }
+        .field-table th, .field-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+        .field-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+        .field-table td:first-child {
+            white-space: nowrap;
+            font-weight: 500;
+        }
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .emoji { font-size: 20px; vertical-align: middle; margin-right: 6px; }
+        .divider {
+            height: 1px;
+            background: #e8e8e8;
+            margin: 40px 0;
+        }
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            margin-top: 40px;
+        }
+        a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 24px 18px; }
+            h1 { font-size: 22px; }
+            h2 { font-size: 19px; }
+            .step { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <h1>Настройка Zoom для автоматических вебинаров</h1>
+        <p class="subtitle">Инструкция для Кристины. Время: ~15 минут</p>
+
+        <div class="info-box">
+            <strong>Зачем это нужно?</strong><br>
+            Сейчас Zoom-ссылки для вебинаров создаются вручную. После настройки бот СБОРКИ будет автоматически создавать Zoom-встречу для каждого вебинара и рассылать ссылку участникам. Тебе не нужно будет каждый раз заходить в Zoom.
+        </div>
+
+        <!-- ============================================ -->
+        <h2>Часть 1: Создание Zoom App</h2>
+        <!-- ============================================ -->
+
+        <div class="step">
+            <span class="step-number">1</span>
+            <span class="step-title">Открой Zoom App Marketplace</span>
+            <p>Перейди по ссылке:</p>
+            <div class="copy-block" onclick="copyText(this)">https://marketplace.zoom.us/</div>
+            <p>Нажми <strong>Sign In</strong> (вверху справа) и войди под своим Zoom-аккаунтом.</p>
+            <div class="warning-box">
+                <strong>Важно:</strong> Используй тот аккаунт, от которого создаются вебинары СБОРКИ. Если это аккаунт Кристины — логинься под ним.
+            </div>
+        </div>
+
+        <div class="step">
+            <span class="step-number">2</span>
+            <span class="step-title">Перейди в раздел разработки</span>
+            <p>После входа:</p>
+            <ol>
+                <li>Нажми на свой аватар (вверху справа)</li>
+                <li>Выбери <strong>"Develop"</strong> или перейди напрямую:</li>
+            </ol>
+            <div class="copy-block" onclick="copyText(this)">https://marketplace.zoom.us/user/build</div>
+        </div>
+
+        <div class="step">
+            <span class="step-number">3</span>
+            <span class="step-title">Создай новое приложение</span>
+            <ol>
+                <li>Нажми кнопку <strong>"Build App"</strong> (синяя кнопка)</li>
+                <li>Найди тип <strong>"Server-to-Server OAuth"</strong></li>
+                <li>Нажми <strong>"Create"</strong> рядом с ним</li>
+                <li>В поле <strong>App Name</strong> введи:</li>
+            </ol>
+            <div class="copy-block" onclick="copyText(this)">SBORKA Webinar Bot</div>
+            <p>Нажми <strong>"Create"</strong></p>
+
+            <div class="warning-box">
+                <strong>Не перепутай!</strong> Нужен именно <span class="highlight">Server-to-Server OAuth</span>, а НЕ "OAuth" и НЕ "JWT". Если видишь только "OAuth" — прокрути список вниз, Server-to-Server будет отдельным пунктом.
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <h2>Часть 2: Настройка приложения</h2>
+        <!-- ============================================ -->
+
+        <div class="step">
+            <span class="step-number">4</span>
+            <span class="step-title">Заполни информацию о приложении (App Information)</span>
+            <p>После создания откроется страница настройки. Перейди на вкладку <strong>"Information"</strong> (обычно открывается сразу).</p>
+            <p>Заполни обязательные поля:</p>
+
+            <table class="field-table">
+                <tr><th>Поле</th><th>Что вписать</th></tr>
+                <tr><td>App Name</td><td>SBORKA Webinar Bot (уже заполнено)</td></tr>
+                <tr><td>Short Description</td><td>Auto-creates Zoom meetings for SBORKA webinars</td></tr>
+                <tr><td>Long Description</td><td>Automated Zoom meeting creation for SBORKA career club weekly webinars. Creates meetings and distributes join links to participants via Telegram bot.</td></tr>
+                <tr><td>Company Name</td><td>SBORKA</td></tr>
+                <tr><td>Developer Name</td><td>Tim Zinin</td></tr>
+                <tr><td>Developer Email</td><td>tim@sborka.work</td></tr>
+            </table>
+
+            <p>Нажми <strong>"Continue"</strong> внизу страницы.</p>
+        </div>
+
+        <div class="step">
+            <span class="step-number">5</span>
+            <span class="step-title">Скопируй credentials (САМЫЙ ВАЖНЫЙ ШАГ)</span>
+            <p>На вкладке <strong>"App Credentials"</strong> ты увидишь три значения:</p>
+
+            <table class="field-table">
+                <tr><th>Поле</th><th>Описание</th></tr>
+                <tr><td><strong>Account ID</strong></td><td>Идентификатор аккаунта Zoom</td></tr>
+                <tr><td><strong>Client ID</strong></td><td>Идентификатор приложения</td></tr>
+                <tr><td><strong>Client Secret</strong></td><td>Секретный ключ (показать можно нажав на иконку глаза)</td></tr>
+            </table>
+
+            <div class="success-box">
+                <strong>Скопируй все три значения</strong> и отправь их Тиму в личные сообщения в Telegram. Это безопасно — они нужны только для настройки бота и не дают доступа к твоему аккаунту напрямую.
+            </div>
+
+            <p>Как скопировать:</p>
+            <ol>
+                <li><strong>Account ID</strong> — нажми иконку копирования справа от значения</li>
+                <li><strong>Client ID</strong> — нажми иконку копирования</li>
+                <li><strong>Client Secret</strong> — сначала нажми иконку глаза (чтобы показать), потом скопируй</li>
+            </ol>
+
+            <p>Отправь Тиму в таком формате:</p>
+            <div class="copy-block" onclick="copyText(this)">Zoom Server-to-Server credentials:
+Account ID: (вставь сюда)
+Client ID: (вставь сюда)
+Client Secret: (вставь сюда)</div>
+
+            <p>Нажми <strong>"Continue"</strong>.</p>
+        </div>
+
+        <div class="step">
+            <span class="step-number">6</span>
+            <span class="step-title">Пропусти Feature (просто нажми Continue)</span>
+            <p>На вкладке <strong>"Feature"</strong> ничего менять не нужно.</p>
+            <p>Просто нажми <strong>"Continue"</strong>.</p>
+        </div>
+
+        <div class="step">
+            <span class="step-number">7</span>
+            <span class="step-title">Настрой разрешения (Scopes)</span>
+            <p>Это самый технический шаг, но всё просто — нужно добавить 2 разрешения.</p>
+            <ol>
+                <li>На вкладке <strong>"Scopes"</strong> нажми <strong>"+ Add Scopes"</strong></li>
+                <li>В поиске введи <code>meeting</code></li>
+                <li>Найди и отметь галочками:</li>
+            </ol>
+
+            <table class="field-table">
+                <tr><th>Scope</th><th>Описание</th></tr>
+                <tr>
+                    <td><code>meeting:write:admin</code></td>
+                    <td>Create and update meetings (нужно для создания встреч)</td>
+                </tr>
+                <tr>
+                    <td><code>meeting:read:admin</code></td>
+                    <td>View meetings (нужно для проверки что встреча создана)</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <strong>Как найти нужные scopes:</strong><br>
+                1. Нажми <strong>"+ Add Scopes"</strong><br>
+                2. В левом меню выбери категорию <strong>"Meeting"</strong><br>
+                3. Поставь галочки на <code>meeting:write:admin</code> и <code>meeting:read:admin</code><br>
+                4. Нажми <strong>"Done"</strong>
+            </div>
+
+            <p>Нажми <strong>"Continue"</strong>.</p>
+        </div>
+
+        <!-- ============================================ -->
+        <h2>Часть 3: Активация</h2>
+        <!-- ============================================ -->
+
+        <div class="step">
+            <span class="step-number">8</span>
+            <span class="step-title">Активируй приложение</span>
+            <p>На последней вкладке <strong>"Activation"</strong>:</p>
+            <ol>
+                <li>Проверь что все галочки зелёные (Information, Scopes)</li>
+                <li>Нажми большую кнопку <strong>"Activate your app"</strong></li>
+            </ol>
+
+            <div class="success-box">
+                <strong>Готово!</strong> Если видишь сообщение "Your app is activated on the account" — всё настроено правильно.
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- ============================================ -->
+        <h2>Проверочный чек-лист</h2>
+        <!-- ============================================ -->
+
+        <p>Убедись что всё сделано:</p>
+        <ul style="list-style: none; padding-left: 0;">
+            <li>&#9744; Создано приложение типа <strong>Server-to-Server OAuth</strong></li>
+            <li>&#9744; Заполнена информация (Short Description, Company Name и т.д.)</li>
+            <li>&#9744; Скопированы и отправлены Тиму: <strong>Account ID, Client ID, Client Secret</strong></li>
+            <li>&#9744; Добавлены scopes: <code>meeting:write:admin</code> и <code>meeting:read:admin</code></li>
+            <li>&#9744; Приложение <strong>активировано</strong></li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <!-- ============================================ -->
+        <h2>Частые вопросы</h2>
+        <!-- ============================================ -->
+
+        <h3>Я не вижу "Server-to-Server OAuth" в списке типов приложений</h3>
+        <p>Этот тип доступен только для аккаунтов с планом Pro и выше. Если у тебя бесплатный план Zoom — напиши Тиму, мы найдём решение.</p>
+
+        <h3>Zoom просит подтвердить email</h3>
+        <p>Это нормально. Подтверди email и вернись к инструкции.</p>
+
+        <h3>Zoom просит 2FA / двухфакторную аутентификацию</h3>
+        <p>Если используешь вход через Google — может потребоваться 2FA от Google. Введи код из Google Authenticator или SMS. Если не получается — напиши Тиму.</p>
+
+        <h3>Вижу ошибку "You don't have permission"</h3>
+        <p>Скорее всего, ты вошла не под тем аккаунтом или аккаунт не является админом (owner). Напиши Тиму — разберёмся вместе.</p>
+
+        <h3>Что если я случайно удалю приложение?</h3>
+        <p>Ничего страшного — можно создать заново по этой же инструкции. Просто нужно будет снова отправить credentials Тиму.</p>
+
+        <h3>Это безопасно?</h3>
+        <p>Да. Server-to-Server OAuth App даёт доступ <strong>только</strong> к созданию и просмотру встреч. Приложение не может читать твою почту, менять пароль или делать что-то кроме того, что мы разрешили в scopes.</p>
+
+        <div class="divider"></div>
+
+        <div class="footer">
+            <p>Инструкция для команды СБОРКИ &middot; Февраль 2026</p>
+            <p style="margin-top: 4px;">Вопросы? Напиши Тиму в Telegram</p>
+        </div>
+
+    </div>
+
+    <script>
+        function copyText(el) {
+            const text = el.textContent.replace('Нажми чтобы скопировать', '').replace('Скопировано!', '').trim();
+            navigator.clipboard.writeText(text).then(() => {
+                el.classList.add('copied');
+                setTimeout(() => el.classList.remove('copied'), 2000);
+            });
+        }
+    </script>
+</body>
+</html>
