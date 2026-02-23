@@ -3,16 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>СБОРКА — Когда поиск работы затянулся</title>
-    <meta name="description" content="Клуб для тех, кто не ищет мотивацию, а возвращает рабочее состояние. Вебинары, Q&A, разборы ситуаций." />
+    <title>СБОРКА — карьерный клуб | Оффер за 6-8 недель</title>
+    <meta name="description" content="Карьерный клуб СБОРКА для Middle, Senior и Lead: менторы, мок-собеседования, разбор резюме. Средний участник получает оффер за 6-8 недель. Триал 7 дней бесплатно. Подписка от 4 900 руб/мес." />
     <meta name="author" content="СБОРКА" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://sborka.work/" />
+    <link rel="alternate" hreflang="ru" href="https://sborka.work/" />
+    <link rel="alternate" hreflang="x-default" href="https://sborka.work/" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
-    <meta property="og:title" content="СБОРКА — Когда нужно собраться" />
-    <meta property="og:description" content="Клуб для тех, кто не ищет мотивацию, а возвращает рабочее состояние." />
+    <meta property="og:title" content="СБОРКА — карьерный клуб | Оффер за 6-8 недель" />
+    <meta property="og:description" content="Карьерный клуб для Middle/Senior/Lead: менторы, мок-собеседования, разбор резюме. Подписка от 4 900 руб/мес." />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://sborka.work/" />
+    <meta property="og:locale" content="ru_RU" />
     <meta property="og:image" content="https://sborka.work/og-image.png" />
+    <meta property="og:site_name" content="СБОРКА" />
+    <meta property="article:modified_time" content="2026-02-23T23:00:00+03:00" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@sborka_club" />
@@ -25,27 +33,42 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
+      "@id": "https://sborka.work/#organization",
       "name": "СБОРКА",
       "url": "https://sborka.work",
+      "logo": "https://sborka.work/favicon.svg",
       "description": "Карьерный клуб для специалистов Middle, Senior и Lead. Подписка от 4 900 руб/мес с менторами, разборами резюме и мок-собеседованиями. Средний участник получает оффер за 6-8 недель.",
       "foundingDate": "2025",
       "areaServed": { "@type": "Country", "name": "RU" },
       "knowsLanguage": "ru",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "url": "https://t.me/Sborka_work_bot",
+        "availableLanguage": "ru"
+      },
       "sameAs": [
         "https://t.me/public_sborka",
-        "https://t.me/Sborka_work_bot"
+        "https://t.me/Sborka_work_bot",
+        "https://www.linkedin.com/in/timzinin/",
+        "https://www.linkedin.com/in/itech-wise/",
+        "https://vk.com/sborka_work"
       ],
       "founder": [
         {
           "@type": "Person",
+          "@id": "https://sborka.work/#tim-zinin",
           "name": "Тим Зинин",
-          "jobTitle": "Co-founder, AI & Product"
+          "jobTitle": "Co-founder, AI & Product",
+          "sameAs": ["https://www.linkedin.com/in/timzinin/", "https://t.me/timofeyzinin"]
         },
         {
           "@type": "Person",
+          "@id": "https://sborka.work/#kristina-zhukova",
           "name": "Кристина Жукова",
           "jobTitle": "Co-founder, Recruiting Expert",
-          "description": "8 лет опыта в рекрутинге"
+          "description": "8 лет опыта в рекрутинге, работала с IT-компаниями от стартапов до корпораций",
+          "sameAs": ["https://www.linkedin.com/in/itech-wise/"]
         }
       ]
     }
@@ -56,8 +79,9 @@
     {
       "@context": "https://schema.org",
       "@type": "Service",
+      "@id": "https://sborka.work/#service",
       "name": "СБОРКА — карьерный клуб",
-      "provider": { "@type": "Organization", "name": "СБОРКА" },
+      "provider": { "@id": "https://sborka.work/#organization" },
       "description": "Подписочный карьерный клуб для специалистов от Middle и выше. Групповые сессии, разбор резюме, подготовка к собеседованиям, переговоры о зарплате, командные соревнования.",
       "serviceType": "Career Coaching",
       "areaServed": { "@type": "Country", "name": "RU" },
@@ -98,71 +122,19 @@
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Что такое СБОРКА?",
-          "acceptedAnswer": { "@type": "Answer", "text": "СБОРКА — это подписочный карьерный клуб для специалистов уровня Middle, Senior и Lead. Внутри: групповые сессии с менторами, разбор резюме, мок-собеседования, переговоры о зарплате и командные соревнования по поиску работы. Всё в Telegram, живые сессии." }
-        },
-        {
-          "@type": "Question",
-          "name": "Сколько стоит подписка на СБОРКУ?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Три тарифа: СТАРТ 4 900 руб/мес (групповые сессии + соревнование), ПРОРЫВ 9 900 руб/мес (+ разбор резюме + мок-собеседования), VIP 15 900 руб/мес (+ персональный ментор). Триальный период 7 дней бесплатно." }
-        },
-        {
-          "@type": "Question",
-          "name": "Сколько времени нужно уделять?",
-          "acceptedAnswer": { "@type": "Answer", "text": "5-6 часов в неделю: 2 групповые сессии + командное соревнование + самостоятельная работа. Это минимум для реального результата." }
-        },
-        {
-          "@type": "Question",
-          "name": "Это онлайн-курс?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Нет. Это живая рабочая среда с регулярными сессиями, командным соревнованием и обратной связью от экспертов. Никаких записанных видео «посмотри когда-нибудь»." }
-        },
-        {
-          "@type": "Question",
-          "name": "Как быстро будет результат?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Средний участник получает первый оффер за 6-8 недель. Зависит от уровня, рынка и того, насколько системно ты работаешь." }
-        },
-        {
-          "@type": "Question",
-          "name": "Можно ли отменить подписку?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Да, в любой момент. Никаких контрактов или скрытых условий." }
-        },
-        {
-          "@type": "Question",
-          "name": "Подойдёт ли мне, если я junior?",
-          "acceptedAnswer": { "@type": "Answer", "text": "СБОРКА заточена под middle+ специалистов и руководителей. Для junior система может быть слишком интенсивной." }
-        },
-        {
-          "@type": "Question",
-          "name": "Чем СБОРКА отличается от курсов по трудоустройству?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Курсы дают записанные лекции. СБОРКА — это живая среда: ты работаешь с менторами в реальном времени, получаешь обратную связь на своё резюме и проходишь мок-собеседования. Плюс командное соревнование, которое не даёт расслабиться." }
-        },
-        {
-          "@type": "Question",
-          "name": "Кто менторы в СБОРКЕ?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Кристина Жукова — 8 лет в рекрутинге, работала с IT-компаниями от стартапов до корпораций. Тим Зинин — специалист по AI и продуктовому развитию. Плюс приглашённые эксперты из индустрии." }
-        },
-        {
-          "@type": "Question",
-          "name": "Как проходят вебинары?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Вебинары проходят в Zoom, обычно по вечерам (18:00-19:30 МСК). Темы: как устроен найм, разбор резюме, подготовка к собеседованиям, переговоры о зарплате. Участие бесплатное, регистрация через Telegram-бот @Sborka_work_bot." }
-        },
-        {
-          "@type": "Question",
-          "name": "Подходит ли СБОРКА для смены профессии?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Да. Многие участники приходят именно за этим. Менторы помогают оценить текущие навыки, составить план перехода и подготовить резюме под новую роль." }
-        },
-        {
-          "@type": "Question",
-          "name": "Можно ли попробовать бесплатно?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Да. Триальный период — 7 дней бесплатно. Также проводим бесплатные вебинары, на которые можно зарегистрироваться через бот @Sborka_work_bot." }
-        },
-        {
-          "@type": "Question",
-          "name": "Есть ли гарантия трудоустройства?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Гарантию трудоустройства мы не даём — это было бы нечестно, потому что результат зависит от рынка и твоих усилий. Но мы даём систему, инструменты и экспертную поддержку. Средний результат — оффер за 6-8 недель при регулярной работе." }
-        }
+        { "@type": "Question", "name": "Что такое СБОРКА?", "acceptedAnswer": { "@type": "Answer", "text": "СБОРКА — это подписочный карьерный клуб для специалистов уровня Middle, Senior и Lead. Внутри: групповые сессии с менторами, разбор резюме, мок-собеседования, переговоры о зарплате и командные соревнования по поиску работы. Всё в Telegram, живые сессии." } },
+        { "@type": "Question", "name": "Сколько стоит подписка на СБОРКУ?", "acceptedAnswer": { "@type": "Answer", "text": "Три тарифа: СТАРТ 4 900 руб/мес (групповые сессии + соревнование), ПРОРЫВ 9 900 руб/мес (+ разбор резюме + мок-собеседования), VIP 15 900 руб/мес (+ персональный ментор). Триальный период 7 дней бесплатно." } },
+        { "@type": "Question", "name": "Сколько времени нужно уделять?", "acceptedAnswer": { "@type": "Answer", "text": "5-6 часов в неделю: 2 групповые сессии + командное соревнование + самостоятельная работа. Это минимум для реального результата." } },
+        { "@type": "Question", "name": "Это онлайн-курс?", "acceptedAnswer": { "@type": "Answer", "text": "Нет. Это живая рабочая среда с регулярными сессиями, командным соревнованием и обратной связью от экспертов. Никаких записанных видео «посмотри когда-нибудь»." } },
+        { "@type": "Question", "name": "Как быстро будет результат?", "acceptedAnswer": { "@type": "Answer", "text": "Средний участник получает первый оффер за 6-8 недель. Зависит от уровня, рынка и того, насколько системно ты работаешь." } },
+        { "@type": "Question", "name": "Можно ли отменить подписку?", "acceptedAnswer": { "@type": "Answer", "text": "Да, в любой момент. Никаких контрактов или скрытых условий." } },
+        { "@type": "Question", "name": "Подойдёт ли мне, если я junior?", "acceptedAnswer": { "@type": "Answer", "text": "СБОРКА заточена под middle+ специалистов и руководителей. Для junior система может быть слишком интенсивной." } },
+        { "@type": "Question", "name": "Чем СБОРКА отличается от курсов по трудоустройству?", "acceptedAnswer": { "@type": "Answer", "text": "Курсы дают записанные лекции. СБОРКА — это живая среда: ты работаешь с менторами в реальном времени, получаешь обратную связь на своё резюме и проходишь мок-собеседования. Плюс командное соревнование, которое не даёт расслабиться." } },
+        { "@type": "Question", "name": "Кто менторы в СБОРКЕ?", "acceptedAnswer": { "@type": "Answer", "text": "Кристина Жукова — 8 лет в рекрутинге, работала с IT-компаниями от стартапов до корпораций. Тим Зинин — специалист по AI и продуктовому развитию. Плюс приглашённые эксперты из индустрии." } },
+        { "@type": "Question", "name": "Как проходят вебинары?", "acceptedAnswer": { "@type": "Answer", "text": "Вебинары проходят в Zoom, обычно по вечерам (18:00-19:30 МСК). Темы: как устроен найм, разбор резюме, подготовка к собеседованиям, переговоры о зарплате. Участие бесплатное, регистрация через Telegram-бот @Sborka_work_bot." } },
+        { "@type": "Question", "name": "Подходит ли СБОРКА для смены профессии?", "acceptedAnswer": { "@type": "Answer", "text": "Да. Многие участники приходят именно за этим. Менторы помогают оценить текущие навыки, составить план перехода и подготовить резюме под новую роль." } },
+        { "@type": "Question", "name": "Можно ли попробовать бесплатно?", "acceptedAnswer": { "@type": "Answer", "text": "Да. Триальный период — 7 дней бесплатно. Также проводим бесплатные вебинары, на которые можно зарегистрироваться через бот @Sborka_work_bot." } },
+        { "@type": "Question", "name": "Есть ли гарантия трудоустройства?", "acceptedAnswer": { "@type": "Answer", "text": "Гарантию трудоустройства мы не даём — это было бы нечестно, потому что результат зависит от рынка и твоих усилий. Но мы даём систему, инструменты и экспертную поддержку. Средний результат — оффер за 6-8 недель при регулярной работе." } }
       ]
     }
     </script>
@@ -172,8 +144,33 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
+      "@id": "https://sborka.work/#website",
       "name": "СБОРКА",
-      "url": "https://sborka.work"
+      "url": "https://sborka.work",
+      "publisher": { "@id": "https://sborka.work/#organization" }
+    }
+    </script>
+
+    <!-- Schema.org JSON-LD: Event (upcoming webinar) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Event",
+      "name": "Система поиска работы за 30-60 дней",
+      "description": "Бесплатный вебинар СБОРКИ: как построить систему поиска работы и получить оффер за 30-60 дней",
+      "startDate": "2026-02-24T18:00:00+03:00",
+      "endDate": "2026-02-24T19:30:00+03:00",
+      "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "location": { "@type": "VirtualLocation", "url": "https://t.me/Sborka_work_bot" },
+      "organizer": { "@id": "https://sborka.work/#organization" },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "RUB",
+        "availability": "https://schema.org/InStock",
+        "url": "https://t.me/Sborka_work_bot"
+      }
     }
     </script>
   </head>

@@ -38,6 +38,12 @@ Allow: /
 User-agent: cohere-ai
 Allow: /
 
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
 User-agent: *
 Allow: /
 
