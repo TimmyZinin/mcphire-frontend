@@ -1,0 +1,133 @@
+{
+  "role": "Backend Developer",
+  "roleRu": "Backend-разработчик",
+  "slug": "backend-developer",
+  "fetchedAt": "2026-02-23T22:28:16Z",
+  "grades": {
+    "junior": {
+      "moscow": {
+        "vacancies": 23,
+        "salaryMedian": 75000,
+        "salaryP25": 70000,
+        "salaryP75": 85000
+      },
+      "spb": {
+        "vacancies": 4,
+        "salaryMedian": 62500,
+        "salaryP25": 60000,
+        "salaryP75": 155000
+      },
+      "russia": {
+        "vacancies": 65,
+        "salaryMedian": 77500,
+        "salaryP25": 70000,
+        "salaryP75": 150000
+      },
+      "remote": {
+        "vacancies": 18,
+        "salaryMedian": 77500,
+        "salaryP25": 75000,
+        "salaryP75": 165000
+      }
+    },
+    "middle": {
+      "moscow": {
+        "vacancies": 181,
+        "salaryMedian": 169500,
+        "salaryP25": 130000,
+        "salaryP75": 200000
+      },
+      "spb": {
+        "vacancies": 51,
+        "salaryMedian": 127500,
+        "salaryP25": 115000,
+        "salaryP75": 175000
+      },
+      "russia": {
+        "vacancies": 558,
+        "salaryMedian": 131500,
+        "salaryP25": 100000,
+        "salaryP75": 151800
+      },
+      "remote": {
+        "vacancies": 235,
+        "salaryMedian": 110000,
+        "salaryP25": 84000,
+        "salaryP75": 184000
+      }
+    },
+    "senior": {
+      "moscow": {
+        "vacancies": 503,
+        "salaryMedian": 270000,
+        "salaryP25": 250000,
+        "salaryP75": 368000
+      },
+      "spb": {
+        "vacancies": 100,
+        "salaryMedian": 200000,
+        "salaryP25": 115000,
+        "salaryP75": 250000
+      },
+      "russia": {
+        "vacancies": 1024,
+        "salaryMedian": 220800,
+        "salaryP25": 175000,
+        "salaryP75": 290000
+      },
+      "remote": {
+        "vacancies": 566,
+        "salaryMedian": 225000,
+        "salaryP25": 150000,
+        "salaryP75": 290000
+      }
+    },
+    "lead": {
+      "moscow": {
+        "vacancies": 155,
+        "salaryMedian": 287500,
+        "salaryP25": 250000,
+        "salaryP75": 450000
+      },
+      "spb": {
+        "vacancies": 33,
+        "salaryMedian": 225000,
+        "salaryP25": 190000,
+        "salaryP75": 300000
+      },
+      "russia": {
+        "vacancies": 290,
+        "salaryMedian": 300000,
+        "salaryP25": 250000,
+        "salaryP75": 450000
+      },
+      "remote": {
+        "vacancies": 199,
+        "salaryMedian": 350000,
+        "salaryP25": 250000,
+        "salaryP75": 575000
+      }
+    }
+  },
+  "topSkills": [
+    "REST API",
+    "Python",
+    "Docker",
+    "SQL",
+    "Git",
+    "Linux",
+    "Java",
+    "JavaScript",
+    "HTML",
+    "PHP"
+  ],
+  "topEmployers": [
+    "AbeloHost B.V.",
+    "Alif Uzbekistan",
+    "Bell Integrator Регионы",
+    "Bright Technologies",
+    "CODEREVIEW",
+    "Digital Spirit",
+    "Emphasoft"
+  ]
+}

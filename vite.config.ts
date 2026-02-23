@@ -3,6 +3,30 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import prerender from "@prerenderer/rollup-plugin";
 import PuppeteerRenderer from "@prerenderer/renderer-puppeteer";
+import fs from "fs";
+
+// Load knowledge routes from generated index
+function getKnowledgeRoutes(): string[] {
+  try {
+    const indexPath = path.resolve(__dirname, "src/data/articles/_index.json");
+    const data = JSON.parse(fs.readFileSync(indexPath, "utf-8"));
+    const routes = ["/knowledge"];
+    const categories = new Set<string>();
+
+    for (const article of data) {
+      categories.add(article.category);
+      routes.push(`/knowledge/${article.category}/${article.slug}`);
+    }
+
+    for (const cat of Array.from(categories).sort()) {
+      routes.splice(1, 0, `/knowledge/${cat}`);
+    }
+
+    return routes;
+  } catch {
+    return ["/knowledge"];
+  }
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -17,7 +41,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === "production" &&
       prerender({
-        routes: ["/", "/partners"],
+        routes: ["/", "/partners", ...getKnowledgeRoutes()],
         renderer: new PuppeteerRenderer({
           renderAfterDocumentEvent: "render-event",
           headless: true,

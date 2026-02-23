@@ -1,0 +1,133 @@
+{
+  "role": "DevOps Engineer",
+  "roleRu": "DevOps-инженер",
+  "slug": "devops-engineer",
+  "fetchedAt": "2026-02-23T22:28:46Z",
+  "grades": {
+    "junior": {
+      "moscow": {
+        "vacancies": 15,
+        "salaryMedian": 90000,
+        "salaryP25": 75000,
+        "salaryP75": 110000
+      },
+      "spb": {
+        "vacancies": 8,
+        "salaryMedian": 67500,
+        "salaryP25": 60000,
+        "salaryP75": 75000
+      },
+      "russia": {
+        "vacancies": 39,
+        "salaryMedian": 75000,
+        "salaryP25": 56250,
+        "salaryP75": 100000
+      },
+      "remote": {
+        "vacancies": 19,
+        "salaryMedian": 75000,
+        "salaryP25": 75000,
+        "salaryP75": 75000
+      }
+    },
+    "middle": {
+      "moscow": {
+        "vacancies": 147,
+        "salaryMedian": 170000,
+        "salaryP25": 100000,
+        "salaryP75": 225000
+      },
+      "spb": {
+        "vacancies": 26,
+        "salaryMedian": 130000,
+        "salaryP25": 100000,
+        "salaryP75": 175000
+      },
+      "russia": {
+        "vacancies": 322,
+        "salaryMedian": 139000,
+        "salaryP25": 130000,
+        "salaryP75": 200000
+      },
+      "remote": {
+        "vacancies": 123,
+        "salaryMedian": 138000,
+        "salaryP25": 120000,
+        "salaryP75": 200000
+      }
+    },
+    "senior": {
+      "moscow": {
+        "vacancies": 472,
+        "salaryMedian": 340000,
+        "salaryP25": 225000,
+        "salaryP75": 400000
+      },
+      "spb": {
+        "vacancies": 56,
+        "salaryMedian": 245000,
+        "salaryP25": 215000,
+        "salaryP75": 325000
+      },
+      "russia": {
+        "vacancies": 759,
+        "salaryMedian": 400000,
+        "salaryP25": 280000,
+        "salaryP75": 400000
+      },
+      "remote": {
+        "vacancies": 346,
+        "salaryMedian": 280000,
+        "salaryP25": 215000,
+        "salaryP75": 400000
+      }
+    },
+    "lead": {
+      "moscow": {
+        "vacancies": 130,
+        "salaryMedian": 425000,
+        "salaryP25": 350000,
+        "salaryP75": 506000
+      },
+      "spb": {
+        "vacancies": 13,
+        "salaryMedian": 280000,
+        "salaryP25": 250000,
+        "salaryP75": 280000
+      },
+      "russia": {
+        "vacancies": 180,
+        "salaryMedian": 487500,
+        "salaryP25": 350000,
+        "salaryP75": 900000
+      },
+      "remote": {
+        "vacancies": 113,
+        "salaryMedian": 487500,
+        "salaryP25": 375000,
+        "salaryP75": 900000
+      }
+    }
+  },
+  "topSkills": [
+    "DevOps",
+    "Kubernetes",
+    "Linux",
+    "SQL",
+    "CI/CD",
+    "Docker",
+    "Bash",
+    "Git",
+    "PostgreSQL",
+    "Python"
+  ],
+  "topEmployers": [
+    "5 элемент",
+    "AccentOS",
+    "DPD в России",
+    "Finext",
+    "Finstar Financial Group",
+    "GFN Cloud Internet Services",
+    "IT-Work"
+  ]
+}

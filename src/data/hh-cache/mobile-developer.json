@@ -1,0 +1,133 @@
+{
+  "role": "Mobile Developer",
+  "roleRu": "Mobile-разработчик",
+  "slug": "mobile-developer",
+  "fetchedAt": "2026-02-23T22:31:31Z",
+  "grades": {
+    "junior": {
+      "moscow": {
+        "vacancies": 4,
+        "salaryMedian": 180000,
+        "salaryP25": 50000,
+        "salaryP75": 500000
+      },
+      "spb": {
+        "vacancies": 2,
+        "salaryMedian": 110000,
+        "salaryP25": 65000,
+        "salaryP75": 155000
+      },
+      "russia": {
+        "vacancies": 41,
+        "salaryMedian": 44000,
+        "salaryP25": 35000,
+        "salaryP75": 155000
+      },
+      "remote": {
+        "vacancies": 6,
+        "salaryMedian": 45900,
+        "salaryP25": 45900,
+        "salaryP75": 180000
+      }
+    },
+    "middle": {
+      "moscow": {
+        "vacancies": 64,
+        "salaryMedian": 132500,
+        "salaryP25": 120000,
+        "salaryP75": 150000
+      },
+      "spb": {
+        "vacancies": 19,
+        "salaryMedian": 162500,
+        "salaryP25": 115000,
+        "salaryP75": 299000
+      },
+      "russia": {
+        "vacancies": 235,
+        "salaryMedian": 112900,
+        "salaryP25": 100000,
+        "salaryP75": 135000
+      },
+      "remote": {
+        "vacancies": 95,
+        "salaryMedian": 150000,
+        "salaryP25": 90000,
+        "salaryP75": 170000
+      }
+    },
+    "senior": {
+      "moscow": {
+        "vacancies": 102,
+        "salaryMedian": 250000,
+        "salaryP25": 200000,
+        "salaryP75": 315000
+      },
+      "spb": {
+        "vacancies": 22,
+        "salaryMedian": 125000,
+        "salaryP25": 120000,
+        "salaryP75": 275000
+      },
+      "russia": {
+        "vacancies": 338,
+        "salaryMedian": 250000,
+        "salaryP25": 175000,
+        "salaryP75": 400000
+      },
+      "remote": {
+        "vacancies": 184,
+        "salaryMedian": 250000,
+        "salaryP25": 175000,
+        "salaryP75": 400000
+      }
+    },
+    "lead": {
+      "moscow": {
+        "vacancies": 33,
+        "salaryMedian": 310000,
+        "salaryP25": 180000,
+        "salaryP75": 500000
+      },
+      "spb": {
+        "vacancies": 3,
+        "salaryMedian": 550000,
+        "salaryP25": 550000,
+        "salaryP75": 550000
+      },
+      "russia": {
+        "vacancies": 106,
+        "salaryMedian": 407000,
+        "salaryP25": 368000,
+        "salaryP75": 460000
+      },
+      "remote": {
+        "vacancies": 40,
+        "salaryMedian": 384000,
+        "salaryP25": 345000,
+        "salaryP75": 460000
+      }
+    }
+  },
+  "topSkills": [
+    "Функциональное тестирование",
+    "Регрессионное тестирование",
+    "Английский язык",
+    "Postman",
+    "JavaScript",
+    "React",
+    "Тестирование безопасности",
+    "Use case",
+    "White box testing",
+    "Системное тестирование"
+  ],
+  "topEmployers": [
+    "AYA Group",
+    "CODEREVIEW",
+    "Effective",
+    "Finstar Financial Group",
+    "FlawlessGroup OÜ",
+    "Innovative People",
+    "KODE"
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "role": "Data Scientist",
+  "roleRu": "Data Scientist",
+  "slug": "data-scientist",
+  "fetchedAt": "2026-02-23T22:30:30Z",
+  "grades": {
+    "junior": {
+      "moscow": {
+        "vacancies": 5,
+        "salaryMedian": 102500,
+        "salaryP25": 102500,
+        "salaryP75": 102500
+      },
+      "spb": {
+        "vacancies": 1,
+        "salaryMedian": null,
+        "salaryP25": null,
+        "salaryP75": null
+      },
+      "russia": {
+        "vacancies": 9,
+        "salaryMedian": 81250,
+        "salaryP25": 60000,
+        "salaryP75": 102500
+      },
+      "remote": {
+        "vacancies": 3,
+        "salaryMedian": null,
+        "salaryP25": null,
+        "salaryP75": null
+      }
+    },
+    "middle": {
+      "moscow": {
+        "vacancies": 51,
+        "salaryMedian": 180000,
+        "salaryP25": 174500,
+        "salaryP75": 200000
+      },
+      "spb": {
+        "vacancies": 5,
+        "salaryMedian": 120000,
+        "salaryP25": 95000,
+        "salaryP75": 160000
+      },
+      "russia": {
+        "vacancies": 84,
+        "salaryMedian": 120000,
+        "salaryP25": 114000,
+        "salaryP75": 180000
+      },
+      "remote": {
+        "vacancies": 28,
+        "salaryMedian": 177250,
+        "salaryP25": 120000,
+        "salaryP75": 200000
+      }
+    },
+    "senior": {
+      "moscow": {
+        "vacancies": 161,
+        "salaryMedian": 300000,
+        "salaryP25": 300000,
+        "salaryP75": 350000
+      },
+      "spb": {
+        "vacancies": 13,
+        "salaryMedian": 307500,
+        "salaryP25": 307500,
+        "salaryP75": 307500
+      },
+      "russia": {
+        "vacancies": 240,
+        "salaryMedian": 245000,
+        "salaryP25": 190000,
+        "salaryP75": 300000
+      },
+      "remote": {
+        "vacancies": 105,
+        "salaryMedian": 325000,
+        "salaryP25": 300000,
+        "salaryP75": 350000
+      }
+    },
+    "lead": {
+      "moscow": {
+        "vacancies": 31,
+        "salaryMedian": 400000,
+        "salaryP25": 267500,
+        "salaryP75": 459000
+      },
+      "spb": {
+        "vacancies": 1,
+        "salaryMedian": null,
+        "salaryP25": null,
+        "salaryP75": null
+      },
+      "russia": {
+        "vacancies": 42,
+        "salaryMedian": 436500,
+        "salaryP25": 400000,
+        "salaryP75": 736000
+      },
+      "remote": {
+        "vacancies": 25,
+        "salaryMedian": 407000,
+        "salaryP25": 300000,
+        "salaryP75": 736000
+      }
+    }
+  },
+  "topSkills": [
+    "Python",
+    "pandas",
+    "SQL",
+    "MS SQL",
+    "Анализ данных",
+    "Исследовательский анализ данных",
+    "ETL",
+    "ML",
+    "Статистика",
+    "Numpy"
+  ],
+  "topEmployers": [
+    "Codemate Team (ИП Дегтярев Михаил Алексеевич)",
+    "Faceplate",
+    "Freedom Holding Operations",
+    "Genesis Group AG",
+    "Grand Line",
+    "Heaad",
+    "Helio AI"
+  ]
+}

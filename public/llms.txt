@@ -51,9 +51,24 @@
 ### Подходит ли для смены профессии?
 Да. Менторы помогают оценить текущие навыки, составить план перехода и подготовить резюме под новую роль.
 
+## База знаний — 100 статей о карьере в IT
+Реальные данные hh.ru (февраль 2026). 10 специальностей × 10 тем.
+
+### Категории
+- [Зарплаты и рынок](https://sborka.work/knowledge/salaries): Зарплаты по грейдам и городам, удалёнка vs офис
+- [Резюме](https://sborka.work/knowledge/resume): Как написать резюме, ATS-оптимизация, шаблоны
+- [Собеседования](https://sborka.work/knowledge/interview): Вопросы, STAR-метод, чек-листы подготовки
+- [Карьера и рост](https://sborka.work/knowledge/career): Карьерный путь, переговоры о зарплате, выгорание
+- [Навыки](https://sborka.work/knowledge/skills): Востребованные навыки 2026, что учить
+- [Поиск работы](https://sborka.work/knowledge/job-search): Системный поиск, лучшие компании
+
+### Специальности
+Python Developer, Frontend Developer, Backend Developer, DevOps Engineer, QA Engineer, Product Manager, Data Scientist, Java Developer, Mobile Developer, UX/UI Designer
+
 ## Основные страницы
 - [Главная](https://sborka.work/): О клубе, тарифы, расписание вебинаров
 - [Партнёрская программа](https://sborka.work/partners): 20% комиссии на 6 месяцев за каждого приведённого участника
+- [База знаний](https://sborka.work/knowledge): 100 статей о карьере в IT с данными hh.ru
 
 ## Контакты
 - Telegram-бот: https://t.me/Sborka_work_bot

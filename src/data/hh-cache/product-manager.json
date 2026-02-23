@@ -1,0 +1,133 @@
+{
+  "role": "Product Manager",
+  "roleRu": "Product Manager",
+  "slug": "product-manager",
+  "fetchedAt": "2026-02-23T22:30:00Z",
+  "grades": {
+    "junior": {
+      "moscow": {
+        "vacancies": 32,
+        "salaryMedian": 86250,
+        "salaryP25": 60000,
+        "salaryP75": 120000
+      },
+      "spb": {
+        "vacancies": 12,
+        "salaryMedian": 70000,
+        "salaryP25": 65000,
+        "salaryP75": 105000
+      },
+      "russia": {
+        "vacancies": 149,
+        "salaryMedian": 96000,
+        "salaryP25": 50000,
+        "salaryP75": 130000
+      },
+      "remote": {
+        "vacancies": 27,
+        "salaryMedian": 47500,
+        "salaryP25": 40000,
+        "salaryP75": 51000
+      }
+    },
+    "middle": {
+      "moscow": {
+        "vacancies": 540,
+        "salaryMedian": 141250,
+        "salaryP25": 130000,
+        "salaryP75": 180000
+      },
+      "spb": {
+        "vacancies": 113,
+        "salaryMedian": 170000,
+        "salaryP25": 105000,
+        "salaryP75": 200000
+      },
+      "russia": {
+        "vacancies": 1288,
+        "salaryMedian": 151250,
+        "salaryP25": 130000,
+        "salaryP75": 253000
+      },
+      "remote": {
+        "vacancies": 335,
+        "salaryMedian": 125000,
+        "salaryP25": 100000,
+        "salaryP75": 200000
+      }
+    },
+    "senior": {
+      "moscow": {
+        "vacancies": 930,
+        "salaryMedian": 285000,
+        "salaryP25": 250000,
+        "salaryP75": 608000
+      },
+      "spb": {
+        "vacancies": 146,
+        "salaryMedian": 200000,
+        "salaryP25": 200000,
+        "salaryP75": 250000
+      },
+      "russia": {
+        "vacancies": 1838,
+        "salaryMedian": 300000,
+        "salaryP25": 250000,
+        "salaryP75": 525000
+      },
+      "remote": {
+        "vacancies": 617,
+        "salaryMedian": 300000,
+        "salaryP25": 276000,
+        "salaryP75": 360000
+      }
+    },
+    "lead": {
+      "moscow": {
+        "vacancies": 171,
+        "salaryMedian": 350000,
+        "salaryP25": 276000,
+        "salaryP75": 450000
+      },
+      "spb": {
+        "vacancies": 23,
+        "salaryMedian": 250000,
+        "salaryP25": 135000,
+        "salaryP75": 350000
+      },
+      "russia": {
+        "vacancies": 378,
+        "salaryMedian": 450000,
+        "salaryP25": 450000,
+        "salaryP75": 500000
+      },
+      "remote": {
+        "vacancies": 130,
+        "salaryMedian": 325000,
+        "salaryP25": 250000,
+        "salaryP75": 450000
+      }
+    }
+  },
+  "topSkills": [
+    "Продвижение бренда",
+    "SaaS",
+    "Управление проектами",
+    "Креативность",
+    "Организаторские навыки",
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Git",
+    "коробочные решения"
+  ],
+  "topEmployers": [
+    "7starswin",
+    "ABCstaff",
+    "AYA Group",
+    "Acino Pharma AG",
+    "Bcraft",
+    "Bereket 2023",
+    "DIDENOK TEAM"
+  ]
+}

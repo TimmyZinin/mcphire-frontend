@@ -1,0 +1,133 @@
+{
+  "role": "Frontend Developer",
+  "roleRu": "Frontend-разработчик",
+  "slug": "frontend-developer",
+  "fetchedAt": "2026-02-23T22:27:45Z",
+  "grades": {
+    "junior": {
+      "moscow": {
+        "vacancies": 11,
+        "salaryMedian": 63125,
+        "salaryP25": 56250,
+        "salaryP75": 165000
+      },
+      "spb": {
+        "vacancies": 1,
+        "salaryMedian": 65000,
+        "salaryP25": 65000,
+        "salaryP75": 65000
+      },
+      "russia": {
+        "vacancies": 44,
+        "salaryMedian": 56250,
+        "salaryP25": 40000,
+        "salaryP75": 80000
+      },
+      "remote": {
+        "vacancies": 11,
+        "salaryMedian": 110000,
+        "salaryP25": 51000,
+        "salaryP75": 380000
+      }
+    },
+    "middle": {
+      "moscow": {
+        "vacancies": 133,
+        "salaryMedian": 140000,
+        "salaryP25": 130000,
+        "salaryP75": 200000
+      },
+      "spb": {
+        "vacancies": 52,
+        "salaryMedian": 130000,
+        "salaryP25": 105000,
+        "salaryP75": 165000
+      },
+      "russia": {
+        "vacancies": 429,
+        "salaryMedian": 136500,
+        "salaryP25": 100000,
+        "salaryP75": 200000
+      },
+      "remote": {
+        "vacancies": 173,
+        "salaryMedian": 105000,
+        "salaryP25": 80500,
+        "salaryP75": 210000
+      }
+    },
+    "senior": {
+      "moscow": {
+        "vacancies": 302,
+        "salaryMedian": 287500,
+        "salaryP25": 250000,
+        "salaryP75": 368000
+      },
+      "spb": {
+        "vacancies": 64,
+        "salaryMedian": 208100,
+        "salaryP25": 184000,
+        "salaryP75": 250000
+      },
+      "russia": {
+        "vacancies": 631,
+        "salaryMedian": 275000,
+        "salaryP25": 220800,
+        "salaryP75": 315000
+      },
+      "remote": {
+        "vacancies": 336,
+        "salaryMedian": 250000,
+        "salaryP25": 200000,
+        "salaryP75": 300000
+      }
+    },
+    "lead": {
+      "moscow": {
+        "vacancies": 80,
+        "salaryMedian": 300000,
+        "salaryP25": 253000,
+        "salaryP75": 500000
+      },
+      "spb": {
+        "vacancies": 18,
+        "salaryMedian": 250000,
+        "salaryP25": 225000,
+        "salaryP75": 350000
+      },
+      "russia": {
+        "vacancies": 137,
+        "salaryMedian": 300000,
+        "salaryP25": 253000,
+        "salaryP75": 500000
+      },
+      "remote": {
+        "vacancies": 93,
+        "salaryMedian": 300000,
+        "salaryP25": 287350,
+        "salaryP75": 460000
+      }
+    }
+  },
+  "topSkills": [
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Git",
+    "Guacamole",
+    "VueJS",
+    "Nuxt",
+    "Django",
+    "REST",
+    "SPA"
+  ],
+  "topEmployers": [
+    "Bright Technologies",
+    "Digital Spirit",
+    "Finext",
+    "I TECH IT GROUP",
+    "I&Time KZ",
+    "Kolesa (АО Колеса)",
+    "Lichi"
+  ]
+}

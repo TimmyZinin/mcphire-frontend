@@ -1,0 +1,133 @@
+{
+  "role": "UX/UI Designer",
+  "roleRu": "UX/UI-дизайнер",
+  "slug": "ux-ui-designer",
+  "fetchedAt": "2026-02-23T22:32:01Z",
+  "grades": {
+    "junior": {
+      "moscow": {
+        "vacancies": 9,
+        "salaryMedian": 110000,
+        "salaryP25": 56250,
+        "salaryP75": 123000
+      },
+      "spb": {
+        "vacancies": 3,
+        "salaryMedian": 35000,
+        "salaryP25": 30000,
+        "salaryP75": 40000
+      },
+      "russia": {
+        "vacancies": 20,
+        "salaryMedian": 50625,
+        "salaryP25": 38000,
+        "salaryP75": 123000
+      },
+      "remote": {
+        "vacancies": 9,
+        "salaryMedian": 40000,
+        "salaryP25": 38000,
+        "salaryP75": 110000
+      }
+    },
+    "middle": {
+      "moscow": {
+        "vacancies": 110,
+        "salaryMedian": 115000,
+        "salaryP25": 100000,
+        "salaryP75": 156400
+      },
+      "spb": {
+        "vacancies": 40,
+        "salaryMedian": 95000,
+        "salaryP25": 80000,
+        "salaryP75": 115000
+      },
+      "russia": {
+        "vacancies": 381,
+        "salaryMedian": 107900,
+        "salaryP25": 90000,
+        "salaryP75": 135000
+      },
+      "remote": {
+        "vacancies": 172,
+        "salaryMedian": 100000,
+        "salaryP25": 90000,
+        "salaryP75": 150000
+      }
+    },
+    "senior": {
+      "moscow": {
+        "vacancies": 200,
+        "salaryMedian": 250000,
+        "salaryP25": 110000,
+        "salaryP75": 300000
+      },
+      "spb": {
+        "vacancies": 40,
+        "salaryMedian": 120000,
+        "salaryP25": 100000,
+        "salaryP75": 200000
+      },
+      "russia": {
+        "vacancies": 381,
+        "salaryMedian": 250000,
+        "salaryP25": 110000,
+        "salaryP75": 300000
+      },
+      "remote": {
+        "vacancies": 170,
+        "salaryMedian": 175000,
+        "salaryP25": 110000,
+        "salaryP75": 300000
+      }
+    },
+    "lead": {
+      "moscow": {
+        "vacancies": 27,
+        "salaryMedian": 205000,
+        "salaryP25": 179000,
+        "salaryP75": 300000
+      },
+      "spb": {
+        "vacancies": 2,
+        "salaryMedian": 125000,
+        "salaryP25": 110000,
+        "salaryP75": 140000
+      },
+      "russia": {
+        "vacancies": 40,
+        "salaryMedian": 230000,
+        "salaryP25": 150000,
+        "salaryP75": 300000
+      },
+      "remote": {
+        "vacancies": 30,
+        "salaryMedian": 185000,
+        "salaryP25": 140000,
+        "salaryP75": 270000
+      }
+    }
+  },
+  "topSkills": [
+    "UX",
+    "UI",
+    "Figma",
+    "Веб-дизайн",
+    "Дизайн интерфейсов",
+    "A/B тесты",
+    "Tilda",
+    "Графический дизайн",
+    "Adobe Photoshop",
+    "Дизайн-ревью"
+  ],
+  "topEmployers": [
+    "100балльный репетитор",
+    "AI FOR BI",
+    "AIC",
+    "AllTrust.me",
+    "Bell Integrator Регионы",
+    "Broad Apps",
+    "DENTALWORKSHOP"
+  ]
+}

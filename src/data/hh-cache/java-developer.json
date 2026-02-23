@@ -1,0 +1,133 @@
+{
+  "role": "Java Developer",
+  "roleRu": "Java-разработчик",
+  "slug": "java-developer",
+  "fetchedAt": "2026-02-23T22:31:00Z",
+  "grades": {
+    "junior": {
+      "moscow": {
+        "vacancies": 26,
+        "salaryMedian": 68500,
+        "salaryP25": 56250,
+        "salaryP75": 85000
+      },
+      "spb": {
+        "vacancies": 8,
+        "salaryMedian": 67000,
+        "salaryP25": 67000,
+        "salaryP75": 155000
+      },
+      "russia": {
+        "vacancies": 77,
+        "salaryMedian": 67500,
+        "salaryP25": 50000,
+        "salaryP75": 85000
+      },
+      "remote": {
+        "vacancies": 30,
+        "salaryMedian": 71000,
+        "salaryP25": 67000,
+        "salaryP75": 95000
+      }
+    },
+    "middle": {
+      "moscow": {
+        "vacancies": 110,
+        "salaryMedian": 120000,
+        "salaryP25": 110000,
+        "salaryP75": 184000
+      },
+      "spb": {
+        "vacancies": 30,
+        "salaryMedian": 150000,
+        "salaryP25": 140000,
+        "salaryP75": 215000
+      },
+      "russia": {
+        "vacancies": 293,
+        "salaryMedian": 150000,
+        "salaryP25": 120000,
+        "salaryP75": 285000
+      },
+      "remote": {
+        "vacancies": 90,
+        "salaryMedian": 120000,
+        "salaryP25": 80000,
+        "salaryP75": 150000
+      }
+    },
+    "senior": {
+      "moscow": {
+        "vacancies": 372,
+        "salaryMedian": 245000,
+        "salaryP25": 230000,
+        "salaryP75": 250000
+      },
+      "spb": {
+        "vacancies": 63,
+        "salaryMedian": 200000,
+        "salaryP25": 170000,
+        "salaryP75": 250000
+      },
+      "russia": {
+        "vacancies": 625,
+        "salaryMedian": 230000,
+        "salaryP25": 180000,
+        "salaryP75": 245000
+      },
+      "remote": {
+        "vacancies": 302,
+        "salaryMedian": 230000,
+        "salaryP25": 180000,
+        "salaryP75": 280000
+      }
+    },
+    "lead": {
+      "moscow": {
+        "vacancies": 139,
+        "salaryMedian": 300000,
+        "salaryP25": 270000,
+        "salaryP75": 460000
+      },
+      "spb": {
+        "vacancies": 40,
+        "salaryMedian": 375000,
+        "salaryP25": 250000,
+        "salaryP75": 506000
+      },
+      "russia": {
+        "vacancies": 247,
+        "salaryMedian": 295000,
+        "salaryP25": 225000,
+        "salaryP75": 460000
+      },
+      "remote": {
+        "vacancies": 141,
+        "salaryMedian": 380000,
+        "salaryP25": 290000,
+        "salaryP75": 460000
+      }
+    }
+  },
+  "topSkills": [
+    "Java",
+    "PostgreSQL",
+    "ORACLE",
+    "Hibernate",
+    "SOAP",
+    "REST",
+    "коробочные решения",
+    "управление it-проектами",
+    "SaaS",
+    "Billing"
+  ],
+  "topEmployers": [
+    "Aloqabank",
+    "Bell Integrator Регионы",
+    "Devino Telecom",
+    "Digital Spirit",
+    "Emphasoft",
+    "Gridnine",
+    "HALYK FINANCE, дочерняя организация АО Народный банк"
+  ]
+}

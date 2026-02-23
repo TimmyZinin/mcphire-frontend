@@ -1,0 +1,133 @@
+{
+  "role": "QA Engineer",
+  "roleRu": "QA-инженер",
+  "slug": "qa-engineer",
+  "fetchedAt": "2026-02-23T22:29:24Z",
+  "grades": {
+    "junior": {
+      "moscow": {
+        "vacancies": 139,
+        "salaryMedian": 56250,
+        "salaryP25": 50000,
+        "salaryP75": 80000
+      },
+      "spb": {
+        "vacancies": 93,
+        "salaryMedian": 90000,
+        "salaryP25": 57000,
+        "salaryP75": 107500
+      },
+      "russia": {
+        "vacancies": 627,
+        "salaryMedian": 65625,
+        "salaryP25": 50000,
+        "salaryP75": 90000
+      },
+      "remote": {
+        "vacancies": 55,
+        "salaryMedian": 71250,
+        "salaryP25": 50000,
+        "salaryP75": 90000
+      }
+    },
+    "middle": {
+      "moscow": {
+        "vacancies": 447,
+        "salaryMedian": 115000,
+        "salaryP25": 100000,
+        "salaryP75": 140000
+      },
+      "spb": {
+        "vacancies": 163,
+        "salaryMedian": 115000,
+        "salaryP25": 100000,
+        "salaryP75": 150000
+      },
+      "russia": {
+        "vacancies": 1473,
+        "salaryMedian": 130500,
+        "salaryP25": 110000,
+        "salaryP75": 150000
+      },
+      "remote": {
+        "vacancies": 300,
+        "salaryMedian": 100000,
+        "salaryP25": 90000,
+        "salaryP75": 150000
+      }
+    },
+    "senior": {
+      "moscow": {
+        "vacancies": 650,
+        "salaryMedian": 184000,
+        "salaryP25": 180000,
+        "salaryP75": 300000
+      },
+      "spb": {
+        "vacancies": 144,
+        "salaryMedian": 170000,
+        "salaryP25": 140000,
+        "salaryP75": 250000
+      },
+      "russia": {
+        "vacancies": 1267,
+        "salaryMedian": 180000,
+        "salaryP25": 100000,
+        "salaryP75": 184000
+      },
+      "remote": {
+        "vacancies": 512,
+        "salaryMedian": 161000,
+        "salaryP25": 150000,
+        "salaryP75": 250000
+      }
+    },
+    "lead": {
+      "moscow": {
+        "vacancies": 120,
+        "salaryMedian": 275000,
+        "salaryP25": 250000,
+        "salaryP75": 300000
+      },
+      "spb": {
+        "vacancies": 27,
+        "salaryMedian": 200000,
+        "salaryP25": 190000,
+        "salaryP75": 330000
+      },
+      "russia": {
+        "vacancies": 222,
+        "salaryMedian": 275000,
+        "salaryP25": 250000,
+        "salaryP75": 335000
+      },
+      "remote": {
+        "vacancies": 108,
+        "salaryMedian": 225000,
+        "salaryP25": 185000,
+        "salaryP75": 250000
+      }
+    }
+  },
+  "topSkills": [
+    "Функциональное тестирование",
+    "Регрессионное тестирование",
+    "Ручное тестирование",
+    "Тестирование API",
+    "Интеграционное тестирование",
+    "Тестирование",
+    "Кроссплатформенное тестирование",
+    "Нагрузочное тестирование",
+    "Системное тестирование",
+    "Объемное тестирование"
+  ],
+  "topEmployers": [
+    "5Reasons",
+    "Absolut POS",
+    "Bell Integrator Регионы",
+    "Drivee",
+    "Finext",
+    "GO Digital",
+    "Hotels.ru"
+  ]
+}
