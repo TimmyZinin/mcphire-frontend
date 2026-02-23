@@ -26,7 +26,11 @@ const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
               <Link
                 to={item.href}
                 itemProp="item"
-                className="hover:text-foreground transition-colors"
+                className={
+                  i === 0
+                    ? "font-black uppercase text-[hsl(174,62%,35%)] tracking-wider text-xs hover:text-[hsl(174,62%,25%)] transition-colors"
+                    : "hover:text-foreground transition-colors"
+                }
               >
                 <span itemProp="name">{item.label}</span>
               </Link>

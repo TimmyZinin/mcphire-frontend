@@ -140,6 +140,13 @@ export const CATEGORIES = [
   { slug: "career", nameRu: "Карьера и рост", color: "#DDA0DD" },
   { slug: "skills", nameRu: "Навыки", color: "#96CEB4" },
   { slug: "job-search", nameRu: "Поиск работы", color: "#FF6B6B" },
+  { slug: "job-search-active", nameRu: "Активный поиск работы", color: "#E17055" },
+  { slug: "market-crisis", nameRu: "Рынок труда и кризис", color: "#636E72" },
+  { slug: "career-guidance", nameRu: "Карьерное ориентирование", color: "#6C5CE7" },
+  { slug: "hr-consultation", nameRu: "HR-консультация", color: "#00B894" },
+  { slug: "work-support", nameRu: "Поддержка при работе", color: "#FDCB6E" },
+  { slug: "career-change", nameRu: "Смена профессии", color: "#E84393" },
+  { slug: "layoff", nameRu: "Увольнение и сокращение", color: "#D63031" },
 ];
 
 export const EXPERT_QUOTES = {

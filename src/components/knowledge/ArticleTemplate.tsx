@@ -150,7 +150,7 @@ const ArticleTemplate = ({ article }: ArticleTemplateProps) => {
           {/* Main content */}
           <div className="min-w-0 max-w-[680px]">
             {/* Quick answer */}
-            <div className="p-6 bg-[hsl(174,62%,95%)] border-l-4 border-[hsl(174,62%,45%)] rounded-r-lg mb-10">
+            <div className="p-6 bg-[hsl(174,62%,95%)] border-l-4 border-[hsl(174,62%,45%)] rounded-r-lg mb-8">
               <p className="text-sm font-bold uppercase tracking-wider text-[hsl(174,62%,30%)] mb-2">
                 Коротко
               </p>
@@ -162,10 +162,15 @@ const ArticleTemplate = ({ article }: ArticleTemplateProps) => {
               )}
             </div>
 
+            {/* Early CTA — between quick answer and first section */}
+            <ArticleCTA slug={meta.slug} variant="inline" />
+
             {/* Sections */}
             {article.sections.map((section, i) => (
               <section key={i} id={slugify(section.heading)} className="mb-10">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">{section.heading}</h2>
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight border-l-[3px] border-[hsl(174,62%,55%)] pl-4 mb-4">
+                  {section.heading}
+                </h2>
                 <div className="article-content">{renderMarkdown(section.content)}</div>
                 {/* Salary table after section index 1 (salary data section) */}
                 {i === 1 && article.salaryTable && article.salaryTable.length > 0 && (
@@ -179,7 +184,7 @@ const ArticleTemplate = ({ article }: ArticleTemplateProps) => {
 
             {/* Expert Quote */}
             {article.expertQuote && (
-              <blockquote className="my-10 p-6 border-l-4 border-foreground bg-muted rounded-r-lg">
+              <blockquote className="my-10 p-6 border-l-4 border-[hsl(174,62%,45%)] bg-[hsl(174,62%,96%)] rounded-r-lg">
                 <p className="text-base italic leading-relaxed mb-3">
                   "{article.expertQuote.text}"
                 </p>
@@ -193,7 +198,9 @@ const ArticleTemplate = ({ article }: ArticleTemplateProps) => {
             {/* Mistakes */}
             {article.mistakes.length > 0 && (
               <section id="mistakes" className="mb-10">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">Типичные ошибки</h2>
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight border-l-[3px] border-[hsl(174,62%,55%)] pl-4 mb-4">
+                  Типичные ошибки
+                </h2>
                 <ul className="space-y-3">
                   {article.mistakes.map((m, i) => (
                     <li key={i} className="list-x">{m}</li>
@@ -205,11 +212,13 @@ const ArticleTemplate = ({ article }: ArticleTemplateProps) => {
             {/* Action Plan */}
             {article.actionPlan.length > 0 && (
               <section id="action-plan" className="mb-10">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">Пошаговый план действий</h2>
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight border-l-[3px] border-[hsl(174,62%,55%)] pl-4 mb-4">
+                  Пошаговый план действий
+                </h2>
                 <ol className="space-y-3">
                   {article.actionPlan.map((step, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <span className="shrink-0 w-7 h-7 rounded-full bg-foreground text-background text-sm font-bold flex items-center justify-center mt-0.5">
+                      <span className="shrink-0 w-7 h-7 rounded-full bg-[hsl(174,62%,40%)] text-white text-sm font-bold flex items-center justify-center mt-0.5">
                         {i + 1}
                       </span>
                       <span className="text-base leading-relaxed">{step}</span>
@@ -222,7 +231,9 @@ const ArticleTemplate = ({ article }: ArticleTemplateProps) => {
             {/* FAQ */}
             {article.faq.length > 0 && (
               <section id="faq" className="mb-10">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">FAQ</h2>
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight border-l-[3px] border-[hsl(174,62%,55%)] pl-4 mb-4">
+                  FAQ
+                </h2>
                 <div className="space-y-6">
                   {article.faq.map((item, i) => (
                     <div key={i}>

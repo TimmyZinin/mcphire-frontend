@@ -51,10 +51,10 @@
 ### Подходит ли для смены профессии?
 Да. Менторы помогают оценить текущие навыки, составить план перехода и подготовить резюме под новую роль.
 
-## База знаний — 100 статей о карьере в IT
-Реальные данные hh.ru (февраль 2026). 10 специальностей × 10 тем.
+## База знаний — 150 статей о карьере в IT
+Реальные данные hh.ru (февраль 2026). 10 специальностей × 10 тем + 50 статей по жизненным ситуациям.
 
-### Категории
+### Категории по специальностям
 - [Зарплаты и рынок](https://sborka.work/knowledge/salaries): Зарплаты по грейдам и городам, удалёнка vs офис
 - [Резюме](https://sborka.work/knowledge/resume): Как написать резюме, ATS-оптимизация, шаблоны
 - [Собеседования](https://sborka.work/knowledge/interview): Вопросы, STAR-метод, чек-листы подготовки
@@ -62,13 +62,22 @@
 - [Навыки](https://sborka.work/knowledge/skills): Востребованные навыки 2026, что учить
 - [Поиск работы](https://sborka.work/knowledge/job-search): Системный поиск, лучшие компании
 
+### Категории по жизненным ситуациям
+- [Активный поиск работы](https://sborka.work/knowledge/job-search-active): Пошаговые планы, отклики, собеседования, офферы
+- [Рынок труда и кризис](https://sborka.work/knowledge/market-crisis): Тренды 2026, сокращения, зарплаты, перспективы
+- [Карьерное ориентирование](https://sborka.work/knowledge/career-guidance): Планирование, рост, менторинг, рыночная стоимость
+- [HR-консультация](https://sborka.work/knowledge/hr-consultation): Увольнение, испытательный срок, договор, повышение
+- [Поддержка при работе](https://sborka.work/knowledge/work-support): Выгорание, мотивация, синдром самозванца, баланс
+- [Смена профессии](https://sborka.work/knowledge/career-change): Переход в IT, смена специализации, портфолио
+- [Увольнение и сокращение](https://sborka.work/knowledge/layoff): Права, компенсации, план действий
+
 ### Специальности
 Python Developer, Frontend Developer, Backend Developer, DevOps Engineer, QA Engineer, Product Manager, Data Scientist, Java Developer, Mobile Developer, UX/UI Designer
 
 ## Основные страницы
 - [Главная](https://sborka.work/): О клубе, тарифы, расписание вебинаров
 - [Партнёрская программа](https://sborka.work/partners): 20% комиссии на 6 месяцев за каждого приведённого участника
-- [База знаний](https://sborka.work/knowledge): 100 статей о карьере в IT с данными hh.ru
+- [База знаний](https://sborka.work/knowledge): 150 статей о карьере в IT с данными hh.ru
 
 ## Контакты
 - Telegram-бот: https://t.me/Sborka_work_bot

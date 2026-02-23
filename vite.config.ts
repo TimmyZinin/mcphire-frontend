@@ -45,6 +45,8 @@ export default defineConfig(({ mode }) => ({
         renderer: new PuppeteerRenderer({
           renderAfterDocumentEvent: "render-event",
           headless: true,
+          timeout: 120000,
+          maxConcurrentRoutes: 5,
         }),
         postProcess(renderedRoute) {
           renderedRoute.html = renderedRoute.html.trim();
