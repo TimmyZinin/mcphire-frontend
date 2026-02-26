@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Calculator, ClipboardCheck, FileText, Bot } from "lucide-react";
 
 interface Tool {
@@ -41,6 +42,15 @@ const tools: Tool[] = [
 const ToolsPage = () => {
   return (
     <main className="min-h-screen bg-background">
+      <Helmet>
+        <title>Бесплатные инструменты для поиска работы | СБОРКА</title>
+        <meta name="description" content="Калькулятор зарплаты, чеклист резюме и другие бесплатные инструменты для IT-специалистов от СБОРКИ." />
+        <link rel="canonical" href="https://sborka.work/tools" />
+        <meta property="og:title" content="Бесплатные инструменты для поиска работы" />
+        <meta property="og:description" content="Калькулятор зарплаты, чеклист резюме — бесплатно для IT-специалистов." />
+        <meta property="og:url" content="https://sborka.work/tools" />
+      </Helmet>
+
       {/* Header */}
       <header className="border-b border-border">
         <div className="section-container py-4 flex items-center justify-between">

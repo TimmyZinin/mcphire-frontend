@@ -1,8 +1,17 @@
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 const Partners = () => {
   return (
     <main className="min-h-screen bg-background">
+      <Helmet>
+        <title>Партнёрская программа СБОРКИ — 20% комиссии | СБОРКА</title>
+        <meta name="description" content="Зарабатывай 20% комиссии на 6 месяцев за каждого приведённого участника СБОРКИ. Партнёрская программа карьерного клуба." />
+        <link rel="canonical" href="https://sborka.work/partners" />
+        <meta property="og:title" content="Партнёрская программа СБОРКИ — 20% комиссии" />
+        <meta property="og:description" content="Зарабатывай 20% комиссии за каждого приведённого участника." />
+        <meta property="og:url" content="https://sborka.work/partners" />
+      </Helmet>
       {/* Header */}
       <header className="border-b border-border">
         <div className="section-container py-4 flex items-center justify-between">

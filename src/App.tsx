@@ -14,6 +14,7 @@ import JobsPage from "./pages/JobsPage";
 import ToolsPage from "./pages/ToolsPage";
 import SalaryCalculator from "./pages/SalaryCalculator";
 import ResumeChecklist from "./pages/ResumeChecklist";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/tools" element={<ToolsPage />} />
             <Route path="/tools/salary" element={<SalaryCalculator />} />
             <Route path="/tools/resume-checklist" element={<ResumeChecklist />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

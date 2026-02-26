@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { mockJobs, type Job } from "@/data/mockJobs";
 
 const JobsPage = () => {
@@ -13,6 +14,15 @@ const JobsPage = () => {
 
   return (
     <main className="min-h-screen bg-background">
+      <Helmet>
+        <title>IT-вакансии в России 2026 | СБОРКА</title>
+        <meta name="description" content="Актуальные IT-вакансии на российском рынке. Frontend, Backend, DevOps, QA, Product Manager и другие роли. Фильтр по городу, навыкам, зарплате." />
+        <link rel="canonical" href="https://sborka.work/jobs" />
+        <meta property="og:title" content="IT-вакансии в России 2026" />
+        <meta property="og:description" content="Актуальные IT-вакансии: Frontend, Backend, DevOps, QA, PM. Фильтр по городу и зарплате." />
+        <meta property="og:url" content="https://sborka.work/jobs" />
+      </Helmet>
+
       {/* Header */}
       <header className="border-b border-border">
         <div className="section-container py-4 flex items-center justify-between">

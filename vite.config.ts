@@ -41,7 +41,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === "production" &&
       prerender({
-        routes: ["/", "/partners", ...getKnowledgeRoutes()],
+        routes: ["/", "/partners", "/jobs", "/tools", "/tools/salary", "/tools/resume-checklist", "/privacy", ...getKnowledgeRoutes()],
         renderer: new PuppeteerRenderer({
           renderAfterDocumentEvent: "render-event",
           headless: true,
