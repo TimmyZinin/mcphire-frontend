@@ -39,8 +39,16 @@ export type Role = (typeof roles)[number];
 export type City = (typeof cities)[number];
 export type Level = (typeof levels)[number];
 
-// Salary data in rubles (gross), February 2026
-// Format: [min, median, max] for each level [Junior, Middle, Senior, Lead]
+// Level multipliers relative to the base (Middle) data
+const levelMultipliers: Record<Level, { min: number; median: number; max: number }> = {
+  Junior: { min: 0.50, median: 0.55, max: 0.60 },
+  Middle: { min: 1.00, median: 1.00, max: 1.00 },
+  Senior: { min: 1.40, median: 1.45, max: 1.50 },
+  Lead: { min: 1.75, median: 1.80, max: 1.85 },
+};
+
+// Salary data in rubles (gross), February 2026 — base values for Middle level
+// Format: [min, median, max]
 const salaryData: Record<Role, Record<City, [number, number, number]>> = {
   "Python Developer": {
     "Москва": [120000, 200000, 280000],
@@ -150,35 +158,26 @@ const salaryData: Record<Role, Record<City, [number, number, number]>> = {
 };
 
 export const getSalary = (role: Role, city: City, level: Level): SalaryEntry | null => {
-  const levelIndex = levels.indexOf(level);
   const cityData = salaryData[role];
   if (!cityData) return null;
-  const [min, median, max] = cityData[city] || cityData["Россия (в среднем)"];
+  const [baseMin, baseMedian, baseMax] = cityData[city] || cityData["Россия (в среднем)"];
+  const mult = levelMultipliers[level];
   return {
     role,
     city,
     level,
-    min,
-    median,
-    max,
+    min: Math.round(baseMin * mult.min / 1000) * 1000,
+    median: Math.round(baseMedian * mult.median / 1000) * 1000,
+    max: Math.round(baseMax * mult.max / 1000) * 1000,
   };
 };
 
 export const salaryDatabase: SalaryEntry[] = [];
 for (const role of roles) {
-  const cityData = salaryData[role];
   for (const city of cities) {
-    const [min, median, max] = cityData[city];
     for (const level of levels) {
-      const levelIndex = levels.indexOf(level);
-      salaryDatabase.push({
-        role,
-        city,
-        level,
-        min: [min, median, max][levelIndex],
-        median: [min, median, max][levelIndex],
-        max: [min, median, max][levelIndex],
-      });
+      const entry = getSalary(role, city, level);
+      if (entry) salaryDatabase.push(entry);
     }
   }
 }

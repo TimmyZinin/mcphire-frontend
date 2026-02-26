@@ -14,7 +14,7 @@
   "sections": [
     {
       "heading": "Ситуация на рынке Frontend-разработчика в 2026",
-      "content": "На февраль 2026 года на hh.ru открыто **1 241 вакансий** для Frontend-разработчика. Медианная зарплата Senior в Москве — 287 500 ₽.\n\nТоп востребованных навыков: JavaScript  TypeScript  React  Git  Guacamole  VueJS  Nuxt.\n\nРынок остаётся кандидатским для Middle+ уровня — спрос превышает предложение."
+      "content": "На февраль 2026 года на hh.ru открыто **1 241 вакансий** для Frontend-разработчика. Медианная зарплата Senior в Москве — 287 500 ₽.\n\nТоп востребованных навыков: JavaScript  TypeScript  React  Git  CSS  VueJS  Nuxt.\n\nРынок остаётся кандидатским для Middle+ уровня — спрос превышает предложение."
     },
     {
       "heading": "Переговоры о зарплате Frontend-разработчика",
@@ -35,7 +35,7 @@
     "TypeScript",
     "React",
     "Git",
-    "Guacamole",
+    "CSS",
     "VueJS",
     "Nuxt",
     "Django",

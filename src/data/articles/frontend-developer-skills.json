@@ -10,11 +10,11 @@
     "readingTime": 6,
     "updatedDate": "февраль 2026"
   },
-  "quickAnswer": "В 2026 году самые востребованные навыки Frontend-разработчика по данным 1 241 вакансий на hh.ru: JavaScript  TypeScript  React  Git  Guacamole. AI-инструменты становятся обязательным навыком — 40% вакансий Senior+ уровня упоминают работу с AI.",
+  "quickAnswer": "В 2026 году самые востребованные навыки Frontend-разработчика по данным 1 241 вакансий на hh.ru: JavaScript  TypeScript  React  Git  CSS. AI-инструменты становятся обязательным навыком — 40% вакансий Senior+ уровня упоминают работу с AI.",
   "sections": [
     {
       "heading": "Ситуация на рынке Frontend-разработчика в 2026",
-      "content": "На февраль 2026 года на hh.ru открыто **1 241 вакансий** для Frontend-разработчика. Медианная зарплата Senior в Москве — 287 500 ₽.\n\nТоп востребованных навыков: JavaScript  TypeScript  React  Git  Guacamole  VueJS  Nuxt.\n\nРынок остаётся кандидатским для Middle+ уровня — спрос превышает предложение."
+      "content": "На февраль 2026 года на hh.ru открыто **1 241 вакансий** для Frontend-разработчика. Медианная зарплата Senior в Москве — 287 500 ₽.\n\nТоп востребованных навыков: JavaScript  TypeScript  React  Git  CSS  VueJS  Nuxt.\n\nРынок остаётся кандидатским для Middle+ уровня — спрос превышает предложение."
     },
     {
       "heading": "Навыки Frontend-разработчика в 2026",
@@ -35,7 +35,7 @@
     "TypeScript",
     "React",
     "Git",
-    "Guacamole",
+    "CSS",
     "VueJS",
     "Nuxt",
     "Django",
