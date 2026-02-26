@@ -55,7 +55,7 @@ const TableOfContents = ({ sections }: TOCProps) => {
             rel="noopener noreferrer"
             className="block text-center px-3 py-2 bg-white text-[hsl(174,62%,30%)] text-xs font-bold rounded-md hover:bg-white/90 transition-colors"
           >
-            7 дней бесплатно →
+            Подробнее →
           </a>
         </div>
       </aside>

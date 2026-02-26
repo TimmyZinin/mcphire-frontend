@@ -18,7 +18,7 @@ const ArticleCTA = ({ slug, variant = "block" }: ArticleCTAProps) => {
             rel="noopener noreferrer"
             className="font-semibold text-[hsl(174,62%,30%)] underline underline-offset-4 hover:text-[hsl(174,62%,22%)]"
           >
-            Бесплатная консультация в СБОРКЕ →
+            Разобрать с ментором в СБОРКЕ →
           </a>
         </p>
       </div>
@@ -28,11 +28,11 @@ const ArticleCTA = ({ slug, variant = "block" }: ArticleCTAProps) => {
   return (
     <div className="my-12 p-8 bg-gradient-to-br from-[hsl(174,62%,40%)] to-[hsl(174,62%,28%)] text-white rounded-xl text-center ring-1 ring-white/20">
       <h3 className="text-2xl font-black mb-3">
-        Попробуйте СБОРКУ — 7 дней бесплатно
+        Получи оффер за 6-8 недель
       </h3>
       <p className="text-white/80 mb-6 max-w-lg mx-auto">
         Менторы, мок-собеседования, разбор резюме, системный подход к поиску работы.
-        Средний участник получает оффер за 6-8 недель.
+        Подписка от 4 900 руб./мес.
       </p>
       <a
         href={botLink}
@@ -40,7 +40,7 @@ const ArticleCTA = ({ slug, variant = "block" }: ArticleCTAProps) => {
         rel="noopener noreferrer"
         className="inline-block px-8 py-3 bg-white text-[hsl(174,62%,30%)] font-bold rounded-lg hover:bg-white/90 transition-colors"
       >
-        НАЧАТЬ БЕСПЛАТНО
+        УЗНАТЬ ПОДРОБНЕЕ
       </a>
     </div>
   );

@@ -260,7 +260,7 @@ const HeroSection = () => {
 
           {/* Definition block — optimized for AI citation */}
           <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto">
-            СБОРКА — подписочный карьерный клуб для специалистов Middle, Senior и Lead. Внутри: менторы с опытом 8+ лет в рекрутинге, мок-собеседования, разбор резюме, командные соревнования по поиску работы. Подписка от 4 900 руб./мес, триал 7 дней бесплатно. Средний участник получает оффер за 6-8 недель.
+            СБОРКА — подписочный карьерный клуб для специалистов Middle, Senior и Lead. Внутри: менторы с опытом 8+ лет в рекрутинге, мок-собеседования, разбор резюме, командные соревнования по поиску работы. Подписка от 4 900 руб./мес. Средний участник получает оффер за 6-8 недель.
           </p>
 
           {/* CTA Buttons */}
@@ -270,7 +270,7 @@ const HeroSection = () => {
               className="cta-primary-nrc"
               data-testid="hero-cta"
             >
-              НАЧАТЬ БЕСПЛАТНО
+              СМОТРЕТЬ ТАРИФЫ
             </a>
 
             <a
@@ -279,7 +279,7 @@ const HeroSection = () => {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-8 py-4 border-2 border-[#4ECDC4] text-[#4ECDC4] font-bold text-base uppercase tracking-tight hover:bg-[#4ECDC4] hover:text-background transition-colors rounded-lg"
             >
-              Вебинар 24 февраля →
+              Открытый вебинар →
             </a>
           </div>
         </div>
