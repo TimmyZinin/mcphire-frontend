@@ -11,9 +11,16 @@ import KnowledgeCategory from "./pages/KnowledgeCategory";
 import KnowledgeArticle from "./pages/KnowledgeArticle";
 import NotFound from "./pages/NotFound";
 import JobsPage from "./pages/JobsPage";
+import JobDetailPage from "./pages/JobDetailPage";
+import JobsByCity from "./pages/JobsByCity";
+import JobsByCategory from "./pages/JobsByCategory";
+import EmployersPage from "./pages/EmployersPage";
 import ToolsPage from "./pages/ToolsPage";
 import SalaryCalculator from "./pages/SalaryCalculator";
 import ResumeChecklist from "./pages/ResumeChecklist";
+import ResumeReview from "./pages/ResumeReview";
+import McpPage from "./pages/McpPage";
+import SavedJobs from "./pages/SavedJobs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const queryClient = new QueryClient();
@@ -32,9 +39,16 @@ const App = () => (
             <Route path="/knowledge/:category" element={<KnowledgeCategory />} />
             <Route path="/knowledge/:category/:slug" element={<KnowledgeArticle />} />
             <Route path="/jobs" element={<JobsPage />} />
+            <Route path="/jobs/:id" element={<JobDetailPage />} />
+            <Route path="/jobs/city/:city" element={<JobsByCity />} />
+            <Route path="/jobs/category/:category" element={<JobsByCategory />} />
+            <Route path="/employers" element={<EmployersPage />} />
             <Route path="/tools" element={<ToolsPage />} />
             <Route path="/tools/salary" element={<SalaryCalculator />} />
             <Route path="/tools/resume-checklist" element={<ResumeChecklist />} />
+            <Route path="/tools/resume-review" element={<ResumeReview />} />
+            <Route path="/mcp" element={<McpPage />} />
+            <Route path="/jobs/saved" element={<SavedJobs />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

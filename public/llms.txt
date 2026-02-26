@@ -78,6 +78,26 @@ Python Developer, Frontend Developer, Backend Developer, DevOps Engineer, QA Eng
 - [Партнёрская программа](https://sborka.work/partners): 20% комиссии на 6 месяцев за каждого приведённого участника
 - [База знаний](https://sborka.work/knowledge): 150 статей о карьере в IT с данными hh.ru
 
+## IT-вакансии
+50+ IT-вакансий от ведущих компаний России: Яндекс, Сбер, Тинькофф, VK, Авито, Ozon, Wildberries.
+- Роли: Frontend, Backend, DevOps, QA, PM, Data Science, Mobile, Security
+- Уровни: Junior, Middle, Senior, Lead
+- Города: Москва, Санкт-Петербург, Удалённо, Новосибирск, Екатеринбург, Казань
+- Фильтрация по навыкам, городу, зарплате, формату работы
+- JSON-LD разметка для Google for Jobs
+
+## Для работодателей
+- Размещение вакансий от 15 000 руб.
+- AI-matching через MCP: вакансии видны Claude, ChatGPT, Perplexity
+- IT Middle/Senior/Lead аудитория
+
+## MCP Server
+- Endpoint: https://mcp.sborka.work/mcp
+- Protocol: JSON-RPC 2.0 over HTTP
+- Transport: HTTP (Streamable)
+- Discovery: https://sborka.work/.well-known/mcp/server.json
+- Tools: salary_data, resume_review, job_search, market_trends
+
 ## Контакты
 - Telegram-бот: https://t.me/Sborka_work_bot
 - Публичный канал: https://t.me/public_sborka

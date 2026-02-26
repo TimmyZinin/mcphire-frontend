@@ -1,29 +1,13 @@
 {
   "name": "sborka-career",
-  "version": "0.1.0",
-  "description": "СБОРКА Career Intelligence — MCP Server для карьерных AI-агентов",
+  "version": "0.2.0",
+  "description": "СБОРКА Career Intelligence — IT job search, salary data, and resume review for the Russian market",
   "endpoint": "https://mcp.sborka.work/mcp",
   "transport": "http",
-  "authentication": {
-    "type": "api_key",
-    "header": "X-API-Key"
-  },
   "tools": [
-    {
-      "name": "salary_data",
-      "description": "Get salary ranges for IT roles in Russian market by role, city, and experience level"
-    },
-    {
-      "name": "resume_review",
-      "description": "AI-powered resume review: scoring, recommendations, ATS compatibility check"
-    },
-    {
-      "name": "job_search",
-      "description": "Search IT job listings in Russia with filters by skills, salary, city, experience"
-    },
-    {
-      "name": "market_trends",
-      "description": "IT job market analytics: demand by skill, salary trends, hiring velocity"
-    }
+    {"name": "salary_data", "description": "Get salary ranges for 15 IT roles across 5 Russian cities, by experience level (Junior/Middle/Senior/Lead)"},
+    {"name": "resume_review", "description": "AI-powered resume analysis with 15-criteria scoring: structure, experience, skills, formatting"},
+    {"name": "job_search", "description": "Search 50+ IT job listings from top Russian companies (Yandex, Sber, Tinkoff, VK, Avito). Filter by city, skills, level, salary, format"},
+    {"name": "market_trends", "description": "IT job market trends and analytics for the Russian market: demand, supply, salary dynamics"}
   ]
 }

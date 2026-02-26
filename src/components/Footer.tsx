@@ -14,6 +14,15 @@ const Footer = () => {
             <p>
               Доступ осуществляется по подписке через Tribute.
             </p>
+            <Link to="/jobs" className="hover:text-foreground transition-colors">
+              Вакансии
+            </Link>
+            <Link to="/tools" className="hover:text-foreground transition-colors">
+              Инструменты
+            </Link>
+            <Link to="/employers" className="hover:text-foreground transition-colors">
+              Работодателям
+            </Link>
             <Link to="/knowledge" className="hover:text-foreground transition-colors">
               База знаний
             </Link>

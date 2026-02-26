@@ -34,8 +34,9 @@ const tools: Tool[] = [
   {
     icon: Bot,
     title: "AI-ревью резюме",
-    description: "Получи оценку и рекомендации от AI за 30 секунд",
-    ready: false,
+    description: "Проверь резюме по 15 критериям и получи рекомендации",
+    href: "/tools/resume-review",
+    ready: true,
   },
 ];
 
