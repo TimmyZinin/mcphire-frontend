@@ -58,6 +58,11 @@ export const ROLES: Role[] = [
   { slug: "java-developer", nameRu: "Java-разработчик", nameEn: "Java Developer", searchQuery: "Java разработчик" },
   { slug: "mobile-developer", nameRu: "Mobile-разработчик", nameEn: "Mobile Developer", searchQuery: "Mobile разработчик iOS Android" },
   { slug: "ux-ui-designer", nameRu: "UX/UI-дизайнер", nameEn: "UX/UI Designer", searchQuery: "UX UI дизайнер" },
+  { slug: "system-analyst", nameRu: "Системный аналитик", nameEn: "System Analyst", searchQuery: "системный аналитик бизнес-аналитик" },
+  { slug: "golang-developer", nameRu: "Go-разработчик", nameEn: "Golang Developer", searchQuery: "Go Golang разработчик" },
+  { slug: "ml-engineer", nameRu: "ML-инженер", nameEn: "ML Engineer", searchQuery: "Machine Learning ML инженер" },
+  { slug: "security-engineer", nameRu: "Security-инженер", nameEn: "Security Engineer", searchQuery: "информационная безопасность security инженер" },
+  { slug: "team-lead", nameRu: "Тимлид", nameEn: "Team Lead", searchQuery: "Team Lead тимлид руководитель команды" },
 ];
 
 export const TOPICS: Topic[] = [
