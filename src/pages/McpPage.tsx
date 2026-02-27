@@ -72,24 +72,21 @@ const McpPage = () => {
       <JobBoardNavbar />
 
       {/* Hero */}
-      <section className="section-black">
-        <div className="section-container text-center py-16">
-          <h1 className="heading-xl text-white mb-6">
-            MCP-СЕРВЕР
-            <br />
-            КАРЬЕРНОГО ПОИСКА
+      <section className="py-16 bg-gradient-to-b from-background to-card/50">
+        <div className="max-w-[1280px] mx-auto px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
+            MCP-сервер<br />карьерного поиска
           </h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Подключите AI-агента к российскому рынку IT-вакансий через Model
-            Context Protocol
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Подключите AI-агента к российскому рынку IT-вакансий через Model Context Protocol
           </p>
         </div>
       </section>
 
       {/* Tools */}
-      <section className="section-white">
-        <div className="section-container">
-          <h2 className="heading-lg mb-8">ИНСТРУМЕНТЫ</h2>
+      <section className="py-16">
+        <div className="max-w-[1280px] mx-auto px-8">
+          <h2 className="text-2xl font-extrabold tracking-tight mb-8">ИНСТРУМЕНТЫ</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             {tools.map((tool) => {
@@ -97,7 +94,7 @@ const McpPage = () => {
               return (
                 <div
                   key={tool.name}
-                  className="border border-border rounded-xl p-6"
+                  className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all"
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <IconComponent size={24} className="text-primary" />
@@ -115,9 +112,9 @@ const McpPage = () => {
       </section>
 
       {/* Connection */}
-      <section className="section-white">
-        <div className="section-container">
-          <h2 className="heading-lg mb-8">ПОДКЛЮЧЕНИЕ</h2>
+      <section className="py-16">
+        <div className="max-w-[1280px] mx-auto px-8">
+          <h2 className="text-2xl font-extrabold tracking-tight mb-8">ПОДКЛЮЧЕНИЕ</h2>
 
           <div className="space-y-8">
             <div>
@@ -162,24 +159,24 @@ const McpPage = () => {
       </section>
 
       {/* Documentation */}
-      <section className="section-white">
-        <div className="section-container">
-          <h2 className="heading-lg mb-8">ДОКУМЕНТАЦИЯ</h2>
+      <section className="py-16">
+        <div className="max-w-[1280px] mx-auto px-8">
+          <h2 className="text-2xl font-extrabold tracking-tight mb-8">ДОКУМЕНТАЦИЯ</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="border border-border rounded-xl p-6">
+            <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
               <h3 className="font-bold text-lg mb-3">Endpoint</h3>
               <code className="text-primary">https://mcp.sborka.work/mcp</code>
             </div>
-            <div className="border border-border rounded-xl p-6">
+            <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
               <h3 className="font-bold text-lg mb-3">Protocol</h3>
               <p>JSON-RPC 2.0 over HTTP</p>
             </div>
-            <div className="border border-border rounded-xl p-6">
+            <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
               <h3 className="font-bold text-lg mb-3">Transport</h3>
               <p>HTTP (Streamable)</p>
             </div>
-            <div className="border border-border rounded-xl p-6">
+            <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
               <h3 className="font-bold text-lg mb-3">Discovery</h3>
               <a
                 href="/.well-known/mcp/server.json"
@@ -194,7 +191,7 @@ const McpPage = () => {
           <div className="mt-8">
             <a
               href="/llms.txt"
-              className="cta-primary-nrc inline-flex items-center gap-2"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#e8604c] text-white font-semibold hover:bg-[#d4503e] transition-colors"
             >
               <ExternalLink size={16} />
               Описание для LLM (llms.txt)
