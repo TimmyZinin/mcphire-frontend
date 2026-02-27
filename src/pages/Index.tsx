@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import StickyHeader from "@/components/StickyHeader";
 import HeroSection from "@/components/HeroSection";
@@ -20,10 +19,6 @@ import JobBoardSection from "@/components/JobBoardSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  useEffect(() => {
-    document.dispatchEvent(new Event("render-event"));
-  }, []);
-
   return (
     <main className="min-h-screen">
       <Helmet>

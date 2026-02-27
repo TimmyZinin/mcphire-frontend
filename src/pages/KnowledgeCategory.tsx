@@ -5,7 +5,7 @@ import StickyHeader from "@/components/StickyHeader";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/knowledge/ArticleCard";
 import Breadcrumbs from "@/components/knowledge/Breadcrumbs";
-import { getArticlesByCategory } from "@/data/articles";
+import { getArticle, getArticlesByCategory } from "@/data/articles";
 import { CATEGORIES } from "@/data/knowledgeConfig";
 
 const KnowledgeCategory = () => {
@@ -14,7 +14,14 @@ const KnowledgeCategory = () => {
   const cat = CATEGORIES.find((c) => c.slug === category);
   const articles = useMemo(() => getArticlesByCategory(category || ""), [category]);
 
-  if (!cat) return <Navigate to="/knowledge" replace />;
+  // If not a valid category, check if it's an article slug and redirect
+  if (!cat) {
+    const article = getArticle(category || "");
+    if (article) {
+      return <Navigate to={`/knowledge/${article.meta.category}/${article.meta.slug}`} replace />;
+    }
+    return <Navigate to="/knowledge" replace />;
+  }
 
   return (
     <>
