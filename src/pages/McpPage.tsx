@@ -4,6 +4,7 @@ import { Terminal, Code, Database, TrendingUp, ExternalLink } from "lucide-react
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
 import CareerClubBanner from "@/components/CareerClubBanner";
+import TopBanner from "@/components/TopBanner";
 
 const McpPage = () => {
   const tools = [
@@ -71,6 +72,7 @@ const McpPage = () => {
 
       {/* Header */}
       <JobBoardNavbar />
+      <TopBanner utmSource="mcp" />
 
       {/* Hero */}
       <section className="py-16 bg-gradient-to-b from-background to-card/50">

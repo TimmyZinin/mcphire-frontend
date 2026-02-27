@@ -7,6 +7,7 @@ import { getSavedJobIds, toggleSaveJob, isJobSaved } from "@/lib/savedJobs";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
 import CareerClubBanner from "@/components/CareerClubBanner";
+import TopBanner from "@/components/TopBanner";
 
 const formatSalary = (salary: number): string => {
   return new Intl.NumberFormat("ru-RU").format(salary);
@@ -50,6 +51,7 @@ const SavedJobs = () => {
 
       {/* Header */}
       <JobBoardNavbar />
+      <TopBanner utmSource="saved_jobs" />
 
       <section className="section-white">
         <div className="section-container">

@@ -6,6 +6,7 @@ import { cityMap, categoryMap } from "@/data/jobCategories";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
 import CareerClubBanner from "@/components/CareerClubBanner";
+import TopBanner from "@/components/TopBanner";
 
 const JobsPage = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -201,6 +202,7 @@ const JobsPage = () => {
       </Helmet>
 
       <JobBoardNavbar />
+      <TopBanner utmSource="jobs" />
 
       {/* Page Header */}
       <div className="max-w-[1280px] mx-auto px-8 pt-10 pb-4">

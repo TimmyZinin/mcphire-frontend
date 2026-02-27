@@ -6,6 +6,7 @@ import { cityMap, filterJobsByCity } from "@/data/jobCategories";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
 import CareerClubBanner from "@/components/CareerClubBanner";
+import TopBanner from "@/components/TopBanner";
 
 const JobsByCity = () => {
   const { city } = useParams<{ city: string }>();
@@ -68,6 +69,7 @@ const JobsByCity = () => {
       </Helmet>
 
       <JobBoardNavbar />
+      <TopBanner utmSource="jobs_city" />
 
       <section className="section-white">
         <div className="section-container">
