@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { mockJobs, type Job } from "@/data/mockJobs";
 import { cityMap, filterJobsByCity } from "@/data/jobCategories";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
+import Footer from "@/components/Footer";
 
 const JobsByCity = () => {
   const { city } = useParams<{ city: string }>();
@@ -177,6 +178,7 @@ const JobsByCity = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 };

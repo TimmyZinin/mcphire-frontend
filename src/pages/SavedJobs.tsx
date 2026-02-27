@@ -5,6 +5,7 @@ import { Trash2, MapPin, Briefcase, TrendingUp } from "lucide-react";
 import { mockJobs, type Job } from "@/data/mockJobs";
 import { getSavedJobIds, toggleSaveJob, isJobSaved } from "@/lib/savedJobs";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
+import Footer from "@/components/Footer";
 
 const formatSalary = (salary: number): string => {
   return new Intl.NumberFormat("ru-RU").format(salary);
@@ -125,6 +126,7 @@ const SavedJobs = () => {
           )}
         </div>
       </section>
+      <Footer />
     </main>
   );
 };

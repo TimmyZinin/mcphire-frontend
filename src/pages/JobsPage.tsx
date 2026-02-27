@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { mockJobs, type Job } from "@/data/mockJobs";
 import { cityMap, categoryMap } from "@/data/jobCategories";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
+import Footer from "@/components/Footer";
 
 const JobsPage = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -421,6 +422,7 @@ const JobsPage = () => {
           </details>
         </div>
       </div>
+      <Footer />
     </main>
   );
 };

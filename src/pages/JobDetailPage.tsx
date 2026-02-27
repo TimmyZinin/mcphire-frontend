@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { mockJobs, type Job } from "@/data/mockJobs";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
+import Footer from "@/components/Footer";
 
 const JobDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -313,6 +314,7 @@ const JobDetailPage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </main>
   );
 };

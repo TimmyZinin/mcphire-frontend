@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Terminal, Code, Database, TrendingUp, ExternalLink } from "lucide-react";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
+import Footer from "@/components/Footer";
 
 const McpPage = () => {
   const tools = [
@@ -201,6 +202,7 @@ const McpPage = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 };
