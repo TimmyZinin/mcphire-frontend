@@ -5,6 +5,7 @@ import { mockJobs, type Job } from "@/data/mockJobs";
 import { cityMap, filterJobsByCity } from "@/data/jobCategories";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
+import CareerClubBanner from "@/components/CareerClubBanner";
 
 const JobsByCity = () => {
   const { city } = useParams<{ city: string }>();
@@ -83,6 +84,8 @@ const JobsByCity = () => {
           <p className="text-muted-foreground mb-8">
             Найдено {filteredJobs.length} вакансий
           </p>
+
+          <CareerClubBanner variant="inline" utmSource="jobs_city" />
 
           {/* Jobs Grid */}
           <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-6 mb-8">

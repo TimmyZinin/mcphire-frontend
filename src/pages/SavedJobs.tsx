@@ -6,6 +6,7 @@ import { mockJobs, type Job } from "@/data/mockJobs";
 import { getSavedJobIds, toggleSaveJob, isJobSaved } from "@/lib/savedJobs";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
+import CareerClubBanner from "@/components/CareerClubBanner";
 
 const formatSalary = (salary: number): string => {
   return new Intl.NumberFormat("ru-RU").format(salary);
@@ -126,6 +127,7 @@ const SavedJobs = () => {
           )}
         </div>
       </section>
+      <CareerClubBanner variant="block" utmSource="saved_jobs" />
       <Footer />
     </main>
   );

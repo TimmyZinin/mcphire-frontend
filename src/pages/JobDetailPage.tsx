@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { mockJobs, type Job } from "@/data/mockJobs";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
+import CareerClubBanner from "@/components/CareerClubBanner";
 
 const JobDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -255,6 +256,8 @@ const JobDetailPage = () => {
             <p className="text-sm text-muted-foreground">
               Источник: {job.source} · Опубликовано: {formatDate(job.postedAt)}
             </p>
+
+            <CareerClubBanner variant="inline" utmSource="job_detail" />
           </div>
 
           {/* Sidebar */}
@@ -314,6 +317,7 @@ const JobDetailPage = () => {
           </div>
         </div>
       </div>
+      <CareerClubBanner variant="block" utmSource="job_detail_footer" />
       <Footer />
     </main>
   );

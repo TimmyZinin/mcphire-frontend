@@ -5,6 +5,7 @@ import { mockJobs, type Job } from "@/data/mockJobs";
 import { cityMap, categoryMap } from "@/data/jobCategories";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
+import CareerClubBanner from "@/components/CareerClubBanner";
 
 const JobsPage = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -305,6 +306,8 @@ const JobsPage = () => {
             Показано {startIndex}–{endIndex} из {filteredJobs.length}
           </span>
         </div>
+
+        <CareerClubBanner variant="inline" utmSource="jobs" />
 
         {/* Jobs Grid */}
         <div className="grid md:grid-cols-2 gap-4 pb-8">

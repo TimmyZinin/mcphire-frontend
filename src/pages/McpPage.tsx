@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Terminal, Code, Database, TrendingUp, ExternalLink } from "lucide-react";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
+import CareerClubBanner from "@/components/CareerClubBanner";
 
 const McpPage = () => {
   const tools = [
@@ -199,6 +200,7 @@ const McpPage = () => {
           </div>
         </div>
       </section>
+      <CareerClubBanner variant="block" utmSource="mcp" />
       <Footer />
     </main>
   );
