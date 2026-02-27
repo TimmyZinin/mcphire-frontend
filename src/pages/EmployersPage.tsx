@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import JobBoardNavbar from "@/components/JobBoardNavbar";
 
 const EmployersPage = () => {
   return (
@@ -11,16 +12,7 @@ const EmployersPage = () => {
       </Helmet>
 
       {/* Header */}
-      <header className="border-b border-border">
-        <div className="section-container py-4 flex items-center justify-between">
-          <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            СБОРКА
-          </Link>
-          <a href="/#pricing" className="cta-text text-sm">
-            Тарифы
-          </a>
-        </div>
-      </header>
+      <JobBoardNavbar />
 
       {/* Hero */}
       <section className="section-black py-20">
@@ -122,7 +114,7 @@ const EmployersPage = () => {
         <div className="section-container">
           <h2 className="heading-lg text-center mb-12">Тарифы</h2>
 
-          <div className="grid md:grid-cols6 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {/* Starter-3 gap- */}
             <div className="p-6 rounded-2xl border border-border bg-card">
               <h3 className="font-bold text-xl mb-2">СТАРТЕР</h3>
@@ -185,7 +177,15 @@ const EmployersPage = () => {
         <div className="section-container max-w-xl">
           <h2 className="heading-lg text-center mb-8">Оставить заявку</h2>
 
-          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-4" onSubmit={(e) => {
+            e.preventDefault();
+            const form = e.target as HTMLFormElement;
+            const company = (form.elements[0] as HTMLInputElement).value;
+            const email = (form.elements[1] as HTMLInputElement).value;
+            const role = (form.elements[2] as HTMLInputElement).value;
+            window.open(`https://t.me/Sborka_work_bot?start=employer_${encodeURIComponent(company)}`, '_blank');
+            alert('Спасибо! Мы свяжемся с вами. Также напишите нам в Telegram для ускорения процесса.');
+          }}>
             <div>
               <label className="block text-sm font-semibold mb-2 uppercase">Компания</label>
               <input

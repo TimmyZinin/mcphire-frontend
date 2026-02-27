@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { Trash2, MapPin, Briefcase, TrendingUp } from "lucide-react";
 import { mockJobs, type Job } from "@/data/mockJobs";
 import { getSavedJobIds, toggleSaveJob, isJobSaved } from "@/lib/savedJobs";
+import JobBoardNavbar from "@/components/JobBoardNavbar";
 
 const formatSalary = (salary: number): string => {
   return new Intl.NumberFormat("ru-RU").format(salary);
@@ -46,16 +47,7 @@ const SavedJobs = () => {
       </Helmet>
 
       {/* Header */}
-      <header className="border-b border-border">
-        <div className="section-container py-4 flex items-center justify-between">
-          <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            СБОРКА
-          </Link>
-          <a href="/#pricing" className="cta-text text-sm">
-            Тарифы
-          </a>
-        </div>
-      </header>
+      <JobBoardNavbar />
 
       <section className="section-white">
         <div className="section-container">

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Terminal, Code, Database, TrendingUp, ExternalLink } from "lucide-react";
+import JobBoardNavbar from "@/components/JobBoardNavbar";
 
 const McpPage = () => {
   const tools = [
@@ -67,16 +68,7 @@ const McpPage = () => {
       </Helmet>
 
       {/* Header */}
-      <header className="border-b border-border">
-        <div className="section-container py-4 flex items-center justify-between">
-          <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            СБОРКА
-          </Link>
-          <a href="/#pricing" className="cta-text text-sm">
-            Тарифы
-          </a>
-        </div>
-      </header>
+      <JobBoardNavbar />
 
       {/* Hero */}
       <section className="section-black">

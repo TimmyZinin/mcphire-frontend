@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { mockJobs, type Job } from "@/data/mockJobs";
+import JobBoardNavbar from "@/components/JobBoardNavbar";
 
 const JobDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,16 +22,7 @@ const JobDetailPage = () => {
         <Helmet>
           <title>Вакансия не найдена | СБОРКА Вакансии</title>
         </Helmet>
-        <header className="border-b border-border">
-          <div className="section-container py-4 flex items-center justify-between">
-            <Link to="/" className="font-black text-xl uppercase tracking-tight">
-              СБОРКА
-            </Link>
-            <a href="/#pricing" className="cta-text text-sm">
-              Тарифы
-            </a>
-          </div>
-        </header>
+        <JobBoardNavbar />
         <section className="section-white">
           <div className="section-container">
             <h1 className="heading-xl mb-4">Вакансия не найдена</h1>
@@ -101,17 +93,7 @@ const JobDetailPage = () => {
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
-      {/* Header */}
-      <header className="border-b border-border">
-        <div className="section-container py-4 flex items-center justify-between">
-          <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            СБОРКА
-          </Link>
-          <a href="/#pricing" className="cta-text text-sm">
-            Тарифы
-          </a>
-        </div>
-      </header>
+      <JobBoardNavbar />
 
       <section className="section-white">
         <div className="section-container">
@@ -165,8 +147,8 @@ const JobDetailPage = () => {
           </ul>
 
           {/* CTA */}
-          <a href="#" className="cta-primary-nrc inline-block mb-8">
-            Откликнуться
+          <a href={`https://t.me/Sborka_work_bot?start=apply_${job.id}`} target="_blank" rel="noopener noreferrer" className="cta-primary-nrc inline-block mb-8">
+            Откликнуться →
           </a>
 
           {/* Source & Date */}

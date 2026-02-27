@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { mockJobs, type Job } from "@/data/mockJobs";
 import { cityMap, categoryMap } from "@/data/jobCategories";
+import JobBoardNavbar from "@/components/JobBoardNavbar";
 
 const JobsPage = () => {
   const [selectedCity, setSelectedCity] = useState<string>("");
@@ -60,16 +61,7 @@ const JobsPage = () => {
       </Helmet>
 
       {/* Header */}
-      <header className="border-b border-border">
-        <div className="section-container py-4 flex items-center justify-between">
-          <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            СБОРКА
-          </Link>
-          <a href="/#pricing" className="cta-text text-sm">
-            Тарифы
-          </a>
-        </div>
-      </header>
+      <JobBoardNavbar />
 
       <section className="section-white">
         <div className="section-container">
@@ -235,8 +227,11 @@ const JobsPage = () => {
 
                 <div className="flex items-center justify-between">
                   <span className="chip text-xs">{job.level}</span>
-                  <a href="#" className="cta-primary-nrc text-sm py-2 px-4" onClick={(e) => e.stopPropagation()}>
-                    Откликнуться
+                  <a href={`https://t.me/Sborka_work_bot?start=apply_${job.id}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="cta-primary-nrc text-sm py-2 px-4"
+                    onClick={(e) => e.stopPropagation()}>
+                    Откликнуться →
                   </a>
                 </div>
               </Link>
