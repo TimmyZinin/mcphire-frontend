@@ -57,6 +57,10 @@ export default {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
         },
+        "cta-hot": {
+          DEFAULT: "hsl(var(--cta-hot))",
+          foreground: "hsl(var(--cta-hot-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -61,13 +61,13 @@ const EmployersPage = () => {
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-b from-background to-card/50">
         <div className="max-w-[1280px] mx-auto px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
+          <h1 className="heading-xl mb-6">
             Нанимайте IT-специалистов<br />через AI
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Ваши вакансии находят кандидатов через AI-агенты: Claude, ChatGPT, Perplexity и другие
           </p>
-          <a href="#contact" className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-[#e8604c] text-white text-lg font-semibold hover:bg-[#d4503e] transition-colors">
+          <a href="#contact" className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-cta-hot text-white text-lg font-semibold hover:bg-cta-hot/90 transition-colors">
             Разместить вакансию
           </a>
         </div>
@@ -76,7 +76,7 @@ const EmployersPage = () => {
       {/* How It Works */}
       <section className="py-16">
         <div className="max-w-[1280px] mx-auto px-8">
-          <h2 className="text-2xl font-extrabold tracking-tight text-center mb-12">Как это работает</h2>
+          <h2 className="heading-lg text-center mb-12">Как это работает</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {steps.map((step, i) => (
               <div key={i} className="text-center">
@@ -96,7 +96,7 @@ const EmployersPage = () => {
       {/* Why Us */}
       <section className="py-16">
         <div className="max-w-[1280px] mx-auto px-8">
-          <h2 className="text-2xl font-extrabold tracking-tight text-center mb-12">Почему СБОРКА</h2>
+          <h2 className="heading-lg text-center mb-12">Почему СБОРКА</h2>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 hover:shadow-lg transition-all">
@@ -137,7 +137,7 @@ const EmployersPage = () => {
       {/* Pricing */}
       <section className="py-16">
         <div className="max-w-[1280px] mx-auto px-8">
-          <h2 className="text-2xl font-extrabold tracking-tight text-center mb-12">Тарифы</h2>
+          <h2 className="heading-lg text-center mb-12">Тарифы</h2>
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {pricingPlans.map((plan, i) => (
               <div key={i} className={`p-6 rounded-2xl bg-card relative ${
@@ -177,7 +177,7 @@ const EmployersPage = () => {
       {/* Contact Form */}
       <section id="contact" className="py-16">
         <div className="max-w-[1280px] mx-auto px-8 max-w-xl">
-          <h2 className="text-2xl font-extrabold tracking-tight text-center mb-8">Оставить заявку</h2>
+          <h2 className="heading-lg text-center mb-8">Оставить заявку</h2>
 
           <form className="space-y-4" onSubmit={(e) => {
             e.preventDefault();
@@ -223,7 +223,7 @@ const EmployersPage = () => {
               />
             </div>
 
-            <button type="submit" className="w-full py-3 rounded-full bg-[#e8604c] text-white font-semibold hover:bg-[#d4503e] transition-colors">
+            <button type="submit" className="w-full py-3 rounded-full bg-cta-hot text-white font-semibold hover:bg-cta-hot/90 transition-colors">
               Отправить заявку
             </button>
           </form>
@@ -237,7 +237,7 @@ const EmployersPage = () => {
       {/* FAQ */}
       <section className="py-16">
         <div className="max-w-[1280px] mx-auto px-8 max-w-3xl">
-          <h2 className="text-2xl font-extrabold tracking-tight text-center mb-12">Частые вопросы</h2>
+          <h2 className="heading-lg text-center mb-12">Частые вопросы</h2>
 
           <div className="space-y-3">
             {faqItems.map((item, i) => (

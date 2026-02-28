@@ -206,8 +206,13 @@ const JobsPage = () => {
 
       {/* Page Header */}
       <div className="max-w-[1280px] mx-auto px-8 pt-10 pb-4">
-        <h1 className="text-3xl font-extrabold tracking-tight">Вакансии</h1>
+        <h1 className="heading-lg">Вакансии</h1>
         <p className="text-muted-foreground mt-1">{filteredJobs.length} вакансий в IT</p>
+        <div className="flex flex-wrap gap-4 mt-3 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span>348 статей в базе знаний</span>
+          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span>15 городов</span>
+          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span>20+ специализаций</span>
+        </div>
       </div>
 
       {/* Sticky Search */}

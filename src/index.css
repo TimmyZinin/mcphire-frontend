@@ -52,6 +52,10 @@
     --input: 0 0% 92%;
     --ring: 174 62% 55%;
 
+    /* CTA hot — coral #e8604c */
+    --cta-hot: 8 70% 60%;
+    --cta-hot-foreground: 0 0% 100%;
+
     --radius: 0.75rem;
 
     /* Typography */

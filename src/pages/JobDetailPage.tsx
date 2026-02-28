@@ -203,7 +203,7 @@ const JobDetailPage = () => {
             {/* Action Buttons */}
             <div className="flex gap-3 w-full">
               <a href={`https://t.me/Sborka_work_bot?start=apply_${job.id}`} target="_blank" rel="noopener noreferrer"
-                className="flex-1 px-6 py-3 rounded-full bg-[#e8604c] text-white text-sm font-semibold text-center hover:bg-[#d4503e] transition-colors">
+                className="flex-1 px-6 py-3 rounded-full bg-cta-hot text-white text-sm font-semibold text-center hover:bg-cta-hot/90 transition-colors">
                 Откликнуться
               </a>
               <button className="px-4 py-3 rounded-full border border-border text-sm font-medium hover:bg-muted transition-colors">

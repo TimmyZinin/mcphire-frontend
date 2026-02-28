@@ -77,7 +77,7 @@ const McpPage = () => {
       {/* Hero */}
       <section className="py-16 bg-gradient-to-b from-background to-card/50">
         <div className="max-w-[1280px] mx-auto px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
+          <h1 className="heading-xl mb-6">
             MCP-сервер<br />карьерного поиска
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -89,7 +89,7 @@ const McpPage = () => {
       {/* Tools */}
       <section className="py-16">
         <div className="max-w-[1280px] mx-auto px-8">
-          <h2 className="text-2xl font-extrabold tracking-tight mb-8">ИНСТРУМЕНТЫ</h2>
+          <h2 className="heading-lg mb-8">ИНСТРУМЕНТЫ</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             {tools.map((tool) => {
@@ -117,7 +117,7 @@ const McpPage = () => {
       {/* Connection */}
       <section className="py-16">
         <div className="max-w-[1280px] mx-auto px-8">
-          <h2 className="text-2xl font-extrabold tracking-tight mb-8">ПОДКЛЮЧЕНИЕ</h2>
+          <h2 className="heading-lg mb-8">ПОДКЛЮЧЕНИЕ</h2>
 
           <div className="space-y-8">
             <div>
@@ -164,7 +164,7 @@ const McpPage = () => {
       {/* Documentation */}
       <section className="py-16">
         <div className="max-w-[1280px] mx-auto px-8">
-          <h2 className="text-2xl font-extrabold tracking-tight mb-8">ДОКУМЕНТАЦИЯ</h2>
+          <h2 className="heading-lg mb-8">ДОКУМЕНТАЦИЯ</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
@@ -194,7 +194,7 @@ const McpPage = () => {
           <div className="mt-8">
             <a
               href="/llms.txt"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#e8604c] text-white font-semibold hover:bg-[#d4503e] transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-cta-hot text-white font-semibold hover:bg-cta-hot/90 transition-colors"
             >
               <ExternalLink size={16} />
               Описание для LLM (llms.txt)
