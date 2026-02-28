@@ -1,9 +1,8 @@
-name: Deploy to GitHub Pages
+name: Deploy Dev to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: [dev]
 
 permissions:
   contents: read
@@ -30,10 +29,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build (dev, no prerender)
         run: npm run build
         env:
           VITE_BASE_PATH: /sborka/
+
+      - name: Add noindex robots.txt and SPA fallback
+        run: |
+          echo "User-agent: *" > dist/robots.txt
+          echo "Disallow: /" >> dist/robots.txt
+          cp dist/index.html dist/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

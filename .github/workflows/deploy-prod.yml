@@ -1,0 +1,34 @@
+name: Deploy to Production (RUVDS)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Install Chromium for prerenderer
+        run: npx puppeteer browsers install chrome
+
+      - name: Build (production, with prerender)
+        run: npm run build
+
+      - name: Deploy to RUVDS
+        env:
+          RUVDS_HOST: ${{ secrets.RUVDS_HOST }}
+          RUVDS_PASSWORD: ${{ secrets.RUVDS_PASSWORD }}
+        run: |
+          sudo apt-get install -y sshpass
+          tar czf dist.tar.gz -C dist .
+          sshpass -p "$RUVDS_PASSWORD" scp -o StrictHostKeyChecking=no -o PubkeyAuthentication=no dist.tar.gz root@$RUVDS_HOST:/tmp/sborka-dist.tar.gz
+          sshpass -p "$RUVDS_PASSWORD" ssh -o StrictHostKeyChecking=no -o PubkeyAuthentication=no root@$RUVDS_HOST 'rm -rf /opt/sborka-website/* && tar xzf /tmp/sborka-dist.tar.gz -C /opt/sborka-website/ && rm /tmp/sborka-dist.tar.gz'

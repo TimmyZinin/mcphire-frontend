@@ -29,7 +29,10 @@ function getKnowledgeRoutes(): string[] {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode }) => {
+  const isGHPages = !!process.env.VITE_BASE_PATH;
+  return {
+  base: process.env.VITE_BASE_PATH || '/',
   server: {
     host: "::",
     port: 8080,
@@ -39,7 +42,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    mode === "production" &&
+    mode === "production" && !isGHPages &&
       prerender({
         routes: ["/", "/partners", "/jobs", "/tools", "/tools/salary", "/tools/resume-checklist", "/tools/resume-review", "/employers", "/mcp", "/jobs/saved", "/privacy", ...getKnowledgeRoutes()],
         renderer: new PuppeteerRenderer({
@@ -59,4 +62,4 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-}));
+}});
