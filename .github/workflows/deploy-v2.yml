@@ -1,8 +1,8 @@
-name: Deploy Dev to RUVDS
+name: Deploy v2 to RUVDS
 
 on:
   push:
-    branches: [dev]
+    branches: [v2]
 
 jobs:
   deploy:
@@ -17,21 +17,24 @@ jobs:
 
       - run: npm ci
 
-      - name: Build (dev, no prerender)
+      - name: Build v2 (mock API)
+        env:
+          VITE_USE_MOCKS: "true"
+          VITE_TELEGRAM_BOT_NAME: "Sborka_work_bot"
         run: npm run build
 
-      - name: Add noindex meta
+      - name: Add noindex meta (v2 is staging)
         run: |
           sed -i 's/<meta name="robots" content="index, follow"/<meta name="robots" content="noindex, nofollow"/' dist/index.html || true
           echo "User-agent: *" > dist/robots.txt
           echo "Disallow: /" >> dist/robots.txt
 
-      - name: Deploy to RUVDS (dev)
+      - name: Deploy to RUVDS (v2.sborka.work)
         env:
           RUVDS_HOST: ${{ secrets.RUVDS_HOST }}
           RUVDS_PASSWORD: ${{ secrets.RUVDS_PASSWORD }}
         run: |
           sudo apt-get install -y sshpass
           tar czf dist.tar.gz -C dist .
-          sshpass -p "$RUVDS_PASSWORD" scp -o StrictHostKeyChecking=no -o PubkeyAuthentication=no dist.tar.gz root@$RUVDS_HOST:/tmp/sborka-dev-dist.tar.gz
-          sshpass -p "$RUVDS_PASSWORD" ssh -o StrictHostKeyChecking=no -o PubkeyAuthentication=no root@$RUVDS_HOST 'mkdir -p /opt/sborka-website-dev && rm -rf /opt/sborka-website-dev/* && tar xzf /tmp/sborka-dev-dist.tar.gz -C /opt/sborka-website-dev/ && rm /tmp/sborka-dev-dist.tar.gz'
+          sshpass -p "$RUVDS_PASSWORD" scp -o StrictHostKeyChecking=no -o PubkeyAuthentication=no dist.tar.gz root@$RUVDS_HOST:/tmp/sborka-v2-dist.tar.gz
+          sshpass -p "$RUVDS_PASSWORD" ssh -o StrictHostKeyChecking=no -o PubkeyAuthentication=no root@$RUVDS_HOST 'mkdir -p /opt/sborka-v2 && rm -rf /opt/sborka-v2/* && tar xzf /tmp/sborka-v2-dist.tar.gz -C /opt/sborka-v2/ && rm /tmp/sborka-v2-dist.tar.gz'
