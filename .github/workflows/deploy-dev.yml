@@ -18,6 +18,9 @@ jobs:
       - run: npm ci
 
       - name: Build (dev, no prerender)
+        env:
+          VITE_USE_MOCKS: "true"
+          VITE_TELEGRAM_BOT_NAME: "Sborka_work_bot"
         run: npm run build
 
       - name: Add noindex meta
