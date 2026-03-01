@@ -1,24 +1,66 @@
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { mockJobs, type Job } from "@/data/mockJobs";
+import { useJob, useSimilarJobs } from "@/hooks/useJobs";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
 import CareerClubBanner from "@/components/CareerClubBanner";
 import TopBanner from "@/components/TopBanner";
+import { SkeletonCard } from "@/components/JobCard";
+import { formatSalary, formatDate, formatRelativeTime } from "@/lib/formatters";
 
 const JobDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const job = mockJobs.find((j: Job) => j.id === id);
+  const { data: job, isLoading } = useJob(id || "");
+  const { data: similarJobs = [] } = useSimilarJobs(id || "");
 
-  const formatSalary = (salary: number): string => {
-    return new Intl.NumberFormat("ru-RU").format(salary);
+  // Company colors
+  const companyColors: Record<string, { bg: string; text: string }> = {
+    "Яндекс": { bg: "#fc0", text: "#000" },
+    "МТС": { bg: "#e30611", text: "#fff" },
+    "Сбер": { bg: "#21a038", text: "#fff" },
+    "Тинькофф": { bg: "#ffdd2d", text: "#333" },
+    VK: { bg: "#0077ff", text: "#fff" },
+    Ozon: { bg: "#005bff", text: "#fff" },
+    Wildberries: { bg: "#cb11ab", text: "#fff" },
+    Авито: { bg: "#00aaff", text: "#fff" },
+    Lamoda: { bg: "#000", text: "#fff" },
+    Kaspersky: { bg: "#006d5c", text: "#fff" },
   };
 
-  const formatDate = (dateStr: string): string => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
+  const getCompanyColor = (companyName: string) => companyColors[companyName]?.bg || "#e6f5ee";
+  const getCompanyTextColor = (companyName: string) => companyColors[companyName]?.text || "#1b6b52";
+
+  // Match score calculation
+  const getMatchScore = (jobId: string): number => {
+    const scores: Record<string, number> = { Senior: 90, Middle: 85, Lead: 88, Junior: 75 };
+    return (scores["Middle"] || 80) + (parseInt(jobId, 10) % 10);
   };
 
+  // If loading
+  if (isLoading) {
+    return (
+      <main className="min-h-screen bg-background">
+        <Helmet>
+          <title>Загрузка вакансии | СБОРКА Вакансии</title>
+        </Helmet>
+        <JobBoardNavbar />
+        <TopBanner utmSource="job_detail" />
+        <div className="max-w-[1280px] mx-auto px-8 py-12">
+          <div className="grid lg:grid-cols-[1fr_340px] gap-8">
+            <div className="space-y-4">
+              <SkeletonCard />
+            </div>
+            <div className="space-y-4">
+              <SkeletonCard />
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </main>
+    );
+  }
+
+  // If job not found
   if (!job) {
     return (
       <main className="min-h-screen bg-background">
@@ -39,112 +81,51 @@ const JobDetailPage = () => {
     );
   }
 
-  // Find related jobs (same skills, max 3)
-  const relatedJobs = mockJobs
-    .filter((j: Job) => j.id !== job.id)
-    .map((j: Job) => ({
-      job: j,
-      matchCount: j.skills.filter((skill: string) => job.skills.includes(skill)).length
-    }))
-    .filter((item) => item.matchCount > 0)
-    .sort((a, b) => b.matchCount - a.matchCount)
-    .slice(0, 3)
-    .map((item) => item.job);
+  // Get company name from Job type
+  const companyName = typeof job.company === "string" ? job.company : job.company.name;
+  const matchScore = getMatchScore(job.id);
 
-  // JSON-LD for Google for Jobs
-  const jsonLd = {
-    "@context": "https://schema.org/",
-    "@type": "JobPosting",
-    "title": job.title,
-    "description": job.description,
-    "datePosted": job.postedAt,
-    "hiringOrganization": {
-      "@type": "Organization",
-      "name": job.company
-    },
-    "jobLocation": {
-      "@type": "Place",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": job.city,
-        "addressCountry": "RU"
-      }
-    },
-    "baseSalary": {
-      "@type": "MonetaryAmount",
-      "currency": "RUB",
-      "value": {
-        "@type": "QuantitativeValue",
-        "minValue": job.salaryFrom,
-        "maxValue": job.salaryTo,
-        "unitText": "MONTH"
-      }
-    },
-    "employmentType": "FULL_TIME",
-    "jobLocationType": job.format === "Удалённо" ? "TELECOMMUTE" : undefined
-  };
-
-  // Match score calculation
-  const getMatchScore = (job: Job): number => {
-    const scores: Record<string, number> = { 'Senior': 90, 'Middle': 85, 'Lead': 88, 'Junior': 75 };
-    return (scores[job.level] || 80) + (parseInt(job.id) % 10);
-  };
-  const matchScore = getMatchScore(job);
-
-  // Company colors
-  const companyColors: Record<string, { bg: string; text: string }> = {
-    'Яндекс': { bg: '#fc0', text: '#000' },
-    'МТС': { bg: '#e30611', text: '#fff' },
-    'Сбер': { bg: '#21a038', text: '#fff' },
-    'Тинькофф': { bg: '#ffdd2d', text: '#333' },
-    'VK': { bg: '#0077ff', text: '#fff' },
-    'Ozon': { bg: '#005bff', text: '#fff' },
-    'Wildberries': { bg: '#cb11ab', text: '#fff' },
-    'Авито': { bg: '#00aaff', text: '#fff' },
-    'Lamoda': { bg: '#000', text: '#fff' },
-    'Kaspersky': { bg: '#006d5c', text: '#fff' },
-  };
-  const getCompanyColor = (c: string) => companyColors[c]?.bg || '#e6f5ee';
-  const getCompanyTextColor = (c: string) => companyColors[c]?.text || '#1b6b52';
-
-  // Company info
+  // Company info - use Job type with company object
   const companyInfo = [
-    { label: 'Индустрия', value: 'IT' },
-    { label: 'Размер', value: '1000+ сотрудников' },
-    { label: 'Офис', value: job.city },
-    { label: 'Формат', value: job.format },
+    { label: "Индустрия", value: "IT" },
+    { label: "Размер", value: typeof job.company === "object" ? (job.company as any).size || "1000+ сотрудников" : "1000+ сотрудников" },
+    { label: "Офис", value: job.city },
+    { label: "Формат", value: job.format },
   ];
 
   // Match breakdown
   const matchBreakdown = [
-    { label: 'Навыки', value: Math.min(matchScore + 4, 100) },
-    { label: 'Зарплата', value: Math.min(matchScore - 2, 100) },
-    { label: 'Опыт', value: Math.min(matchScore + 2, 100) },
-    { label: 'Локация', value: job.format === 'Удалённо' ? 100 : 85 },
+    { label: "Навыки", value: Math.min(matchScore + 4, 100) },
+    { label: "Зарплата", value: Math.min(matchScore - 2, 100) },
+    { label: "Опыт", value: Math.min(matchScore + 2, 100) },
+    { label: "Локация", value: job.format === "Удалённо" ? 100 : 85 },
   ];
 
   // Hiring steps
   const hiringSteps = [
-    { title: 'Тех. скрининг', desc: '30 мин, онлайн' },
-    { title: 'Лайвкодинг', desc: '1.5 часа' },
-    { title: 'System Design', desc: '1 час' },
-    { title: 'Оффер', desc: '1-3 дня' },
+    { title: "Тех. скрининг", desc: "30 мин, онлайн" },
+    { title: "Лайвкодинг", desc: "1.5 часа" },
+    { title: "System Design", desc: "1 час" },
+    { title: "Оффер", desc: "1-3 дня" },
   ];
+
+  // Get skills as strings (handle both JobListItem and full Job types)
+  const skills = typeof job.skills[0] === "string"
+    ? job.skills as string[]
+    : (job.skills as any[]).map((s) => s.name || s.skill?.name || "");
 
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>{job.title} в {job.company} | СБОРКА Вакансии</title>
-        <meta name="description" content={`${job.title} в компании ${job.company}. ${job.city}. Зарплата ${formatSalary(job.salaryFrom)} - ${formatSalary(job.salaryTo)} ${job.currency}. ${job.description}`} />
-        <meta property="og:title" content={`${job.title} в ${job.company}`} />
-        <meta property="og:description" content={`${job.city} · ${formatSalary(job.salaryFrom)} - ${formatSalary(job.salaryTo)} ${job.currency}`} />
+        <title>{job.title} в {companyName} | СБОРКА Вакансии</title>
+        <meta name="description" content={`${job.title} в компании ${companyName}. ${job.city}. Зарплата ${job.salaryFrom && job.salaryTo ? `${formatSalary(job.salaryFrom)} - ${formatSalary(job.salaryTo)} ${job.currency}` : ""}. ${job.description?.slice(0, 150)}`} />
+        <meta property="og:title" content={`${job.title} в ${companyName}`} />
+        <meta property="og:description" content={`${job.city} · ${job.salaryFrom && job.salaryTo ? `${formatSalary(job.salaryFrom)} - ${formatSalary(job.salaryTo)} ${job.currency}` : ""}`} />
         <meta property="og:url" content={`https://sborka.work/jobs/${job.id}`} />
         <link rel="canonical" href={`https://sborka.work/jobs/${job.id}`} />
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
       <JobBoardNavbar />
-
       <TopBanner utmSource="job_detail" />
 
       <div className="max-w-[1280px] mx-auto px-8">
@@ -162,11 +143,11 @@ const JobDetailPage = () => {
             {/* Company row */}
             <div className="flex items-center gap-4 mb-4">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-extrabold text-2xl shrink-0"
-                style={{ background: getCompanyColor(job.company), color: getCompanyTextColor(job.company) }}>
-                {job.company[0]}
+                style={{ background: getCompanyColor(companyName), color: getCompanyTextColor(companyName) }}>
+                {companyName[0]}
               </div>
               <div>
-                <div className="text-base font-semibold">{job.company}</div>
+                <div className="text-base font-semibold">{companyName}</div>
                 <span className="text-xs text-primary font-semibold">✓ Верифицированная компания</span>
               </div>
             </div>
@@ -174,15 +155,17 @@ const JobDetailPage = () => {
             <h1 className="text-3xl font-extrabold tracking-tight mb-2">{job.title}</h1>
             {/* Salary */}
             <div className="text-xl font-semibold text-primary mb-3" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-              {formatSalary(job.salaryFrom)} — {formatSalary(job.salaryTo)} {job.currency}
+              {job.salaryFrom && job.salaryTo
+                ? `${formatSalary(job.salaryFrom)} — ${formatSalary(job.salaryTo)} ${job.currency}`
+                : "Зарплата не указана"}
             </div>
             {/* Tags */}
             <div className="flex flex-wrap gap-2">
               <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                job.format === 'Удалённо' ? 'bg-emerald-50 text-emerald-700' : 'bg-muted text-muted-foreground'
+                job.format === "Удалённо" ? "bg-emerald-50 text-emerald-700" : "bg-muted text-muted-foreground"
               }`}>{job.format}</span>
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">{job.level}</span>
-              {job.skills.slice(0, 3).map((skill: string) => (
+              {skills.slice(0, 3).map((skill) => (
                 <span key={skill} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">{skill}</span>
               ))}
             </div>
@@ -192,7 +175,7 @@ const JobDetailPage = () => {
           <div className="flex flex-col items-end gap-4 min-w-[220px]">
             {/* SVG Match Circle */}
             <div className="relative w-[100px] h-[100px] flex items-center justify-center flex-col">
-              <svg width="100" height="100" viewBox="0 0 100 100" className="absolute top-0 left-0" style={{ transform: 'rotate(-90deg)' }}>
+              <svg width="100" height="100" viewBox="0 0 100 100" className="absolute top-0 left-0" style={{ transform: "rotate(-90deg)" }}>
                 <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" strokeWidth="6" className="text-border" />
                 <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" strokeWidth="6" className="text-primary"
                   strokeDasharray="276.5" strokeDashoffset={276.5 - (276.5 * matchScore / 100)} strokeLinecap="round" />
@@ -222,7 +205,7 @@ const JobDetailPage = () => {
 
             <h2 className="text-xl font-bold mb-3">Требования</h2>
             <ul className="space-y-1.5 mb-6">
-              {job.requirements.map((req, i) => (
+              {job.requirements?.map((req, i) => (
                 <li key={i} className="text-muted-foreground text-[0.92rem] leading-relaxed flex items-start gap-2">
                   <span className="text-primary mt-1.5">•</span> {req}
                 </li>
@@ -231,7 +214,7 @@ const JobDetailPage = () => {
 
             <h2 className="text-xl font-bold mb-3">Мы предлагаем</h2>
             <ul className="space-y-1.5 mb-6">
-              {job.benefits.map((b, i) => (
+              {job.benefits?.map((b, i) => (
                 <li key={i} className="text-muted-foreground text-[0.92rem] leading-relaxed flex items-start gap-2">
                   <span className="text-primary mt-1.5">•</span> {b}
                 </li>
@@ -257,7 +240,7 @@ const JobDetailPage = () => {
 
             {/* Source */}
             <p className="text-sm text-muted-foreground">
-              Источник: {job.source} · Опубликовано: {formatDate(job.postedAt)}
+              Источник: {job.source || "СБОРКА"} · Опубликовано: {formatDate(job.postedAt)}
             </p>
 
             <CareerClubBanner variant="inline" utmSource="job_detail" />
@@ -297,26 +280,33 @@ const JobDetailPage = () => {
             </div>
 
             {/* Similar Jobs Card */}
-            <div className="bg-card border border-border rounded-2xl p-5">
-              <h4 className="font-bold text-sm mb-3">Похожие вакансии</h4>
-              <div className="space-y-0">
-                {relatedJobs.map((rj: Job) => (
-                  <Link key={rj.id} to={`/jobs/${rj.id}`} className="flex gap-3 py-3 border-b border-border last:border-0 hover:opacity-80 transition-opacity">
-                    <div className="w-9 h-9 rounded-lg shrink-0 flex items-center justify-center font-bold text-xs"
-                      style={{ background: getCompanyColor(rj.company), color: getCompanyTextColor(rj.company) }}>
-                      {rj.company[0]}
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold hover:text-primary transition-colors">{rj.title}</div>
-                      <div className="text-xs text-muted-foreground">{rj.company}</div>
-                      <div className="text-xs text-primary font-medium mt-0.5" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                        {formatSalary(rj.salaryFrom)} — {formatSalary(rj.salaryTo)} {rj.currency}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
+            {similarJobs.length > 0 && (
+              <div className="bg-card border border-border rounded-2xl p-5">
+                <h4 className="font-bold text-sm mb-3">Похожие вакансии</h4>
+                <div className="space-y-0">
+                  {similarJobs.map((rj) => {
+                    const rjCompanyName = typeof rj.company === "string" ? rj.company : rj.company.name;
+                    return (
+                      <Link key={rj.id} to={`/jobs/${rj.id}`} className="flex gap-3 py-3 border-b border-border last:border-0 hover:opacity-80 transition-opacity">
+                        <div className="w-9 h-9 rounded-lg shrink-0 flex items-center justify-center font-bold text-xs"
+                          style={{ background: getCompanyColor(rjCompanyName), color: getCompanyTextColor(rjCompanyName) }}>
+                          {rjCompanyName[0]}
+                        </div>
+                        <div>
+                          <div className="text-sm font-semibold hover:text-primary transition-colors">{rj.title}</div>
+                          <div className="text-xs text-muted-foreground">{rjCompanyName}</div>
+                          <div className="text-xs text-primary font-medium mt-0.5" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                            {rj.salaryFrom && rj.salaryTo
+                              ? `${formatSalary(rj.salaryFrom)} — ${formatSalary(rj.salaryTo)} ${rj.currency}`
+                              : "—"}
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,60 +1,144 @@
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { queryClient } from "@/lib/queryClient";
+
+// ---- Eagerly loaded (critical path) -----------------------
 import Index from "./pages/Index";
-import Partners from "./pages/Partners";
-import Knowledge from "./pages/Knowledge";
-import KnowledgeCategory from "./pages/KnowledgeCategory";
-import KnowledgeArticle from "./pages/KnowledgeArticle";
-import NotFound from "./pages/NotFound";
 import JobsPage from "./pages/JobsPage";
 import JobDetailPage from "./pages/JobDetailPage";
-import JobsByCity from "./pages/JobsByCity";
-import JobsByCategory from "./pages/JobsByCategory";
-import EmployersPage from "./pages/EmployersPage";
-import ToolsPage from "./pages/ToolsPage";
-import SalaryCalculator from "./pages/SalaryCalculator";
-import ResumeChecklist from "./pages/ResumeChecklist";
-import ResumeReview from "./pages/ResumeReview";
-import McpPage from "./pages/McpPage";
-import SavedJobs from "./pages/SavedJobs";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
+import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// ---- Lazy loaded (code-split) -----------------------------
+const Partners = lazy(() => import("./pages/Partners"));
+const Knowledge = lazy(() => import("./pages/Knowledge"));
+const KnowledgeCategory = lazy(() => import("./pages/KnowledgeCategory"));
+const KnowledgeArticle = lazy(() => import("./pages/KnowledgeArticle"));
+const JobsByCity = lazy(() => import("./pages/JobsByCity"));
+const JobsByCategory = lazy(() => import("./pages/JobsByCategory"));
+const EmployersPage = lazy(() => import("./pages/EmployersPage"));
+const ToolsPage = lazy(() => import("./pages/ToolsPage"));
+const SalaryCalculator = lazy(() => import("./pages/SalaryCalculator"));
+const ResumeChecklist = lazy(() => import("./pages/ResumeChecklist"));
+const ResumeReview = lazy(() => import("./pages/ResumeReview"));
+const McpPage = lazy(() => import("./pages/McpPage"));
+const SavedJobs = lazy(() => import("./pages/SavedJobs"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+
+// ---- Auth pages -------------------------------------------
+const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
+
+// ---- Seeker pages -----------------------------------------
+const SeekerProfilePage = lazy(() => import("./pages/seeker/SeekerProfilePage"));
+
+// ---- Employer pages ---------------------------------------
+const EmployerDashboardPage = lazy(() => import("./pages/employer/EmployerDashboardPage"));
+const CreateJobPage = lazy(() => import("./pages/employer/CreateJobPage"));
+
+// ---- Fallback loader ----------------------------------------
+function PageLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+}
 
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter basename={import.meta.env.BASE_URL}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/partners" element={<Partners />} />
-            <Route path="/knowledge" element={<Knowledge />} />
-            <Route path="/knowledge/:category" element={<KnowledgeCategory />} />
-            <Route path="/knowledge/:category/:slug" element={<KnowledgeArticle />} />
-            <Route path="/jobs" element={<JobsPage />} />
-            <Route path="/jobs/:id" element={<JobDetailPage />} />
-            <Route path="/jobs/city/:city" element={<JobsByCity />} />
-            <Route path="/jobs/category/:category" element={<JobsByCategory />} />
-            <Route path="/employers" element={<EmployersPage />} />
-            <Route path="/tools" element={<ToolsPage />} />
-            <Route path="/tools/salary" element={<SalaryCalculator />} />
-            <Route path="/tools/resume-checklist" element={<ResumeChecklist />} />
-            <Route path="/tools/resume-review" element={<ResumeReview />} />
-            <Route path="/mcp" element={<McpPage />} />
-            <Route path="/jobs/saved" element={<SavedJobs />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter basename={import.meta.env.BASE_URL}>
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  {/* ---- Public routes ---- */}
+                  <Route path="/" element={<Index />} />
+                  <Route path="/partners" element={<Partners />} />
+                  <Route path="/privacy" element={<PrivacyPolicy />} />
+
+                  {/* ---- Knowledge base ---- */}
+                  <Route path="/knowledge" element={<Knowledge />} />
+                  <Route path="/knowledge/:category" element={<KnowledgeCategory />} />
+                  <Route path="/knowledge/:category/:slug" element={<KnowledgeArticle />} />
+
+                  {/* ---- Jobs — ORDER MATTERS: specific routes before :id ---- */}
+                  <Route path="/jobs" element={<JobsPage />} />
+                  <Route path="/jobs/saved" element={<SavedJobs />} />
+                  <Route path="/jobs/city/:city" element={<JobsByCity />} />
+                  <Route path="/jobs/category/:category" element={<JobsByCategory />} />
+                  <Route path="/jobs/:id" element={<JobDetailPage />} />
+
+                  {/* ---- Employers landing ---- */}
+                  <Route path="/employers" element={<EmployersPage />} />
+
+                  {/* ---- Tools ---- */}
+                  <Route path="/tools" element={<ToolsPage />} />
+                  <Route path="/tools/salary" element={<SalaryCalculator />} />
+                  <Route path="/tools/resume-checklist" element={<ResumeChecklist />} />
+                  <Route path="/tools/resume-review" element={<ResumeReview />} />
+
+                  {/* ---- MCP ---- */}
+                  <Route path="/mcp" element={<McpPage />} />
+
+                  {/* ---- Auth ---- */}
+                  <Route path="/auth/login" element={<AuthPage />} />
+                  <Route path="/auth/register" element={<AuthPage />} />
+
+                  {/* ---- Seeker (protected) ---- */}
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <SeekerProfilePage />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* ---- Employer (protected, employer role) ---- */}
+                  <Route
+                    path="/employer/dashboard"
+                    element={
+                      <ProtectedRoute requiredRole="employer">
+                        <EmployerDashboardPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/employer/jobs/create"
+                    element={
+                      <ProtectedRoute requiredRole="employer">
+                        <CreateJobPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/employer/jobs/:id/edit"
+                    element={
+                      <ProtectedRoute requiredRole="employer">
+                        <CreateJobPage />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* ---- 404 ---- */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   </HelmetProvider>
 );
