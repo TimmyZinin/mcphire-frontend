@@ -1,65 +1,132 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* СБОРКА Design System — NRC-inspired
-   White background, dark accents, teal primary (#4ECDC4)
-   All colors MUST be HSL.
+/* СБОРКА V2 Design System — Warm Professional
+   Terracotta primary (#B5563E), warm neutrals
+   Fonts: Bricolage Grotesque (headings), Source Sans 3 (body)
+   All colors HSL format for shadcn/ui compatibility.
 */
 
 @layer base {
   :root {
-    /* Core palette — clean NRC */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 10%;
+    /* Core palette — Warm Professional */
+    --background: 40 20% 98%;        /* #FAFAF7 warm white */
+    --foreground: 30 10% 12%;        /* #221F1B warm black */
 
     /* Cards */
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card: 40 15% 99%;              /* #FBFBF9 */
+    --card-foreground: 30 10% 12%;
 
     /* Popover */
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover: 40 15% 99%;
+    --popover-foreground: 30 10% 12%;
 
-    /* Primary — teal #4ECDC4 = hsl(174, 62%, 55%) */
-    --primary: 174 62% 55%;
-    --primary-foreground: 0 0% 8%;
+    /* Primary — Terracotta #B5563E = hsl(16, 52%, 48%) */
+    --primary: 16 52% 48%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary — dark */
-    --secondary: 0 0% 12%;
+    /* Secondary — Warm Dark #585048 */
+    --secondary: 35 8% 32%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Muted — light gray */
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    /* Muted — Warm Gray */
+    --muted: 35 12% 94%;             /* #F2F0EB */
+    --muted-foreground: 30 6% 45%;   /* #787470 — 4.5:1 AA */
 
-    /* Accent — teal */
-    --accent: 174 62% 55%;
-    --accent-foreground: 0 0% 8%;
+    /* Accent — Warm Gold #B3974D */
+    --accent: 40 35% 52%;
+    --accent-foreground: 30 10% 12%;
 
-    /* Success — teal (same family) */
-    --success: 174 62% 45%;
+    /* Success — Warm Green */
+    --success: 145 40% 42%;          /* #3F9664 */
     --success-foreground: 0 0% 100%;
 
-    /* Destructive — soft coral */
-    --destructive: 0 65% 55%;
+    /* Warning */
+    --warning: 38 92% 50%;           /* #F59E0B */
+    --warning-foreground: 30 10% 12%;
+
+    /* Destructive */
+    --destructive: 0 72% 51%;        /* #DC2626 */
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders — soft gray, not black */
-    --border: 0 0% 88%;
-    --input: 0 0% 92%;
-    --ring: 174 62% 55%;
+    /* Info */
+    --info: 210 60% 50%;             /* #3B82F6 */
+    --info-foreground: 0 0% 100%;
 
-    /* CTA hot — coral #e8604c */
-    --cta-hot: 8 70% 60%;
+    /* Borders — warm gray */
+    --border: 35 8% 86%;             /* #DDD9D3 */
+    --input: 35 8% 91%;              /* #EAE8E3 */
+    --ring: 16 52% 48%;
+
+    /* CTA hot — Coral #DD4F38 */
+    --cta-hot: 8 70% 55%;
     --cta-hot-foreground: 0 0% 100%;
 
     --radius: 0.75rem;
 
     /* Typography */
-    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-heading: 'Bricolage Grotesque', 'Georgia', serif;
+    --font-sans: 'Source Sans 3', 'Noto Sans Arabic', 'Noto Sans Devanagari', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* Spacing scale (design tokens) */
+    --space-1: 0.25rem;  /* 4px */
+    --space-2: 0.5rem;   /* 8px */
+    --space-3: 0.75rem;  /* 12px */
+    --space-4: 1rem;     /* 16px */
+    --space-5: 1.25rem;  /* 20px */
+    --space-6: 1.5rem;   /* 24px */
+    --space-8: 2rem;     /* 32px */
+    --space-10: 2.5rem;  /* 40px */
+    --space-12: 3rem;    /* 48px */
+    --space-16: 4rem;    /* 64px */
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsla(30, 10%, 12%, 0.05);
+    --shadow-md: 0 4px 6px -1px hsla(30, 10%, 12%, 0.07), 0 2px 4px -2px hsla(30, 10%, 12%, 0.05);
+    --shadow-lg: 0 10px 15px -3px hsla(30, 10%, 12%, 0.08), 0 4px 6px -4px hsla(30, 10%, 12%, 0.05);
+    --shadow-xl: 0 20px 25px -5px hsla(30, 10%, 12%, 0.08), 0 8px 10px -6px hsla(30, 10%, 12%, 0.04);
+
+    /* Z-index scale */
+    --z-base: 0;
+    --z-dropdown: 10;
+    --z-sticky: 20;
+    --z-overlay: 30;
+    --z-modal: 40;
+    --z-toast: 50;
+
+    /* Transitions */
+    --duration-fast: 150ms;
+    --duration-normal: 200ms;
+    --duration-slow: 300ms;
+    --duration-slower: 500ms;
+    --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(16, 52%, 48%) 0%, hsl(16, 52%, 38%) 100%);
+    --gradient-cta: linear-gradient(135deg, hsl(8, 70%, 55%) 0%, hsl(8, 70%, 45%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(40, 20%, 98%) 0%, hsl(35, 12%, 94%) 100%);
+
+    /* Sidebar (required by shadcn) */
+    --sidebar-background: 40 20% 98%;
+    --sidebar-foreground: 30 10% 12%;
+    --sidebar-primary: 16 52% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 35 12% 94%;
+    --sidebar-accent-foreground: 30 10% 12%;
+    --sidebar-border: 35 8% 86%;
+    --sidebar-ring: 16 52% 48%;
+
+    /* Chart colors (required by shadcn) */
+    --chart-1: 16 52% 48%;
+    --chart-2: 40 35% 52%;
+    --chart-3: 145 40% 42%;
+    --chart-4: 210 60% 50%;
+    --chart-5: 8 70% 55%;
   }
 }
 
@@ -82,16 +149,21 @@
 
   body {
     @apply bg-background text-foreground;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
   }
 
   ::selection {
     background: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
   }
+
+  /* Headings use Bricolage Grotesque */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
 }
 
-/* Soft geometric animations (NRC-approved) */
+/* Animations */
 @keyframes float-slow {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-20px) rotate(3deg); }
@@ -120,33 +192,28 @@
   animation: pulse-scale 4s ease-in-out infinite;
 }
 
-/* Emoji runner bounce (scaleX -1 to face right) */
 @keyframes runner-bounce {
   0%, 100% { transform: scaleX(-1) translateY(0) rotate(0deg); }
   50% { transform: scaleX(-1) translateY(-3px) rotate(2deg); }
 }
 
-/* Trophy pop on finish */
 @keyframes celebrate-pop {
   0% { transform: scale(0.3) rotate(-20deg); opacity: 0; }
   50% { transform: scale(1.3) rotate(5deg); opacity: 1; }
   100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
-/* Emoji particles fly out and fade */
 @keyframes particle-fly {
   0% { transform: scale(0) translateY(0); opacity: 1; }
   30% { transform: scale(1.2) translateY(-20px); opacity: 1; }
   100% { transform: scale(0.6) translateY(-60px); opacity: 0; }
 }
 
-/* Track celebration glow */
 @keyframes track-glow {
   0% { opacity: 0.3; filter: blur(2px); }
   100% { opacity: 0.7; filter: blur(4px); }
 }
 
-/* Scroll reveal */
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
@@ -157,9 +224,8 @@
 }
 
 @layer components {
-  /* Primary CTA — NRC teal */
-  .cta-primary,
-  .cta-primary-nrc {
+  /* Primary CTA — Terracotta */
+  .cta-primary {
     @apply inline-flex items-center justify-center;
     @apply px-8 py-4 md:px-12 md:py-5;
     @apply font-bold text-lg md:text-xl uppercase tracking-tight;
@@ -167,12 +233,28 @@
     @apply rounded-xl;
     background-color: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
-    box-shadow: 0 4px 14px hsla(174, 62%, 55%, 0.3);
+    box-shadow: 0 4px 14px hsla(16, 52%, 48%, 0.3);
   }
-  .cta-primary:hover,
-  .cta-primary-nrc:hover {
-    background-color: hsl(174, 62%, 48%);
-    box-shadow: 0 6px 20px hsla(174, 62%, 55%, 0.4);
+  .cta-primary:hover {
+    background-color: hsl(16, 52%, 42%);
+    box-shadow: 0 6px 20px hsla(16, 52%, 48%, 0.4);
+    transform: translateY(-1px);
+  }
+
+  /* CTA Hot — Coral */
+  .cta-hot {
+    @apply inline-flex items-center justify-center;
+    @apply px-8 py-4 md:px-10 md:py-4;
+    @apply font-bold text-base md:text-lg;
+    @apply transition-all duration-200;
+    @apply rounded-xl;
+    background-color: hsl(var(--cta-hot));
+    color: hsl(var(--cta-hot-foreground));
+    box-shadow: 0 4px 14px hsla(8, 70%, 55%, 0.3);
+  }
+  .cta-hot:hover {
+    background-color: hsl(8, 70%, 48%);
+    box-shadow: 0 6px 20px hsla(8, 70%, 55%, 0.4);
     transform: translateY(-1px);
   }
 
@@ -198,27 +280,31 @@
   /* Section dark (for final CTA) */
   .section-black {
     @apply text-white py-16 md:py-24;
-    background-color: #1A1A1A;
+    background-color: hsl(var(--secondary));
   }
 
-  /* Heading styles — confident, not screaming */
+  /* Heading styles using Bricolage Grotesque */
   .heading-hero {
+    font-family: var(--font-heading);
     @apply text-[56px] md:text-[80px] lg:text-[120px] font-black uppercase tracking-tighter leading-[0.9];
   }
 
   .heading-xl {
-    @apply text-3xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.95];
+    font-family: var(--font-heading);
+    @apply text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tighter leading-[0.95];
   }
 
   .heading-lg {
+    font-family: var(--font-heading);
     @apply text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-tight leading-tight;
   }
 
   .heading-md {
+    font-family: var(--font-heading);
     @apply text-xl md:text-2xl lg:text-3xl font-bold uppercase tracking-tight;
   }
 
-  /* Tag/chip — soft rounded */
+  /* Tag/chip */
   .chip {
     @apply inline-block px-4 py-2 border border-border rounded-full text-sm md:text-base font-semibold uppercase tracking-wide;
   }
@@ -228,12 +314,11 @@
     @apply flex items-start gap-3 text-base md:text-lg;
   }
   .list-arrow::before {
-    content: "→";
+    content: "\2192";
     @apply font-bold flex-shrink-0;
     color: hsl(var(--primary));
   }
 
-  /* List with check */
   .list-arrow-green::before {
     color: hsl(var(--success));
   }
@@ -243,13 +328,13 @@
     @apply flex items-start gap-3 text-base md:text-lg text-muted-foreground;
   }
   .list-x::before {
-    content: "✕";
+    content: "\2715";
     @apply text-red-400 font-bold flex-shrink-0;
   }
 
-  /* Article typography — Source Serif 4 for body */
+  /* Article typography — Source Sans 3 for body */
   .article-content {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 1.0625rem;
     line-height: 1.75;
     color: hsl(var(--foreground));
@@ -270,5 +355,11 @@
 
   .article-content li {
     margin-bottom: 0.25rem;
+  }
+
+  /* Salary display (monospace) */
+  .salary-display {
+    font-family: var(--font-mono);
+    @apply font-semibold tabular-nums;
   }
 }

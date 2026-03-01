@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useJob, useSimilarJobs } from "@/hooks/useJobs";
@@ -7,11 +8,13 @@ import CareerClubBanner from "@/components/CareerClubBanner";
 import TopBanner from "@/components/TopBanner";
 import { SkeletonCard } from "@/components/JobCard";
 import { formatSalary, formatDate, formatRelativeTime } from "@/lib/formatters";
+import { ApplyDialog } from "@/components/jobs/ApplyDialog";
 
 const JobDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: job, isLoading } = useJob(id || "");
   const { data: similarJobs = [] } = useSimilarJobs(id || "");
+  const [applyOpen, setApplyOpen] = useState(false);
 
   // Company colors
   const companyColors: Record<string, { bg: string; text: string }> = {
@@ -185,10 +188,9 @@ const JobDetailPage = () => {
             </div>
             {/* Action Buttons */}
             <div className="flex gap-3 w-full">
-              <a href={`https://t.me/Sborka_work_bot?start=apply_${job.id}`} target="_blank" rel="noopener noreferrer"
-                className="flex-1 px-6 py-3 rounded-full bg-cta-hot text-white text-sm font-semibold text-center hover:bg-cta-hot/90 transition-colors">
+              <button onClick={() => setApplyOpen(true)} className="flex-1 px-6 py-3 rounded-full bg-cta-hot text-white text-sm font-semibold text-center hover:bg-cta-hot/90 transition-colors">
                 Откликнуться
-              </a>
+              </button>
               <button className="px-4 py-3 rounded-full border border-border text-sm font-medium hover:bg-muted transition-colors">
                 Сохранить
               </button>
@@ -312,6 +314,14 @@ const JobDetailPage = () => {
       </div>
       <CareerClubBanner variant="block" utmSource="job_detail_footer" />
       <Footer />
+
+      <ApplyDialog
+        jobId={job.id}
+        jobTitle={job.title}
+        companyName={companyName}
+        open={applyOpen}
+        onOpenChange={setApplyOpen}
+      />
     </main>
   );
 };
