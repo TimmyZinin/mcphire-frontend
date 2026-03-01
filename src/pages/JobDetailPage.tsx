@@ -9,6 +9,7 @@ import TopBanner from "@/components/TopBanner";
 import { SkeletonCard } from "@/components/JobCard";
 import { formatSalary, formatDate, formatRelativeTime } from "@/lib/formatters";
 import { ApplyDialog } from "@/components/jobs/ApplyDialog";
+import { JobPostingJsonLd } from "@/components/seo/JsonLd";
 
 const JobDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -322,6 +323,7 @@ const JobDetailPage = () => {
         open={applyOpen}
         onOpenChange={setApplyOpen}
       />
+      <JobPostingJsonLd job={job} />
     </main>
   );
 };
