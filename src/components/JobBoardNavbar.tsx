@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useAuth } from "@/contexts/AuthContext";
 
 // ---- Nav links ---------------------------------------------
@@ -103,6 +104,9 @@ const JobBoardNavbar = () => {
 
         {/* Right-side actions */}
         <div className="flex items-center gap-2">
+          <div className="hidden md:block">
+            <LanguageSwitcher />
+          </div>
           {isAuthenticated && user ? (
             /* Authenticated: user avatar + dropdown */
             <DropdownMenu>
@@ -157,14 +161,12 @@ const JobBoardNavbar = () => {
             </DropdownMenu>
           ) : (
             /* Unauthenticated: Telegram CTA */
-            <a
-              href="https://t.me/Sborka_work_bot"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:inline-flex px-4 py-2 rounded-full text-sm font-semibold text-primary border border-primary/30 hover:bg-primary/5 transition-colors"
+            <Link
+              to="/auth/login"
+              className="hidden md:inline-flex px-4 py-2 rounded-full text-sm font-semibold text-white bg-primary hover:bg-primary/90 transition-colors"
             >
-              Войти через бот
-            </a>
+              Войти
+            </Link>
           )}
 
           {/* Mobile hamburger */}
@@ -194,6 +196,10 @@ const JobBoardNavbar = () => {
                     {link.label}
                   </Link>
                 ))}
+
+                <div className="px-4 py-2">
+                  <LanguageSwitcher />
+                </div>
 
                 <hr className="my-3 border-border" />
 
@@ -244,14 +250,13 @@ const JobBoardNavbar = () => {
                     </button>
                   </>
                 ) : (
-                  <a
-                    href="https://t.me/Sborka_work_bot"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-3 rounded-xl text-base font-semibold text-primary bg-primary/10 text-center"
+                  <Link
+                    to="/auth/login"
+                    onClick={() => setOpen(false)}
+                    className="px-4 py-3 rounded-xl text-base font-semibold text-white bg-primary text-center"
                   >
-                    Войти через бот
-                  </a>
+                    Войти
+                  </Link>
                 )}
               </div>
             </SheetContent>

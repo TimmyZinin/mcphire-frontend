@@ -31,6 +31,7 @@ const registerSchema = z
     email: z.string().email("Введите корректный email"),
     password: z.string().min(8, "Минимум 8 символов"),
     confirmPassword: z.string(),
+    role: z.enum(["seeker", "employer"], { required_error: "Выберите роль" }),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Пароли не совпадают",
@@ -72,7 +73,7 @@ export default function AuthPage() {
   const handleRegister = registerForm.handleSubmit(async (data) => {
     try {
       setError(null);
-      await register({ name: data.name, email: data.email, password: data.password });
+      await register({ name: data.name, email: data.email, password: data.password, role: data.role });
     } catch {
       setError("Этот email уже зарегистрирован");
     }
@@ -202,6 +203,49 @@ export default function AuthPage() {
               {/* Register */}
               <TabsContent value="register">
                 <form onSubmit={handleRegister} className="space-y-4">
+                  {/* Role Selection */}
+                  <div>
+                    <Label className="mb-2 block">Я хочу</Label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <label
+                        className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all text-center ${
+                          registerForm.watch("role") === "seeker"
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-primary/30"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          value="seeker"
+                          {...registerForm.register("role")}
+                          className="sr-only"
+                        />
+                        <span className="text-2xl">🔍</span>
+                        <span className="text-sm font-semibold">Найти работу</span>
+                      </label>
+                      <label
+                        className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all text-center ${
+                          registerForm.watch("role") === "employer"
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-primary/30"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          value="employer"
+                          {...registerForm.register("role")}
+                          className="sr-only"
+                        />
+                        <span className="text-2xl">🏢</span>
+                        <span className="text-sm font-semibold">Нанять сотрудника</span>
+                      </label>
+                    </div>
+                    {registerForm.formState.errors.role && (
+                      <p className="text-xs text-destructive mt-1">
+                        {registerForm.formState.errors.role.message}
+                      </p>
+                    )}
+                  </div>
                   <div>
                     <Label htmlFor="reg-name">Имя</Label>
                     <Input

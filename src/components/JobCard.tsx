@@ -5,6 +5,7 @@
 import { Link } from "react-router-dom";
 import type { JobListItem } from "@/types";
 import { formatSalaryRange, formatRelativeTime } from "@/lib/formatters";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface JobCardProps {
   job: JobListItem;
@@ -44,16 +45,18 @@ function getMatchScore(id: string): number {
 }
 
 export function JobCard({ job, showMatchScore = true }: JobCardProps) {
+  const { isAuthenticated } = useAuth();
   const companyName = typeof job.company === "string" ? job.company : job.company.name;
   const matchScore = getMatchScore(job.id);
+  const canShowMatch = showMatchScore && isAuthenticated;
 
   return (
     <Link
       to={`/jobs/${job.id}`}
       className="block bg-card border border-border rounded-2xl p-6 hover:border-primary hover:shadow-lg hover:-translate-y-0.5 transition-all relative"
     >
-      {/* Match Badge */}
-      {showMatchScore && (
+      {/* Match Badge — only for authenticated users */}
+      {canShowMatch && (
         <div className="absolute top-4 right-4 bg-primary text-white font-mono text-xs font-bold px-2.5 py-1 rounded-full">
           {matchScore}% матч
         </div>

@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>https://sborka.work/sitemap-pages.xml</loc>
-    <lastmod>2026-02-24</lastmod>
+    <loc>https://v2.sborka.work/sitemap-pages.xml</loc>
+    <lastmod>2026-03-02</lastmod>
   </sitemap>
   <sitemap>
-    <loc>https://sborka.work/sitemap-knowledge.xml</loc>
-    <lastmod>2026-02-24</lastmod>
+    <loc>https://v2.sborka.work/sitemap-knowledge.xml</loc>
+    <lastmod>2026-03-02</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://v2.sborka.work/sitemap-jobs.xml</loc>
+    <lastmod>2026-03-02</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://v2.sborka.work/sitemap-jobs-city.xml</loc>
+    <lastmod>2026-03-02</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://v2.sborka.work/sitemap-jobs-category.xml</loc>
+    <lastmod>2026-03-02</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://v2.sborka.work/sitemap-companies.xml</loc>
+    <lastmod>2026-03-02</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://v2.sborka.work/sitemap-tools.xml</loc>
+    <lastmod>2026-03-02</lastmod>
   </sitemap>
 </sitemapindex>

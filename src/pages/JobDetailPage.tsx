@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useJob, useSimilarJobs } from "@/hooks/useJobs";
+import { useAuth } from "@/contexts/AuthContext";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
 import CareerClubBanner from "@/components/CareerClubBanner";
@@ -15,6 +16,7 @@ const JobDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: job, isLoading } = useJob(id || "");
   const { data: similarJobs = [] } = useSimilarJobs(id || "");
+  const { isAuthenticated } = useAuth();
   const [applyOpen, setApplyOpen] = useState(false);
 
   // Company colors
@@ -177,16 +179,18 @@ const JobDetailPage = () => {
 
           {/* Right — Match Circle + Actions */}
           <div className="flex flex-col items-end gap-4 min-w-[220px]">
-            {/* SVG Match Circle */}
-            <div className="relative w-[100px] h-[100px] flex items-center justify-center flex-col">
-              <svg width="100" height="100" viewBox="0 0 100 100" className="absolute top-0 left-0" style={{ transform: "rotate(-90deg)" }}>
-                <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" strokeWidth="6" className="text-border" />
-                <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" strokeWidth="6" className="text-primary"
-                  strokeDasharray="276.5" strokeDashoffset={276.5 - (276.5 * matchScore / 100)} strokeLinecap="round" />
-              </svg>
-              <span className="text-2xl font-extrabold text-primary" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{matchScore}%</span>
-              <span className="text-[0.7rem] text-muted-foreground">Ваш матч</span>
-            </div>
+            {/* SVG Match Circle — only for authenticated users */}
+            {isAuthenticated && (
+              <div className="relative w-[100px] h-[100px] flex items-center justify-center flex-col">
+                <svg width="100" height="100" viewBox="0 0 100 100" className="absolute top-0 left-0" style={{ transform: "rotate(-90deg)" }}>
+                  <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" strokeWidth="6" className="text-border" />
+                  <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" strokeWidth="6" className="text-primary"
+                    strokeDasharray="276.5" strokeDashoffset={276.5 - (276.5 * matchScore / 100)} strokeLinecap="round" />
+                </svg>
+                <span className="text-2xl font-extrabold text-primary" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{matchScore}%</span>
+                <span className="text-[0.7rem] text-muted-foreground">Ваш матч</span>
+              </div>
+            )}
             {/* Action Buttons */}
             <div className="flex gap-3 w-full">
               <button onClick={() => setApplyOpen(true)} className="flex-1 px-6 py-3 rounded-full bg-cta-hot text-white text-sm font-semibold text-center hover:bg-cta-hot/90 transition-colors">
@@ -264,23 +268,25 @@ const JobDetailPage = () => {
               </ul>
             </div>
 
-            {/* Match Breakdown Card */}
-            <div className="bg-card border border-border rounded-2xl p-5">
-              <h4 className="font-bold text-sm mb-3">Детали матча</h4>
-              <div className="space-y-3">
-                {matchBreakdown.map((item, i) => (
-                  <div key={i}>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-muted-foreground">{item.label}</span>
-                      <span className="font-semibold text-primary" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{item.value}%</span>
+            {/* Match Breakdown Card — only for authenticated users */}
+            {isAuthenticated && (
+              <div className="bg-card border border-border rounded-2xl p-5">
+                <h4 className="font-bold text-sm mb-3">Детали матча</h4>
+                <div className="space-y-3">
+                  {matchBreakdown.map((item, i) => (
+                    <div key={i}>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-muted-foreground">{item.label}</span>
+                        <span className="font-semibold text-primary" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{item.value}%</span>
+                      </div>
+                      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-primary to-primary/70 rounded-full" style={{ width: `${item.value}%` }} />
+                      </div>
                     </div>
-                    <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-primary to-primary/70 rounded-full" style={{ width: `${item.value}%` }} />
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Similar Jobs Card */}
             {similarJobs.length > 0 && (
@@ -313,8 +319,25 @@ const JobDetailPage = () => {
           </div>
         </div>
       </div>
+      {/* Spacer for mobile sticky bar */}
+      <div className="h-20 lg:hidden" />
       <CareerClubBanner variant="block" utmSource="job_detail_footer" />
       <Footer />
+
+      {/* Mobile Sticky Apply Bar */}
+      <div className="fixed bottom-0 left-0 right-0 lg:hidden bg-background/95 backdrop-blur-lg border-t border-border px-4 py-3 z-40">
+        <div className="flex gap-3 max-w-[600px] mx-auto">
+          <button
+            onClick={() => setApplyOpen(true)}
+            className="flex-1 px-6 py-3 rounded-full bg-cta-hot text-white text-sm font-semibold text-center hover:bg-cta-hot/90 transition-colors"
+          >
+            Откликнуться
+          </button>
+          <button className="px-4 py-3 rounded-full border border-border text-sm font-medium hover:bg-muted transition-colors">
+            Сохранить
+          </button>
+        </div>
+      </div>
 
       <ApplyDialog
         jobId={job.id}

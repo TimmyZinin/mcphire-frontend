@@ -28,6 +28,7 @@ const KnowledgeArticle = lazy(() => import("./pages/KnowledgeArticle"));
 const JobsByCity = lazy(() => import("./pages/JobsByCity"));
 const JobsByCategory = lazy(() => import("./pages/JobsByCategory"));
 const EmployersPage = lazy(() => import("./pages/EmployersPage"));
+const CompanyDetailPage = lazy(() => import("./pages/CompanyDetailPage"));
 const ToolsPage = lazy(() => import("./pages/ToolsPage"));
 const SalaryCalculator = lazy(() => import("./pages/SalaryCalculator"));
 const ResumeChecklist = lazy(() => import("./pages/ResumeChecklist"));
@@ -102,7 +103,8 @@ const App = () => (
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   {/* ---- Public routes (pages include their own Navbar + Footer) ---- */}
-                  <Route path="/" element={<Index />} />
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/club" element={<Index />} />
                   <Route path="/partners" element={<Partners />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />
 
@@ -110,9 +112,6 @@ const App = () => (
                   <Route path="/knowledge" element={<Knowledge />} />
                   <Route path="/knowledge/:category" element={<KnowledgeCategory />} />
                   <Route path="/knowledge/:category/:slug" element={<KnowledgeArticle />} />
-
-                  {/* ---- Job Board Home ---- */}
-                  <Route path="/home" element={<HomePage />} />
 
                   {/* ---- Jobs — ORDER MATTERS: specific before :id ---- */}
                   <Route path="/jobs" element={<JobsPage />} />
@@ -123,6 +122,9 @@ const App = () => (
 
                   {/* ---- Employers landing ---- */}
                   <Route path="/employers" element={<EmployersPage />} />
+
+                  {/* ---- Company profiles ---- */}
+                  <Route path="/companies/:slug" element={<CompanyDetailPage />} />
 
                   {/* ---- Tools ---- */}
                   <Route path="/tools" element={<ToolsPage />} />

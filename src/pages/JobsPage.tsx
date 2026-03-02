@@ -1,6 +1,14 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { SlidersHorizontal, X } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useJobs, useJobStats } from "@/hooks/useJobs";
 import { useJobFilters } from "@/hooks/useJobFilters";
 import { cityMap, categoryMap } from "@/data/jobCategories";
@@ -10,10 +18,128 @@ import CareerClubBanner from "@/components/CareerClubBanner";
 import TopBanner from "@/components/TopBanner";
 import { JobCard, SkeletonGrid } from "@/components/JobCard";
 
+// ---- Filter Sidebar Content (reused in desktop sidebar + mobile sheet) ----
+
+interface FilterSidebarContentProps {
+  filters: ReturnType<typeof useJobFilters>["filters"];
+  setFilters: ReturnType<typeof useJobFilters>["setFilters"];
+  toggleArrayFilter: ReturnType<typeof useJobFilters>["toggleArrayFilter"];
+  salaryOptions: { label: string; value: number }[];
+  activeFilterCount: number;
+}
+
+function FilterSidebarContent({ filters, setFilters, toggleArrayFilter, salaryOptions, activeFilterCount }: FilterSidebarContentProps) {
+  const checkboxClass = (active: boolean) =>
+    `flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-colors text-sm ${
+      active ? "bg-primary/10 text-primary font-medium" : "text-foreground hover:bg-muted"
+    }`;
+
+  return (
+    <div className="space-y-6">
+      {/* Format */}
+      <div>
+        <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Формат</h4>
+        <div className="space-y-1">
+          {["Удалённо", "Офис", "Гибрид"].map((f) => (
+            <button
+              key={f}
+              onClick={() => toggleArrayFilter("format", f)}
+              className={checkboxClass(filters.format.includes(f))}
+            >
+              <span className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${
+                filters.format.includes(f) ? "border-primary bg-primary" : "border-border"
+              }`}>
+                {filters.format.includes(f) && <span className="text-white text-[10px]">✓</span>}
+              </span>
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Salary */}
+      <div>
+        <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Зарплата</h4>
+        <div className="space-y-1">
+          {salaryOptions.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => setFilters({ salaryMin: filters.salaryMin === opt.value ? null : opt.value, page: 1 })}
+              className={checkboxClass(filters.salaryMin === opt.value)}
+            >
+              <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                filters.salaryMin === opt.value ? "border-primary" : "border-border"
+              }`}>
+                {filters.salaryMin === opt.value && <span className="w-2 h-2 rounded-full bg-primary" />}
+              </span>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Level */}
+      <div>
+        <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Уровень</h4>
+        <div className="space-y-1">
+          {["Junior", "Middle", "Senior", "Lead"].map((l) => (
+            <button
+              key={l}
+              onClick={() => toggleArrayFilter("level", l)}
+              className={checkboxClass(filters.level.includes(l))}
+            >
+              <span className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${
+                filters.level.includes(l) ? "border-primary bg-primary" : "border-border"
+              }`}>
+                {filters.level.includes(l) && <span className="text-white text-[10px]">✓</span>}
+              </span>
+              {l}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Category */}
+      <div>
+        <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Специализация</h4>
+        <div className="space-y-1">
+          {Object.entries(categoryMap).slice(0, 8).map(([slug, { name }]) => (
+            <button
+              key={slug}
+              onClick={() => setFilters({ category: filters.category === slug ? "" : slug, page: 1 })}
+              className={checkboxClass(filters.category === slug)}
+            >
+              <span className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${
+                filters.category === slug ? "border-primary bg-primary" : "border-border"
+              }`}>
+                {filters.category === slug && <span className="text-white text-[10px]">✓</span>}
+              </span>
+              {name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Reset */}
+      {activeFilterCount > 0 && (
+        <button
+          onClick={() => setFilters({ format: [], level: [], salaryMin: null, city: "", category: "", page: 1 })}
+          className="w-full text-sm text-destructive hover:text-destructive/80 font-medium py-2 transition-colors"
+        >
+          Сбросить все фильтры ({activeFilterCount})
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ---- Page ----
+
 const JobsPage = () => {
   const { filters, page, setFilters, toggleArrayFilter, activeFilterCount } = useJobFilters();
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  // Salary options for chips
+  // Salary options
   const salaryOptions = [
     { label: "от 150K", value: 150000 },
     { label: "от 250K", value: 250000 },
@@ -64,14 +190,6 @@ const JobsPage = () => {
     }
     return items;
   }, [filters, toggleArrayFilter, setFilters]);
-
-  // Chip class helper
-  const chipClass = (active: boolean): string => {
-    if (active) {
-      return "inline-flex items-center px-3.5 py-1.5 rounded-full text-sm font-medium bg-primary text-white border border-primary cursor-pointer transition-colors";
-    }
-    return "inline-flex items-center px-3.5 py-1.5 rounded-full text-sm font-medium bg-card border border-border text-muted-foreground cursor-pointer hover:border-primary hover:text-primary transition-colors";
-  };
 
   // Sort class helper
   const sortClass = (active: boolean): string => {
@@ -153,158 +271,183 @@ const JobsPage = () => {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="max-w-[1280px] mx-auto px-8 py-4">
-        {/* Filter chips */}
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Format chips */}
-          {["Удалённо", "Офис", "Гибрид"].map((f) => (
-            <button
-              key={f}
-              onClick={() => toggleArrayFilter("format", f)}
-              className={chipClass(filters.format.includes(f))}
-            >
-              {f}
-            </button>
-          ))}
-          <div className="w-px h-6 bg-border mx-1" />
-          {/* Salary chips */}
-          {salaryOptions.map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => {
-                setFilters({ salaryMin: filters.salaryMin === opt.value ? null : opt.value, page: 1 });
-              }}
-              className={chipClass(filters.salaryMin === opt.value)}
-            >
-              {opt.label}
-            </button>
-          ))}
-          <div className="w-px h-6 bg-border mx-1" />
-          {/* Level chips */}
-          {["Junior", "Middle", "Senior", "Lead"].map((l) => (
-            <button
-              key={l}
-              onClick={() => toggleArrayFilter("level", l)}
-              className={chipClass(filters.level.includes(l))}
-            >
-              {l}
-            </button>
-          ))}
-        </div>
-
-        {/* Active filters */}
-        {activeFilters.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-3">
-            {activeFilters.map((f, idx) => (
-              <span
-                key={idx}
-                onClick={f.remove}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary cursor-pointer hover:bg-primary/20 transition-colors"
-              >
-                {f.label} <span className="opacity-70">×</span>
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Sort + Results */}
-      <div className="max-w-[1280px] mx-auto px-8">
-        <div className="flex items-center justify-between py-3">
-          <div className="flex gap-1">
-            {sortOptions.map((s) => (
-              <button
-                key={s.key}
-                onClick={() => setFilters({ sortBy: s.key as any, page: 1 })}
-                className={sortClass(filters.sortBy === s.key)}
-              >
-                {s.label}
-              </button>
-            ))}
-          </div>
-          <span className="text-sm text-muted-foreground">
-            {isLoading ? "Загрузка..." : `Показано ${startIndex}–${endIndex} из ${totalJobs}`}
-          </span>
-        </div>
-
-        <CareerClubBanner variant="inline" utmSource="jobs" />
-
-        {/* Jobs Grid */}
-        {isLoading ? (
-          <SkeletonGrid count={12} />
-        ) : isError ? (
-          <div className="text-center py-12 text-muted-foreground">
-            Ошибка при загрузке вакансий. Попробуйте обновить страницу.
-          </div>
-        ) : jobs.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            Вакансии не найдены. Попробуйте изменить параметры поиска.
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 gap-4 pb-8">
-            {jobs.map((job) => (
-              <JobCard key={job.id} job={job} />
-            ))}
-          </div>
-        )}
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center gap-2 pb-8">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-4 py-2 rounded-lg border border-border bg-card disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent"
-            >
-              ← Назад
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-              <button
-                key={p}
-                onClick={() => handlePageChange(p)}
-                className={`px-4 py-2 rounded-lg border ${
-                  currentPage === p
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-card hover:bg-accent"
-                }`}
-              >
-                {p}
-              </button>
-            ))}
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 rounded-lg border border-border bg-card disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent"
-            >
-              Вперёд →
-            </button>
-          </div>
-        )}
-
-        {/* City & Category links */}
-        <div className="pb-6">
-          <details className="group">
-            <summary className="text-sm font-semibold text-muted-foreground cursor-pointer hover:text-foreground">
-              По городам и специализациям ▸
-            </summary>
-            <div className="mt-3 space-y-3">
-              <div className="flex flex-wrap gap-2">
-                {Object.entries(cityMap).map(([slug, name]) => (
-                  <Link key={slug} to={`/jobs/city/${slug}`} className="text-xs px-2.5 py-1 rounded-full border border-border hover:border-primary hover:text-primary transition-colors">
-                    {name}
-                  </Link>
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {Object.entries(categoryMap).map(([slug, { name }]) => (
-                  <Link key={slug} to={`/jobs/category/${slug}`} className="text-xs px-2.5 py-1 rounded-full border border-border hover:border-primary hover:text-primary transition-colors">
-                    {name}
-                  </Link>
-                ))}
+      {/* Main Content: Sidebar + Jobs */}
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-4">
+        <div className="flex gap-8">
+          {/* ---- Desktop Sidebar (280px) ---- */}
+          <aside className="hidden lg:block w-[280px] shrink-0">
+            <div className="sticky top-36">
+              <div className="bg-card border border-border rounded-2xl p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-sm">Фильтры</h3>
+                  {activeFilterCount > 0 && (
+                    <span className="text-xs font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </div>
+                <FilterSidebarContent
+                  filters={filters}
+                  setFilters={setFilters}
+                  toggleArrayFilter={toggleArrayFilter}
+                  salaryOptions={salaryOptions}
+                  activeFilterCount={activeFilterCount}
+                />
               </div>
             </div>
-          </details>
+          </aside>
+
+          {/* ---- Mobile Filter Button + Sheet ---- */}
+          <div className="lg:hidden fixed bottom-4 right-4 z-40">
+            <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
+              <SheetTrigger asChild>
+                <button className="flex items-center gap-2 px-4 py-3 rounded-full bg-primary text-white text-sm font-semibold shadow-lg hover:bg-primary/90 transition-colors">
+                  <SlidersHorizontal className="w-4 h-4" />
+                  Фильтры
+                  {activeFilterCount > 0 && (
+                    <span className="bg-white text-primary text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="max-h-[80vh] rounded-t-2xl overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>Фильтры</SheetTitle>
+                </SheetHeader>
+                <div className="py-4">
+                  <FilterSidebarContent
+                    filters={filters}
+                    setFilters={setFilters}
+                    toggleArrayFilter={toggleArrayFilter}
+                    salaryOptions={salaryOptions}
+                    activeFilterCount={activeFilterCount}
+                  />
+                </div>
+                <button
+                  onClick={() => setMobileFiltersOpen(false)}
+                  className="w-full py-3 rounded-full bg-primary text-white text-sm font-semibold mt-2"
+                >
+                  Показать результаты
+                </button>
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          {/* ---- Jobs Column ---- */}
+          <div className="flex-1 min-w-0">
+            {/* Active filters */}
+            {activeFilters.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-3">
+                {activeFilters.map((f, idx) => (
+                  <span
+                    key={idx}
+                    onClick={f.remove}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary cursor-pointer hover:bg-primary/20 transition-colors"
+                  >
+                    {f.label} <X className="w-3 h-3 opacity-70" />
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Sort + count */}
+            <div className="flex items-center justify-between py-3">
+              <div className="flex gap-1">
+                {sortOptions.map((s) => (
+                  <button
+                    key={s.key}
+                    onClick={() => setFilters({ sortBy: s.key as any, page: 1 })}
+                    className={sortClass(filters.sortBy === s.key)}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+              <span className="text-sm text-muted-foreground hidden sm:inline">
+                {isLoading ? "Загрузка..." : `${startIndex}–${endIndex} из ${totalJobs}`}
+              </span>
+            </div>
+
+            <CareerClubBanner variant="inline" utmSource="jobs" />
+
+            {/* Jobs Grid */}
+            {isLoading ? (
+              <SkeletonGrid count={12} />
+            ) : isError ? (
+              <div className="text-center py-12 text-muted-foreground">
+                Ошибка при загрузке вакансий. Попробуйте обновить страницу.
+              </div>
+            ) : jobs.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">
+                Вакансии не найдены. Попробуйте изменить параметры поиска.
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-4 pb-8">
+                {jobs.map((job) => (
+                  <JobCard key={job.id} job={job} />
+                ))}
+              </div>
+            )}
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 pb-8">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-lg border border-border bg-card disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent"
+                >
+                  ← Назад
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => handlePageChange(p)}
+                    className={`px-4 py-2 rounded-lg border ${
+                      currentPage === p
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-card hover:bg-accent"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 rounded-lg border border-border bg-card disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent"
+                >
+                  Вперёд →
+                </button>
+              </div>
+            )}
+
+            {/* City & Category links */}
+            <div className="pb-6">
+              <details className="group">
+                <summary className="text-sm font-semibold text-muted-foreground cursor-pointer hover:text-foreground">
+                  По городам и специализациям ▸
+                </summary>
+                <div className="mt-3 space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    {Object.entries(cityMap).map(([slug, name]) => (
+                      <Link key={slug} to={`/jobs/city/${slug}`} className="text-xs px-2.5 py-1 rounded-full border border-border hover:border-primary hover:text-primary transition-colors">
+                        {name}
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {Object.entries(categoryMap).map(([slug, { name }]) => (
+                      <Link key={slug} to={`/jobs/category/${slug}`} className="text-xs px-2.5 py-1 rounded-full border border-border hover:border-primary hover:text-primary transition-colors">
+                        {name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </details>
+            </div>
+          </div>
         </div>
       </div>
       <Footer />
