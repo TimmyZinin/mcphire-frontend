@@ -24,7 +24,7 @@ const WebinarsSection = () => {
           </h2>
 
           <h3 className="text-xl md:text-2xl font-bold">
-            2 марта, 16:00 МСК. Регистрация через бота.
+            5 марта, 16:00 МСК. Регистрация через бота.
           </h3>
 
           {/* Topics */}

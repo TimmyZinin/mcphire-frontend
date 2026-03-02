@@ -5,7 +5,7 @@ interface CareerClubBannerProps {
 
 // Данные вебинара — при смене вебинара меняем ТОЛЬКО здесь
 const WEBINAR = {
-  date: "2 марта",
+  date: "5 марта",
   link: "https://t.me/Sborka_work_bot?start=webinar4_site",
   title: "Открытый урок: что такое СБОРКА",
 };

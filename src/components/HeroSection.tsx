@@ -263,23 +263,16 @@ const HeroSection = () => {
             СБОРКА — подписочный карьерный клуб для специалистов Middle, Senior и Lead. Внутри: менторы с опытом 8+ лет в рекрутинге, мок-собеседования, разбор резюме, командные соревнования по поиску работы. Подписка от 4 900 руб./мес. Средний участник получает оффер за 6-8 недель.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
-            <a
-              href="#pricing"
-              className="cta-primary-nrc"
-              data-testid="hero-cta"
-            >
-              СМОТРЕТЬ ТАРИФЫ
-            </a>
-
+          {/* CTA Button */}
+          <div className="flex items-center justify-center pt-6">
             <a
               href="https://t.me/Sborka_work_bot?start=webinar4_site"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-8 py-4 border-2 border-[#4ECDC4] text-[#4ECDC4] font-bold text-base uppercase tracking-tight hover:bg-[#4ECDC4] hover:text-background transition-colors rounded-lg"
+              className="cta-primary-nrc"
+              data-testid="hero-cta"
             >
-              Открытый урок 2 марта →
+              ОТКРЫТЫЙ УРОК 5 МАРТА — ПРИХОДИ →
             </a>
           </div>
         </div>

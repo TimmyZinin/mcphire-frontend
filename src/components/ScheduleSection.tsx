@@ -148,7 +148,7 @@ const ScheduleSection = () => {
             <h3 className="heading-md">Ближайшие занятия</h3>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="space-y-1">
-                <p className="text-sm font-bold uppercase text-primary">2 марта, 16:00</p>
+                <p className="text-sm font-bold uppercase text-primary">5 марта, 16:00</p>
                 <p className="font-bold">Что такое СБОРКА</p>
                 <p className="text-sm text-muted-foreground">Открытый урок</p>
               </div>

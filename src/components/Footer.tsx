@@ -56,7 +56,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="https://t.me/Sborka_work_bot?start=webinar4_site" target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">
-                  Открытый урок 2 марта
+                  Открытый урок 5 марта
                 </a>
               </li>
               <li>

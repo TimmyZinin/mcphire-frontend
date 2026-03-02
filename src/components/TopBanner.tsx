@@ -1,4 +1,4 @@
-const WEBINAR_DATE = "2 марта";
+const WEBINAR_DATE = "5 марта";
 const WEBINAR_LINK = "https://t.me/Sborka_work_bot?start=webinar4_site";
 
 const TopBanner = ({ utmSource = "top_banner" }: { utmSource?: string }) => (

@@ -4,7 +4,7 @@ interface ArticleCTAProps {
 }
 
 const WEBINAR_LINK = "https://t.me/Sborka_work_bot?start=webinar4_site";
-const WEBINAR_DATE = "2 марта";
+const WEBINAR_DATE = "5 марта";
 
 const ArticleCTA = ({ slug, variant = "block" }: ArticleCTAProps) => {
   const href = `${WEBINAR_LINK}&utm_source=knowledge&utm_campaign=${slug}`;
