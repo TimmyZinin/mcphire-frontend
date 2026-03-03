@@ -69,7 +69,7 @@ const ArticleTemplate = ({ article }: ArticleTemplateProps) => {
 
   const breadcrumbs = [
     { label: "СБОРКА", href: "/" },
-    { label: "Блог", href: "/knowledge" },
+    { label: "База знаний", href: "/knowledge" },
     { label: cat?.nameRu || meta.category, href: `/knowledge/${meta.category}` },
     { label: meta.title },
   ];

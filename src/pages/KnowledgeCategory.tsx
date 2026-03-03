@@ -26,7 +26,7 @@ const KnowledgeCategory = () => {
   return (
     <>
       <Helmet>
-        <title>{cat.nameRu} — Блог | СБОРКА</title>
+        <title>{cat.nameRu} — База знаний | СБОРКА</title>
         <meta
           name="description"
           content={`Статьи про ${cat.nameRu.toLowerCase()} для IT-специалистов. Данные hh.ru 2026.`}
@@ -41,7 +41,7 @@ const KnowledgeCategory = () => {
           <Breadcrumbs
             items={[
               { label: "СБОРКА", href: "/" },
-              { label: "Блог", href: "/knowledge" },
+              { label: "База знаний", href: "/knowledge" },
               { label: cat.nameRu },
             ]}
           />

@@ -33,7 +33,7 @@ const Footer = () => {
             <h4 className="font-semibold text-sm text-foreground mb-3 uppercase tracking-wide">Соискателям</h4>
             <ul className="space-y-2 text-sm">
               <li><Link to="/jobs" className="text-muted-foreground hover:text-primary transition-colors">Вакансии</Link></li>
-              <li><Link to="/knowledge" className="text-muted-foreground hover:text-primary transition-colors">Блог</Link></li>
+              <li><Link to="/knowledge" className="text-muted-foreground hover:text-primary transition-colors">База знаний</Link></li>
               <li><Link to="/tools/salary" className="text-muted-foreground hover:text-primary transition-colors">Калькулятор зарплат</Link></li>
               <li><Link to="/tools/resume-checklist" className="text-muted-foreground hover:text-primary transition-colors">Чеклист резюме</Link></li>
               <li><Link to="/tools/resume-review" className="text-muted-foreground hover:text-primary transition-colors">AI-ревью резюме</Link></li>
