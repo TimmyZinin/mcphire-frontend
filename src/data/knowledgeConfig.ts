@@ -152,6 +152,7 @@ export const CATEGORIES = [
   { slug: "work-support", nameRu: "Поддержка при работе", color: "#FDCB6E" },
   { slug: "career-change", nameRu: "Смена профессии", color: "#E84393" },
   { slug: "layoff", nameRu: "Увольнение и сокращение", color: "#D63031" },
+  { slug: "research", nameRu: "Исследования", color: "#E8735A" },
 ];
 
 export const EXPERT_QUOTES = {

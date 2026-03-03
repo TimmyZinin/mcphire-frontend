@@ -25,6 +25,7 @@ const Partners = lazy(() => import("./pages/Partners"));
 const Knowledge = lazy(() => import("./pages/Knowledge"));
 const KnowledgeCategory = lazy(() => import("./pages/KnowledgeCategory"));
 const KnowledgeArticle = lazy(() => import("./pages/KnowledgeArticle"));
+const ResearchReportPage = lazy(() => import("./pages/ResearchReportPage"));
 const JobsByCity = lazy(() => import("./pages/JobsByCity"));
 const JobsByCategory = lazy(() => import("./pages/JobsByCategory"));
 const EmployersPage = lazy(() => import("./pages/EmployersPage"));
@@ -108,8 +109,9 @@ const App = () => (
                   <Route path="/partners" element={<Partners />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />
 
-                  {/* ---- Knowledge base ---- */}
+                  {/* ---- Blog (formerly Knowledge base) ---- */}
                   <Route path="/knowledge" element={<Knowledge />} />
+                  <Route path="/knowledge/research/:slug" element={<ResearchReportPage />} />
                   <Route path="/knowledge/:category" element={<KnowledgeCategory />} />
                   <Route path="/knowledge/:category/:slug" element={<KnowledgeArticle />} />
 
