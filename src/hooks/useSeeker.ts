@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — React Query hooks for Seeker
+// MCPHire — React Query hooks for Seeker
 // ============================================================
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";

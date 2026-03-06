@@ -22,12 +22,12 @@ const Index = () => {
   return (
     <main className="min-h-screen">
       <Helmet>
-        <title>СБОРКА — карьерный клуб | Оффер за 6-8 недель</title>
-        <meta name="description" content="Карьерный клуб СБОРКА для Middle, Senior и Lead: менторы, мок-собеседования, разбор резюме. Средний участник получает оффер за 6-8 недель. Подписка от 4 900 руб/мес." />
-        <link rel="canonical" href="https://sborka.work/" />
-        <meta property="og:title" content="СБОРКА — карьерный клуб | Оффер за 6-8 недель" />
+        <title>MCPHire — карьерный клуб | Оффер за 6-8 недель</title>
+        <meta name="description" content="Карьерный клуб MCPHire для Middle, Senior и Lead: менторы, мок-собеседования, разбор резюме. Средний участник получает оффер за 6-8 недель. Подписка от 4 900 руб/мес." />
+        <link rel="canonical" href="https://mcphire.com/" />
+        <meta property="og:title" content="MCPHire — карьерный клуб | Оффер за 6-8 недель" />
         <meta property="og:description" content="Карьерный клуб для Middle/Senior/Lead: менторы, мок-собеседования, разбор резюме. Подписка от 4 900 руб/мес." />
-        <meta property="og:url" content="https://sborka.work/" />
+        <meta property="og:url" content="https://mcphire.com/" />
       </Helmet>
       <StickyHeader />
       <HeroSection />

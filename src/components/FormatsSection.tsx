@@ -69,7 +69,7 @@ const FormatsSection = () => {
           <div className="overflow-hidden rounded-2xl shadow-xl max-w-xl">
             <img
               src="/images/formats_new.webp"
-              alt="Девушка на видеозвонке с ноутбуком — онлайн-формат СБОРКИ"
+              alt="Девушка на видеозвонке с ноутбуком — онлайн-формат MCPHire"
               className="w-full h-auto object-cover"
               loading="lazy"
             />

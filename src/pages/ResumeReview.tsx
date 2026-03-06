@@ -234,12 +234,12 @@ const ResumeReview = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>Проверка резюме онлайн — бесплатный AI-анализ | СБОРКА</title>
+        <title>Проверка резюме онлайн — бесплатный AI-анализ | MCPHire</title>
         <meta
           name="description"
           content="Проверьте своё резюме бесплатно. 15 критериев оценки: структура, опыт, навыки, оформление. Получите рекомендации по улучшению."
         />
-        <link rel="canonical" href="https://sborka.work/tools/resume-review" />
+        <link rel="canonical" href="https://mcphire.com/tools/resume-review" />
         <meta
           property="og:title"
           content="Проверка резюме онлайн — бесплатный AI-анализ"
@@ -248,14 +248,14 @@ const ResumeReview = () => {
           property="og:description"
           content="15 критериев оценки: структура, опыт, навыки, оформление. Получите рекомендации."
         />
-        <meta property="og:url" content="https://sborka.work/tools/resume-review" />
+        <meta property="og:url" content="https://mcphire.com/tools/resume-review" />
       </Helmet>
 
       {/* Header */}
       <header className="border-b border-border">
         <div className="section-container py-4 flex items-center justify-between">
           <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            СБОРКА
+            MCPHire
           </Link>
           <a href="/#pricing" className="cta-text text-sm">
             Тарифы

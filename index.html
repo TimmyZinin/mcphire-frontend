@@ -3,135 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>СБОРКА</title>
-    <meta name="description" content="СБОРКА — карьерный клуб для IT-специалистов" />
-    <meta name="author" content="СБОРКА" />
+    <title>MCPHire</title>
+    <meta name="description" content="MCPHire — MCP-first платформа для поиска IT-вакансий" />
+    <meta name="author" content="MCPHire" />
     <meta name="robots" content="index, follow" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
-    <meta property="og:title" content="СБОРКА" />
-    <meta property="og:description" content="СБОРКА — карьерный клуб для IT-специалистов" />
+    <meta property="og:title" content="MCPHire" />
+    <meta property="og:description" content="MCPHire — MCP-first платформа для поиска IT-вакансий" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://sborka.work" />
+    <meta property="og:url" content="https://mcphire.com" />
     <meta property="og:locale" content="ru_RU" />
-    <meta property="og:image" content="https://sborka.work/og-image.png" />
-    <meta property="og:site_name" content="СБОРКА" />
-    <meta property="article:modified_time" content="2026-02-23T23:00:00+03:00" />
+    <meta property="og:image" content="https://mcphire.com/og-image.png" />
+    <meta property="og:site_name" content="MCPHire" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@sborka_club" />
-    <meta name="twitter:image" content="https://sborka.work/og-image.png" />
-    <!-- Umami analytics - public website ID (not a secret, placeholder-like identifier) -->
-    <script defer src="https://sborka.work/stats/script.js" data-website-id="de17788f-87df-4bcf-92b1-f79f850dc6e6"></script>
+    <meta name="twitter:image" content="https://mcphire.com/og-image.png" />
+    <!-- Umami analytics -->
+    <script defer src="https://mcphire.com/stats/script.js" data-website-id="de17788f-87df-4bcf-92b1-f79f850dc6e6"></script>
 
     <!-- Schema.org JSON-LD: Organization -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "@id": "https://sborka.work/#organization",
-      "name": "СБОРКА",
-      "url": "https://sborka.work",
-      "logo": "https://sborka.work/favicon.svg",
-      "description": "Карьерный клуб для специалистов Middle, Senior и Lead. Подписка от 4 900 руб/мес с менторами, разборами резюме и мок-собеседованиями. Средний участник получает оффер за 6-8 недель.",
+      "@id": "https://mcphire.com/#organization",
+      "name": "MCPHire",
+      "url": "https://mcphire.com",
+      "logo": "https://mcphire.com/favicon.svg",
+      "description": "MCP-first платформа для поиска IT-вакансий. Вакансии доступны через веб-интерфейс и MCP-протокол для AI-агентов.",
       "foundingDate": "2025",
       "areaServed": { "@type": "Country", "name": "RU" },
-      "knowsLanguage": "ru",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "contactType": "customer service",
-        "url": "https://t.me/Sborka_work_bot",
-        "availableLanguage": "ru"
-      },
-      "sameAs": [
-        "https://t.me/public_sborka",
-        "https://t.me/Sborka_work_bot",
-        "https://www.linkedin.com/in/timzinin/",
-        "https://www.linkedin.com/in/itech-wise/",
-        "https://vk.com/sborka_work"
-      ],
+      "knowsLanguage": ["ru", "en"],
       "founder": [
         {
           "@type": "Person",
-          "@id": "https://sborka.work/#tim-zinin",
+          "@id": "https://mcphire.com/#tim-zinin",
           "name": "Тим Зинин",
-          "jobTitle": "Co-founder, AI & Product",
+          "jobTitle": "Founder",
           "sameAs": ["https://www.linkedin.com/in/timzinin/", "https://t.me/timofeyzinin"]
-        },
-        {
-          "@type": "Person",
-          "@id": "https://sborka.work/#kristina-zhukova",
-          "name": "Кристина Жукова",
-          "jobTitle": "Co-founder, Recruiting Expert",
-          "description": "8 лет опыта в рекрутинге, работала с IT-компаниями от стартапов до корпораций",
-          "sameAs": ["https://www.linkedin.com/in/itech-wise/"]
         }
-      ]
-    }
-    </script>
-
-    <!-- Schema.org JSON-LD: Service + Offers -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "@id": "https://sborka.work/#service",
-      "name": "СБОРКА — карьерный клуб",
-      "provider": { "@id": "https://sborka.work/#organization" },
-      "description": "Подписочный карьерный клуб для специалистов от Middle и выше. Групповые сессии, разбор резюме, подготовка к собеседованиям, переговоры о зарплате, командные соревнования.",
-      "serviceType": "Career Coaching",
-      "areaServed": { "@type": "Country", "name": "RU" },
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Тарифы СБОРКИ",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "name": "СТАРТ",
-            "price": "4900",
-            "priceCurrency": "RUB",
-            "description": "Групповые сессии + командное соревнование",
-            "eligibleDuration": { "@type": "QuantitativeValue", "value": 1, "unitCode": "MON" }
-          },
-          {
-            "@type": "Offer",
-            "name": "ПРОРЫВ",
-            "price": "9900",
-            "priceCurrency": "RUB",
-            "description": "Всё из СТАРТ + индивидуальный разбор резюме + мок-собеседования"
-          },
-          {
-            "@type": "Offer",
-            "name": "VIP",
-            "price": "15900",
-            "priceCurrency": "RUB",
-            "description": "Всё из ПРОРЫВ + персональный ментор + карьерная стратегия"
-          }
-        ]
-      }
-    }
-    </script>
-
-    <!-- Schema.org JSON-LD: FAQPage -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        { "@type": "Question", "name": "Что такое СБОРКА?", "acceptedAnswer": { "@type": "Answer", "text": "СБОРКА — это подписочный карьерный клуб для специалистов уровня Middle, Senior и Lead. Внутри: групповые сессии с менторами, разбор резюме, мок-собеседования, переговоры о зарплате и командные соревнования по поиску работы. Всё в Telegram, живые сессии." } },
-        { "@type": "Question", "name": "Сколько стоит подписка на СБОРКУ?", "acceptedAnswer": { "@type": "Answer", "text": "Три тарифа: СТАРТ 4 900 руб/мес (групповые сессии + соревнование), ПРОРЫВ 9 900 руб/мес (+ разбор резюме + мок-собеседования), VIP 15 900 руб/мес (+ персональный ментор)." } },
-        { "@type": "Question", "name": "Сколько времени нужно уделять?", "acceptedAnswer": { "@type": "Answer", "text": "5-6 часов в неделю: 2 групповые сессии + командное соревнование + самостоятельная работа. Это минимум для реального результата." } },
-        { "@type": "Question", "name": "Это онлайн-курс?", "acceptedAnswer": { "@type": "Answer", "text": "Нет. Это живая рабочая среда с регулярными сессиями, командным соревнованием и обратной связью от экспертов. Никаких записанных видео «посмотри когда-нибудь»." } },
-        { "@type": "Question", "name": "Как быстро будет результат?", "acceptedAnswer": { "@type": "Answer", "text": "Средний участник получает первый оффер за 6-8 недель. Зависит от уровня, рынка и того, насколько системно ты работаешь." } },
-        { "@type": "Question", "name": "Можно ли отменить подписку?", "acceptedAnswer": { "@type": "Answer", "text": "Да, в любой момент. Никаких контрактов или скрытых условий." } },
-        { "@type": "Question", "name": "Подойдёт ли мне, если я junior?", "acceptedAnswer": { "@type": "Answer", "text": "СБОРКА заточена под middle+ специалистов и руководителей. Для junior система может быть слишком интенсивной." } },
-        { "@type": "Question", "name": "Чем СБОРКА отличается от курсов по трудоустройству?", "acceptedAnswer": { "@type": "Answer", "text": "Курсы дают записанные лекции. СБОРКА — это живая среда: ты работаешь с менторами в реальном времени, получаешь обратную связь на своё резюме и проходишь мок-собеседования. Плюс командное соревнование, которое не даёт расслабиться." } },
-        { "@type": "Question", "name": "Кто менторы в СБОРКЕ?", "acceptedAnswer": { "@type": "Answer", "text": "Кристина Жукова — 8 лет в рекрутинге, работала с IT-компаниями от стартапов до корпораций. Тим Зинин — специалист по AI и продуктовому развитию. Плюс приглашённые эксперты из индустрии." } },
-        { "@type": "Question", "name": "Как проходят вебинары?", "acceptedAnswer": { "@type": "Answer", "text": "Вебинары проходят в Zoom, обычно по вечерам (18:00-19:30 МСК). Темы: как устроен найм, разбор резюме, подготовка к собеседованиям, переговоры о зарплате. Участие бесплатное, регистрация через Telegram-бот @Sborka_work_bot." } },
-        { "@type": "Question", "name": "Подходит ли СБОРКА для смены профессии?", "acceptedAnswer": { "@type": "Answer", "text": "Да. Многие участники приходят именно за этим. Менторы помогают оценить текущие навыки, составить план перехода и подготовить резюме под новую роль." } },
-        { "@type": "Question", "name": "Можно ли попробовать бесплатно?", "acceptedAnswer": { "@type": "Answer", "text": "Мы проводим бесплатные вебинары, на которые можно зарегистрироваться через бот @Sborka_work_bot. Также доступны бесплатные инструменты: калькулятор зарплат и чеклист резюме." } },
-        { "@type": "Question", "name": "Есть ли гарантия трудоустройства?", "acceptedAnswer": { "@type": "Answer", "text": "Гарантию трудоустройства мы не даём — это было бы нечестно, потому что результат зависит от рынка и твоих усилий. Но мы даём систему, инструменты и экспертную поддержку. Средний результат — оффер за 6-8 недель при регулярной работе." } }
       ]
     }
     </script>
@@ -141,33 +53,10 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "@id": "https://sborka.work/#website",
-      "name": "СБОРКА",
-      "url": "https://sborka.work",
-      "publisher": { "@id": "https://sborka.work/#organization" }
-    }
-    </script>
-
-    <!-- Schema.org JSON-LD: Event (upcoming webinar) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Event",
-      "name": "Открытый урок: что такое СБОРКА",
-      "description": "Бесплатный открытый урок СБОРКИ: что такое карьерный клуб и как он помогает получить оффер",
-      "startDate": "2026-03-02T16:00:00+03:00",
-      "endDate": "2026-03-02T17:30:00+03:00",
-      "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
-      "eventStatus": "https://schema.org/EventScheduled",
-      "location": { "@type": "VirtualLocation", "url": "https://t.me/Sborka_work_bot" },
-      "organizer": { "@id": "https://sborka.work/#organization" },
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "RUB",
-        "availability": "https://schema.org/InStock",
-        "url": "https://t.me/Sborka_work_bot"
-      }
+      "@id": "https://mcphire.com/#website",
+      "name": "MCPHire",
+      "url": "https://mcphire.com",
+      "publisher": { "@id": "https://mcphire.com/#organization" }
     }
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">

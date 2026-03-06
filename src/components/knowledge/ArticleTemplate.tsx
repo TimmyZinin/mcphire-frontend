@@ -61,14 +61,14 @@ const boldify = (text: string) =>
 const ArticleTemplate = ({ article }: ArticleTemplateProps) => {
   const { meta } = article;
   const cat = CATEGORIES.find((c) => c.slug === meta.category);
-  const canonicalUrl = `https://sborka.work/knowledge/${meta.category}/${meta.slug}`;
+  const canonicalUrl = `https://mcphire.com/knowledge/${meta.category}/${meta.slug}`;
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [meta.slug]);
 
   const breadcrumbs = [
-    { label: "СБОРКА", href: "/" },
+    { label: "MCPHire", href: "/" },
     { label: "База знаний", href: "/knowledge" },
     { label: cat?.nameRu || meta.category, href: `/knowledge/${meta.category}` },
     { label: meta.title },
@@ -84,8 +84,8 @@ const ArticleTemplate = ({ article }: ArticleTemplateProps) => {
     dateModified: "2026-02-24",
     publisher: {
       "@type": "Organization",
-      name: "СБОРКА",
-      url: "https://sborka.work",
+      name: "MCPHire",
+      url: "https://mcphire.com",
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
   };
@@ -103,14 +103,14 @@ const ArticleTemplate = ({ article }: ArticleTemplateProps) => {
   return (
     <>
       <Helmet>
-        <title>{meta.title} | СБОРКА</title>
+        <title>{meta.title} | MCPHire</title>
         <meta name="description" content={meta.metaDescription} />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content={meta.title} />
         <meta property="og:description" content={meta.metaDescription} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="article" />
-        <meta property="og:site_name" content="СБОРКА" />
+        <meta property="og:site_name" content="MCPHire" />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.metaDescription} />
@@ -269,7 +269,7 @@ const ArticleTemplate = ({ article }: ArticleTemplateProps) => {
             <p className="text-xs text-muted-foreground mt-8 pt-4 border-t border-border">
               Данные: hh.ru API, февраль 2026. Зарплаты — медиана по вакансиям с указанной зарплатой.
               Статья подготовлена при поддержке карьерного клуба{" "}
-              <a href="https://sborka.work" className="underline hover:text-foreground">СБОРКА</a>.
+              <a href="https://mcphire.com" className="underline hover:text-foreground">MCPHire</a>.
             </p>
           </div>
         </div>

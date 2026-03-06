@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Company Detail Page
+// MCPHire — Company Detail Page
 // Route: /companies/:slug
 // ============================================================
 
@@ -243,7 +243,7 @@ const CompanyDetailPage = () => {
     return (
       <main className="min-h-screen bg-background">
         <Helmet>
-          <title>Компания не найдена | СБОРКА Вакансии</title>
+          <title>Компания не найдена | MCPHire Вакансии</title>
         </Helmet>
         <JobBoardNavbar />
         <section className="section-white">
@@ -267,12 +267,12 @@ const CompanyDetailPage = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>{company.name} — вакансии | СБОРКА</title>
+        <title>{company.name} — вакансии | MCPHire</title>
         <meta name="description" content={metaDescription} />
-        <meta property="og:title" content={`${company.name} — вакансии на СБОРКА`} />
+        <meta property="og:title" content={`${company.name} — вакансии на MCPHire`} />
         <meta property="og:description" content={metaDescription} />
-        <meta property="og:url" content={`https://sborka.work/companies/${company.slug}`} />
-        <link rel="canonical" href={`https://sborka.work/companies/${company.slug}`} />
+        <meta property="og:url" content={`https://mcphire.com/companies/${company.slug}`} />
+        <link rel="canonical" href={`https://mcphire.com/companies/${company.slug}`} />
       </Helmet>
 
       <JobBoardNavbar />

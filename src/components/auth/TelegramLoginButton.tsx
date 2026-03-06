@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Telegram Login Widget wrapper
+// MCPHire — Telegram Login Widget wrapper
 // Uses the official Telegram Login Widget script.
 // https://core.telegram.org/widgets/login
 // ============================================================

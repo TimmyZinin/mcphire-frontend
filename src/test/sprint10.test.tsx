@@ -77,7 +77,7 @@ describe("Sprint 10 + 5.1: Website", () => {
 
     it("does NOT use lime colors", () => {
       render(<HeroSection />);
-      const section = screen.getByText("СБОРКА").closest("section");
+      const section = screen.getByText("MCPHire").closest("section");
       expect(section?.innerHTML).not.toContain("#DFFF00");
     });
   });

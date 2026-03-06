@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Employer Dashboard page
+// MCPHire — Employer Dashboard page
 // Route: /employer/dashboard (protected: employer)
 // ============================================================
 
@@ -261,7 +261,7 @@ export default function EmployerDashboardPage() {
   return (
     <main className="min-h-screen bg-background">
       <PageMeta
-        title="Кабинет работодателя | СБОРКА"
+        title="Кабинет работодателя | MCPHire"
         description="Управляйте вакансиями и откликами"
         noindex
       />

@@ -13,21 +13,21 @@ const SavedJobs = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>Сохранённые вакансии | СБОРКА</title>
+        <title>Сохранённые вакансии | MCPHire</title>
         <meta
           name="description"
           content="Ваши сохранённые IT-вакансии. Отслеживайте интересные позиции и быстро находите их."
         />
-        <link rel="canonical" href="https://sborka.work/jobs/saved" />
+        <link rel="canonical" href="https://mcphire.com/jobs/saved" />
         <meta
           property="og:title"
-          content="Сохранённые вакансии | СБОРКА"
+          content="Сохранённые вакансии | MCPHire"
         />
         <meta
           property="og:description"
           content="Ваши сохранённые IT-вакансии"
         />
-        <meta property="og:url" content="https://sborka.work/jobs/saved" />
+        <meta property="og:url" content="https://mcphire.com/jobs/saved" />
       </Helmet>
 
       {/* Header */}

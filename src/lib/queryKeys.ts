@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — React Query key factory
+// MCPHire — React Query key factory
 // Centralised so invalidations stay consistent.
 // ============================================================
 

@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Create / Edit Job page — 4-step wizard
+// MCPHire — Create / Edit Job page — 4-step wizard
 // Route: /employer/jobs/create  |  /employer/jobs/:id/edit
 // Steps: Основное → Требования → Условия → Превью
 // ============================================================
@@ -487,7 +487,7 @@ export default function CreateJobPage() {
   return (
     <main className="min-h-screen bg-background">
       <PageMeta
-        title={isEditMode ? "Редактировать вакансию | СБОРКА" : "Разместить вакансию | СБОРКА"}
+        title={isEditMode ? "Редактировать вакансию | MCPHire" : "Разместить вакансию | MCPHire"}
         description="Создайте вакансию и получайте отклики от IT-специалистов через AI"
         noindex
       />

@@ -44,19 +44,19 @@ const ToolsPage = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>Бесплатные инструменты для поиска работы | СБОРКА</title>
-        <meta name="description" content="Калькулятор зарплаты, чеклист резюме и другие бесплатные инструменты для IT-специалистов от СБОРКИ." />
-        <link rel="canonical" href="https://sborka.work/tools" />
+        <title>Бесплатные инструменты для поиска работы | MCPHire</title>
+        <meta name="description" content="Калькулятор зарплаты, чеклист резюме и другие бесплатные инструменты для IT-специалистов от MCPHire." />
+        <link rel="canonical" href="https://mcphire.com/tools" />
         <meta property="og:title" content="Бесплатные инструменты для поиска работы" />
         <meta property="og:description" content="Калькулятор зарплаты, чеклист резюме — бесплатно для IT-специалистов." />
-        <meta property="og:url" content="https://sborka.work/tools" />
+        <meta property="og:url" content="https://mcphire.com/tools" />
       </Helmet>
 
       {/* Header */}
       <header className="border-b border-border">
         <div className="section-container py-4 flex items-center justify-between">
           <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            СБОРКА
+            MCPHire
           </Link>
           <a href="/#pricing" className="cta-text text-sm">
             Тарифы

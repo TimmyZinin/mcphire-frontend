@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Auth Layout
+// MCPHire — Auth Layout
 // Centered card layout for login / register pages.
 // No main navbar — minimal branding only.
 // ============================================================
@@ -22,7 +22,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         <span className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center text-white font-black text-sm">
           С
         </span>
-        СБОРКА<span className="text-[hsl(var(--cta-hot,_11_73%_54%))]">.</span>
+        MCPHire<span className="text-[hsl(var(--cta-hot,_11_73%_54%))]">.</span>
       </Link>
 
       {/* Content card */}
@@ -32,7 +32,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
 
       {/* Footer note */}
       <p className="mt-6 text-xs text-muted-foreground text-center">
-        © 2026 СБОРКА. Карьерный клуб для IT-специалистов.
+        © 2026 MCPHire. Карьерный клуб для IT-специалистов.
       </p>
     </div>
   );

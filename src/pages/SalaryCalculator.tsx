@@ -33,7 +33,7 @@ const SalaryCalculator = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>Калькулятор зарплаты IT-специалиста 2026 | СБОРКА</title>
+        <title>Калькулятор зарплаты IT-специалиста 2026 | MCPHire</title>
         <meta
           name="description"
           content="Узнай рыночную зарплату для своей роли, города и уровня. Данные hh.ru, февраль 2026."
@@ -44,7 +44,7 @@ const SalaryCalculator = () => {
       <header className="border-b border-border">
         <div className="section-container py-4 flex items-center justify-between">
           <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            СБОРКА
+            MCPHire
           </Link>
           <a href="/#pricing" className="cta-text text-sm">
             Тарифы
@@ -194,7 +194,7 @@ const SalaryCalculator = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Запишись в СБОРКУ
+              Запишись в MCPHire
             </a>
           </div>
         </div>
@@ -206,14 +206,14 @@ const SalaryCalculator = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm text-muted-foreground">
             <div>
               <Link to="/" className="font-bold text-foreground hover:text-muted-foreground transition-colors">
-                СБОРКА
+                MCPHire
               </Link>
               <p>Клуб карьерной дисциплины</p>
             </div>
             <Link to="/" className="cta-text text-sm">
               На главную
             </Link>
-            <p>&copy; СБОРКА 2026</p>
+            <p>&copy; MCPHire 2026</p>
           </div>
         </div>
       </footer>

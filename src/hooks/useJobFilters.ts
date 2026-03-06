@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — URL-synced job filters hook
+// MCPHire — URL-synced job filters hook
 // Keeps filter state in URLSearchParams so links are shareable.
 // ============================================================
 

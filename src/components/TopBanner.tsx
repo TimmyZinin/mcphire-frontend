@@ -5,7 +5,7 @@ const TopBanner = ({ utmSource = "top_banner" }: { utmSource?: string }) => (
   <div className="bg-[#4ECDC4]/10 border-b border-[#4ECDC4]/20">
     <div className="max-w-[1280px] mx-auto px-8 py-3 flex items-center justify-between gap-4 flex-wrap">
       <p className="text-sm">
-        <span className="font-semibold">СБОРКА</span>
+        <span className="font-semibold">MCPHire</span>
         <span className="text-muted-foreground"> — карьерный клуб с менторами и мок-собеседованиями. Средний участник получает оффер за 6-8 недель.</span>
       </p>
       <a

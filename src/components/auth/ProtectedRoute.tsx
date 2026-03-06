@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Protected Route wrapper
+// MCPHire — Protected Route wrapper
 // Redirects unauthenticated users to /auth/login.
 // Supports role-based access.
 // ============================================================

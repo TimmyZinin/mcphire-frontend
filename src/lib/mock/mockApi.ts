@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Mock API Implementation
+// MCPHire — Mock API Implementation
 // ============================================================
 
 import type {
@@ -321,7 +321,7 @@ export const seekerApi = {
       throw new ApiError(401, "UNAUTHORIZED", "Not authenticated");
     }
     // Mock URL
-    return { url: `https://mock-sborka.work/resumes/${file.name}` };
+    return { url: `https://mock-mcphire.com/resumes/${file.name}` };
   },
 };
 

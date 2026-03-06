@@ -7,7 +7,7 @@ interface CareerClubBannerProps {
 const WEBINAR = {
   date: "5 марта",
   link: "https://t.me/Sborka_work_bot?start=webinar4_site",
-  title: "Открытый урок: что такое СБОРКА",
+  title: "Открытый урок: что такое MCPHire",
 };
 
 const CareerClubBanner = ({ variant = "inline", utmSource = "banner" }: CareerClubBannerProps) => {
@@ -23,7 +23,7 @@ const CareerClubBanner = ({ variant = "inline", utmSource = "banner" }: CareerCl
               Ищете работу? Подготовьтесь к собеседованиям
             </p>
             <p className="text-sm text-muted-foreground">
-              СБОРКА — карьерный клуб с менторами, мок-собесами и разбором резюме. Средний участник получает оффер за 6-8 недель.
+              MCPHire — карьерный клуб с менторами, мок-собесами и разбором резюме. Средний участник получает оффер за 6-8 недель.
             </p>
           </div>
         </div>

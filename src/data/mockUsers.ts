@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Mock Users (5)
+// MCPHire — Mock Users (5)
 // ============================================================
 
 import type { AuthUser } from "@/types";
@@ -51,7 +51,7 @@ export const mockUsers: AuthUser[] = [
   },
   {
     id: "admin-1",
-    email: "tim@sborka.work",
+    email: "tim@mcphire.com",
     telegramId: "111222333",
     telegramUsername: "timzinin",
     name: "Тим Зинин",

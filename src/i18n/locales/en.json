@@ -52,7 +52,7 @@
     "save": "Save"
   },
   "auth": {
-    "title": "Sign in to СБОРКА",
+    "title": "Sign in to MCPHire",
     "description": "Sign in via Telegram or email to apply for jobs and build your profile.",
     "subtitle": "Sign in to apply for jobs",
     "orEmail": "or email",

@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — /auth/login and /auth/register page
+// MCPHire — /auth/login and /auth/register page
 // ============================================================
 
 import { useEffect } from "react";
@@ -91,7 +91,7 @@ export default function AuthPage() {
   return (
     <main className="min-h-screen bg-background flex flex-col">
       <PageMeta
-        title="Войти в СБОРКА"
+        title="Войти в MCPHire"
         description="Войдите через Telegram или email, чтобы откликаться на вакансии и создать профиль."
         canonical="/auth/login"
         noindex
@@ -116,7 +116,7 @@ export default function AuthPage() {
               <span className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center text-white font-black text-lg">
                 С
               </span>
-              СБОРКА<span className="text-cta-hot">.</span>
+              MCPHire<span className="text-cta-hot">.</span>
             </Link>
             <p className="text-muted-foreground text-sm mt-2">
               Войдите, чтобы откликаться на вакансии

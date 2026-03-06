@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Auth Modal (Login + Register tabs)
+// MCPHire — Auth Modal (Login + Register tabs)
 // Used when user tries to apply or access protected features.
 // ============================================================
 
@@ -108,7 +108,7 @@ export function AuthModal({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center text-xl font-black tracking-tight">
-            СБОРКА<span className="text-cta-hot">.</span>
+            MCPHire<span className="text-cta-hot">.</span>
           </DialogTitle>
         </DialogHeader>
 

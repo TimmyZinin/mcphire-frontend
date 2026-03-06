@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Pricing page
+// MCPHire — Pricing page
 // Route: /pricing (public, wrapped in MainLayout)
 // ============================================================
 
@@ -11,7 +11,7 @@ export default function PricingPage() {
     <>
       <PageMeta
         title="Тарифы"
-        description="Выберите тариф карьерного клуба СБОРКА. СТАРТ, ПРОРЫВ и VIP — для IT-специалистов всех уровней."
+        description="Выберите тариф карьерного клуба MCPHire. СТАРТ, ПРОРЫВ и VIP — для IT-специалистов всех уровней."
         canonical="/pricing"
       />
       <div className="max-w-[1280px] mx-auto px-4 md:px-8 pt-10 pb-6">

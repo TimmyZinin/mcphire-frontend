@@ -8,11 +8,11 @@ const Footer = () => {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="font-black text-xl tracking-tight text-primary flex items-center gap-2 mb-3">
-              <span className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center text-white font-black text-xs">С</span>
-              СБОРКА
+              <span className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center text-white font-black text-xs">M</span>
+              MCPHire
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Карьерный клуб для IT-специалистов Middle, Senior и Lead.
+              MCP-first платформа для поиска IT-вакансий.
             </p>
             {/* Social links */}
             <div className="flex gap-3 mt-4">
@@ -71,7 +71,7 @@ const Footer = () => {
 
         {/* Bottom bar */}
         <div className="pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-muted-foreground">
-          <span>© 2026 СБОРКА. Все права защищены.</span>
+          <span>© 2026 MCPHire. Все права защищены.</span>
           <span>AI-платформа для IT-карьеры</span>
         </div>
       </div>

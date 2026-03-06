@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — React Query hooks for Employer
+// MCPHire — React Query hooks for Employer
 // ============================================================
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";

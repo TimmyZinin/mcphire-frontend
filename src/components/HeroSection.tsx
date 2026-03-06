@@ -86,7 +86,7 @@ const HeroSection = () => {
 
           {/* Logo/Title */}
           <h1 className="heading-hero text-foreground">
-            СБОРКА
+            MCPHire
           </h1>
 
           {/* Marathon tagline */}
@@ -260,7 +260,7 @@ const HeroSection = () => {
 
           {/* Definition block — optimized for AI citation */}
           <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto">
-            СБОРКА — подписочный карьерный клуб для специалистов Middle, Senior и Lead. Внутри: менторы с опытом 8+ лет в рекрутинге, мок-собеседования, разбор резюме, командные соревнования по поиску работы. Подписка от 4 900 руб./мес. Средний участник получает оффер за 6-8 недель.
+            MCPHire — подписочный карьерный клуб для специалистов Middle, Senior и Lead. Внутри: менторы с опытом 8+ лет в рекрутинге, мок-собеседования, разбор резюме, командные соревнования по поиску работы. Подписка от 4 900 руб./мес. Средний участник получает оффер за 6-8 недель.
           </p>
 
           {/* CTA Button */}

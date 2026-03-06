@@ -22,7 +22,7 @@ const StickyHeader = () => {
       <div className="max-w-7xl mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <a href="#" className="text-2xl md:text-3xl font-black uppercase tracking-tighter text-foreground">
-          СБОРКА
+          MCPHire
         </a>
 
         {/* CTA Button */}

@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Seeker Profile / Resume builder page
+// MCPHire — Seeker Profile / Resume builder page
 // Route: /profile (protected: seeker)
 // ============================================================
 
@@ -180,7 +180,7 @@ export default function SeekerProfilePage() {
   return (
     <main className="min-h-screen bg-background">
       <PageMeta
-        title="Мой профиль | СБОРКА"
+        title="Мой профиль | MCPHire"
         description="Заполните профиль и резюме для отклика на вакансии"
         noindex
       />

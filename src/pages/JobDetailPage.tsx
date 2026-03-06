@@ -47,7 +47,7 @@ const JobDetailPage = () => {
     return (
       <main className="min-h-screen bg-background">
         <Helmet>
-          <title>Загрузка вакансии | СБОРКА Вакансии</title>
+          <title>Загрузка вакансии | MCPHire Вакансии</title>
         </Helmet>
         <JobBoardNavbar />
         <TopBanner utmSource="job_detail" />
@@ -71,7 +71,7 @@ const JobDetailPage = () => {
     return (
       <main className="min-h-screen bg-background">
         <Helmet>
-          <title>Вакансия не найдена | СБОРКА Вакансии</title>
+          <title>Вакансия не найдена | MCPHire Вакансии</title>
         </Helmet>
         <JobBoardNavbar />
         <section className="section-white">
@@ -123,12 +123,12 @@ const JobDetailPage = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>{job.title} в {companyName} | СБОРКА Вакансии</title>
+        <title>{job.title} в {companyName} | MCPHire Вакансии</title>
         <meta name="description" content={`${job.title} в компании ${companyName}. ${job.city}. Зарплата ${job.salaryFrom && job.salaryTo ? `${formatSalary(job.salaryFrom)} - ${formatSalary(job.salaryTo)} ${job.currency}` : ""}. ${job.description?.slice(0, 150)}`} />
         <meta property="og:title" content={`${job.title} в ${companyName}`} />
         <meta property="og:description" content={`${job.city} · ${job.salaryFrom && job.salaryTo ? `${formatSalary(job.salaryFrom)} - ${formatSalary(job.salaryTo)} ${job.currency}` : ""}`} />
-        <meta property="og:url" content={`https://sborka.work/jobs/${job.id}`} />
-        <link rel="canonical" href={`https://sborka.work/jobs/${job.id}`} />
+        <meta property="og:url" content={`https://mcphire.com/jobs/${job.id}`} />
+        <link rel="canonical" href={`https://mcphire.com/jobs/${job.id}`} />
       </Helmet>
 
       <JobBoardNavbar />
@@ -247,7 +247,7 @@ const JobDetailPage = () => {
 
             {/* Source */}
             <p className="text-sm text-muted-foreground">
-              Источник: {job.source || "СБОРКА"} · Опубликовано: {formatDate(job.postedAt)}
+              Источник: {job.source || "MCPHire"} · Опубликовано: {formatDate(job.postedAt)}
             </p>
 
             <CareerClubBanner variant="inline" utmSource="job_detail" />

@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Auth Context
+// MCPHire — Auth Context
 // Handles JWT (localStorage), Telegram Widget, and Email auth.
 // ============================================================
 

@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Job Filters Sidebar Panel
+// MCPHire — Job Filters Sidebar Panel
 // Desktop: sticky sidebar. Mobile: Sheet drawer.
 // ============================================================
 

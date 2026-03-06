@@ -5,18 +5,18 @@ const Partners = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>Партнёрская программа СБОРКИ — 20% комиссии | СБОРКА</title>
-        <meta name="description" content="Зарабатывай 20% комиссии на 6 месяцев за каждого приведённого участника СБОРКИ. Партнёрская программа карьерного клуба." />
-        <link rel="canonical" href="https://sborka.work/partners" />
-        <meta property="og:title" content="Партнёрская программа СБОРКИ — 20% комиссии" />
+        <title>Партнёрская программа MCPHire — 20% комиссии | MCPHire</title>
+        <meta name="description" content="Зарабатывай 20% комиссии на 6 месяцев за каждого приведённого участника MCPHire. Партнёрская программа карьерного клуба." />
+        <link rel="canonical" href="https://mcphire.com/partners" />
+        <meta property="og:title" content="Партнёрская программа MCPHire — 20% комиссии" />
         <meta property="og:description" content="Зарабатывай 20% комиссии за каждого приведённого участника." />
-        <meta property="og:url" content="https://sborka.work/partners" />
+        <meta property="og:url" content="https://mcphire.com/partners" />
       </Helmet>
       {/* Header */}
       <header className="border-b border-border">
         <div className="section-container py-4 flex items-center justify-between">
           <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            СБОРКА
+            MCPHire
           </Link>
           <a href="/#pricing" className="cta-text text-sm">
             Тарифы
@@ -29,10 +29,10 @@ const Partners = () => {
         <div className="section-container">
           <span className="chip mb-6 inline-block">Партнёрская программа</span>
           <h1 className="heading-xl mb-6">
-            ЗАРАБАТЫВАЙ,<br />РЕКОМЕНДУЯ СБОРКУ
+            ЗАРАБАТЫВАЙ,<br />РЕКОМЕНДУЯ MCPHire
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-8">
-            Рекомендуй СБОРКУ друзьям, коллегам и подписчикам.
+            Рекомендуй MCPHire друзьям, коллегам и подписчикам.
             Получай 20% с каждой оплаты в течение 6 месяцев.
           </p>
           <a
@@ -157,7 +157,7 @@ const Partners = () => {
             {[
               {
                 q: "Кто может стать партнёром?",
-                a: "Любой человек. Рекрутеры, HR, карьерные консультанты, блогеры, друзья наших участников. Быть подписчиком СБОРКИ не обязательно.",
+                a: "Любой человек. Рекрутеры, HR, карьерные консультанты, блогеры, друзья наших участников. Быть подписчиком MCPHire не обязательно.",
               },
               {
                 q: "Как отслеживаются рефералы?",
@@ -212,7 +212,7 @@ const Partners = () => {
           <div className="text-xs text-muted-foreground space-y-3 max-w-3xl leading-relaxed">
             <p>
               1. Организатор партнёрской программы: ИП/самозанятый Зинин Тимофей Владимирович.
-              Продукт: подписка на клуб карьерной дисциплины СБОРКА (sborka.work).
+              Продукт: подписка на клуб карьерной дисциплины MCPHire (mcphire.com).
             </p>
             <p>
               2. Партнёром может стать любое дееспособное лицо старше 18 лет. Регистрация
@@ -220,7 +220,7 @@ const Partners = () => {
             </p>
             <p>
               3. Партнёр получает уникальную реферальную ссылку и делится ею со своей аудиторией.
-              За каждого пользователя, перешедшего по ссылке и оплатившего подписку на СБОРКУ,
+              За каждого пользователя, перешедшего по ссылке и оплатившего подписку на MCPHire,
               партнёру начисляется вознаграждение в размере 20% от суммы оплаты.
             </p>
             <p>
@@ -266,7 +266,7 @@ const Partners = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm text-muted-foreground">
             <div>
               <Link to="/" className="font-bold text-foreground hover:text-muted-foreground transition-colors">
-                СБОРКА
+                MCPHire
               </Link>
               <p>Клуб карьерной дисциплины</p>
             </div>
@@ -274,7 +274,7 @@ const Partners = () => {
               На главную
             </Link>
             <p>
-              &copy; СБОРКА 2026
+              &copy; MCPHire 2026
             </p>
           </div>
         </div>

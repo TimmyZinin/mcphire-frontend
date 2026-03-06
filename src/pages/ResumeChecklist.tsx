@@ -44,7 +44,7 @@ const ResumeChecklist = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>Чеклист резюме IT-специалиста: 20 пунктов | СБОРКА</title>
+        <title>Чеклист резюме IT-специалиста: 20 пунктов | MCPHire</title>
         <meta
           name="description"
           content="Проверь своё резюме по 20 критериям рекрутеров. Бесплатный чеклист для IT-специалистов."
@@ -55,7 +55,7 @@ const ResumeChecklist = () => {
       <header className="border-b border-border">
         <div className="section-container py-4 flex items-center justify-between">
           <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            СБОРКА
+            MCPHire
           </Link>
           <a href="/#pricing" className="cta-text text-sm">
             Тарифы
@@ -202,14 +202,14 @@ const ResumeChecklist = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm text-muted-foreground">
             <div>
               <Link to="/" className="font-bold text-foreground hover:text-muted-foreground transition-colors">
-                СБОРКА
+                MCPHire
               </Link>
               <p>Клуб карьерной дисциплины</p>
             </div>
             <Link to="/" className="cta-text text-sm">
               На главную
             </Link>
-            <p>&copy; СБОРКА 2026</p>
+            <p>&copy; MCPHire 2026</p>
           </div>
         </div>
       </footer>

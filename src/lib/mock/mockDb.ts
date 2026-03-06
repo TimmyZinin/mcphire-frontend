@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Mock Database
+// MCPHire — Mock Database
 // In-memory storage with transformed mockJobs
 // ============================================================
 

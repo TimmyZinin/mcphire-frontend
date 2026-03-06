@@ -12,7 +12,7 @@ const NotFound = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted">
       <Helmet>
-        <title>Страница не найдена | СБОРКА</title>
+        <title>Страница не найдена | MCPHire</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <div className="text-center">

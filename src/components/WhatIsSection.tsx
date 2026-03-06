@@ -24,7 +24,7 @@ const WhatIsSection = () => {
 
           <ScrollReveal delay={100}>
             <div className="space-y-4 text-lg md:text-xl text-muted-foreground max-w-2xl">
-              <p>Сборка превращает рутину поиска в командный спринт.</p>
+              <p>MCPHire превращает поиск работы в эффективный процесс.</p>
               <p>Ты не один — рядом команда, баллы, соревнование и азарт.</p>
               <p>Искать работу наконец-то весело.</p>
             </div>
@@ -35,7 +35,7 @@ const WhatIsSection = () => {
             <div className="overflow-hidden rounded-2xl shadow-xl max-w-xl">
               <img
                 src="/images/buddy_v3.webp"
-                alt="Двое идут по вечернему городу — buddy-система СБОРКИ"
+                alt="Двое идут по вечернему городу — buddy-система MCPHire"
                 className="w-full h-auto object-cover"
                 loading="lazy"
               />

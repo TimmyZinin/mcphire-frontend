@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Breadcrumbs
+// MCPHire — Breadcrumbs
 // Schema.org BreadcrumbList JSON-LD + accessible markup.
 // ============================================================
 
@@ -18,7 +18,7 @@ interface BreadcrumbsProps {
   className?: string;
 }
 
-const BASE_URL = "https://sborka.work";
+const BASE_URL = "https://mcphire.com";
 
 export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
   if (items.length === 0) return null;

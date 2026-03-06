@@ -45,7 +45,7 @@ const TableOfContents = ({ sections }: TOCProps) => {
 
         {/* Sidebar Banner */}
         <div className="mt-6 p-4 bg-gradient-to-br from-[hsl(174,62%,40%)] to-[hsl(174,62%,28%)] rounded-lg text-white">
-          <p className="font-black text-sm uppercase tracking-wider mb-1">СБОРКА</p>
+          <p className="font-black text-sm uppercase tracking-wider mb-1">MCPHire</p>
           <p className="text-xs text-white/80 mb-3 leading-relaxed">
             Карьерный клуб для IT-специалистов. Менторы, мок-собеседования, системный поиск работы.
           </p>

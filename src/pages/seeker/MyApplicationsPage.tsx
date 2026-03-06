@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — My Applications page
+// MCPHire — My Applications page
 // Route: /applications (protected: seeker)
 // ============================================================
 

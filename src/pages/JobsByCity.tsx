@@ -22,7 +22,7 @@ const JobsByCity = () => {
     return (
       <main className="min-h-screen bg-background">
         <Helmet>
-          <title>Город не найден | СБОРКА</title>
+          <title>Город не найден | MCPHire</title>
         </Helmet>
         <JobBoardNavbar />
         <section className="section-white">
@@ -44,9 +44,9 @@ const JobsByCity = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>IT-вакансии в {cityName} 2026 | СБОРКА</title>
+        <title>IT-вакансии в {cityName} 2026 | MCPHire</title>
         <meta name="description" content={`Актуальные IT-вакансии в ${cityName}. ${totalJobs} вакансий от ведущих компаний.`} />
-        <link rel="canonical" href={`https://sborka.work/jobs/city/${city}`} />
+        <link rel="canonical" href={`https://mcphire.com/jobs/city/${city}`} />
       </Helmet>
 
       <JobBoardNavbar />

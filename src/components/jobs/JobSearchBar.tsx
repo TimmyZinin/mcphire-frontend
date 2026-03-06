@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Job Search Bar
+// MCPHire — Job Search Bar
 // Compound component: text query + city selector + submit.
 // Shared between HomePage hero and /jobs sticky header.
 // ============================================================

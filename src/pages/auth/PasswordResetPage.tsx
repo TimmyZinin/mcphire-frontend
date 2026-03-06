@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Password Reset page
+// MCPHire — Password Reset page
 // Route: /auth/reset-password
 // ============================================================
 
@@ -48,7 +48,7 @@ export default function PasswordResetPage() {
         {/* Logo */}
         <Link to="/" className="block text-center mb-8">
           <span className="font-heading text-3xl font-black uppercase tracking-tighter">
-            СБОРКА
+            MCPHire
           </span>
         </Link>
 

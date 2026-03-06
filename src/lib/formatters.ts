@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Shared formatting utilities
+// MCPHire — Shared formatting utilities
 // ============================================================
 
 import type { Currency, Locale } from "@/types";

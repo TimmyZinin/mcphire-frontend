@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СБОРКА — Медиаплан 18-19 февраля</title>
+<style>
+  :root {
+    --dark: #1A1A1A;
+    --bg: #F5F5F7;
+    --card: #FFFFFF;
+    --muted: #888;
+    --linkedin: #0A66C2;
+    --threads: #000000;
+    --border: #E5E5E5;
+    --green: #34C759;
+    --red: #FF3B30;
+    --orange: #FF9500;
+    --teal: #4ECDC4;
+    --tim: #2563EB;
+    --kristina: #9333EA;
+    --provocation: #FF3B30;
+    --insight: #0A66C2;
+    --cta: #34C759;
+    --anticase: #FF9500;
+    --tool: #8B5CF6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--dark); line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+
+  header {
+    background: var(--dark); color: white;
+    padding: 32px 20px 24px; text-align: center;
+  }
+  header h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
+  header .subtitle { color: var(--teal); font-size: 14px; margin-top: 4px; font-weight: 600; }
+  header .meta { color: #999; font-size: 12px; margin-top: 8px; }
+
+  .summary {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px; margin: 20px 0;
+  }
+  .stat-card {
+    background: var(--card); border-radius: 12px; padding: 16px;
+    text-align: center; border: 1px solid var(--border);
+  }
+  .stat-card .num { font-size: 32px; font-weight: 900; color: var(--dark); }
+  .stat-card .label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .day-section { margin-top: 28px; }
+  .day-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; background: var(--dark); color: white;
+    border-radius: 12px 12px 0 0; font-weight: 800; font-size: 16px;
+  }
+  .day-header .badge {
+    background: var(--teal); color: var(--dark);
+    padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700;
+  }
+
+  .post-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-top: none; padding: 0;
+    transition: box-shadow 0.2s;
+  }
+  .post-card:last-child { border-radius: 0 0 12px 12px; }
+  .post-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+
+  .post-top {
+    display: grid;
+    grid-template-columns: 70px 90px 90px auto 120px;
+    align-items: center; gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 13px;
+  }
+  .post-time { font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; }
+
+  .channel-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    color: white;
+  }
+  .channel-linkedin { background: var(--linkedin); }
+  .channel-threads { background: var(--threads); }
+
+  .author-badge {
+    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white;
+  }
+  .author-tim { background: var(--tim); }
+  .author-kristina { background: var(--kristina); }
+
+  .type-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase; color: white;
+  }
+  .type-provocation { background: var(--provocation); }
+  .type-insight { background: var(--insight); }
+  .type-cta { background: var(--cta); color: var(--dark); }
+  .type-anticase { background: var(--anticase); color: var(--dark); }
+  .type-tool { background: var(--tool); }
+
+  .post-topic { font-weight: 600; font-size: 13px; }
+
+  .post-body { padding: 0 16px 14px; }
+
+  .post-text {
+    background: #FAFAFA; border: 1px solid #eee; border-radius: 8px;
+    padding: 12px 14px; font-size: 13px; line-height: 1.45;
+    white-space: pre-line; word-wrap: break-word;
+    max-height: 200px; overflow: hidden;
+    transition: max-height 0.3s ease;
+    cursor: pointer; position: relative;
+  }
+  .post-text.expanded { max-height: 2000px; }
+  .post-text::after {
+    content: "... нажмите, чтобы развернуть";
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 40px;
+    background: linear-gradient(transparent, #FAFAFA);
+    display: flex; align-items: flex-end; justify-content: center;
+    font-size: 11px; color: var(--muted); padding-bottom: 4px;
+  }
+  .post-text.expanded::after { display: none; }
+  .post-text.short::after { display: none; }
+
+  .image-prompt {
+    margin-top: 8px; padding: 10px 14px;
+    background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px;
+    font-size: 12px;
+  }
+  .image-prompt strong { color: var(--orange); }
+
+  .comment-note {
+    margin-top: 6px; font-size: 11px; color: var(--muted);
+    padding-left: 14px;
+  }
+
+  .cta-info {
+    display: inline-block; margin-top: 6px; padding: 4px 10px;
+    background: #E8F5E9; border-radius: 6px; font-size: 11px; color: #2E7D32;
+  }
+
+  .legend {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; margin: 20px 0; font-size: 12px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+
+  .links-bar {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 16px; margin-bottom: 16px; font-size: 13px;
+  }
+  .links-bar code {
+    background: #f0f0f0; padding: 2px 8px; border-radius: 4px; font-size: 12px;
+  }
+
+  .factcheck {
+    background: #FFF3E0; border: 1px solid #FFE0B2; border-radius: 12px;
+    padding: 16px; margin: 20px 0; font-size: 12px;
+  }
+  .factcheck h3 { font-size: 14px; margin-bottom: 8px; }
+  .factcheck table { width: 100%; border-collapse: collapse; }
+  .factcheck td, .factcheck th {
+    padding: 6px 10px; text-align: left; border-bottom: 1px solid #FFE0B2;
+    font-size: 12px;
+  }
+  .factcheck th { font-weight: 700; }
+
+  footer {
+    text-align: center; padding: 24px; color: var(--muted); font-size: 11px;
+  }
+
+  @media (max-width: 768px) {
+    .post-top {
+      grid-template-columns: 60px 1fr 1fr;
+      gap: 6px;
+    }
+    .post-topic, .type-badge { grid-column: 1 / -1; }
+    .summary { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>СБОРКА — Медиаплан</h1>
+  <div class="subtitle">18-19 февраля 2026</div>
+  <div class="meta">Вебинар #2: четверг, 19 февраля, 18:00 МСК | Каналы: LinkedIn + Threads</div>
+</header>
+
+<div class="container">
+
+<div class="summary">
+  <div class="stat-card"><div class="num">22</div><div class="label">постов за 2 дня</div></div>
+  <div class="stat-card"><div class="num">4</div><div class="label">LinkedIn постов</div></div>
+  <div class="stat-card"><div class="num">18</div><div class="label">Threads постов</div></div>
+  <div class="stat-card"><div class="num">4</div><div class="label">картинок</div></div>
+</div>
+
+<div class="links-bar">
+  <strong>CTA ссылки:</strong><br>
+  Сайт: <code>sborka.work</code> |
+  Бот: <code>https://t.me/Sborka_work_bot?start=friends</code><br>
+  <strong>Ссылка в тексте поста:</strong> всегда <code>sborka.work</code> (комментарии не ставим, API не позволяет)
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span class="type-badge type-provocation">провокация</span> Цепляющий вброс</div>
+  <div class="legend-item"><span class="type-badge type-insight">инсайт</span> Данные и факты</div>
+  <div class="legend-item"><span class="type-badge type-cta">CTA</span> Призыв к действию</div>
+  <div class="legend-item"><span class="type-badge type-anticase">антикейс</span> Как НЕ надо</div>
+  <div class="legend-item"><span class="type-badge type-tool">инструмент</span> Лайфхак / совет</div>
+  <div class="legend-item"><span class="channel-badge channel-linkedin">LinkedIn</span> 1 пост/день</div>
+  <div class="legend-item"><span class="channel-badge channel-threads">Threads</span> 4 поста/день</div>
+  <div class="legend-item"><span class="author-badge author-tim">Тим</span> <span class="author-badge author-kristina">Кристина</span></div>
+</div>
+
+<!-- ============ ДЕНЬ 1: 18 ФЕВРАЛЯ ============ -->
+<div class="day-section">
+<div class="day-header">
+  СР, 18 ФЕВРАЛЯ
+  <span class="badge">10 постов</span>
+</div>
+
+<!-- POST 1 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">11:20</span>
+    <span class="channel-badge channel-linkedin">LinkedIn</span>
+    <span class="author-badge author-tim">Тим</span>
+    <span class="post-topic">"Найм мёртв" + Сбер/hh.ru/ИНСАП</span>
+    <span class="type-badge type-provocation">провокация</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text" onclick="this.classList.toggle('expanded')">Найм мёртв. Не в метафорическом смысле. Буквально.
+
+Сбер за полгода сократил 20% центрального аппарата. hh.ru фиксирует: вакансий на 25% меньше, резюме на 25% больше. 54% работающих россиян боятся, что не найдут работу с теми же условиями (данные ИНСАП, сентябрь 2025).
+
+А ты всё ещё рассылаешь одно резюме на 50 вакансий и ждёшь. Рынок изменился. Правила изменились. Способ искать работу изменился.
+
+Те, кто это понял, уже используют AI-агентов для скоринга вакансий, автоматизируют outreach в LinkedIn, проходят ATS-фильтры, пока ты переписываешь "About me" в третий раз.
+
+Завтра в 18:00 мы с Кристиной Жуковой проводим открытый урок СБОРКИ. Расскажем:
+. Как устроен найм в 2026 со стороны нанимателя
+. Почему ATS-системы отсеивают до 75% резюме до живого рекрутера
+. Что конкретно делать, чтобы получить оффер за 30-60 дней
+
+Без мотивационной чуши. Только система.
+
+Подробности и регистрация: sborka.work</div>
+    <div style="margin-top:8px;"><img src="/img/content-plan/img-1-hiring-dead.png" style="width:100%;max-width:600px;border-radius:8px;border:1px solid #eee;" alt="IMG-1"></div>
+    <div class="image-prompt">
+      <strong>IMG-1 | 1200x627 | Без текста</strong> — Пустой корпоративный офис, драматическое освещение
+    </div>
+  </div>
+</div>
+
+<!-- POST 2 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">11:50</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-tim">Тим</span>
+    <span class="post-topic">54% россиян, данные ИНСАП</span>
+    <span class="type-badge type-provocation">провокация</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">54% работающих россиян считают, что не найдут работу с такими же условиями. Это не паника. Это данные ИНСАП за сентябрь 2025.
+
+Ты из тех 54%, кто боится? Или из тех, кто знает, что делать?
+
+Завтра 18:00, открытый урок. Ссылка в профиле.</div>
+  </div>
+</div>
+
+<!-- POST 3 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">13:00</span>
+    <span class="channel-badge channel-linkedin">LinkedIn</span>
+    <span class="author-badge author-kristina">Кристина</span>
+    <span class="post-topic">"До меня доходит 20% резюме" — взгляд HR</span>
+    <span class="type-badge type-insight">инсайт</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text" onclick="this.classList.toggle('expanded')">Я 8 лет в найме. Вот что изменилось за последний год. Раньше я читала каждое резюме. Сейчас нет. Потому что до меня доходит примерно 20-25% от того, что приходит. Остальное фильтрует ATS.
+
+Не потому что резюме плохие. А потому что они написаны для людей, а фильтрует их машина. ATS-системы в 2026 это не просто поиск ключевых слов. Это семантический анализ, скоринг опыта, оценка релевантности по десяткам параметров. МТС, Билайн и другие крупные компании уже используют AI-скрининг на первом этапе. И большинство соискателей об этом даже не знают.
+
+Завтра в 18:00 на открытом уроке СБОРКИ расскажу:
+. Что именно видит рекрутер, когда открывает ваш профиль
+. 3 ошибки, из-за которых вас не зовут на интервью
+. Как пройти AI-фильтр и попасть в топ-20% кандидатов
+
+Регистрация: sborka.work</div>
+    <div style="margin-top:8px;"><img src="/img/content-plan/img-2-ats-filter.png" style="width:100%;max-width:600px;border-radius:8px;border:1px solid #eee;" alt="IMG-2"></div>
+    <div class="image-prompt">
+      <strong>IMG-2 | 1200x627 | Без текста</strong> — Стопка резюме, одно подсвечено, остальные в тени
+    </div>
+  </div>
+</div>
+
+<!-- POST 4 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">13:30</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-kristina">Кристина</span>
+    <span class="post-topic">"200 откликов = спам"</span>
+    <span class="type-badge type-anticase">антикейс</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Самая частая фраза, которую я слышу от кандидатов: "Я отправил 200 откликов и ни одного ответа"
+
+200 откликов это не стратегия. Это спам. Завтра объясню, почему. 18:00, открытый урок СБОРКИ.</div>
+  </div>
+</div>
+
+<!-- POST 5 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">15:00</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-tim">Тим</span>
+    <span class="post-topic">7 секунд на резюме (Ladders)</span>
+    <span class="type-badge type-tool">инструмент</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Рекрутер тратит на ваше резюме 7 секунд. Это результат eye-tracking исследования Ladders. AI-скрининг ещё быстрее.
+
+Вопрос не в том, хорошее у вас резюме или нет. Вопрос в том, оптимизировано ли оно под машину, которая решает, покажут ли его человеку.
+
+Завтра разбираем, как это работает. 18:00, открытый урок.</div>
+  </div>
+</div>
+
+<!-- POST 6 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">15:30</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-kristina">Кристина</span>
+    <span class="post-topic">"Коммуникабельный" = 0 влияния</span>
+    <span class="type-badge type-insight">инсайт</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Частая ошибка: кандидат пишет в резюме "коммуникабельный, стрессоустойчивый, ответственный". Знаете, сколько раз я это видела? Тысячи. Знаете, сколько раз это повлияло на моё решение? Ноль.
+
+Что писать вместо этого, расскажу завтра. 18:00, открытый урок СБОРКИ. Ссылка в профиле.</div>
+  </div>
+</div>
+
+<!-- POST 7 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">17:00</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-tim">Тим</span>
+    <span class="post-topic">hh.ru: индекс конкуренции 4.8 -> 8</span>
+    <span class="type-badge type-provocation">провокация</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">hh.ru в 2025: вакансий на 25% меньше, резюме на 25% больше. Индекс конкуренции вырос с 4.8 до 8 резюме на вакансию.
+
+А стратегия поиска работы у большинства не изменилась с 2019 года. Завтра 18:00, открытый урок СБОРКИ. Покажем, что изменить. Ссылка в профиле.</div>
+  </div>
+</div>
+
+<!-- POST 8 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">17:30</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-kristina">Кристина</span>
+    <span class="post-topic">Заголовок LinkedIn "Меня бросили"</span>
+    <span class="type-badge type-tool">инструмент</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Заголовок LinkedIn "В поиске новых возможностей" это всё равно что прийти на свидание с табличкой "Меня бросили".
+
+Вместо этого: "Product Lead | B2B SaaS | Рост retention с 40% до 72%". Конкретика. Ценность. Результат.
+
+Завтра в 18:00 разберу профили вживую. Ссылка в профиле.</div>
+  </div>
+</div>
+
+<!-- POST 9 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">19:00</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-tim">Тим</span>
+    <span class="post-topic">3 вещи про AI-агентов</span>
+    <span class="type-badge type-insight">инсайт</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Три вещи, которые я понял, пока строил AI-агентов для поиска работы:
+1. Массовая рассылка резюме не работает. 10 точечных откликов бьют 200 случайных.
+2. LinkedIn это не резюме в интернете. Это поисковик, где вас ищут рекрутеры.
+3. AI уже нанимает. Точнее, AI решает, кого НЕ нанимать.
+
+Завтра 18:00 разберём подробно. Ссылка в профиле.</div>
+  </div>
+</div>
+
+<!-- POST 10 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">20:00</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-kristina">Кристина</span>
+    <span class="post-topic">90% не могут pitch за 30 секунд</span>
+    <span class="type-badge type-provocation">провокация</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">90% кандидатов, которых я собеседую, не могут за 30 секунд объяснить, почему именно они подходят на эту роль. Не потому что они плохие специалисты. А потому что никто их этому не учил.
+
+На открытом уроке СБОРКИ завтра в 18:00 покажу, как это делать. Ссылка в профиле.</div>
+  </div>
+</div>
+
+</div><!-- end day 1 -->
+
+
+<!-- ============ ДЕНЬ 2: 19 ФЕВРАЛЯ ============ -->
+<div class="day-section">
+<div class="day-header">
+  ЧТ, 19 ФЕВРАЛЯ — ДЕНЬ ВЕБИНАРА 18:00
+  <span class="badge">12 постов</span>
+</div>
+
+<!-- POST 11 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">09:00</span>
+    <span class="channel-badge channel-linkedin">LinkedIn</span>
+    <span class="author-badge author-tim">Тим</span>
+    <span class="post-topic">3 AI-инструмента для поиска работы</span>
+    <span class="type-badge type-tool">инструмент</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text" onclick="this.classList.toggle('expanded')">3 инструмента, которые я бы использовал при поиске работы в 2026.
+
+1. AI-скоринг вакансий. Не ты ищешь работу. Агент ищет за тебя. Настраиваешь критерии, получаешь подборку с оценкой match-rate. Ручной скроллинг hh.ru это прошлый век.
+
+2. Автоматический outreach в LinkedIn. Не спам. Персонализированные сообщения рекрутерам и hiring-менеджерам на основе анализа профиля вакансии. 10 точечных сообщений лучше, чем 200 массовых откликов.
+
+3. AI-репетитор интервью. Тренируешь ответы на типовые вопросы. Получаешь фидбек по структуре, конкретике, подаче. Без стресса. Без живого человека, который тебя осудит.
+
+Подробнее про каждый сегодня в 18:00 на открытом уроке СБОРКИ. Последний шанс зарегистрироваться: sborka.work</div>
+    <div style="margin-top:8px;"><img src="/img/content-plan/img-3-ai-tools.png" style="width:100%;max-width:600px;border-radius:8px;border:1px solid #eee;" alt="IMG-3"></div>
+    <div class="image-prompt">
+      <strong>IMG-3 | 1200x627 | Без текста</strong> — Футуристичный рабочий стол с AI-интерфейсом
+    </div>
+  </div>
+</div>
+
+<!-- POST 12 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">09:30</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-tim">Тим</span>
+    <span class="post-topic">ATS быстрее рекрутера</span>
+    <span class="type-badge type-provocation">провокация</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Рекрутеры тратят на резюме 7 секунд. ATS-система, которая решает, покажут ли резюме рекрутеру, работает ещё быстрее.
+
+Если ваше резюме не оптимизировано под ATS, его не увидит ни один живой человек. Сегодня 18:00, разбираем. Ссылка в профиле.</div>
+  </div>
+</div>
+
+<!-- POST 13 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">10:00</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-kristina">Кристина</span>
+    <span class="post-topic">"Живой разбор, не запись"</span>
+    <span class="type-badge type-cta">CTA</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Сегодня в 18:00, открытый урок СБОРКИ.
+
+Разберу вживую: резюме, LinkedIn, стратегию поиска.
+
+Не запись. Не вебинар с продажей курса. Живой разбор.
+
+Ссылка в профиле.</div>
+  </div>
+</div>
+
+<!-- POST 14 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">11:00</span>
+    <span class="channel-badge channel-linkedin">LinkedIn</span>
+    <span class="author-badge author-kristina">Кристина</span>
+    <span class="post-topic">Антикейс: "В поиске возможностей"</span>
+    <span class="type-badge type-anticase">антикейс</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text" onclick="this.classList.toggle('expanded')">Вчера разбирала LinkedIn-профиль кандидата с 12 годами опыта в продукте. Заголовок: "В поиске новых возможностей". Это всё равно что прийти на свидание с табличкой "Меня бросили, я свободен".
+
+LinkedIn-заголовок это не статус. Это оффер рынку. Вместо "В поиске возможностей" пишите конкретную формулировку ценности: "Product Lead | B2B SaaS | Рост retention с 40% до 72%". Такой профиль находят. На такой профиль пишут.
+
+Сегодня в 18:00 разбираю профили вживую на открытом уроке СБОРКИ. Регистрация: sborka.work</div>
+    <div style="margin-top:8px;"><img src="/img/content-plan/img-4-profile-compare.png" style="width:100%;max-width:600px;border-radius:8px;border:1px solid #eee;" alt="IMG-4"></div>
+    <div class="image-prompt">
+      <strong>IMG-4 | 1200x627 | Без текста</strong> — Два силуэта: размытый vs чёткий с золотым светом
+    </div>
+  </div>
+</div>
+
+<!-- POST 15 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">12:00</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-tim">Тим</span>
+    <span class="post-topic">LinkedIn алгоритм: карусели 1.9x</span>
+    <span class="type-badge type-insight">инсайт</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Карусели в LinkedIn получают в 1.9 раза больше охвата, чем обычные посты. Видео до 90 секунд дают x24 вовлечения по сравнению с текстом. Посты с внешними ссылками теряют 60% охвата.
+
+Если ты постишь "ищу работу" со ссылкой на hh.ru, тебя почти никто не видит. А если публикуешь экспертный контент, рекрутеры находят тебя сами. Об этом сегодня в 18:00.</div>
+  </div>
+</div>
+
+<!-- POST 16 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">12:30</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-kristina">Кристина</span>
+    <span class="post-topic">"15 лет опыта" не = оффер</span>
+    <span class="type-badge type-anticase">антикейс</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">"У меня 15 лет опыта, меня все знают в индустрии". Знают и что? Знакомства помогают получить интервью. Но оффер получает тот, кто системно к нему готовится.
+
+Сегодня 18:00, покажу систему. Ссылка в профиле.</div>
+  </div>
+</div>
+
+<!-- POST 17 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">14:00</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-tim">Тим</span>
+    <span class="post-topic">Senior 4-6 мес -> 30-60 дней</span>
+    <span class="type-badge type-provocation">провокация</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Средний срок поиска работы для senior-специалиста в России: 4-6 месяцев. Полгода. Без дохода или на работе, которую ненавидишь.
+
+Можно сжать до 30-60 дней. Но нужна система, а не "рассылаю и жду". Сегодня 18:00 покажу, как. Ссылка в профиле.</div>
+  </div>
+</div>
+
+<!-- POST 18 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">15:00</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-kristina">Кристина</span>
+    <span class="post-topic">3 вещи за 10 секунд в LinkedIn</span>
+    <span class="type-badge type-tool">инструмент</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Три вещи, на которые я смотрю первые 10 секунд в LinkedIn-профиле:
+1. Заголовок: ценность, не должность
+2. Фото: профессиональное, без селфи
+3. About: первые 2 строки, elevator pitch
+
+Просто? Да. Но 90% кандидатов это не делают. Сегодня 18:00, разберём вживую.</div>
+  </div>
+</div>
+
+<!-- POST 19 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">17:00</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-tim">Тим</span>
+    <span class="post-topic">НАПОМИНАНИЕ: через час</span>
+    <span class="type-badge type-cta">CTA</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Через час начинаем.
+
+Открытый урок СБОРКИ. 18:00.
+
+Если ищешь работу и не понимаешь, почему нет ответов, приходи.
+
+Ссылка в профиле.</div>
+  </div>
+</div>
+
+<!-- POST 20 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">17:00</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-kristina">Кристина</span>
+    <span class="post-topic">НАПОМИНАНИЕ: через час</span>
+    <span class="type-badge type-cta">CTA</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Через час. 18:00. Открытый урок СБОРКИ.
+
+Буду разбирать профили и резюме вживую. Приходите с вопросами.
+
+Ссылка в профиле.</div>
+  </div>
+</div>
+
+<!-- POST 21 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">~20:00</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-tim">Тим</span>
+    <span class="post-topic">Итоги вебинара</span>
+    <span class="type-badge type-insight">инсайт</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Только что закончили открытый урок СБОРКИ.
+
+Больше всего вопросов было про ATS-фильтры и LinkedIn-заголовки. Разобрали 3 профиля вживую, показали, что конкретно менять.
+
+Главный вывод: большинство людей ищут работу методами 2019 года на рынке 2026. AI уже фильтрует, скорит и ранжирует. Кто это понял, тот адаптировался.
+
+Следующий урок: вторник, 24 февраля, 18:00. Тема: система поиска работы за 30-60 дней. Ссылка в профиле.</div>
+  </div>
+</div>
+
+<!-- POST 22 -->
+<div class="post-card">
+  <div class="post-top">
+    <span class="post-time">~20:30</span>
+    <span class="channel-badge channel-threads">Threads</span>
+    <span class="author-badge author-kristina">Кристина</span>
+    <span class="post-topic">Итоги вебинара — Кристина</span>
+    <span class="type-badge type-insight">инсайт</span>
+  </div>
+  <div class="post-body">
+    <div class="post-text short">Только что провели открытый урок СБОРКИ с Тимом.
+
+Самый частый вопрос: "Стоит ли писать рекрутерам в LinkedIn напрямую?" Да, но не "Ищу работу", а с конкретным value proposition. Показали формулу.
+
+Следующий: вторник, 24 февраля, 18:00. Тема: система поиска работы за 30-60 дней.</div>
+  </div>
+</div>
+
+</div><!-- end day 2 -->
+
+
+<!-- FACTCHECK -->
+<div class="factcheck">
+  <h3>Факт-чек (применён ко всем текстам)</h3>
+  <table>
+    <tr><th>Было</th><th>Стало</th><th>Источник</th></tr>
+    <tr><td>Сбер -20% персонала</td><td>-20% <strong>центрального аппарата</strong></td><td>RBC, ноябрь 2025</td></tr>
+    <tr><td>hh.ru -30%/+40%</td><td>-25%/+25%</td><td>hh.ru, CNews, 2025</td></tr>
+    <tr><td>AI убивает 80% резюме</td><td>"до 75%" / "ATS отсеивает"</td><td>Enhancv 2025</td></tr>
+    <tr><td>Яндекс, МТС, Т-Банк, Билайн</td><td>"МТС, Билайн и крупные компании"</td><td>Sever.AI, Potok.io</td></tr>
+    <tr><td>ИНСАП 2026</td><td>ИНСАП, <strong>сентябрь 2025</strong></td><td>Forbes.ru</td></tr>
+    <tr><td>Рекрутеры 7 секунд</td><td>TRUE</td><td>Ladders 2018</td></tr>
+    <tr><td>Карусели 1.9x</td><td>TRUE</td><td>Agorapulse</td></tr>
+  </table>
+</div>
+
+</div><!-- end container -->
+
+<footer>
+  СБОРКА — клуб карьерной дисциплины | sborka.work | Тим Зинин + Кристина Жукова
+</footer>
+
+</body>
+</html>

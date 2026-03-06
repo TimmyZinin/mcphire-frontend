@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Reusable Company Card Component
+// MCPHire — Reusable Company Card Component
 // ============================================================
 
 import { Link } from "react-router-dom";

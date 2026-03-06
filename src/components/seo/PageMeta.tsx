@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Reusable page meta / OG tags component
+// MCPHire — Reusable page meta / OG tags component
 // ============================================================
 
 import { Helmet } from "react-helmet-async";
@@ -13,9 +13,9 @@ interface PageMetaProps {
   type?: "website" | "article";
 }
 
-const SITE_NAME = "СБОРКА";
-const DEFAULT_OG_IMAGE = "https://sborka.work/og-image.png";
-const BASE_URL = "https://sborka.work";
+const SITE_NAME = "MCPHire";
+const DEFAULT_OG_IMAGE = "https://mcphire.com/og-image.png";
+const BASE_URL = "https://mcphire.com";
 
 export function PageMeta({
   title,

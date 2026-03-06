@@ -50,9 +50,9 @@ const EmployersPage = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>Разместить вакансию — IT-рекрутинг через AI | СБОРКА</title>
-        <meta name="description" content="Размещайте вакансии на AI-powered джобборде СБОРКА. MCP-интеграция, matching через AI-агентов, верифицированные IT-специалисты." />
-        <link rel="canonical" href="https://sborka.work/employers" />
+        <title>Разместить вакансию — IT-рекрутинг через AI | MCPHire</title>
+        <meta name="description" content="Размещайте вакансии на AI-powered джобборде MCPHire. MCP-интеграция, matching через AI-агентов, верифицированные IT-специалисты." />
+        <link rel="canonical" href="https://mcphire.com/employers" />
       </Helmet>
 
       {/* Header */}
@@ -96,7 +96,7 @@ const EmployersPage = () => {
       {/* Why Us */}
       <section className="py-16">
         <div className="max-w-[1280px] mx-auto px-8">
-          <h2 className="heading-lg text-center mb-12">Почему СБОРКА</h2>
+          <h2 className="heading-lg text-center mb-12">Почему MCPHire</h2>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 hover:shadow-lg transition-all">

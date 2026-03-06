@@ -31,7 +31,7 @@ const FoundersSection = () => {
         <div className="space-y-8">
           <h2 className="heading-xl">
             КТО ВЕДЁТ<br />
-            СБОРКУ
+            MCPHire
           </h2>
 
           <p className="text-muted-foreground text-lg">
@@ -46,7 +46,7 @@ const FoundersSection = () => {
                 <div className="aspect-square overflow-hidden rounded-2xl shadow-lg">
                   <img
                     src={founder.image}
-                    alt={`${founder.name} — ${founder.role}, основатель карьерного клуба СБОРКА`}
+                    alt={`${founder.name} — ${founder.role}, основатель карьерного клуба MCPHire`}
                     className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
                   />
                 </div>

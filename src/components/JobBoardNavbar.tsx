@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Job Board Navbar
+// MCPHire — Job Board Navbar
 // Auth-aware: shows user dropdown when authenticated.
 // ============================================================
 
@@ -88,9 +88,9 @@ const JobBoardNavbar = () => {
           className="font-heading font-black text-xl tracking-tight text-primary flex items-center gap-2"
         >
           <span className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-black text-sm">
-            С
+            M
           </span>
-          СБОРКА<span className="text-cta-hot">.</span>
+          MCPHire<span className="text-cta-hot">.</span>
         </Link>
 
         {/* Desktop nav links */}
@@ -180,7 +180,7 @@ const JobBoardNavbar = () => {
             <SheetContent side="right" className="w-[280px]">
               <SheetHeader>
                 <SheetTitle className="text-left font-heading font-black text-primary tracking-tight">
-                  СБОРКА
+                  MCPHire
                 </SheetTitle>
               </SheetHeader>
 

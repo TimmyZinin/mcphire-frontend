@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Job Board Home Page
+// MCPHire — Job Board Home Page
 // Route: /home  (job board entry point, NOT the club landing)
 // ============================================================
 
@@ -58,17 +58,17 @@ const HomePage = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>Найди работу через AI | СБОРКА Вакансии</title>
+        <title>Найди работу через AI | MCPHire Вакансии</title>
         <meta
           name="description"
           content="Первая MCP-first платформа для IT-карьеры в России. Тысячи вакансий, AI-подбор, карьерный клуб."
         />
-        <meta property="og:title" content="Найди работу через AI | СБОРКА Вакансии" />
+        <meta property="og:title" content="Найди работу через AI | MCPHire Вакансии" />
         <meta
           property="og:description"
           content="Первая MCP-first платформа для IT-карьеры в России. Тысячи вакансий, AI-подбор, карьерный клуб."
         />
-        <link rel="canonical" href="https://sborka.work/home" />
+        <link rel="canonical" href="https://mcphire.com/home" />
       </Helmet>
 
       <JobBoardNavbar />
@@ -205,7 +205,7 @@ const HomePage = () => {
             Карьерный клуб
           </p>
           <h2 className="heading-xl mb-6">
-            Карьерный клуб<br className="hidden md:block" /> СБОРКА
+            Карьерный клуб<br className="hidden md:block" /> MCPHire
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-8 leading-relaxed">
             Система с метриками и дедлайнами для IT-специалистов, которые ищут

@@ -1,6 +1,6 @@
 // ============================================================
-// СБОРКА — API Client
-// Base URL: api.sborka.work/v1
+// MCPHire — API Client
+// Base URL: api.mcphire.com/v1
 // ============================================================
 
 import type {
@@ -20,7 +20,7 @@ import type {
   JobAnalytics,
 } from "@/types";
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "https://api.sborka.work/v1";
+const BASE_URL = import.meta.env.VITE_API_URL ?? "https://api.mcphire.com/v1";
 
 // ---- Internal fetch wrapper --------------------------------
 
@@ -96,8 +96,8 @@ async function request<T>(
 
 // ---- Token management (localStorage) ----------------------
 
-const TOKEN_KEY = "sborka_access_token";
-const REFRESH_KEY = "sborka_refresh_token";
+const TOKEN_KEY = "mcphire_access_token";
+const REFRESH_KEY = "mcphire_refresh_token";
 
 export function getAccessToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
@@ -116,7 +116,7 @@ export function clearTokens(): void {
 // ---- Locale helper -----------------------------------------
 
 function getLocale(): string {
-  return localStorage.getItem("sborka_locale") ?? navigator.language ?? "ru";
+  return localStorage.getItem("mcphire_locale") ?? navigator.language ?? "ru";
 }
 
 // ============================================================

@@ -53,21 +53,21 @@ const McpPage = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>MCP-сервер СБОРКА — AI Job Search API | СБОРКА</title>
+        <title>MCP-сервер MCPHire — AI Job Search API | MCPHire</title>
         <meta
           name="description"
           content="Подключите AI-агента к российскому рынку IT-вакансий через Model Context Protocol. Salary data, resume review, job search."
         />
-        <link rel="canonical" href="https://sborka.work/mcp" />
+        <link rel="canonical" href="https://mcphire.com/mcp" />
         <meta
           property="og:title"
-          content="MCP-сервер СБОРКА — AI Job Search API"
+          content="MCP-сервер MCPHire — AI Job Search API"
         />
         <meta
           property="og:description"
           content="Подключите AI-агента к российскому рынку IT-вакансий"
         />
-        <meta property="og:url" content="https://sborka.work/mcp" />
+        <meta property="og:url" content="https://mcphire.com/mcp" />
       </Helmet>
 
       {/* Header */}
@@ -126,8 +126,8 @@ const McpPage = () => {
                 <code>{`// claude_desktop_config.json
 {
   "mcpServers": {
-    "sborka-career": {
-      "url": "https://mcp.sborka.work/mcp"
+    "mcphire": {
+      "url": "https://mcp.mcphire.com/mcp"
     }
   }
 }`}</code>
@@ -140,8 +140,8 @@ const McpPage = () => {
                 <code>{`// .cursor/mcp.json
 {
   "mcpServers": {
-    "sborka-career": {
-      "url": "https://mcp.sborka.work/mcp"
+    "mcphire": {
+      "url": "https://mcp.mcphire.com/mcp"
     }
   }
 }`}</code>
@@ -153,7 +153,7 @@ const McpPage = () => {
               <p className="text-muted-foreground mb-4">
                 Добавьте MCP сервер с URL:{" "}
                 <code className="bg-muted px-2 py-1 rounded">
-                  https://mcp.sborka.work/mcp
+                  https://mcp.mcphire.com/mcp
                 </code>
               </p>
             </div>
@@ -169,7 +169,7 @@ const McpPage = () => {
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
               <h3 className="font-bold text-lg mb-3">Endpoint</h3>
-              <code className="text-primary">https://mcp.sborka.work/mcp</code>
+              <code className="text-primary">https://mcp.mcphire.com/mcp</code>
             </div>
             <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
               <h3 className="font-bold text-lg mb-3">Protocol</h3>

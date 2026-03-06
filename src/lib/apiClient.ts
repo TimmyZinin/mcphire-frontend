@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — API Client (Mock/Real switcher)
+// MCPHire — API Client (Mock/Real switcher)
 // ============================================================
 
 import * as realApi from "@/lib/api";

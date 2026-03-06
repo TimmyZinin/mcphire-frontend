@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://v2.sborka.work/tools</loc>
+    <loc>https://mcphire.com/tools</loc>
     <lastmod>2026-03-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://v2.sborka.work/tools/salary</loc>
+    <loc>https://mcphire.com/tools/salary</loc>
     <lastmod>2026-03-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://v2.sborka.work/tools/resume-checklist</loc>
+    <loc>https://mcphire.com/tools/resume-checklist</loc>
     <lastmod>2026-03-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://v2.sborka.work/tools/resume-review</loc>
+    <loc>https://mcphire.com/tools/resume-review</loc>
     <lastmod>2026-03-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

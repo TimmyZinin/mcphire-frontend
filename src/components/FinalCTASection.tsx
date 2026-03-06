@@ -40,7 +40,7 @@ const FinalCTASection = () => {
           </div>
 
           <p className="text-xl md:text-2xl text-background/80 max-w-2xl">
-            Не скорость, а постоянство. СБОРКА окупается с первой зарплаты.
+            Не скорость, а постоянство. MCPHire окупается с первой зарплаты.
           </p>
 
           {/* CTAs */}

@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Custom Pagination component (Radix-independent)
+// MCPHire — Custom Pagination component (Radix-independent)
 // ============================================================
 
 import { ChevronLeft, ChevronRight } from "lucide-react";

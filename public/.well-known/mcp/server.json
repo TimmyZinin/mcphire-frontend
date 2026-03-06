@@ -1,7 +1,7 @@
 {
-  "name": "sborka-career",
+  "name": "mcphire",
   "version": "0.2.0",
-  "description": "СБОРКА Career Intelligence — IT job search, salary data, and resume review for the Russian market",
+  "description": "MCPHire — IT job search, salary data, and resume review for the Russian market",
   "endpoint": "https://mcp.sborka.work/mcp",
   "transport": "http",
   "tools": [

@@ -22,7 +22,7 @@ const JobsByCategory = () => {
     return (
       <main className="min-h-screen bg-background">
         <Helmet>
-          <title>Категория не найдена | СБОРКА</title>
+          <title>Категория не найдена | MCPHire</title>
         </Helmet>
         <JobBoardNavbar />
         <section className="section-white">
@@ -44,9 +44,9 @@ const JobsByCategory = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>Вакансии {categoryData.name} в России 2026 | СБОРКА</title>
+        <title>Вакансии {categoryData.name} в России 2026 | MCPHire</title>
         <meta name="description" content={`Актуальные вакансии ${categoryData.name}. ${totalJobs} позиций от ведущих IT-компаний.`} />
-        <link rel="canonical" href={`https://sborka.work/jobs/category/${category}`} />
+        <link rel="canonical" href={`https://mcphire.com/jobs/category/${category}`} />
       </Helmet>
 
       <JobBoardNavbar />

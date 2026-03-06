@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Reusable Job Card Component
+// MCPHire — Reusable Job Card Component
 // ============================================================
 
 import { Link } from "react-router-dom";

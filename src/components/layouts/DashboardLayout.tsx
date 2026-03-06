@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Dashboard Layout
+// MCPHire — Dashboard Layout
 // Navbar + sidebar for employer / seeker dashboards.
 // Sidebar on desktop, bottom nav on mobile.
 // ============================================================

@@ -26,12 +26,12 @@ const KnowledgeCategory = () => {
   return (
     <>
       <Helmet>
-        <title>{cat.nameRu} — База знаний | СБОРКА</title>
+        <title>{cat.nameRu} — База знаний | MCPHire</title>
         <meta
           name="description"
           content={`Статьи про ${cat.nameRu.toLowerCase()} для IT-специалистов. Данные hh.ru 2026.`}
         />
-        <link rel="canonical" href={`https://sborka.work/knowledge/${cat.slug}`} />
+        <link rel="canonical" href={`https://mcphire.com/knowledge/${cat.slug}`} />
       </Helmet>
 
       <main className="min-h-screen">
@@ -40,7 +40,7 @@ const KnowledgeCategory = () => {
         <div className="max-w-5xl mx-auto px-6 md:px-8 py-12 md:py-16">
           <Breadcrumbs
             items={[
-              { label: "СБОРКА", href: "/" },
+              { label: "MCPHire", href: "/" },
               { label: "База знаний", href: "/knowledge" },
               { label: cat.nameRu },
             ]}

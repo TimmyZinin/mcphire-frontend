@@ -47,4 +47,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://sborka.work/sitemap.xml
+Sitemap: https://mcphire.com/sitemap.xml

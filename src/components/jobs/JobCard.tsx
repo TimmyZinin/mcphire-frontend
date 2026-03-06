@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Reusable Job Card
+// MCPHire — Reusable Job Card
 // Used on /jobs list page and similar jobs sidebar.
 // ============================================================
 

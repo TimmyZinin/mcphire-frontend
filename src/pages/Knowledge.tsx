@@ -20,12 +20,12 @@ const Knowledge = () => {
   return (
     <>
       <Helmet>
-        <title>База знаний для IT-специалистов | СБОРКА</title>
+        <title>База знаний для IT-специалистов | MCPHire</title>
         <meta
           name="description"
           content="100 статей о карьере в IT: зарплаты, резюме, собеседования, навыки, поиск работы. Данные hh.ru 2026. Для Python, Frontend, Backend, DevOps, QA, Product Manager и других."
         />
-        <link rel="canonical" href="https://sborka.work/knowledge" />
+        <link rel="canonical" href="https://mcphire.com/knowledge" />
       </Helmet>
 
       <main className="min-h-screen">
@@ -34,7 +34,7 @@ const Knowledge = () => {
         <div className="max-w-5xl mx-auto px-6 md:px-8 py-12 md:py-16">
           <Breadcrumbs
             items={[
-              { label: "СБОРКА", href: "/" },
+              { label: "MCPHire", href: "/" },
               { label: "База знаний" },
             ]}
           />

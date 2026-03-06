@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — JSON-LD structured data components
+// MCPHire — JSON-LD structured data components
 // ============================================================
 
 import { Helmet } from "react-helmet-async";
@@ -14,7 +14,7 @@ interface JobPostingJsonLdProps {
 
 export function JobPostingJsonLd({
   job,
-  siteUrl = "https://sborka.work",
+  siteUrl = "https://mcphire.com",
 }: JobPostingJsonLdProps) {
   const schema = {
     "@context": "https://schema.org/",
@@ -61,7 +61,7 @@ export function JobPostingJsonLd({
     skills: job.skills.map((s) => s.name).join(", "),
     identifier: {
       "@type": "PropertyValue",
-      name: "СБОРКА",
+      name: "MCPHire",
       value: job.id,
     },
   };

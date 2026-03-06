@@ -1,5 +1,5 @@
 // ============================================================
-// СБОРКА — Error Boundary
+// MCPHire — Error Boundary
 // Catches runtime errors and shows a user-friendly fallback.
 // ============================================================
 

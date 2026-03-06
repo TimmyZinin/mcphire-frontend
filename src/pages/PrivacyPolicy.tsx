@@ -5,16 +5,16 @@ const PrivacyPolicy = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>Политика конфиденциальности | СБОРКА</title>
-        <meta name="description" content="Политика конфиденциальности карьерного клуба СБОРКА. Обработка персональных данных в соответствии с ФЗ-152." />
-        <link rel="canonical" href="https://sborka.work/privacy" />
+        <title>Политика конфиденциальности | MCPHire</title>
+        <meta name="description" content="Политика конфиденциальности карьерного клуба MCPHire. Обработка персональных данных в соответствии с ФЗ-152." />
+        <link rel="canonical" href="https://mcphire.com/privacy" />
       </Helmet>
 
       {/* Header */}
       <header className="border-b border-border">
         <div className="section-container py-4 flex items-center justify-between">
           <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            СБОРКА
+            MCPHire
           </Link>
           <a href="/#pricing" className="cta-text text-sm">
             Тарифы
@@ -29,7 +29,7 @@ const PrivacyPolicy = () => {
           <div className="prose prose-slate max-w-none space-y-6 text-muted-foreground">
             <p className="text-base">
               Настоящая политика конфиденциальности (далее — «Политика») действует в отношении всей информации,
-              которую сайт sborka.work (далее — «Сайт») может получить о пользователе во время использования Сайта.
+              которую сайт mcphire.com (далее — «Сайт») может получить о пользователе во время использования Сайта.
             </p>
 
             <h2 className="text-xl font-bold text-foreground mt-8">1. Общие положения</h2>
@@ -63,7 +63,7 @@ const PrivacyPolicy = () => {
               3.1. Мы используем персональные данные для следующих целей:
             </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Оказание услуг по подписке на карьерный клуб СБОРКА</li>
+              <li>Оказание услуг по подписке на карьерный клуб MCPHire</li>
               <li>Обратная связь с пользователями</li>
               <li>Информирование о новых материалах и мероприятиях</li>
               <li>Аналитика посещаемости Сайта (через Umami)</li>
@@ -134,7 +134,7 @@ const PrivacyPolicy = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm text-muted-foreground">
             <div>
               <Link to="/" className="font-bold text-foreground hover:text-muted-foreground transition-colors">
-                СБОРКА
+                MCPHire
               </Link>
               <p>Клуб карьерной дисциплины</p>
             </div>
@@ -142,7 +142,7 @@ const PrivacyPolicy = () => {
               На главную
             </Link>
             <p>
-              &copy; СБОРКА 2026
+              &copy; MCPHire 2026
             </p>
           </div>
         </div>
