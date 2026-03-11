@@ -40,22 +40,31 @@ export default defineConfig(({ mode }) => {
       overlay: false,
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-ui': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-select',
+            '@radix-ui/react-tabs',
+            '@radix-ui/react-toast',
+            '@radix-ui/react-tooltip',
+            '@radix-ui/react-popover',
+          ],
+          'vendor-icons': ['lucide-react'],
+          'vendor-charts': ['recharts'],
+          'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
+        },
+      },
+    },
+  },
   plugins: [
     react(),
-    mode === "production" && !isGHPages &&
-      prerender({
-        routes: ["/", "/partners", "/jobs", "/tools", "/tools/salary", "/tools/resume-checklist", "/tools/resume-review", "/employers", "/mcp", "/jobs/saved", "/privacy", ...getKnowledgeRoutes()],
-        renderer: new PuppeteerRenderer({
-          renderAfterDocumentEvent: "render-event",
-          headless: true,
-          timeout: 120000,
-          maxConcurrentRoutes: 5,
-        }),
-        postProcess(renderedRoute) {
-          renderedRoute.html = renderedRoute.html.trim();
-          return renderedRoute;
-        },
-      }),
+    // DISABLED: Prerender causes timeout in build
+    // TODO: Implement ISR via vite-plugin-ssr or use SSR framework (Next.js)
   ].filter(Boolean),
   resolve: {
     alias: {
