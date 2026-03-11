@@ -107,8 +107,8 @@ export function AuthModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-center text-xl font-black tracking-tight">
-            MCPHire<span className="text-cta-hot">.</span>
+          <DialogTitle className="text-center text-xl font-mono font-bold tracking-tight">
+            <span className="text-primary">MCPHire</span><span className="text-cta-hot">.</span>
           </DialogTitle>
         </DialogHeader>
 

@@ -111,12 +111,9 @@ export default function AuthPage() {
           <div className="text-center mb-8">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 font-black text-2xl tracking-tight"
+              className="inline-flex items-center font-mono font-bold text-2xl tracking-tight"
             >
-              <span className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center text-white font-black text-lg">
-                С
-              </span>
-              MCPHire<span className="text-cta-hot">.</span>
+              <span className="text-primary">MCPHire</span><span className="text-cta-hot">.</span>
             </Link>
             <p className="text-muted-foreground text-sm mt-2">
               Войдите, чтобы откликаться на вакансии

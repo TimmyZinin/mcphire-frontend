@@ -4,7 +4,7 @@
 // ============================================================
 
 import { Link } from "react-router-dom";
-import { FileText, ExternalLink } from "lucide-react";
+import { FileText, ExternalLink, MessageSquare, CalendarDays } from "lucide-react";
 import { PageMeta } from "@/components/seo/PageMeta";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
@@ -61,6 +61,24 @@ function ApplicationRow({ app }: { app: Application }) {
           <ExternalLink className="w-4 h-4 text-muted-foreground" />
         </Link>
       </div>
+
+      {/* Employer feedback */}
+      {app.employerNote && (
+        <div className="w-full flex items-start gap-2 mt-1 pt-3 border-t border-border">
+          <MessageSquare className="w-3.5 h-3.5 text-muted-foreground mt-0.5 shrink-0" />
+          <p className="text-sm text-muted-foreground">{app.employerNote}</p>
+        </div>
+      )}
+
+      {/* Interview date */}
+      {app.interviewDate && (
+        <div className="w-full flex items-center gap-2 mt-1 pt-2 border-t border-border">
+          <CalendarDays className="w-3.5 h-3.5 text-primary shrink-0" />
+          <span className="text-sm text-primary font-medium">
+            Интервью: {new Date(app.interviewDate).toLocaleDateString("ru-RU", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

@@ -106,6 +106,8 @@ export interface Job {
   category: string;
   tags: string[];
   mcpIndexed: boolean;
+  isPremium: boolean;
+  responseLetterRequired: boolean;
 }
 
 export interface JobListItem {
@@ -124,6 +126,7 @@ export interface JobListItem {
   postedAt: string;
   status: JobStatus;
   category: string;
+  isPremium?: boolean;
 }
 
 // ------ Search & Filters ------------------------------------

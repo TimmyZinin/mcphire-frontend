@@ -7,12 +7,11 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="font-black text-xl tracking-tight text-primary flex items-center gap-2 mb-3">
-              <span className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center text-white font-black text-xs">M</span>
-              MCPHire
+            <Link to="/" className="font-mono font-bold text-xl text-primary flex items-center mb-3">
+              MCPHire<span className="text-cta-hot">.</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              MCP-first платформа для поиска IT-вакансий.
+              Найди IT-работу через AI и MCP-агентов.
             </p>
             {/* Social links */}
             <div className="flex gap-3 mt-4">
@@ -33,10 +32,10 @@ const Footer = () => {
             <h4 className="font-semibold text-sm text-foreground mb-3 uppercase tracking-wide">Соискателям</h4>
             <ul className="space-y-2 text-sm">
               <li><Link to="/jobs" className="text-muted-foreground hover:text-primary transition-colors">Вакансии</Link></li>
-              <li><Link to="/knowledge" className="text-muted-foreground hover:text-primary transition-colors">База знаний</Link></li>
               <li><Link to="/tools/salary" className="text-muted-foreground hover:text-primary transition-colors">Калькулятор зарплат</Link></li>
               <li><Link to="/tools/resume-checklist" className="text-muted-foreground hover:text-primary transition-colors">Чеклист резюме</Link></li>
               <li><Link to="/tools/resume-review" className="text-muted-foreground hover:text-primary transition-colors">AI-ревью резюме</Link></li>
+              <li><a href="https://sborka.work/knowledge" className="text-muted-foreground hover:text-primary transition-colors">База знаний</a></li>
             </ul>
           </div>
 
@@ -46,17 +45,17 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li><Link to="/employers" className="text-muted-foreground hover:text-primary transition-colors">Разместить вакансию</Link></li>
               <li><Link to="/mcp" className="text-muted-foreground hover:text-primary transition-colors">MCP API</Link></li>
-              <li><Link to="/partners" className="text-muted-foreground hover:text-primary transition-colors">Партнёрская программа</Link></li>
+              <li><a href="https://sborka.work/partners" className="text-muted-foreground hover:text-primary transition-colors">Партнёрская программа</a></li>
             </ul>
           </div>
 
-          {/* О клубе */}
+          {/* Карьерный клуб */}
           <div>
-            <h4 className="font-semibold text-sm text-foreground mb-3 uppercase tracking-wide">О клубе</h4>
+            <h4 className="font-semibold text-sm text-foreground mb-3 uppercase tracking-wide">Карьерный клуб</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="https://t.me/Sborka_work_bot?start=webinar4_site" target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">
-                  Открытый урок 5 марта
+                <a href="https://sborka.work" className="text-primary font-medium hover:underline">
+                  СБОРКА — клуб дисциплины
                 </a>
               </li>
               <li>
@@ -72,7 +71,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-muted-foreground">
           <span>© 2026 MCPHire. Все права защищены.</span>
-          <span>AI-платформа для IT-карьеры</span>
+          <span>AI-платформа для поиска IT-работы</span>
         </div>
       </div>
     </footer>

@@ -81,6 +81,8 @@ function transformJob(old: OldJob): Job {
     category: getCategoryFromTitle(old.title),
     tags,
     mcpIndexed: true,
+    isPremium: parseInt(old.id, 10) % 5 === 0, // every 5th job is premium
+    responseLetterRequired: parseInt(old.id, 10) % 3 === 0, // every 3rd job requires cover letter
   };
 }
 
@@ -121,6 +123,7 @@ function toJobListItem(job: Job): JobListItem {
     postedAt: job.postedAt,
     status: job.status,
     category: job.category,
+    isPremium: job.isPremium,
   };
 }
 
@@ -210,17 +213,18 @@ export const db = {
       filtered = filtered.filter((j) => j.salaryFrom && j.salaryFrom <= params.salaryMax!);
     }
 
-    // Sort
+    // Sort (premium jobs always first, then by selected criteria)
+    const premiumFirst = (a: Job, b: Job) => (b.isPremium ? 1 : 0) - (a.isPremium ? 1 : 0);
     switch (params.sortBy) {
       case "salary_desc":
-        filtered.sort((a, b) => (b.salaryTo || 0) - (a.salaryTo || 0));
+        filtered.sort((a, b) => premiumFirst(a, b) || (b.salaryTo || 0) - (a.salaryTo || 0));
         break;
       case "salary_asc":
-        filtered.sort((a, b) => (a.salaryFrom || 0) - (b.salaryFrom || 0));
+        filtered.sort((a, b) => premiumFirst(a, b) || (a.salaryFrom || 0) - (b.salaryFrom || 0));
         break;
       case "date_desc":
       default:
-        filtered.sort((a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime());
+        filtered.sort((a, b) => premiumFirst(a, b) || new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime());
         break;
     }
 
@@ -275,12 +279,12 @@ export const db = {
   },
 
   // Get stats
-  getStats(): { total: number; cities: number; categories: number; companies: number } {
+  getStats(): { totalJobs: number; citiesCount: number; categoriesCount: number; companiesCount: number } {
     return {
-      total: this.jobs.length,
-      cities: this.getCities().length,
-      categories: this.getCategories().length,
-      companies: this.companies.length,
+      totalJobs: this.jobs.length,
+      citiesCount: this.getCities().length,
+      categoriesCount: this.getCategories().length,
+      companiesCount: this.companies.length,
     };
   },
 

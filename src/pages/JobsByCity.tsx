@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useJobs } from "@/hooks/useJobs";
-import { cityMap, categoryMap } from "@/data/jobCategories";
+import { cityMap, cityPrepositional } from "@/data/jobCategories";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
 import CareerClubBanner from "@/components/CareerClubBanner";
@@ -40,12 +40,13 @@ const JobsByCity = () => {
   const jobs = data?.data || [];
   const totalJobs = data?.meta?.total || 0;
   const otherCities = Object.entries(cityMap).filter(([slug]) => slug !== city);
+  const cityPrep = cityPrepositional[cityName] ?? cityName;
 
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>IT-вакансии в {cityName} 2026 | MCPHire</title>
-        <meta name="description" content={`Актуальные IT-вакансии в ${cityName}. ${totalJobs} вакансий от ведущих компаний.`} />
+        <title>IT-вакансии в {cityPrep} 2026 | MCPHire</title>
+        <meta name="description" content={`Актуальные IT-вакансии в ${cityPrep}. ${totalJobs} вакансий от ведущих компаний.`} />
         <link rel="canonical" href={`https://mcphire.com/jobs/city/${city}`} />
       </Helmet>
 
@@ -63,7 +64,7 @@ const JobsByCity = () => {
             <span className="text-foreground">{cityName}</span>
           </nav>
 
-          <h1 className="heading-xl mb-2">ВАКАНСИИ В {cityName.toUpperCase()}</h1>
+          <h1 className="heading-xl mb-2">ВАКАНСИИ В {cityPrep.toUpperCase()}</h1>
           <p className="text-muted-foreground mb-8">
             Найдено {totalJobs} вакансий
           </p>

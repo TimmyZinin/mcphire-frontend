@@ -345,6 +345,7 @@ const JobDetailPage = () => {
         companyName={companyName}
         open={applyOpen}
         onOpenChange={setApplyOpen}
+        responseLetterRequired={job.responseLetterRequired}
       />
       <JobPostingJsonLd job={job} />
     </main>

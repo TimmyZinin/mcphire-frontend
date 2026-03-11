@@ -197,7 +197,7 @@ export const jobsApi = {
     request<Array<{ slug: string; name: string; count: number }>>("/jobs/cities"),
 
   stats: () =>
-    request<{ total: number; cities: number; categories: number; companies: number }>("/jobs/stats"),
+    request<{ totalJobs: number; citiesCount: number; categoriesCount: number; companiesCount: number }>("/jobs/stats"),
 };
 
 // ============================================================

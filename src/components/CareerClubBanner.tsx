@@ -3,15 +3,8 @@ interface CareerClubBannerProps {
   utmSource?: string;
 }
 
-// Данные вебинара — при смене вебинара меняем ТОЛЬКО здесь
-const WEBINAR = {
-  date: "5 марта",
-  link: "https://t.me/Sborka_work_bot?start=webinar4_site",
-  title: "Открытый урок: что такое MCPHire",
-};
-
 const CareerClubBanner = ({ variant = "inline", utmSource = "banner" }: CareerClubBannerProps) => {
-  const href = `${WEBINAR.link}&utm_source=${utmSource}`;
+  const href = `https://sborka.work?utm_source=mcphire&utm_medium=banner&utm_campaign=${utmSource}`;
 
   if (variant === "inline") {
     return (
@@ -23,7 +16,7 @@ const CareerClubBanner = ({ variant = "inline", utmSource = "banner" }: CareerCl
               Ищете работу? Подготовьтесь к собеседованиям
             </p>
             <p className="text-sm text-muted-foreground">
-              MCPHire — карьерный клуб с менторами, мок-собесами и разбором резюме. Средний участник получает оффер за 6-8 недель.
+              СБОРКА — карьерный клуб с менторами, мок-собесами и разбором резюме. Средний участник получает оффер за 6-8 недель.
             </p>
           </div>
         </div>
@@ -33,7 +26,7 @@ const CareerClubBanner = ({ variant = "inline", utmSource = "banner" }: CareerCl
           rel="noopener noreferrer"
           className="shrink-0 inline-flex items-center px-5 py-2.5 rounded-full bg-[#4ECDC4] text-white text-sm font-semibold hover:bg-[#45B7D1] transition-colors whitespace-nowrap"
         >
-          Открытый урок {WEBINAR.date} →
+          Узнать о клубе →
         </a>
       </div>
     );
@@ -47,7 +40,7 @@ const CareerClubBanner = ({ variant = "inline", utmSource = "banner" }: CareerCl
             Получите оффер за 6-8 недель
           </h3>
           <p className="text-white/80 mb-6 max-w-lg mx-auto">
-            Менторы с опытом 8+ лет, мок-собеседования, разбор резюме, командные соревнования. Подписка от 4 900 ₽/мес.
+            СБОРКА — клуб карьерной дисциплины. Менторы с опытом 8+ лет, мок-собеседования, разбор резюме. Подписка от 4 900 ₽/мес.
           </p>
           <a
             href={href}
@@ -55,7 +48,7 @@ const CareerClubBanner = ({ variant = "inline", utmSource = "banner" }: CareerCl
             rel="noopener noreferrer"
             className="inline-flex items-center px-8 py-3 bg-white text-[hsl(174,62%,30%)] font-bold rounded-full hover:bg-white/90 transition-colors"
           >
-            Записаться на урок {WEBINAR.date} →
+            Перейти на sborka.work →
           </a>
         </div>
       </div>

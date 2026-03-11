@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Trash2, Loader2, Upload } from "lucide-react";
+import { Plus, Trash2, Loader2, Upload, FileText, X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -121,6 +121,8 @@ export default function SeekerProfilePage() {
   const { mutateAsync: updateProfile, isPending: isSaving } = useUpdateSeekerProfile();
   const { mutateAsync: uploadResume, isPending: isUploading } = useUploadResume();
   const [skillInput, setSkillInput] = useState("");
+  const [resumeFileName, setResumeFileName] = useState<string | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   const form = useForm<ProfileFormData>({
@@ -154,9 +156,22 @@ export default function SeekerProfilePage() {
     setTimeout(() => setSaveSuccess(false), 3000);
   });
 
+  const handleResumeFile = async (file: File) => {
+    if (file.type !== "application/pdf") return;
+    setResumeFileName(file.name);
+    await uploadResume(file);
+  };
+
   const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) await uploadResume(file);
+    if (file) await handleResumeFile(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleResumeFile(file);
   };
 
   const addSkill = () => {
@@ -310,13 +325,23 @@ export default function SeekerProfilePage() {
                 </div>
               </div>
 
-              {/* Resume upload */}
+              {/* Resume upload with drag-n-drop */}
               <div className="bg-card border border-border rounded-2xl p-6">
                 <h2 className="font-bold text-base uppercase tracking-wide mb-4">Резюме (PDF)</h2>
-                <label className="flex items-center gap-3 p-4 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary transition-colors group">
-                  <Upload className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
-                  <span className="text-sm text-muted-foreground">
-                    {isUploading ? "Загружаем..." : "Загрузить PDF резюме"}
+                <label
+                  className={cn(
+                    "flex flex-col items-center gap-2 p-6 border-2 border-dashed rounded-xl cursor-pointer transition-colors",
+                    isDragOver
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50 hover:bg-muted/30"
+                  )}
+                  onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
+                  onDragLeave={() => setIsDragOver(false)}
+                  onDrop={handleDrop}
+                >
+                  <Upload className={cn("w-6 h-6", isDragOver ? "text-primary" : "text-muted-foreground")} />
+                  <span className="text-sm text-muted-foreground text-center">
+                    {isUploading ? "Загружаем..." : "Перетащите PDF или нажмите для выбора"}
                   </span>
                   <input
                     type="file"
@@ -326,6 +351,22 @@ export default function SeekerProfilePage() {
                     disabled={isUploading}
                   />
                 </label>
+                {(resumeFileName || profile?.resumeUrl) && !isUploading && (
+                  <div className="flex items-center gap-2 mt-3 px-3 py-2 bg-primary/5 rounded-lg">
+                    <FileText className="w-4 h-4 text-primary shrink-0" />
+                    <span className="text-sm text-primary truncate">
+                      {resumeFileName || "resume.pdf"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setResumeFileName(null)}
+                      className="ml-auto text-muted-foreground hover:text-destructive transition-colors p-0.5"
+                      aria-label="Удалить резюме"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center gap-3">

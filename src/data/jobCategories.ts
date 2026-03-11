@@ -9,6 +9,16 @@ export const cityMap: Record<string, string> = {
   "remote": "Удалённо"
 };
 
+/** Prepositional case for city names ("в чём? где?") */
+export const cityPrepositional: Record<string, string> = {
+  "Москва": "Москве",
+  "Санкт-Петербург": "Санкт-Петербурге",
+  "Новосибирск": "Новосибирске",
+  "Екатеринбург": "Екатеринбурге",
+  "Казань": "Казани",
+  "Удалённо": "удалёнке",
+};
+
 export const categoryMap: Record<string, { name: string; keywords: string[] }> = {
   "frontend": { name: "Frontend-разработка", keywords: ["Frontend", "React", "Vue", "Angular", "JavaScript", "TypeScript", "HTML", "CSS"] },
   "backend": { name: "Backend-разработка", keywords: ["Backend", "Python", "Java", "Go", "Node.js", "Django", "Spring", "FastAPI"] },

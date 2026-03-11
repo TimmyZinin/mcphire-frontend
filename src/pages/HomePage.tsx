@@ -3,7 +3,7 @@
 // Route: /home  (job board entry point, NOT the club landing)
 // ============================================================
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
@@ -11,6 +11,55 @@ import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
 import { JobCard, SkeletonGrid } from "@/components/JobCard";
 import { useJobs, useJobStats } from "@/hooks/useJobs";
+
+// ---- Typing Rotator ------------------------------------------
+
+const rotatingPhrases = ["через AI", "через MCP", "сегодня", "удалённо"];
+
+function TypingRotator() {
+  const [text, setText] = useState("");
+  const [idx, setIdx] = useState(0);
+  const [phase, setPhase] = useState<"typing" | "pause" | "deleting">("typing");
+
+  useEffect(() => {
+    const target = rotatingPhrases[idx];
+
+    if (phase === "pause") {
+      const t = setTimeout(() => setPhase("deleting"), 2200);
+      return () => clearTimeout(t);
+    }
+
+    if (phase === "deleting") {
+      if (text.length === 0) {
+        setIdx((i) => (i + 1) % rotatingPhrases.length);
+        setPhase("typing");
+        return;
+      }
+      const t = setTimeout(() => setText((s) => s.slice(0, -1)), 45);
+      return () => clearTimeout(t);
+    }
+
+    // typing
+    if (text.length < target.length) {
+      const t = setTimeout(
+        () => setText(target.slice(0, text.length + 1)),
+        85,
+      );
+      return () => clearTimeout(t);
+    }
+
+    setPhase("pause");
+  }, [text, idx, phase]);
+
+  return (
+    <span className="inline-flex items-baseline">
+      <span>{text}</span>
+      <span
+        className={`hero-typing-cursor${phase === "pause" ? " blinking" : ""}`}
+      />
+    </span>
+  );
+}
 
 // ---- Stat Card -----------------------------------------------
 
@@ -58,15 +107,15 @@ const HomePage = () => {
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>Найди работу через AI | MCPHire Вакансии</title>
+        <title>Найди IT-работу через AI | MCPHire</title>
         <meta
           name="description"
-          content="Первая MCP-first платформа для IT-карьеры в России. Тысячи вакансий, AI-подбор, карьерный клуб."
+          content="MCPHire — AI-платформа для поиска IT-работы. Тысячи вакансий, AI-подбор, MCP-агенты для автоматизации поиска."
         />
-        <meta property="og:title" content="Найди работу через AI | MCPHire Вакансии" />
+        <meta property="og:title" content="Найди IT-работу через AI | MCPHire" />
         <meta
           property="og:description"
-          content="Первая MCP-first платформа для IT-карьеры в России. Тысячи вакансий, AI-подбор, карьерный клуб."
+          content="MCPHire — AI-платформа для поиска IT-работы. Тысячи вакансий, AI-подбор, MCP-агенты для автоматизации поиска."
         />
         <link rel="canonical" href="https://mcphire.com/home" />
       </Helmet>
@@ -77,11 +126,12 @@ const HomePage = () => {
       <section className="section-white border-0 py-20 md:py-28">
         <div className="section-container text-center">
           <h1 className="heading-hero mb-6">
-            Найди работу<br className="hidden md:block" /> через AI
+            Найди работу<br className="hidden md:block" />{" "}
+            <TypingRotator />
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-            Первая MCP-first платформа для IT-карьеры в России.
-            AI подбирает вакансии, оценивает совместимость и помогает откликнуться.
+            AI-платформа для поиска IT-работы.
+            MCP-агенты подбирают вакансии, оценивают совместимость и помогают откликнуться.
           </p>
 
           {/* Search bar */}
@@ -182,7 +232,7 @@ const HomePage = () => {
           <div className="flex flex-wrap justify-center gap-6 mb-10 text-sm text-white/80">
             {[
               "Без переплат за первую вакансию",
-              "Доступ к базе карьерного клуба",
+              "AI-подбор кандидатов",
               "MCP API для AI-агентов",
             ].map((point) => (
               <div key={point} className="flex items-center gap-2">
@@ -198,22 +248,22 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ---- Career Club Section --------------------------------- */}
+      {/* ---- Career Club Cross-Promo ------------------------------ */}
       <section className="section-white">
         <div className="section-container text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
-            Карьерный клуб
+            Партнёрский проект
           </p>
           <h2 className="heading-xl mb-6">
-            Карьерный клуб<br className="hidden md:block" /> MCPHire
+            СБОРКА —<br className="hidden md:block" /> клуб карьерной дисциплины
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-8 leading-relaxed">
             Система с метриками и дедлайнами для IT-специалистов, которые ищут
-            работу или хотят вырасти. Не коучинг — инструмент для результата.
+            работу или хотят вырасти. Менторы, мок-собеседования, разбор резюме.
           </p>
-          <Link to="/" className="cta-text text-base">
-            Узнать о клубе →
-          </Link>
+          <a href="https://sborka.work" className="cta-text text-base">
+            Узнать о клубе на sborka.work →
+          </a>
         </div>
       </section>
 

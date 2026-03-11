@@ -273,7 +273,7 @@ export const jobsApi = {
     return db.getCities();
   },
 
-  async stats(): Promise<{ total: number; cities: number; categories: number; companies: number }> {
+  async stats(): Promise<{ totalJobs: number; citiesCount: number; categoriesCount: number; companiesCount: number }> {
     await delay();
     return db.getStats();
   },

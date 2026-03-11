@@ -5,7 +5,7 @@
 
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, LogOut, User, FileText, LayoutDashboard } from "lucide-react";
+import { Menu, LogOut, User, FileText, LayoutDashboard, ArrowLeftRight } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -22,7 +22,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
+import { EmailVerificationBanner } from "@/components/auth/EmailVerificationBanner";
 
 // ---- Nav links ---------------------------------------------
 
@@ -31,7 +33,6 @@ const navLinks = [
   { to: "/employers", label: "Для работодателей" },
   { to: "/tools", label: "Инструменты" },
   { to: "/mcp", label: "MCP" },
-  { to: "/pricing", label: "Тарифы" },
 ];
 
 // ---- Helpers -----------------------------------------------
@@ -51,7 +52,7 @@ const JobBoardNavbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, switchRole } = useAuth();
 
   const isActive = (path: string) => location.pathname.startsWith(path);
 
@@ -80,17 +81,14 @@ const JobBoardNavbar = () => {
     user?.role === "employer" ? "Дашборд" : "Мой профиль";
 
   return (
+    <>
     <nav className="sticky top-0 z-50 bg-background/92 backdrop-blur-xl border-b border-border">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link
-          to="/"
-          className="font-heading font-black text-xl tracking-tight text-primary flex items-center gap-2"
-        >
-          <span className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-black text-sm">
-            M
-          </span>
-          MCPHire<span className="text-cta-hot">.</span>
+        {/* Logo — terminal typing effect */}
+        <Link to="/" className="mcphire-logo text-xl">
+          <span className="mcphire-logo-text">MCPHire</span>
+          <span className="mcphire-logo-dot">.</span>
+          <span className="mcphire-logo-cursor" />
         </Link>
 
         {/* Desktop nav links */}
@@ -104,7 +102,8 @@ const JobBoardNavbar = () => {
 
         {/* Right-side actions */}
         <div className="flex items-center gap-2">
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-1">
+            <ThemeToggle />
             <LanguageSwitcher />
           </div>
           {isAuthenticated && user ? (
@@ -151,6 +150,16 @@ const JobBoardNavbar = () => {
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={() => {
+                    switchRole();
+                    navigate(user.role === "seeker" ? "/employer/dashboard" : "/profile");
+                  }}
+                >
+                  <ArrowLeftRight className="w-4 h-4" />
+                  {user.role === "seeker" ? "Режим работодателя" : "Режим соискателя"}
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   className="flex items-center gap-2 text-destructive focus:text-destructive cursor-pointer"
                   onClick={handleLogout}
                 >
@@ -179,8 +188,8 @@ const JobBoardNavbar = () => {
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px]">
               <SheetHeader>
-                <SheetTitle className="text-left font-heading font-black text-primary tracking-tight">
-                  MCPHire
+                <SheetTitle className="text-left font-mono font-bold text-primary tracking-tight">
+                  MCPHire<span className="text-cta-hot">.</span>
                 </SheetTitle>
               </SheetHeader>
 
@@ -197,7 +206,8 @@ const JobBoardNavbar = () => {
                   </Link>
                 ))}
 
-                <div className="px-4 py-2">
+                <div className="px-4 py-2 flex items-center gap-3">
+                  <ThemeToggle />
                   <LanguageSwitcher />
                 </div>
 
@@ -264,6 +274,8 @@ const JobBoardNavbar = () => {
         </div>
       </div>
     </nav>
+    <EmailVerificationBanner />
+    </>
   );
 };
 

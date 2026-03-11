@@ -23,6 +23,7 @@ interface ApplyDialogProps {
   companyName: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  responseLetterRequired?: boolean;
 }
 
 // ---- Component -----------------------------------------------
@@ -33,6 +34,7 @@ export function ApplyDialog({
   companyName,
   open,
   onOpenChange,
+  responseLetterRequired = false,
 }: ApplyDialogProps) {
   const [coverLetter, setCoverLetter] = useState("");
   const [fileName, setFileName] = useState<string | null>(null);
@@ -50,6 +52,15 @@ export function ApplyDialog({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (responseLetterRequired && !coverLetter.trim()) {
+      toast({
+        title: "Необходимо сопроводительное письмо",
+        description: "Работодатель требует сопроводительное письмо для этой вакансии.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
       await applyMutation.mutateAsync({
@@ -97,7 +108,11 @@ export function ApplyDialog({
               className="text-sm font-medium text-foreground"
             >
               Сопроводительное письмо{" "}
-              <span className="text-muted-foreground font-normal">(необязательно)</span>
+              {responseLetterRequired ? (
+                <span className="text-destructive font-normal">*</span>
+              ) : (
+                <span className="text-muted-foreground font-normal">(необязательно)</span>
+              )}
             </label>
             <textarea
               id="cover-letter"

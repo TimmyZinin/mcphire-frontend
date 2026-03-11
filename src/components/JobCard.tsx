@@ -8,7 +8,7 @@ import { formatSalaryRange, formatRelativeTime } from "@/lib/formatters";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface JobCardProps {
-  job: JobListItem;
+  job: JobListItem & { isPremium?: boolean };
   showMatchScore?: boolean;
 }
 
@@ -55,12 +55,19 @@ export function JobCard({ job, showMatchScore = true }: JobCardProps) {
       to={`/jobs/${job.id}`}
       className="block bg-card border border-border rounded-2xl p-6 hover:border-primary hover:shadow-lg hover:-translate-y-0.5 transition-all relative"
     >
-      {/* Match Badge — only for authenticated users */}
-      {canShowMatch && (
-        <div className="absolute top-4 right-4 bg-primary text-white font-mono text-xs font-bold px-2.5 py-1 rounded-full">
-          {matchScore}% матч
-        </div>
-      )}
+      {/* Badges — top right */}
+      <div className="absolute top-4 right-4 flex items-center gap-1.5">
+        {job.isPremium && (
+          <span className="bg-amber-400 text-amber-950 font-mono text-[0.65rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">
+            Premium
+          </span>
+        )}
+        {canShowMatch && (
+          <span className="bg-primary text-white font-mono text-xs font-bold px-2.5 py-1 rounded-full">
+            {matchScore}% матч
+          </span>
+        )}
+      </div>
 
       {/* Company Row */}
       <div className="flex items-center gap-3 mb-3">
