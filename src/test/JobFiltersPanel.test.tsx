@@ -135,7 +135,8 @@ describe("JobFiltersPanel", () => {
         activeCount={1}
       />
     );
-    fireEvent.click(screen.getByText("Сбросить"));
+    // Use first() because FiltersContent renders twice (desktop + mobile)
+    fireEvent.click(screen.getAllByText("Сбросить")[0]);
     expect(onReset).toHaveBeenCalled();
   });
 
@@ -148,6 +149,7 @@ describe("JobFiltersPanel", () => {
         activeCount={0}
       />
     );
-    expect(screen.queryByText("Сбросить")).not.toBeInTheDocument();
+    // Reset button should not be present when activeCount is 0
+    expect(screen.queryAllByText("Сбросить")).toHaveLength(0);
   });
 });
