@@ -1,73 +1,111 @@
-# Welcome to your Lovable project
+# MCPHire — MCP-first маркетплейс вакансий
 
-## Project info
+MCP-native платформа для поиска работы в IT. Два входа — один продукт:
+- **mcphire.com** — веб-интерфейс для соискателей и работодателей
+- **mcp.mcphire.com** — MCP сервер для AI-агентов (Claude, GPT и др.)
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+```mermaid
+flowchart TB
+    subgraph Пользователи
+        S[Соискатель]
+        E[Работодатель]
+        AI[AI-агент]
+    end
 
-## How can I edit this code?
+    subgraph "mcphire.com"
+        SPA[React SPA]
+    end
 
-There are several ways of editing your application.
+    subgraph "api.mcphire.com"
+        API[FastAPI]
+    end
 
-**Use Lovable**
+    subgraph "mcp.mcphire.com"
+        MCP[FastMCP — 5 tools]
+    end
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+    DB[(PostgreSQL)]
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+    S --> SPA
+    E --> SPA
+    SPA -->|REST| API
+    AI -->|MCP| MCP
+    API --> DB
+    MCP --> DB
 ```
 
-**Edit a file directly in GitHub**
+## Стек
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+| Слой | Технологии |
+|------|-----------|
+| Frontend | React 18, TypeScript, Vite 5, Tailwind CSS, shadcn/ui, React Query 5 |
+| Backend | FastAPI, SQLAlchemy 2.0 (async), asyncpg, PostgreSQL 16, Alembic |
+| MCP | FastMCP, 5 инструментов (search_jobs, get_job_details, apply_to_job, get_my_applications, get_salary_stats) |
+| Auth | JWT (HS256) + Telegram OAuth |
+| Deploy | Docker Compose, Contabo VPS, Nginx |
 
-**Use GitHub Codespaces**
+## Быстрый старт
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Frontend
+```bash
+cd mcphire-frontend
+npm install
+cp .env.example .env    # VITE_USE_MOCKS=true для работы без бэкенда
+npm run dev              # localhost:8080
+```
 
-## What technologies are used for this project?
+### Backend
+```bash
+cd mcphire-mcp/backend
+docker compose up -d     # PostgreSQL
+pip install -r requirements.txt
+uvicorn app.main:app --reload  # localhost:8000
+```
 
-This project is built with:
+### MCP сервер
+```bash
+cd mcphire-mcp
+pip install -r requirements.txt
+python server.py --test  # тест с mock данными
+python server.py         # stdio режим для Claude
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Скрипты
 
-## How can I deploy this project?
+| Команда | Описание |
+|---------|----------|
+| `npm run dev` | Dev-сервер с HMR (порт 8080) |
+| `npm run build` | Production сборка |
+| `npm run test` | Тесты (Vitest) |
+| `npm run lint` | ESLint проверка |
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## Структура проекта
 
-## Can I connect a custom domain to my Lovable project?
+```
+mcphire-frontend/
+├── src/
+│   ├── components/    # UI компоненты (55+ shadcn/ui + кастомные)
+│   ├── pages/         # 28 страниц (lazy-loaded)
+│   ├── contexts/      # AuthContext (JWT, роли)
+│   ├── lib/           # API клиент, утилиты, хуки
+│   ├── types/         # TypeScript интерфейсы
+│   └── data/          # Seed данные, статьи базы знаний
+├── .wiki/             # GitHub Wiki (12 страниц документации)
+└── public/            # Статика
+```
 
-Yes, you can!
+## Документация
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Полная документация проекта — в [GitHub Wiki](../../wiki):
+- Архитектура фронтенда и бэкенда
+- Схема базы данных (ER-диаграммы)
+- Справочник API (27 endpoints)
+- MCP сервер (5 инструментов)
+- Деплой и инфраструктура
+- Безопасность и аутентификация
+- Бизнес-модель и дорожная карта
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Статус
+
+- Фаза 1 (MVP): завершена
+- Фаза 2 (данные + MCP production): в работе — [бэклог](../../wiki/Phase-2-Backlog)
