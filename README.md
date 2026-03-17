@@ -107,5 +107,5 @@ mcphire-frontend/
 
 ## Статус
 
-- Фаза 1 (MVP): завершена
-- Фаза 2 (данные + MCP production): в работе — [бэклог](../../wiki/Phase-2-Backlog)
+- Этап 1 (MVP): завершена
+- Спринты S14-S19 (данные + MCP production): в работе — [бэклог](../../wiki/Phase-2-Backlog)
