@@ -43,7 +43,7 @@ const EmployersPage = () => {
     },
     {
       q: 'Как происходит оплата?',
-      a: 'Через Telegram бот @Sborka_work_bot. Поддерживается безналичная оплата для юридических лиц и переводы для ИП/самозанятых.'
+      a: 'Онлайн через личный кабинет работодателя. Поддерживается безналичная оплата для юридических лиц и переводы для ИП/самозанятых.'
     },
   ];
 
@@ -185,8 +185,8 @@ const EmployersPage = () => {
             const company = (form.elements[0] as HTMLInputElement).value;
             const email = (form.elements[1] as HTMLInputElement).value;
             const role = (form.elements[2] as HTMLInputElement).value;
-            window.open(`https://t.me/Sborka_work_bot?start=employer_${encodeURIComponent(company)}`, '_blank');
-            alert('Спасибо! Мы свяжемся с вами. Также напишите нам в Telegram для ускорения процесса.');
+            window.open(`https://t.me/mcphire_bot?start=employer_${encodeURIComponent(company)}`, '_blank');
+            alert('Спасибо! Мы свяжемся с вами.');
           }}>
             <div>
               <label className="block text-sm font-semibold mb-2 uppercase">Компания</label>
@@ -229,7 +229,7 @@ const EmployersPage = () => {
           </form>
 
           <p className="text-center text-muted-foreground mt-6">
-            Или напишите нам: <a href="https://t.me/Sborka_work_bot" className="text-primary hover:underline">@Sborka_work_bot</a>
+            Или напишите нам: <a href="mailto:hire@mcphire.com" className="text-primary hover:underline">hire@mcphire.com</a>
           </p>
         </div>
       </section>

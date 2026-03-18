@@ -11,7 +11,7 @@ export default function PricingPage() {
     <>
       <PageMeta
         title="Тарифы"
-        description="Выберите тариф карьерного клуба MCPHire. СТАРТ, ПРОРЫВ и VIP — для IT-специалистов всех уровней."
+        description="Тарифы для работодателей MCPHire. Размещайте IT-вакансии и получайте отклики от лучших специалистов."
         canonical="/pricing"
       />
       <div className="max-w-[1280px] mx-auto px-4 md:px-8 pt-10 pb-6">
@@ -19,7 +19,7 @@ export default function PricingPage() {
           Тарифы
         </h1>
         <p className="text-muted-foreground">
-          Выберите подходящий план карьерного клуба.
+          Тарифы для работодателей — размещайте вакансии и находите IT-специалистов.
         </p>
       </div>
       <PricingSection />
