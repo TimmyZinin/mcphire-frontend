@@ -13,10 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { TelegramLoginButton } from "@/components/auth/TelegramLoginButton";
+import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
 import { PageMeta } from "@/components/seo/PageMeta";
 import { useAuth } from "@/contexts/AuthContext";
 import type { TelegramAuthData } from "@/types";
 import { useState } from "react";
+import { CheckCircle2 } from "lucide-react";
 
 // ---- Schemas -----------------------------------------------
 
@@ -44,10 +46,11 @@ type RegisterForm = z.infer<typeof registerSchema>;
 // ---- Page --------------------------------------------------
 
 export default function AuthPage() {
-  const { isAuthenticated, login, register, loginWithTelegram } = useAuth();
+  const { isAuthenticated, login, register, loginWithTelegram, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState<string | null>(null);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
   // Redirect if already authenticated
   const from = (location.state as { from?: string })?.from ?? "/";
@@ -74,10 +77,20 @@ export default function AuthPage() {
     try {
       setError(null);
       await register({ name: data.name, email: data.email, password: data.password, role: data.role });
+      setRegistrationSuccess(true);
     } catch {
       setError("Этот email уже зарегистрирован");
     }
   });
+
+  const handleGoogle = async (credential: string) => {
+    try {
+      setError(null);
+      await loginWithGoogle(credential);
+    } catch {
+      setError("Не удалось войти через Google");
+    }
+  };
 
   const handleTelegram = async (data: TelegramAuthData) => {
     try {
@@ -120,14 +133,31 @@ export default function AuthPage() {
             </p>
           </div>
 
+          {/* Registration success */}
+          {registrationSuccess && (
+            <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-6 mb-6 text-center">
+              <CheckCircle2 className="w-10 h-10 text-green-500 mx-auto mb-3" />
+              <h3 className="font-bold text-lg mb-2">Аккаунт создан</h3>
+              <p className="text-sm text-muted-foreground">
+                Мы отправили письмо для подтверждения email. Проверьте почту.
+              </p>
+            </div>
+          )}
+
           {/* Card */}
           <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
-            {/* Telegram */}
-            <TelegramLoginButton
-              botName={import.meta.env.VITE_TELEGRAM_BOT_NAME ?? "Sborka_work_bot"}
-              onAuth={handleTelegram}
-              buttonSize="large"
-            />
+            {/* Social login buttons */}
+            <div className="space-y-3">
+              <TelegramLoginButton
+                botName={import.meta.env.VITE_TELEGRAM_BOT_NAME ?? "Sborka_work_bot"}
+                onAuth={handleTelegram}
+                buttonSize="large"
+              />
+              <GoogleLoginButton
+                clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ""}
+                onAuth={handleGoogle}
+              />
+            </div>
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">

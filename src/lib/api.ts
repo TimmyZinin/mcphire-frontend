@@ -154,6 +154,23 @@ export const authApi = {
   },
 
   me: () => request<AuthUser>("/auth/me"),
+
+  loginWithGoogle: (credential: string) =>
+    request<TokenResponse>("/auth/google", {
+      method: "POST",
+      body: JSON.stringify({ credential }),
+    }),
+
+  verifyEmail: (token: string) =>
+    request<AuthUser>("/auth/verify-email", {
+      method: "POST",
+      body: JSON.stringify({ token }),
+    }),
+
+  resendVerification: () =>
+    request<{ sent: boolean }>("/auth/resend-verification", {
+      method: "POST",
+    }),
 };
 
 // ============================================================

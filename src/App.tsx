@@ -41,6 +41,7 @@ const PricingPage = lazy(() => import("./pages/PricingPage"));
 // ---- Auth pages -------------------------------------------
 const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
 const PasswordResetPage = lazy(() => import("./pages/auth/PasswordResetPage"));
+const VerifyEmailPage = lazy(() => import("./pages/auth/VerifyEmailPage"));
 
 // ---- Seeker pages -----------------------------------------
 // SeekerProfilePage already contains its own Navbar+Footer — rendered without DashboardLayout
@@ -147,6 +148,7 @@ const App = () => (
                   <Route path="/auth/login" element={<AuthPage />} />
                   <Route path="/auth/register" element={<AuthPage />} />
                   <Route path="/auth/reset-password" element={<PasswordResetPage />} />
+                  <Route path="/auth/verify" element={<VerifyEmailPage />} />
 
                   {/* ---- Seeker routes (protected) ----
                       NOTE: SeekerProfilePage already includes its own Navbar+Footer.

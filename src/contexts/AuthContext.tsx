@@ -33,6 +33,7 @@ interface AuthContextValue extends AuthState {
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (credentials: RegisterCredentials) => Promise<void>;
   loginWithTelegram: (data: TelegramAuthData) => Promise<void>;
+  loginWithGoogle: (credential: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
   switchRole: () => void;
@@ -90,6 +91,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     qc.invalidateQueries({ queryKey: queryKeys.auth.me() });
   }, [qc]);
 
+  const loginWithGoogle = useCallback(async (credential: string) => {
+    const tokens = await authApi.loginWithGoogle(credential);
+    setTokens(tokens);
+    const me = await authApi.me();
+    setUser(me);
+    qc.invalidateQueries({ queryKey: queryKeys.auth.me() });
+  }, [qc]);
+
   const logout = useCallback(async () => {
     try {
       await authApi.logout();
@@ -119,6 +128,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     register,
     loginWithTelegram,
+    loginWithGoogle,
     logout,
     refreshUser,
     switchRole,
