@@ -208,7 +208,7 @@ const SalaryCalculator = () => {
               <Link to="/" className="font-bold text-foreground hover:text-muted-foreground transition-colors">
                 MCPHire
               </Link>
-              <p>Клуб карьерной дисциплины</p>
+              <p>AI-powered IT job marketplace</p>
             </div>
             <Link to="/" className="cta-text text-sm">
               На главную

@@ -12,26 +12,26 @@ const EmployersPage = () => {
 
   const pricingPlans = [
     {
-      name: 'СТАРТЕР', desc: 'Для небольших команд', price: '15 000 ₽', period: '/30 дней',
+      name: 'СТАРТЕР', desc: 'Для небольших команд', price: '5 000 ₽', period: '/30 дней',
       featured: false,
       features: ['1 вакансия', '30 дней размещения', 'Базовая аналитика', 'MCP-интеграция'],
     },
     {
-      name: 'БИЗНЕС', desc: 'Для активного найма', price: '25 000 ₽', period: '/30 дней',
+      name: 'БИЗНЕС', desc: 'Для активного найма', price: '12 000 ₽', period: '/30 дней',
       featured: true,
-      features: ['5 вакансий', '30 дней размещения', 'Расширенная аналитика', 'MCP-интеграция', 'Приоритет в выдаче'],
+      features: ['5 вакансий', '30 дней размещения', 'Расширенная аналитика', 'MCP-интеграция', 'Приоритет в выдаче', 'Premium-бейдж'],
     },
     {
-      name: 'ПРО', desc: 'Для HR-команд', price: '50 000 ₽', period: '/месяц',
+      name: 'ПРО', desc: 'Для HR-команд', price: '25 000 ₽', period: '/месяц',
       featured: false,
-      features: ['Безлимит вакансий', '30 дней размещения', 'Полная аналитика', 'MCP-интеграция', 'Первое место в выдаче', 'Персональный менеджер'],
+      features: ['Безлимит вакансий', '30 дней размещения', 'Полная аналитика', 'MCP-интеграция', 'Первое место в выдаче', 'Premium-бейдж', 'Персональный менеджер'],
     },
   ];
 
   const faqItems = [
     {
       q: 'Сколько стоит размещение?',
-      a: 'От 15 000 до 50 000 рублей в зависимости от тарифа. СТАРТЕР — 15К за 1 вакансию, БИЗНЕС — 25К за 5 вакансий, ПРО — 50К за безлимит.'
+      a: 'От 5 000 до 25 000 рублей в зависимости от тарифа. СТАРТЕР — 5К за 1 вакансию, БИЗНЕС — 12К за 5 вакансий с приоритетом, ПРО — 25К за безлимит с персональным менеджером.'
     },
     {
       q: 'Как AI-агенты находят мою вакансию?',
@@ -174,62 +174,34 @@ const EmployersPage = () => {
         </div>
       </section>
 
-      {/* Contact Form */}
+      {/* Contact CTA */}
       <section id="contact" className="py-16">
-        <div className="max-w-[1280px] mx-auto px-8 max-w-xl">
-          <h2 className="heading-lg text-center mb-8">Оставить заявку</h2>
+        <div className="max-w-[1280px] mx-auto px-8 text-center">
+          <h2 className="heading-lg mb-4">Готовы разместить вакансию?</h2>
+          <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
+            Напишите нам — подключим аккаунт работодателя за 1 день. Ваши вакансии начнут получать отклики через AI-агентов.
+          </p>
 
-          <form className="space-y-4" onSubmit={(e) => {
-            e.preventDefault();
-            const form = e.target as HTMLFormElement;
-            const company = (form.elements[0] as HTMLInputElement).value;
-            const email = (form.elements[1] as HTMLInputElement).value;
-            const role = (form.elements[2] as HTMLInputElement).value;
-            window.open(`https://t.me/mcphire_bot?start=employer_${encodeURIComponent(company)}`, '_blank');
-            alert('Спасибо! Мы свяжемся с вами.');
-          }}>
-            <div>
-              <label className="block text-sm font-semibold mb-2 uppercase">Компания</label>
-              <input
-                type="text"
-                className="w-full px-4 py-3 rounded-xl border-2 border-border bg-card text-foreground focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all"
-                placeholder="Название компании"
-              />
-            </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+            <a
+              href="https://t.me/mcphire_support"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#0088cc] text-white text-lg font-semibold hover:bg-[#0088cc]/90 transition-colors"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+              Написать в Telegram
+            </a>
+            <a
+              href="mailto:hire@mcphire.com?subject=Заявка на размещение вакансий"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full border-2 border-border text-foreground text-lg font-semibold hover:border-primary hover:text-primary transition-colors"
+            >
+              hire@mcphire.com
+            </a>
+          </div>
 
-            <div>
-              <label className="block text-sm font-semibold mb-2 uppercase">Email</label>
-              <input
-                type="email"
-                className="w-full px-4 py-3 rounded-xl border-2 border-border bg-card text-foreground focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all"
-                placeholder="hr@company.ru"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold mb-2 uppercase">Какую роль ищете</label>
-              <input
-                type="text"
-                className="w-full px-4 py-3 rounded-xl border-2 border-border bg-card text-foreground focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all"
-                placeholder="Senior Frontend Developer"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold mb-2 uppercase">Описание вакансии</label>
-              <textarea
-                className="w-full px-4 py-3 rounded-xl border-2 border-border bg-card text-foreground focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all min-h-[120px]"
-                placeholder="Краткое описание вакансии, требования, условия..."
-              />
-            </div>
-
-            <button type="submit" className="w-full py-3 rounded-full bg-cta-hot text-white font-semibold hover:bg-cta-hot/90 transition-colors">
-              Отправить заявку
-            </button>
-          </form>
-
-          <p className="text-center text-muted-foreground mt-6">
-            Или напишите нам: <a href="mailto:hire@mcphire.com" className="text-primary hover:underline">hire@mcphire.com</a>
+          <p className="text-sm text-muted-foreground">
+            Уже 6 500+ компаний на платформе &#183; 14 000+ активных вакансий &#183; MCP-сервер для AI-агентов
           </p>
         </div>
       </section>
