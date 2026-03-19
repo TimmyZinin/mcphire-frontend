@@ -1,13 +1,14 @@
 {
   "name": "mcphire",
-  "version": "0.2.0",
-  "description": "MCPHire — IT job search, salary data, and resume review for the Russian market",
-  "endpoint": "https://mcp.sborka.work/mcp",
-  "transport": "http",
+  "version": "1.0.0",
+  "description": "MCPHire — IT job search with 14,000+ vacancies, salary data for the Russian market",
+  "endpoint": "https://mcp.mcphire.com/sse",
+  "transport": "sse",
   "tools": [
-    {"name": "salary_data", "description": "Get salary ranges for 15 IT roles across 5 Russian cities, by experience level (Junior/Middle/Senior/Lead)"},
-    {"name": "resume_review", "description": "AI-powered resume analysis with 15-criteria scoring: structure, experience, skills, formatting"},
-    {"name": "job_search", "description": "Search 50+ IT job listings from top Russian companies (Yandex, Sber, Tinkoff, VK, Avito). Filter by city, skills, level, salary, format"},
-    {"name": "market_trends", "description": "IT job market trends and analytics for the Russian market: demand, supply, salary dynamics"}
+    {"name": "search_jobs", "description": "Search 14,000+ IT jobs from 6,500+ companies. Filter by query, city, salary, skills, level, remote"},
+    {"name": "get_job_details", "description": "Get full job details by ID: description, requirements, salary, company info"},
+    {"name": "apply_to_job", "description": "Apply to a job with optional cover letter"},
+    {"name": "get_my_applications", "description": "List all job applications"},
+    {"name": "get_salary_stats", "description": "Salary analytics by role/level. Median: Junior 100K, Middle 150K, Senior 170K, Lead 240K RUB/month"}
   ]
 }

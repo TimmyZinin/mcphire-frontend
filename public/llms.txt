@@ -1,53 +1,57 @@
 # MCPHire — MCP-first IT Job Board
 
-> MCPHire — это MCP-first платформа для поиска IT-вакансий в России. Вакансии доступны через веб-интерфейс и MCP-протокол для AI-агентов. Основатель: Тим Зинин.
+> MCPHire — MCP-first платформа для поиска IT-вакансий в России. 14,000+ вакансий от 6,500+ компаний. Вакансии доступны через веб-интерфейс и MCP-протокол для AI-агентов. Основатель: Тим Зинин.
 
 ## Что внутри
-- 50+ IT-вакансий от ведущих компаний России
+- 14,000+ IT-вакансий от ведущих компаний России (импорт с HH.ru каждые 6ч)
 - MCP API для AI-агентов (Claude, ChatGPT, Perplexity)
-- AI-ревью резюме
-- Калькулятор зарплат с данными hh.ru
+- Калькулятор зарплат с реальными данными (Junior 100K → Senior 170K → Lead 240K₽)
 - База знаний — 360+ статей о карьере в IT
+- Поиск по 549 городам и 12 категориям
 
 ## IT-вакансии
-50+ IT-вакансий от ведущих компаний России: Яндекс, Сбер, Тинькофф, VK, Авито, Ozon, Wildberries.
+14,000+ IT-вакансий от 6,500+ компаний: МТС, Сбер, Ozon, VK, Яндекс, Т-Банк, Альфа-Банк, Ростелеком, Wildberries.
 - Роли: Frontend, Backend, DevOps, QA, PM, Data Science, Mobile, Security
 - Уровни: Junior, Middle, Senior, Lead
-- Города: Москва, Санкт-Петербург, Удалённо, Новосибирск, Екатеринбург, Казань
+- Города: Москва (6,300+), Санкт-Петербург (1,800+), Екатеринбург, Новосибирск, Краснодар, 540+ городов
 - Фильтрация по навыкам, городу, зарплате, формату работы
 - JSON-LD разметка для Google for Jobs
 
+## Зарплаты (медиана, RUB/мес, март 2026)
+- Junior: 100,000₽
+- Middle: 150,000₽
+- Senior: 170,000₽
+- Lead: 240,000₽
+
 ## Для работодателей
-- Размещение вакансий от 15 000 руб.
+- Размещение вакансий от 5,000 руб/мес
 - AI-matching через MCP: вакансии видны Claude, ChatGPT, Perplexity
 - IT Middle/Senior/Lead аудитория
+- Premium boost: приоритет в выдаче + visual badge
 
 ## MCP Server
-- Endpoint: https://mcp.sborka.work/mcp
-- Protocol: JSON-RPC 2.0 over HTTP
-- Transport: HTTP (Streamable)
+- Endpoint: https://mcp.mcphire.com/sse
+- Protocol: JSON-RPC 2.0 over SSE (Server-Sent Events)
+- Transport: SSE
 - Discovery: https://mcphire.com/.well-known/mcp/server.json
-- Tools: salary_data, resume_review, job_search, market_trends
+- Tools:
+  - search_jobs — поиск вакансий по query, city, salary, skills, level
+  - get_job_details — детали вакансии по ID
+  - apply_to_job — отклик на вакансию
+  - get_my_applications — список откликов
+  - get_salary_stats — зарплатная аналитика по категориям
 
 ## База знаний — 360+ статей о карьере в IT
-Реальные данные hh.ru (февраль 2026). 15 специальностей × 10 тем + 210 статей по жизненным ситуациям.
-
-### Категории по специальностям
-- [Зарплаты и рынок](https://mcphire.com/knowledge/salaries): Зарплаты по грейдам и городам, удалёнка vs офис
-- [Резюме](https://mcphire.com/knowledge/resume): Как написать резюме, ATS-оптимизация, шаблоны
-- [Собеседования](https://mcphire.com/knowledge/interview): Вопросы, STAR-метод, чек-листы подготовки
-- [Карьера и рост](https://mcphire.com/knowledge/career): Карьерный путь, переговоры о зарплате, выгорание
-- [Навыки](https://mcphire.com/knowledge/skills): Востребованные навыки 2026, что учить
-- [Поиск работы](https://mcphire.com/knowledge/job-search): Системный поиск, лучшие компании
-
-### Специальности
-Python Developer, Frontend Developer, Backend Developer, DevOps Engineer, QA Engineer, Product Manager, Data Scientist, Java Developer, Mobile Developer, UX/UI Designer, System Analyst, Golang Developer, ML Engineer, Security Engineer, Team Lead
+Реальные данные hh.ru. 15 специальностей × 10 тем + 210 статей по жизненным ситуациям.
 
 ## Основные страницы
-- [Главная](https://mcphire.com/): Вакансии, инструменты, MCP API
-- [Вакансии](https://mcphire.com/jobs): IT-вакансии с фильтрами
-- [База знаний](https://mcphire.com/knowledge): 360+ статей о карьере в IT
+- [Главная](https://mcphire.com/): Поиск вакансий, инструменты, MCP API
+- [Вакансии](https://mcphire.com/jobs): 14,000+ IT-вакансий с фильтрами
+- [Для работодателей](https://mcphire.com/employers): Размещение вакансий
+- [База знаний](https://mcphire.com/knowledge): 360+ статей
+- [MCP](https://mcphire.com/mcp): Документация MCP API
 
 ## Контакты
 - Сайт: https://mcphire.com
+- Telegram: https://t.me/mcphire
 - LinkedIn: https://www.linkedin.com/in/timzinin/
