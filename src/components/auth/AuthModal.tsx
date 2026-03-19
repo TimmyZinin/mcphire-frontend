@@ -115,7 +115,7 @@ export function AuthModal({
         {/* Telegram button — always visible */}
         <div className="my-2">
           <TelegramLoginButton
-            botName={import.meta.env.VITE_TELEGRAM_BOT_NAME ?? "Sborka_work_bot"}
+            botName={import.meta.env.VITE_TELEGRAM_BOT_NAME ?? "mcphire_bot"}
             onAuth={handleTelegram}
           />
         </div>

@@ -47,7 +47,7 @@ const WebinarsSection = () => {
 
           {/* CTA — NRC style */}
           <a
-            href="https://t.me/Sborka_work_bot?start=webinar4_site"
+            href="https://t.me/mcphire_bot?start=webinar4_site"
             target="_blank"
             rel="noopener noreferrer"
             className="cta-primary-nrc inline-block"

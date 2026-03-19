@@ -149,7 +149,7 @@ export default function AuthPage() {
             {/* Social login buttons */}
             <div className="space-y-3">
               <TelegramLoginButton
-                botName={import.meta.env.VITE_TELEGRAM_BOT_NAME ?? "Sborka_work_bot"}
+                botName={import.meta.env.VITE_TELEGRAM_BOT_NAME ?? "mcphire_bot"}
                 onAuth={handleTelegram}
                 buttonSize="large"
               />

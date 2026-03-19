@@ -53,7 +53,7 @@ const FinalCTASection = () => {
             </a>
             {/* Hidden until referral program is enabled
             <a
-              href="https://t.me/Sborka_work_bot?start=ref_trial"
+              href="https://t.me/mcphire_bot?start=ref_trial"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-8 py-4 md:px-12 md:py-5 border-2 border-background text-background font-black text-lg md:text-xl uppercase tracking-tight hover:bg-background hover:text-foreground transition-colors rounded-lg"

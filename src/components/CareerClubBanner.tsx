@@ -4,7 +4,7 @@ interface CareerClubBannerProps {
 }
 
 const CareerClubBanner = ({ variant = "inline", utmSource = "banner" }: CareerClubBannerProps) => {
-  const href = `https://sborka.work?utm_source=mcphire&utm_medium=banner&utm_campaign=${utmSource}`;
+  const href = `https://mcphire.com?utm_source=mcphire&utm_medium=banner&utm_campaign=${utmSource}`;
 
   if (variant === "inline") {
     return (
@@ -16,7 +16,7 @@ const CareerClubBanner = ({ variant = "inline", utmSource = "banner" }: CareerCl
               Ищете работу? Подготовьтесь к собеседованиям
             </p>
             <p className="text-sm text-muted-foreground">
-              СБОРКА — карьерный клуб с менторами, мок-собесами и разбором резюме. Средний участник получает оффер за 6-8 недель.
+              MCPHire — карьерный клуб с менторами, мок-собесами и разбором резюме. Средний участник получает оффер за 6-8 недель.
             </p>
           </div>
         </div>
@@ -40,7 +40,7 @@ const CareerClubBanner = ({ variant = "inline", utmSource = "banner" }: CareerCl
             Получите оффер за 6-8 недель
           </h3>
           <p className="text-white/80 mb-6 max-w-lg mx-auto">
-            СБОРКА — клуб карьерной дисциплины. Менторы с опытом 8+ лет, мок-собеседования, разбор резюме. Подписка от 4 900 ₽/мес.
+            MCPHire — клуб карьерной дисциплины. Менторы с опытом 8+ лет, мок-собеседования, разбор резюме. Подписка от 4 900 ₽/мес.
           </p>
           <a
             href={href}
@@ -48,7 +48,7 @@ const CareerClubBanner = ({ variant = "inline", utmSource = "banner" }: CareerCl
             rel="noopener noreferrer"
             className="inline-flex items-center px-8 py-3 bg-white text-[hsl(174,62%,30%)] font-bold rounded-full hover:bg-white/90 transition-colors"
           >
-            Перейти на sborka.work →
+            Перейти на mcphire.com →
           </a>
         </div>
       </div>

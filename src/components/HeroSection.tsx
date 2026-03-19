@@ -266,7 +266,7 @@ const HeroSection = () => {
           {/* CTA Button */}
           <div className="flex items-center justify-center pt-6">
             <a
-              href="https://t.me/Sborka_work_bot?start=webinar4_site"
+              href="https://t.me/mcphire_bot?start=webinar4_site"
               target="_blank"
               rel="noopener noreferrer"
               className="cta-primary-nrc"

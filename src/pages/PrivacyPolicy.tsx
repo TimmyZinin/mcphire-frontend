@@ -51,7 +51,7 @@ const PrivacyPolicy = () => {
             <ul className="list-disc pl-6 space-y-2">
               <li>Имя пользователя (при регистрации в боте)</li>
               <li>Адрес электронной почты (при оформлении подписки)</li>
-              <li>Telegram username (при взаимодействии с ботом @Sborka_work_bot)</li>
+              <li>Telegram username (при взаимодействии с ботом @mcphire_bot)</li>
               <li>Данные об использовании сайта (аналитика Umami, без cookies)</li>
             </ul>
             <p>
@@ -117,7 +117,7 @@ const PrivacyPolicy = () => {
               По всем вопросам, связанным с обработкой персональных данных, обращайтесь:
             </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Telegram: @Sborka_work_bot</li>
+              <li>Telegram: @mcphire_bot</li>
               <li>Канал: <a href="https://t.me/public_sborka" className="text-primary hover:underline">@public_sborka</a></li>
             </ul>
 

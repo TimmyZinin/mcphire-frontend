@@ -35,7 +35,7 @@ const Footer = () => {
               <li><Link to="/tools/salary" className="text-muted-foreground hover:text-primary transition-colors">Калькулятор зарплат</Link></li>
               <li><Link to="/tools/resume-checklist" className="text-muted-foreground hover:text-primary transition-colors">Чеклист резюме</Link></li>
               <li><Link to="/tools/resume-review" className="text-muted-foreground hover:text-primary transition-colors">AI-ревью резюме</Link></li>
-              <li><a href="https://sborka.work/knowledge" className="text-muted-foreground hover:text-primary transition-colors">База знаний</a></li>
+              <li><a href="https://mcphire.com/knowledge" className="text-muted-foreground hover:text-primary transition-colors">База знаний</a></li>
             </ul>
           </div>
 
@@ -45,7 +45,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li><Link to="/employers" className="text-muted-foreground hover:text-primary transition-colors">Разместить вакансию</Link></li>
               <li><Link to="/mcp" className="text-muted-foreground hover:text-primary transition-colors">MCP API</Link></li>
-              <li><a href="https://sborka.work/partners" className="text-muted-foreground hover:text-primary transition-colors">Партнёрская программа</a></li>
+              <li><a href="https://mcphire.com/partners" className="text-muted-foreground hover:text-primary transition-colors">Партнёрская программа</a></li>
             </ul>
           </div>
 
@@ -54,12 +54,12 @@ const Footer = () => {
             <h4 className="font-semibold text-sm text-foreground mb-3 uppercase tracking-wide">Карьерный клуб</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="https://sborka.work" className="text-primary font-medium hover:underline">
-                  СБОРКА — клуб дисциплины
+                <a href="https://mcphire.com" className="text-primary font-medium hover:underline">
+                  MCPHire — клуб дисциплины
                 </a>
               </li>
               <li>
-                <a href="https://t.me/Sborka_work_bot" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="https://t.me/mcphire_bot" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                   Telegram-бот
                 </a>
               </li>
