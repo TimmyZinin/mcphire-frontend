@@ -32,7 +32,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
 
       {/* Footer note */}
       <p className="mt-6 text-xs text-muted-foreground text-center">
-        © 2026 MCPHire. Карьерный клуб для IT-специалистов.
+        © 2026 MCPHire. AI-платформа для поиска IT-работы.
       </p>
     </div>
   );

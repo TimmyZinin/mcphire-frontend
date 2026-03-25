@@ -3,7 +3,7 @@ interface ArticleCTAProps {
   variant?: "inline" | "block";
 }
 
-const WEBINAR_LINK = "https://t.me/mcphire_bot?start=webinar4_site";
+const WEBINAR_LINK = "https://t.me/Sborka_work_bot?start=webinar4_site";
 const WEBINAR_DATE = "5 марта";
 
 const ArticleCTA = ({ slug, variant = "block" }: ArticleCTAProps) => {

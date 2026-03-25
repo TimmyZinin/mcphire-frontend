@@ -1,6 +1,6 @@
 const WebinarsSection = () => {
   const topics = [
-    "Что такое MCPHire и как устроен карьерный клуб",
+    "Что такое СБОРКА и как устроен карьерный клуб",
     "Формат работы: спринты, команды, менторы",
     "Результаты участников — реальные кейсы",
     "Ответы на ваши вопросы в прямом эфире",
@@ -47,7 +47,7 @@ const WebinarsSection = () => {
 
           {/* CTA — NRC style */}
           <a
-            href="https://t.me/mcphire_bot?start=webinar4_site"
+            href="https://t.me/Sborka_work_bot?start=webinar4_site"
             target="_blank"
             rel="noopener noreferrer"
             className="cta-primary-nrc inline-block"

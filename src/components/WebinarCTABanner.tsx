@@ -10,7 +10,7 @@ const WebinarCTABanner = () => {
           Ближайший вебинар — {next.formattedFull}
         </p>
         <a
-          href="https://t.me/mcphire_bot?start=webinar_site"
+          href="https://t.me/Sborka_work_bot?start=webinar_site"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground font-bold text-sm uppercase tracking-tight hover:bg-foreground hover:text-background transition-colors rounded-lg whitespace-nowrap"

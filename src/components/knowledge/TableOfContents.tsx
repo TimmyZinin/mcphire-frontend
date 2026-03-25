@@ -50,7 +50,7 @@ const TableOfContents = ({ sections }: TOCProps) => {
             Карьерный клуб для IT-специалистов. Менторы, мок-собеседования, системный поиск работы.
           </p>
           <a
-            href="https://t.me/mcphire_bot?start=knowledge_sidebar"
+            href="https://t.me/Sborka_work_bot?start=knowledge_sidebar"
             target="_blank"
             rel="noopener noreferrer"
             className="block text-center px-3 py-2 bg-white text-[hsl(174,62%,30%)] text-xs font-bold rounded-md hover:bg-white/90 transition-colors"

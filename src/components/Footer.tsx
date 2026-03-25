@@ -15,14 +15,14 @@ const Footer = () => {
             </p>
             {/* Social links */}
             <div className="flex gap-3 mt-4">
-              <a href="https://t.me/public_sborka" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">
+              <a href="https://t.me/mcphire" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">
                 Telegram
               </a>
               <a href="https://www.linkedin.com/in/timzinin/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">
                 LinkedIn
               </a>
-              <a href="https://vk.com/sborka_work" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">
-                VK
+              <a href="https://x.com/timzinin" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">
+                X
               </a>
             </div>
           </div>
@@ -49,18 +49,18 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Карьерный клуб */}
+          {/* Партнёр */}
           <div>
-            <h4 className="font-semibold text-sm text-foreground mb-3 uppercase tracking-wide">Карьерный клуб</h4>
+            <h4 className="font-semibold text-sm text-foreground mb-3 uppercase tracking-wide">Партнёр</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="https://mcphire.com" className="text-primary font-medium hover:underline">
-                  MCPHire — клуб дисциплины
+                <a href="https://sborka.work?utm_source=mcphire&utm_medium=footer&utm_campaign=partner" target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">
+                  СБОРКА — карьерный клуб
                 </a>
               </li>
               <li>
-                <a href="https://t.me/mcphire_bot" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                  Telegram-бот
+                <a href="https://t.me/Sborka_work_bot" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                  Telegram-бот СБОРКА
                 </a>
               </li>
               <li><Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors">Конфиденциальность</Link></li>

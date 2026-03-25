@@ -81,7 +81,7 @@ const HeroSection = () => {
         <div className="space-y-10">
           {/* Pre-title */}
           <p className="text-lg md:text-xl text-muted-foreground uppercase tracking-wider">
-            Клуб карьерной дисциплины
+            AI-платформа для поиска IT-работы
           </p>
 
           {/* Logo/Title */}
@@ -260,13 +260,13 @@ const HeroSection = () => {
 
           {/* Definition block — optimized for AI citation */}
           <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto">
-            MCPHire — подписочный карьерный клуб для специалистов Middle, Senior и Lead. Внутри: менторы с опытом 8+ лет в рекрутинге, мок-собеседования, разбор резюме, командные соревнования по поиску работы. Подписка от 4 900 руб./мес. Средний участник получает оффер за 6-8 недель.
+            СБОРКА — подписочный карьерный клуб для специалистов Middle, Senior и Lead. Внутри: менторы с опытом 8+ лет в рекрутинге, мок-собеседования, разбор резюме, командные соревнования по поиску работы. Подписка от 4 900 руб./мес. Средний участник получает оффер за 6-8 недель.
           </p>
 
           {/* CTA Button */}
           <div className="flex items-center justify-center pt-6">
             <a
-              href="https://t.me/mcphire_bot?start=webinar4_site"
+              href="https://t.me/Sborka_work_bot?start=webinar4_site"
               target="_blank"
               rel="noopener noreferrer"
               className="cta-primary-nrc"

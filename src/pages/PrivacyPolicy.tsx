@@ -6,7 +6,7 @@ const PrivacyPolicy = () => {
     <main className="min-h-screen bg-background">
       <Helmet>
         <title>Политика конфиденциальности | MCPHire</title>
-        <meta name="description" content="Политика конфиденциальности карьерного клуба MCPHire. Обработка персональных данных в соответствии с ФЗ-152." />
+        <meta name="description" content="Политика конфиденциальности платформы MCPHire. Обработка персональных данных в соответствии с ФЗ-152." />
         <link rel="canonical" href="https://mcphire.com/privacy" />
       </Helmet>
 
@@ -63,7 +63,7 @@ const PrivacyPolicy = () => {
               3.1. Мы используем персональные данные для следующих целей:
             </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Оказание услуг по подписке на карьерный клуб MCPHire</li>
+              <li>Оказание услуг платформы MCPHire и партнёрских сервисов СБОРКА</li>
               <li>Обратная связь с пользователями</li>
               <li>Информирование о новых материалах и мероприятиях</li>
               <li>Аналитика посещаемости Сайта (через Umami)</li>

@@ -255,14 +255,14 @@ const HomePage = () => {
             Партнёрский проект
           </p>
           <h2 className="heading-xl mb-6">
-            MCPHire —<br className="hidden md:block" /> клуб карьерной дисциплины
+            Подготовка к<br className="hidden md:block" /> собеседованиям — СБОРКА
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-8 leading-relaxed">
             Система с метриками и дедлайнами для IT-специалистов, которые ищут
             работу или хотят вырасти. Менторы, мок-собеседования, разбор резюме.
           </p>
-          <a href="https://mcphire.com" className="cta-text text-base">
-            Узнать о клубе на mcphire.com →
+          <a href="https://sborka.work?utm_source=mcphire&utm_medium=homepage&utm_campaign=cross_promo" className="cta-text text-base">
+            Узнать о СБОРКЕ на sborka.work →
           </a>
         </div>
       </section>

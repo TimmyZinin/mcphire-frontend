@@ -22,11 +22,11 @@ const Index = () => {
   return (
     <main className="min-h-screen">
       <Helmet>
-        <title>MCPHire — карьерный клуб | Оффер за 6-8 недель</title>
-        <meta name="description" content="Карьерный клуб MCPHire для Middle, Senior и Lead: менторы, мок-собеседования, разбор резюме. Средний участник получает оффер за 6-8 недель. Подписка от 4 900 руб/мес." />
+        <title>MCPHire — AI-платформа для поиска IT-работы | Оффер за 6-8 недель</title>
+        <meta name="description" content="MCPHire — AI-платформа для поиска IT-работы. 34 000+ IT-вакансий, MCP-протокол для AI-агентов, калькулятор зарплат. Партнёр: СБОРКА (sborka.work) — подготовка к собеседованиям." />
         <link rel="canonical" href="https://mcphire.com/" />
-        <meta property="og:title" content="MCPHire — карьерный клуб | Оффер за 6-8 недель" />
-        <meta property="og:description" content="Карьерный клуб для Middle/Senior/Lead: менторы, мок-собеседования, разбор резюме. Подписка от 4 900 руб/мес." />
+        <meta property="og:title" content="MCPHire — AI-платформа для поиска IT-работы" />
+        <meta property="og:description" content="AI-платформа для поиска IT-работы. Партнёр СБОРКА — клуб для Middle/Senior/Lead: менторы, мок-собеседования, разбор резюме. Подписка от 4 900 руб/мес." />
         <meta property="og:url" content="https://mcphire.com/" />
       </Helmet>
       <StickyHeader />
