@@ -1,16 +1,38 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import DOMPurify from "dompurify";
 import { useJob, useSimilarJobs } from "@/hooks/useJobs";
 import { useAuth } from "@/contexts/AuthContext";
+import { formatSalary, formatDate, formatRelativeTime } from "@/lib/formatters";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
 import CareerClubBanner from "@/components/CareerClubBanner";
 import TopBanner from "@/components/TopBanner";
 import { SkeletonCard } from "@/components/JobCard";
-import { formatSalary, formatDate, formatRelativeTime } from "@/lib/formatters";
 import { ApplyDialog } from "@/components/jobs/ApplyDialog";
 import { JobPostingJsonLd } from "@/components/seo/JsonLd";
+
+/** Sanitize job description HTML: fix HH tags, strip dangerous content. */
+function sanitizeDescription(html: string): string {
+  const cleaned = html
+    .replace(/<highlighttext>/gi, "<strong>")
+    .replace(/<\/highlighttext>/gi, "</strong>");
+  DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+    if (node.tagName === "A") {
+      node.setAttribute("rel", "noopener noreferrer");
+      node.setAttribute("target", "_blank");
+    }
+  });
+  try {
+    return DOMPurify.sanitize(cleaned, {
+      ALLOWED_TAGS: ["p", "ul", "ol", "li", "strong", "em", "br", "h2", "h3", "a", "b", "i"],
+      ALLOWED_ATTR: ["href", "target", "rel"],
+    });
+  } finally {
+    DOMPurify.removeHook("afterSanitizeAttributes");
+  }
+}
 
 const JobDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -200,7 +222,13 @@ const JobDetailPage = () => {
           {/* Main Content */}
           <div>
             <h2 className="text-xl font-bold mb-3">Описание вакансии</h2>
-            <p className="text-muted-foreground leading-relaxed mb-6">{job.description}</p>
+            <div
+              className="text-muted-foreground leading-relaxed mb-6 prose prose-sm max-w-none
+                         prose-p:my-2 prose-ul:my-2 prose-li:my-0.5 prose-headings:text-foreground"
+              dangerouslySetInnerHTML={{
+                __html: sanitizeDescription(job.description)
+              }}
+            />
 
             {job.requirements && job.requirements.length > 0 && (
               <>
