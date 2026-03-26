@@ -362,4 +362,34 @@
     font-family: var(--font-mono);
     @apply font-semibold tabular-nums;
   }
+
+  /* MCPHire Logo — terminal-style with hover effect */
+  .mcphire-logo {
+    @apply font-bold tracking-tight no-underline transition-all duration-200;
+    font-family: var(--font-heading);
+    color: hsl(var(--foreground));
+  }
+  .mcphire-logo:hover {
+    color: hsl(var(--primary));
+  }
+  .mcphire-logo:hover .mcphire-logo-dot {
+    color: hsl(var(--primary));
+    transform: scale(1.3);
+  }
+  .mcphire-logo-text {
+    @apply transition-colors duration-200;
+  }
+  .mcphire-logo-dot {
+    @apply inline-block transition-all duration-200;
+    color: hsl(var(--primary));
+  }
+  .mcphire-logo-cursor {
+    @apply inline-block w-[2px] h-[1.1em] ml-0.5 align-text-bottom;
+    background: hsl(var(--primary));
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
 }

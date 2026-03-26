@@ -107,14 +107,6 @@ const JobDetailPage = () => {
     { label: "Локация", value: job.format === "Удалённо" ? 100 : 85 },
   ];
 
-  // Hiring steps
-  const hiringSteps = [
-    { title: "Тех. скрининг", desc: "30 мин, онлайн" },
-    { title: "Лайвкодинг", desc: "1.5 часа" },
-    { title: "System Design", desc: "1 час" },
-    { title: "Оффер", desc: "1-3 дня" },
-  ];
-
   // Get skills as strings (handle both JobListItem and full Job types)
   const skills = typeof job.skills[0] === "string"
     ? job.skills as string[]
@@ -210,40 +202,46 @@ const JobDetailPage = () => {
             <h2 className="text-xl font-bold mb-3">Описание вакансии</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">{job.description}</p>
 
-            <h2 className="text-xl font-bold mb-3">Требования</h2>
-            <ul className="space-y-1.5 mb-6">
-              {job.requirements?.map((req, i) => (
-                <li key={i} className="text-muted-foreground text-[0.92rem] leading-relaxed flex items-start gap-2">
-                  <span className="text-primary mt-1.5">•</span> {req}
-                </li>
-              ))}
-            </ul>
+            {job.requirements && job.requirements.length > 0 && (
+              <>
+                <h2 className="text-xl font-bold mb-3">Требования</h2>
+                <ul className="space-y-1.5 mb-6">
+                  {job.requirements.map((req, i) => (
+                    <li key={i} className="text-muted-foreground text-[0.92rem] leading-relaxed flex items-start gap-2">
+                      <span className="text-primary mt-1.5">•</span> {req}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
 
-            <h2 className="text-xl font-bold mb-3">Мы предлагаем</h2>
-            <ul className="space-y-1.5 mb-6">
-              {job.benefits?.map((b, i) => (
-                <li key={i} className="text-muted-foreground text-[0.92rem] leading-relaxed flex items-start gap-2">
-                  <span className="text-primary mt-1.5">•</span> {b}
-                </li>
-              ))}
-            </ul>
+            {job.benefits && job.benefits.length > 0 && (
+              <>
+                <h2 className="text-xl font-bold mb-3">Мы предлагаем</h2>
+                <ul className="space-y-1.5 mb-6">
+                  {job.benefits.map((b, i) => (
+                    <li key={i} className="text-muted-foreground text-[0.92rem] leading-relaxed flex items-start gap-2">
+                      <span className="text-primary mt-1.5">•</span> {b}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
 
-            {/* Hiring Process */}
-            <h2 className="text-xl font-bold mb-4">Процесс найма</h2>
-            <div className="flex gap-0 mb-8">
-              {hiringSteps.map((step, i) => (
-                <div key={i} className="flex-1 text-center relative">
-                  {i < hiringSteps.length - 1 && (
-                    <div className="absolute top-[18px] right-[-12px] w-6 h-0.5 bg-border" />
-                  )}
-                  <div className="w-9 h-9 rounded-full bg-primary/10 text-primary font-bold text-sm flex items-center justify-center mx-auto mb-2">
-                    {i + 1}
-                  </div>
-                  <div className="text-xs font-semibold">{step.title}</div>
-                  <div className="text-[0.72rem] text-muted-foreground mt-0.5">{step.desc}</div>
+            {/* Skills as tags if available */}
+            {skills.length > 0 && (
+              <>
+                <h2 className="text-xl font-bold mb-3">Навыки</h2>
+                <div className="flex flex-wrap gap-2 mb-8">
+                  {skills.map((skill, i) => (
+                    <span key={i} className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full">{skill}</span>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </>
+            )}
+
+            {/* Hiring Process removed — was hardcoded placeholder, not real data */}
+            <div className="h-4" />
 
             {/* Source */}
             <p className="text-sm text-muted-foreground">

@@ -233,9 +233,9 @@ const JobsPage = () => {
         <h1 className="heading-lg">Вакансии</h1>
         <p className="text-muted-foreground mt-1">{totalJobs} вакансий в IT</p>
         <div className="flex flex-wrap gap-4 mt-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span>{stats?.total || 0} вакансий</span>
-          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span>{stats?.cities || 0} городов</span>
-          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span>{stats?.categories || 0} специализаций</span>
+          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span>{stats?.totalJobs?.toLocaleString() || 0} вакансий</span>
+          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span>{stats?.citiesCount || 0} городов</span>
+          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span>{stats?.categoriesCount || 0} специализаций</span>
         </div>
       </div>
 
