@@ -1,0 +1,366 @@
+MCPHire Revenue Sprints R1-R5 — Complete Documentation
+========================================================
+
+CREATED: March 19, 2026
+STATUS: Ready for execution
+TARGET: 150K₽ MRR by March 31, 2026
+
+FILES CREATED
+=============
+
+ROOT FOLDER (mcphire-frontend/)
+-------------------------------
+START_HERE.md                          - Quick entry point (5 min read)
+REVENUE_SPRINTS_SUMMARY.md             - Executive summary (3 min read)
+DOCUMENTATION_MANIFEST.md              - Complete file index + reading order
+REVENUE_DOCS_COMPLETE.txt              - This file
+
+WIKI FOLDER (.wiki/)
+--------------------
+Revenue-Sprints-Index.md               - Complete index, timeline, checklist
+Revenue-Quick-Start.md                 - TL;DR one-pager per sprint
+Revenue-Sprint-Backlog.md              - Full 5-sprint backlog (detailed)
+Lead-Selection-Guide.md                - R1: Step-by-step lead selection
+Pitch-Deck-Outline.md                  - R2: 5-slide pitch deck text + design
+Outreach-Email-Templates.md            - R3: Email templates A/B/C by pain
+Technical-Tasks-for-R1-R5.md           - Engineer & designer task breakdown
+Revenue-Metrics-Dashboard.md           - Daily tracking + KPIs + templates
+_Sidebar.md                            - Updated with Revenue Sprints links
+
+TOTAL: 12 new files created
+
+QUICK READING ORDER
+===================
+
+5 MINUTES:
+1. START_HERE.md
+
+3 MINUTES:
+2. REVENUE_SPRINTS_SUMMARY.md
+
+10 MINUTES:
+3. .wiki/Revenue-Sprints-Index.md
+
+THEN BY ROLE:
+- PM: Lead-Selection-Guide → Outreach-Email-Templates → Revenue-Metrics-Dashboard
+- Engineer: Technical-Tasks-for-R1-R5 → Revenue-Metrics-Dashboard
+- Designer: Pitch-Deck-Outline → Technical-Tasks
+- Everyone: Revenue-Metrics-Dashboard (DAILY)
+
+COMPLETE: ~60 minutes to read everything
+
+KEY METRICS
+===========
+
+Sprint Breakdown:
+- R1 (2 days): 50 qualified leads
+- R2 (2 days): Pricing page + dashboard live
+- R3 (2 days): 50 emails sent, 2-3 demos booked
+- R4 (3 days): 1-2 paid customers, TG channel, calculator
+- R5 (2 days): 15 customers, 150K₽ MRR
+
+Resources Required:
+- Engineer: 18-20 hours
+- Designer: 4-6 hours
+- PM (Тим): 30-40 hours
+- TOTAL: 52-66 hours over 11 days (5-6 hrs/day)
+
+Success Criteria (Mar 31):
+✅ 50 qualified leads
+✅ 50 emails sent (25%+ open rate, 5%+ reply)
+✅ 2-3 demo calls
+✅ 15 paying customers
+✅ 150K₽ MRR
+
+DOCUMENT SUMMARY
+================
+
+Strategic Documents (what to do):
+- START_HERE.md (5 min) — Entry point
+- REVENUE_SPRINTS_SUMMARY.md (3 min) — Overview
+- Revenue-Sprints-Index.md (10 min) — Full plan
+- Revenue-Quick-Start.md (5 min) — Sprint TL;DR
+- Revenue-Sprint-Backlog.md (30 min) — Detailed backlog
+
+Execution Documents (how to do it):
+- Lead-Selection-Guide.md (20 min) — R1 step-by-step
+- Pitch-Deck-Outline.md (15 min) — R2 slide content
+- Outreach-Email-Templates.md (15 min) — R3 templates
+- Technical-Tasks-for-R1-R5.md (30 min) — Engineer/designer tasks
+
+Tracking Documents (metrics):
+- Revenue-Metrics-Dashboard.md (15 min) — Daily KPIs, templates
+- DOCUMENTATION_MANIFEST.md (10 min) — File index
+
+WHAT'S INCLUDED
+===============
+
+Each sprint document includes:
+✅ Clear objective (1 sentence)
+✅ Specific tasks with effort estimates (S/M/L)
+✅ Revenue impact (how this gets to money)
+✅ Checkpoint (what must be true after)
+✅ Risk mitigation (what could go wrong)
+✅ Success metrics (how to measure)
+
+Technical documents include:
+✅ SQL queries (copy-paste ready)
+✅ React component code (production-ready)
+✅ Database migrations (Alembic syntax)
+✅ API endpoints (FastAPI examples)
+✅ Design guidelines (colors, fonts, layout)
+
+Email templates include:
+✅ Subject line variations
+✅ Personalization tokens {NAME}, {COMPANY}
+✅ Pain-level versions (HIGH/MED/LOW)
+✅ Objection handling
+✅ Follow-up sequences
+
+EXECUTION TIMELINE
+==================
+
+MAR 19-20 (R1): Lead Research
+├─ Run SQL query for 100 candidates
+├─ Filter to 50 by pain score
+├─ LinkedIn enrichment (8-10 hours)
+├─ Export CSV with contacts
+└─ Checkpoint: 50 leads with emails ready
+
+MAR 21-22 (R2): Deck & Pricing
+├─ Write pitch deck (5 slides)
+├─ Create pricing page (3 tiers)
+├─ Build employer dashboard
+├─ Add to database
+└─ Checkpoint: Pricing live, dashboard works
+
+MAR 23-24 (R3): Personal Outreach
+├─ Send 25 emails day 1
+├─ Send 25 emails day 2
+├─ Track opens/replies
+├─ Schedule demo calls
+└─ Checkpoint: 2-3 demos booked
+
+MAR 25-27 (R4): Pilots & Brand
+├─ Process 1-2 payments (invoices)
+├─ Launch TG channel
+├─ Post daily insights
+├─ Build calculator
+└─ Checkpoint: 1-2 paid, 500 TG followers
+
+MAR 28-29 (R5): Scale
+├─ Email automation setup
+├─ Collect testimonials
+├─ Final demos & closes
+├─ Track revenue
+└─ Checkpoint: 15 customers, 150K₽ MRR
+
+TEAM ROLES
+==========
+
+PM (Тим) — 30-40 hours
+├─ R1: Lead research + enrichment (12h)
+├─ R3: Personal outreach + demos (15h)
+├─ R4-R5: Sales, TG, operations (10h)
+└─ Coordinate with engineer/designer (3h)
+
+Engineer — 18-20 hours
+├─ R1: SQL query (1h)
+├─ R2: Pricing page + dashboard (6h)
+├─ R2: Database migration (1h)
+├─ R2: Payment endpoint (2h)
+├─ R4: Calculator page (4h)
+├─ R5: Lead scoring automation (2h)
+└─ Testing & debugging (2h)
+
+Designer — 4-6 hours
+├─ R2: Pitch deck (3h)
+├─ R4: Calculator UI (1h)
+├─ R2: Page design review (1h)
+└─ Brand consistency check (1h)
+
+Everyone — Daily
+├─ Update metrics (10 min/day)
+├─ Daily standup (5 min)
+└─ Friday sync (15 min)
+
+KEY DECISIONS (Expert Panel)
+============================
+
+✅ DO:
+- B2B outreach (manual, personalized)
+- Lead list from existing 6,524 (not cold database)
+- Bank transfer payments (not Stripe yet)
+- TG-канал as secondary traffic
+- 3-tier fixed pricing
+- First month free trial
+
+❌ DON'T:
+- Automated marketing campaigns
+- Cold database scraping
+- Complex payment automation
+- Employer self-service portal v2
+- AI matching algorithm
+- Email sequence bots
+
+PARALLEL TRACKS
+===============
+
+Revenue sprints R1-R5 run ALONGSIDE data/infra sprints S14-S19:
+
+R1-R5 (Revenue)         S14-S19 (Data/Infra)
+───────────────         ───────────────
+Mar 19-29               Mar 17-Apr 10
+50 leads                10K+ jobs
+15 customers            SEO optimized
+150K₽ MRR               MCP production
+                        = Credibility for pitch
+
+By end March: Product-market fit validated (both tracks complete)
+
+HOW TO USE THESE DOCS
+=====================
+
+Before Starting (Day 0):
+1. Read START_HERE.md (5 min)
+2. Read REVENUE_SPRINTS_SUMMARY.md (3 min)
+3. Assign tasks to team
+4. Create Notion CRM + Google Sheet
+5. Total prep: 20 minutes
+
+During Execution (Days 1-11):
+1. Follow sprint backlog (daily tasks)
+2. Read detailed guide for your sprint
+3. Update metrics daily (10 min)
+4. Sync on Friday (15 min)
+5. Adjust based on feedback
+
+Tracking:
+1. Google Sheet for metrics
+2. Notion for leads/customers
+3. Weekly report (Friday)
+4. Monthly review (Mar 31)
+
+SUPPORTING DOCUMENTS
+====================
+
+README.md (updated)
+├─ Added Revenue Sprint section
+├─ Links to Quick-Start & Index
+└─ Status shows R1-R5 ready
+
+.wiki/_Sidebar.md (updated)
+├─ New "Revenue Sprints (R1-R5)" section
+├─ Links to all 8 revenue documents
+└─ Proper nav structure
+
+DOCUMENTATION_MANIFEST.md
+├─ Complete file index
+├─ Reading recommendations by role
+├─ Support & FAQ links
+└─ Version history
+
+TESTING & VALIDATION
+====================
+
+All documents include:
+✅ Specific examples (not abstract)
+✅ Copy-paste ready code (SQL, React, Python)
+✅ Email templates with variables
+✅ Tracking templates (Google Sheets)
+✅ Checklists (binary pass/fail)
+✅ Success metrics (measurable)
+✅ Risk mitigation (what could go wrong)
+
+Everything is production-ready (code tested pattern, docs detailed).
+
+NEXT STEPS
+==========
+
+1. COPY START_HERE.md to team Slack
+2. SEND .wiki/Revenue-Sprints-Index.md link
+3. SCHEDULE kickoff meeting (9 AM Mar 19)
+4. ASSIGN R1 tasks (engineer + PM)
+5. START WORK (same day)
+
+Timeline: ~20 min to prepare, same-day start possible.
+
+CONTACT & SUPPORT
+=================
+
+Questions? See:
+- General FAQ: .wiki/Revenue-Metrics-Dashboard.md
+- R1 guide: .wiki/Lead-Selection-Guide.md → FAQ
+- R3 templates: .wiki/Outreach-Email-Templates.md → Common Objections
+- Technical: .wiki/Technical-Tasks-for-R1-R5.md → each task
+
+All documents have FAQ sections and risk mitigation.
+
+SUCCESS CRITERIA (March 31)
+===========================
+
+Minimum to pass:
+✅ 50 leads contacted
+✅ 3+ replied positively
+✅ 2+ demo calls completed
+✅ 1+ paid customer
+✅ TG channel with 200+ followers
+
+Target to hit:
+✅ 15 paying customers
+✅ 150K₽ MRR
+✅ 0% churn (month 1→2)
+✅ 3+ testimonials
+✅ Email campaigns automated
+
+Stretch goal:
+✅ 25 customers
+✅ 250K₽ MRR
+✅ Viral calculator 500+ leads/month
+✅ Multiple payment channels
+
+PHILOSOPHY
+==========
+
+This sprint backlog is:
+✅ Revenue-focused (every task → money)
+✅ Executable (specific, not vague)
+✅ Fast (11 days, not 90)
+✅ Data-driven (metrics at every step)
+✅ Lean (minimum viable features)
+✅ Realistic (based on cold sales benchmarks)
+✅ Flexible (easy to pivot if needed)
+
+Not:
+❌ Guaranteed to work
+❌ Fully automated
+❌ Enterprise-scale
+❌ Complex (intentionally simple)
+❌ Vague (every task has specifics)
+
+FINAL WORD
+==========
+
+Everything you need to make 150K₽ MRR is here.
+
+✅ Strategy docs (what to do)
+✅ Execution guides (how to do it)
+✅ Code templates (ready to copy)
+✅ Email templates (ready to personalize)
+✅ Tracking templates (ready to use)
+✅ Checklists (binary pass/fail)
+
+Total prep: ~20 minutes
+Total execution: 11 days
+Total effort: ~60 hours (distributed across 3 people)
+
+Start date: March 19, 2026, 9 AM
+Target date: March 31, 2026
+
+Go.
+
+═══════════════════════════════════════════════════
+Created: March 19, 2026 by Product Manager
+Status: Ready for immediate execution
+Target: 150K₽ MRR by March 31, 2026
+═══════════════════════════════════════════════════

@@ -107,5 +107,22 @@ mcphire-frontend/
 
 ## Статус
 
-- Этап 1 (MVP): завершена
-- Спринты S14-S19 (данные + MCP production): в работе — [бэклог](../../wiki/Phase-2-Backlog)
+- Этап 1 (MVP): ✅ завершена
+- Спринты S14-S19 (данные + MCP production): 🔄 в работе — [бэклог](../../wiki/Phase-2-Backlog)
+- **Спринты R1-R5 (Revenue — 150K₽ MRR):** 🚀 готовы к запуску — [план](../../wiki/Revenue-Sprints-Index)
+
+## Revenue Sprints (R1-R5)
+
+**Цель:** 15 платящих клиентов, 150K₽ MRR за 11 дней (Mar 19-29)
+
+| Sprint | Цель | Статус |
+|--------|------|--------|
+| **R1** | 50 qualified leads | 📋 Ready |
+| **R2** | Pricing page + dashboard | 📋 Ready |
+| **R3** | 50 emails, 2-3 demos | 📋 Ready |
+| **R4** | 1-2 paid customers, TG channel | 📋 Ready |
+| **R5** | 15 customers, 150K₽ MRR | 📋 Ready |
+
+**Start:** [[Revenue-Quick-Start|Quick Start (5 min read)]]
+
+**Полная документация:** [[Revenue-Sprints-Index|Revenue Sprints Index]]
