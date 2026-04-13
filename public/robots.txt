@@ -1,50 +1,20 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
-# AI Search Crawlers
-User-agent: GPTBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: Claude-Web
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
-User-agent: Applebot-Extended
-Allow: /
-
-User-agent: cohere-ai
-Allow: /
-
-User-agent: anthropic-ai
-Allow: /
-
-User-agent: Bytespider
-Allow: /
+# Sprint 2 fix v2 (2026-04-13): per robots.txt spec, Disallow rules under
+# `User-agent: *` are NOT inherited by bots that have their own group.
+# So we MUST repeat Disallow lines in each named bot block, or simply
+# rely on the wildcard alone (most major bots respect *).
+#
+# Approach: removed all named "Allow: /" blocks (they were redundant — bots
+# default to allowed). Single wildcard group with Disallow rules now governs
+# ALL bots uniformly.
 
 User-agent: *
 Allow: /
+
+# Block API + auth + analytics paths to free crawl budget for SSG content.
+# These paths return JSON or auth pages — not useful for index.
+Disallow: /v1/
+Disallow: /stats/
+Disallow: /auth/
+Disallow: /admin/
 
 Sitemap: https://mcphire.com/sitemap.xml
