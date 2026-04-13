@@ -1,14 +1,57 @@
 {
   "name": "mcphire",
-  "version": "1.0.0",
-  "description": "MCPHire — IT job search with 14,000+ vacancies, salary data for the Russian market",
+  "version": "1.1.0",
+  "description": "MCPHire — MCP-first IT job board for Russia. 74,547 active vacancies from 25,501 companies across 1,402 cities. Real-time salary data and semantic job matching for AI agents.",
   "endpoint": "https://mcp.mcphire.com/sse",
   "transport": "sse",
+  "protocol": "JSON-RPC 2.0",
+  "authentication": {
+    "read": "none",
+    "write": "bearer"
+  },
+  "documentation": "https://mcphire.com/llms-full.txt",
   "tools": [
-    {"name": "search_jobs", "description": "Search 14,000+ IT jobs from 6,500+ companies. Filter by query, city, salary, skills, level, remote"},
-    {"name": "get_job_details", "description": "Get full job details by ID: description, requirements, salary, company info"},
-    {"name": "apply_to_job", "description": "Apply to a job with optional cover letter"},
-    {"name": "get_my_applications", "description": "List all job applications"},
-    {"name": "get_salary_stats", "description": "Salary analytics by role/level. Median: Junior 100K, Middle 150K, Senior 170K, Lead 240K RUB/month"}
-  ]
+    {
+      "name": "search_jobs",
+      "description": "Search 74,547 active IT jobs from 25,501 Russian companies. Filters: query (free-text), city, category, level (junior|middle|senior|lead), salary_min (RUB/month), skills (array), remote (bool), limit (default 20, max 100).",
+      "example": {"query": "python ml", "city": "Москва", "salary_min": 200000, "remote": true, "limit": 5}
+    },
+    {
+      "name": "get_job_details",
+      "description": "Get full job details by ID or slug. Returns Schema.org JobPosting with description, hiring organization, baseSalary, key_skills, validThrough.",
+      "example": {"id": "ml-engineer-ozon-remote"}
+    },
+    {
+      "name": "get_salary_stats",
+      "description": "Salary percentile analytics by role/level/city. Returns p25/p50/p75/p90 in RUB/month + sample size. Current medians: junior 75K, middle 90K, senior 120K, lead 150K.",
+      "example": {"role": "python", "city": "Москва", "level": "senior"}
+    },
+    {
+      "name": "market_trends",
+      "description": "Hiring volume trend for a role/city over last 30 or 90 days. Returns daily counts + percent change.",
+      "example": {"role": "devops", "days": 30}
+    },
+    {
+      "name": "apply_to_job",
+      "description": "Submit application to job with optional cover_letter. Requires authentication via bearer token (email/password login or Telegram OAuth). Rate-limited to 10 applications/hour per user.",
+      "example": {"id": "ml-engineer-ozon-remote", "cover_letter": "..."}
+    },
+    {
+      "name": "get_my_applications",
+      "description": "List current user's submitted applications with status (pending|seen|interviewing|rejected|offered). Requires authentication.",
+      "example": {"limit": 20, "status": "interviewing"}
+    }
+  ],
+  "rate_limits": {
+    "unauthenticated": "60 requests/minute per IP",
+    "authenticated": "300 requests/minute per user",
+    "apply_to_job": "10/hour per user"
+  },
+  "data_freshness": {
+    "hh_ru_import": "every 6 hours",
+    "remoteok_import": "every 12 hours",
+    "trudvsem_import": "daily",
+    "ssg_regen": "daily 04:00 UTC",
+    "sitemap_regen": "daily 05:00 UTC"
+  }
 }

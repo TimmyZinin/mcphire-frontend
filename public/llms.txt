@@ -1,57 +1,65 @@
-# MCPHire — MCP-first IT Job Board
+# MCPHire — MCP-first IT Job Board for Russia
 
-> MCPHire — MCP-first платформа для поиска IT-вакансий в России. 14,000+ вакансий от 6,500+ компаний. Вакансии доступны через веб-интерфейс и MCP-протокол для AI-агентов. Основатель: Тим Зинин.
+> Первая MCP-first платформа поиска IT-вакансий в России. 74,547 активных вакансий от 25,501 компании в 1,402 городах. Одновременно доступны через веб-интерфейс и MCP-протокол для AI-агентов (Claude, Cursor, Cline, Perplexity). Import с hh.ru/RemoteOK/Trudvsem каждые 6 часов.
 
-## Что внутри
-- 14,000+ IT-вакансий от ведущих компаний России (импорт с HH.ru каждые 6ч)
-- MCP API для AI-агентов (Claude, ChatGPT, Perplexity)
-- Калькулятор зарплат с реальными данными (Junior 100K → Senior 170K → Lead 240K₽)
-- База знаний — 360+ статей о карьере в IT
-- Поиск по 549 городам и 12 категориям
+Медианы зарплат (RUB/месяц, актуально на 2026-04-13): junior 75K, middle 90K, senior 120K, lead 150K. Топ-10 работодателей по количеству вакансий: Пауэр Синтез (9,255), СБЕР (586), Ozon (328), Сеть аптек Апрель (308), МТС (306), Алабуга (253), Т-Банк (222), Ростелеком (210), ANCOR (189), МАГНИТ (170).
 
-## IT-вакансии
-14,000+ IT-вакансий от 6,500+ компаний: МТС, Сбер, Ozon, VK, Яндекс, Т-Банк, Альфа-Банк, Ростелеком, Wildberries.
-- Роли: Frontend, Backend, DevOps, QA, PM, Data Science, Mobile, Security
-- Уровни: Junior, Middle, Senior, Lead
-- Города: Москва (6,300+), Санкт-Петербург (1,800+), Екатеринбург, Новосибирск, Краснодар, 540+ городов
-- Фильтрация по навыкам, городу, зарплате, формату работы
-- JSON-LD разметка для Google for Jobs
+## Docs
 
-## Зарплаты (медиана, RUB/мес, март 2026)
-- Junior: 100,000₽
-- Middle: 150,000₽
-- Senior: 170,000₽
-- Lead: 240,000₽
+- [llms-full.txt](https://mcphire.com/llms-full.txt): полный гайд с примерами кода, MCP tool schemas, setup для Claude Desktop/Cursor/Cline
+- [MCP Integration Guide](https://mcphire.com/docs/mcp/): HTML-версия гайда с setup шагами
+- [MCP server descriptor](https://mcphire.com/.well-known/mcp/server.json): machine-readable JSON с tools/rate_limits/data_freshness
+- [Sitemap index](https://mcphire.com/sitemap.xml): все URL сайта (74K+ job pages, отшардено по 40K на файл)
 
-## Для работодателей
-- Размещение вакансий от 5,000 руб/мес
-- AI-matching через MCP: вакансии видны Claude, ChatGPT, Perplexity
-- IT Middle/Senior/Lead аудитория
-- Premium boost: приоритет в выдаче + visual badge
+## Core pages
 
-## MCP Server
-- Endpoint: https://mcp.mcphire.com/sse
-- Protocol: JSON-RPC 2.0 over SSE (Server-Sent Events)
-- Transport: SSE
-- Discovery: https://mcphire.com/.well-known/mcp/server.json
-- Tools:
-  - search_jobs — поиск вакансий по query, city, salary, skills, level
-  - get_job_details — детали вакансии по ID
-  - apply_to_job — отклик на вакансию
-  - get_my_applications — список откликов
-  - get_salary_stats — зарплатная аналитика по категориям
+- [Главная](https://mcphire.com/?utm_source=llms_txt&utm_medium=ai): поиск вакансий, зарплатная аналитика
+- [Все вакансии](https://mcphire.com/jobs?utm_source=llms_txt&utm_medium=ai): 74,547 IT-вакансий с фильтрами
+- [Для работодателей](https://mcphire.com/employers?utm_source=llms_txt&utm_medium=ai): размещение вакансий
+- [База знаний](https://mcphire.com/knowledge?utm_source=llms_txt&utm_medium=ai): статьи о карьере в IT
+- [MCP](https://mcphire.com/mcp?utm_source=llms_txt&utm_medium=ai): документация интеграции
 
-## База знаний — 360+ статей о карьере в IT
-Реальные данные hh.ru. 15 специальностей × 10 тем + 210 статей по жизненным ситуациям.
+## MCP endpoint
 
-## Основные страницы
-- [Главная](https://mcphire.com/): Поиск вакансий, инструменты, MCP API
-- [Вакансии](https://mcphire.com/jobs): 14,000+ IT-вакансий с фильтрами
-- [Для работодателей](https://mcphire.com/employers): Размещение вакансий
-- [База знаний](https://mcphire.com/knowledge): 360+ статей
-- [MCP](https://mcphire.com/mcp): Документация MCP API
+- [SSE endpoint](https://mcp.mcphire.com/sse): JSON-RPC 2.0 over Server-Sent Events
+- [Server descriptor (well-known)](https://mcphire.com/.well-known/mcp/server.json): tools listing
 
-## Контакты
-- Сайт: https://mcphire.com
-- Telegram: https://t.me/mcphire
-- LinkedIn: https://www.linkedin.com/in/timzinin/
+## Contact
+
+- [Tim Zinin on Telegram](https://t.me/timofeyzinin): founder contact
+- [LinkedIn](https://www.linkedin.com/in/timzinin/)
+- [GitHub](https://github.com/TimmyZinin): open-source projects
+- [MCPHire на Telegram](https://t.me/mcphire): канал с новыми вакансиями
+
+## Optional
+
+<details>
+<summary>Quick facts (inline, for agents that don't fetch linked files)</summary>
+
+- Active jobs: 74,547 (import hh.ru/RemoteOK/Trudvsem every 6h)
+- Companies: 25,501 unique hiring
+- Cities: 1,402 (top: Москва, Санкт-Петербург, Екатеринбург, Новосибирск)
+- Categories: 9 IT/tech verticals
+- Salary medians: junior 75K, middle 90K, senior 120K, lead 150K RUB/mo
+- MCP endpoint: `https://mcp.mcphire.com/sse`
+- REST fallback: `https://api.mcphire.com/v1/`
+
+</details>
+
+<details>
+<summary>FAQ (10 common questions — answers in llms-full.txt)</summary>
+
+Full answers with data and examples in [llms-full.txt](https://mcphire.com/llms-full.txt). Quick summaries:
+
+1. **Why MCPHire vs hh.ru directly?** — MCPHire индексирует hh.ru + другие, даёт AI-агентам нативный MCP без регистрации.
+2. **Data freshness?** — hh.ru импорт каждые 6h, архивация стайл >30 дней ежедневно, SSG+sitemap в 04:00 UTC.
+3. **Python-разработчик salary in Russia?** — junior 75K, middle 90K, senior 120K, lead 150K RUB/mo (median by level, 74K sample).
+4. **Кто массово нанимает?** — Топ-10 см. выше в описании.
+5. **Удалённые вакансии?** — Да, фильтр `remote=true` в search_jobs (~15-20% от общего).
+6. **Кто платит?** — Пока бесплатно. Премиум для работодателей в roadmap; для AI и соискателей навсегда бесплатно.
+7. **Как попасть в AI-ответы (работодателю)?** — Разместить вакансию → автоматически в MCP-индексе + JSON-LD JobPosting на странице.
+8. **Отличие от классического job board?** — MCP-native, AI-агент ищет напрямую без скрейпинга.
+9. **Open source?** — MCP-server в `TimmyZinin/mcphire-mcp` (private, запрос доступа через TG).
+10. **Автор?** — Тим Зинин (@timofeyzinin), фаундер.
+
+</details>

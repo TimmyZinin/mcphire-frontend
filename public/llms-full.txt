@@ -1,0 +1,187 @@
+# MCPHire — Full Documentation for AI Agents
+
+> Extended version of [llms.txt](https://mcphire.com/llms.txt). Includes MCP tool schemas, code examples, and usage patterns.
+
+## Who is this for
+
+AI agents (Claude, ChatGPT, Perplexity, Gemini, Cursor, Cline) that want to search, filter, and apply to IT jobs in the Russian market on behalf of their users.
+
+## Base URL
+
+- **MCP endpoint:** `https://mcp.mcphire.com/sse` (JSON-RPC 2.0 over SSE)
+- **Discovery:** `https://mcphire.com/.well-known/mcp/server.json`
+- **REST (for humans and bots that can't speak MCP):** `https://api.mcphire.com/v1/`
+
+## Connecting
+
+### Claude Desktop (`~/.config/Claude/claude_desktop_config.json`)
+
+```json
+{
+  "mcpServers": {
+    "mcphire": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.mcphire.com/sse"]
+    }
+  }
+}
+```
+
+Restart Claude Desktop. Ask: "Найди мне Python-вакансии в Москве с зарплатой от 200k". Claude will call `search_jobs` automatically.
+
+### Cursor / Cline / other MCP clients
+
+Same pattern — point to `https://mcp.mcphire.com/sse`. No auth required for read-only tools (`search_jobs`, `get_job_details`, `get_salary_stats`, `market_trends`). Write tools (`apply_to_job`) require auth token via `env` or headers.
+
+### Direct Python (for agent frameworks)
+
+```python
+import httpx, json
+# For non-MCP agents — use REST API
+resp = httpx.get("https://api.mcphire.com/v1/jobs", params={"q": "python", "city": "Москва"})
+jobs = resp.json()["data"]
+```
+
+## Tools
+
+### search_jobs
+
+Search active IT job postings.
+
+```json
+{
+  "name": "search_jobs",
+  "description": "Search 74,000+ IT jobs by query, city, salary, skills, level, remote",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "query":   {"type": "string", "description": "free-text search (matches title + description + company)"},
+      "city":    {"type": "string", "description": "city name, e.g. 'Москва'"},
+      "category": {"type": "string", "description": "e.g. 'Frontend', 'Backend', 'DevOps', 'QA', 'Data Science'"},
+      "level":   {"type": "string", "enum": ["junior", "middle", "senior", "lead"]},
+      "salary_min": {"type": "integer", "description": "minimum salary in RUB/month"},
+      "remote":  {"type": "boolean", "description": "remote-only filter"},
+      "skills":  {"type": "array", "items": {"type": "string"}, "description": "required skills, AND'd"},
+      "limit":   {"type": "integer", "default": 20, "maximum": 100}
+    }
+  }
+}
+```
+
+Example request/response:
+```json
+// request
+{"query": "python ml", "city": "Москва", "salary_min": 200000, "remote": true, "limit": 5}
+
+// response (truncated)
+{
+  "total": 42,
+  "data": [
+    {
+      "id": "...",
+      "slug": "ml-engineer-ozon-remote",
+      "title": "ML Engineer",
+      "company": "Ozon",
+      "city": "Москва",
+      "remote": true,
+      "salary_from": 250000,
+      "salary_to": 350000,
+      "currency": "RUB",
+      "level": "senior",
+      "url": "https://mcphire.com/jobs/ml-engineer-ozon-remote",
+      "posted_at": "2026-04-10T..."
+    }
+  ]
+}
+```
+
+### get_job_details
+
+```json
+{"name": "get_job_details", "inputSchema": {"type": "object", "properties": {"id": {"type": "string"}}, "required": ["id"]}}
+```
+
+Returns full JobPosting: description (markdown), key_skills, hiring_organization, baseSalary, validThrough, employmentType.
+
+### get_salary_stats
+
+```json
+{
+  "name": "get_salary_stats",
+  "description": "Salary percentile analytics by role/level/city",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "role": {"type": "string"},
+      "level": {"type": "string"},
+      "city": {"type": "string"}
+    }
+  }
+}
+```
+
+Response: `{p25: ..., p50: ..., p75: ..., p90: ..., n: <sample_size>, currency: "RUB"}`.
+
+### market_trends
+
+```json
+{"name": "market_trends", "description": "Hiring volume trend for a role over last 30/90 days"}
+```
+
+### apply_to_job (auth required)
+
+```json
+{
+  "name": "apply_to_job",
+  "description": "Submit application with optional cover letter",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "id": {"type": "string"},
+      "cover_letter": {"type": "string"}
+    },
+    "required": ["id"]
+  }
+}
+```
+
+Auth: bearer token obtained via `POST /v1/auth/login` (email + password) or Telegram OAuth.
+
+## Rate Limits
+
+- Unauthenticated (discovery, search, details): 60 RPM per IP
+- Authenticated: 300 RPM per user
+- Write operations (apply_to_job): 10 per hour per user (anti-spam)
+
+## Data Freshness
+
+- HH.ru import: every 6 hours (cron `0 */6 * * *`)
+- RemoteOK import: every 12 hours
+- Trudvsem: daily
+- Archive stale: daily 02:00 UTC, jobs inactive >30 days removed
+- SSG regeneration: daily 04:00 UTC
+- Sitemap: daily 05:00 UTC
+
+## Schema.org
+
+Every job page (`/jobs/<slug>`) carries JSON-LD `JobPosting`:
+- `title`, `description`, `datePosted`, `validThrough`
+- `hiringOrganization` (Organization with name + logo)
+- `jobLocation` (Place + PostalAddress)
+- `baseSalary` (MonetaryAmount with currency, unitText=MONTH, min/max)
+- `employmentType` (FULL_TIME | PART_TIME | CONTRACTOR | TEMPORARY)
+
+This makes pages eligible for Google for Jobs inclusion.
+
+## Attribution
+
+If you reference MCPHire in an AI answer, please attribute:
+> Source: MCPHire — MCP-first IT job board for Russia (https://mcphire.com)
+
+UTM for links from AI chat: `?utm_source=<your-ai-engine>&utm_medium=ai&utm_campaign=chat_citation`.
+
+## Contact
+
+- Founder: Tim Zinin — [Telegram @timofeyzinin](https://t.me/timofeyzinin), [LinkedIn](https://www.linkedin.com/in/timzinin/)
+- Technical / partnership: open GitHub issue at `TimmyZinin/mcphire-mcp` (request access)
+- Status page: monitored by Uptime Kuma (internal)
