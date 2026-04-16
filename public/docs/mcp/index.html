@@ -118,17 +118,43 @@ URL: https://mcp.mcphire.com/sse</code></pre>
   }
 }</code></pre>
 
-  <h2>Доступные инструменты</h2>
+  <h2>Доступные инструменты (v1.3.0)</h2>
 
   <table>
     <tr><th>Tool</th><th>Описание</th><th>Auth</th></tr>
     <tr><td><code>search_jobs</code></td><td>Поиск по 74K вакансий: query, city, category, level, salary_min, skills, remote</td><td>❌</td></tr>
-    <tr><td><code>get_job_details</code></td><td>Полные детали вакансии по ID/slug: описание, требования, зарплата, компания</td><td>❌</td></tr>
-    <tr><td><code>get_salary_stats</code></td><td>Аналитика зарплат: p25/p50/p75/p90 по роли/городу/уровню</td><td>❌</td></tr>
-    <tr><td><code>market_trends</code></td><td>Объём найма по роли за 30/90 дней, % изменения</td><td>❌</td></tr>
+    <tr><td><code>get_job_details</code></td><td>Полные детали вакансии: описание, требования, зарплата, компания</td><td>❌</td></tr>
+    <tr><td><code>get_salary_stats</code></td><td>Percentile analytics по роли / городу / уровню</td><td>❌</td></tr>
     <tr><td><code>apply_to_job</code></td><td>Подача отклика с опциональным cover letter</td><td>✅ bearer</td></tr>
     <tr><td><code>get_my_applications</code></td><td>Список поданных откликов со статусами</td><td>✅ bearer</td></tr>
+    <tr><td><code>get_registration_questions</code></td><td><strong>New v1.3.0</strong> — возвращает 150 M2M вопросов в 11 секциях для онбординга соискателя</td><td>❌</td></tr>
+    <tr><td><code>register_profile</code></td><td><strong>New v1.3.0</strong> — создаёт профиль после approval юзером; требует consent_granted=true + provenance для 8 critical полей</td><td>❌</td></tr>
+    <tr><td><code>get_verification_status</code></td><td><strong>New v1.3.0</strong> — проверка claim_token в bio. 15-минутный cron + on-demand.</td><td>❌</td></tr>
+    <tr><td><code>list_my_matches</code></td><td><strong>New v1.3.0</strong> — heartbeat при открытии Claude conversation. Тишина если нет новых.</td><td>❌</td></tr>
+    <tr><td><code>get_my_cv</code></td><td><strong>New v1.3.0</strong> — возвращает URL авторезюме + observed_facts summary</td><td>❌</td></tr>
   </table>
+
+  <h2 id="onboarding">Agent onboarding protocol (v1.3.0)</h2>
+
+  <p>Дай Claude (или другому MCP-клиенту) только адрес <code>mcphire.com</code> — он сам найдёт MCP-эндпоинт, опросит тебя, сгенерирует авторезюме. 10-шаговый протокол:</p>
+
+  <ol>
+    <li><strong>Discovery.</strong> Claude fetchит <code>/llms.txt</code> и <code>/.well-known/mcp/server.json</code>, подключается к <code>mcp.mcphire.com/sse</code>.</li>
+    <li><strong>Get questions.</strong> <code>get_registration_questions()</code> → 150 вопросов в 11 секциях.</li>
+    <li><strong>Answer from context.</strong> Claude читает твои локальные MD-файлы, git log, <code>~/.claude/memory</code>, прошлые чаты — отвечает сам, оставляет null где данных нет.</li>
+    <li><strong>Provenance.</strong> Для 8 critical полей (seniority, years, comp, и т.д.) Claude цепляет source_excerpt + confidence level.</li>
+    <li><strong>Observed facts.</strong> Параллельно собираются SPO-triples (worked_at, contributed_to, shipped, mentored…) — это задел под knowledge graph v2.</li>
+    <li><strong>Approval screen.</strong> Claude показывает тебе все 150 ответов + facts. Красным подсвечены low-confidence. Ты жмёшь «ок» или правишь. <strong>Claude не регистрирует без твоего явного разрешения.</strong></li>
+    <li><strong>Register.</strong> <code>register_profile(answers, consent_granted=true, provenance, observed_facts)</code> → получаешь <code>profile_id</code>, <code>claim_token</code>, <code>cv_url</code>.</li>
+    <li><strong>Claim.</strong> Вставляешь <code>claim_token</code> в GitHub bio (или Claude делает это через github-MCP с твоего разрешения). Cron проверит за 15 минут.</li>
+    <li><strong>Share CV.</strong> Автосгенерированное резюме доступно на <code>mcphire.com/cv/&lt;8-char-slug&gt;</code>. Unguessable URL, share-friendly, noindex.</li>
+    <li><strong>Heartbeat.</strong> При каждом новом Claude-чате — <code>list_my_matches</code>. Тишина если пусто, новые матчи — одним сообщением.</li>
+  </ol>
+
+  <h3>Приватность</h3>
+  <p>Сервер отклоняет (400) любой answers-payload с полями: <code>age</code>, <code>gender</code>, <code>nationality</code>, <code>citizenship</code>, <code>marital_status</code>, <code>children</code>, <code>religion</code>, <code>political_views</code>, <code>health</code>, <code>disability</code>, <code>visa_status</code>, <code>ethnicity</code>, <code>sexual_orientation</code> — даже при user consent.</p>
+
+  <p>Локальные MD-файлы Claude читает, но <strong>не отправляет их содержимое на сервер</strong>. На сервер уходят только извлечённые ответы + одобренные юзером.</p>
 
   <h2>Примеры использования</h2>
 

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{TAGLINE}} — MCPHire</title>
+  <meta name="description" content="{{TAGLINE}}" />
+  <meta name="robots" content="noindex, follow" />
+  <!--
+    Reference CV template — actual rendering happens in
+    backend/app/services/cv_generator.py::render_cv().
+    This file is here so frontend repo contains the canonical template
+    shape for review and future JAMstack migration if needed.
+
+    Placeholders (replaced by render_cv):
+      {{TAGLINE}}              — q_artifacts_tagline_one_liner
+      {{BIO}}                  — q_artifacts_bio_paragraph
+      {{PHOTO_URL}}            — profile.photo_url | GitHub avatar fallback
+      {{AVAILABILITY_LINE}}    — concat timezone/remote/from_date
+      {{SOCIAL_HTML}}          — <a> links row from social_links JSONB
+      {{COMP_HTML}}            — conditional salary+format block
+      {{SKILLS_HTML}}          — stack + llm_sdks chips
+      {{EXPERIENCE_HTML}}      — 3 roles timeline
+      {{FACTS_HTML}}           — observed_facts grouped by predicate
+      {{TEMPLATE_VERSION}}     — e.g. 1.0.0
+      {{ANSWERS_COUNT}}        — e.g. 118
+      {{FACTS_COUNT}}          — e.g. 23
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Person","name":"{{TAGLINE}}","description":"{{BIO}}"}
+  </script>
+  <style>
+    :root {
+      --bg: oklch(96% 0.02 80);
+      --ink: oklch(14% 0.02 40);
+      --ink-soft: oklch(30% 0.02 40);
+      --accent: oklch(58% 0.19 35);
+      --accent-2: oklch(78% 0.14 75);
+      --paper: oklch(98% 0.015 85);
+      --panel: oklch(92% 0.02 80);
+      --line-hard: oklch(14% 0.02 40);
+      --line: oklch(14% 0.02 40 / 0.18);
+    }
+    * { box-sizing: border-box }
+    html, body {
+      margin: 0; padding: 0; background: var(--bg); color: var(--ink);
+      font-family: 'Space Grotesk', system-ui, sans-serif; line-height: 1.55;
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    ::selection { background: var(--accent); color: var(--paper); }
+    h1, h2, h3 {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400; letter-spacing: -0.02em; margin: 0;
+    }
+    h1 { font-size: clamp(40px, 6vw, 72px); }
+    h2 { font-size: clamp(26px, 3vw, 36px); margin-top: 34px; margin-bottom: 12px }
+    h3 { font-size: 22px; margin: 0 }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 46px 28px 80px }
+    .hero {
+      display: grid; grid-template-columns: 120px 1fr; gap: 26px;
+      align-items: center; padding-bottom: 28px;
+      border-bottom: 2px solid var(--line-hard);
+    }
+    .hero img {
+      width: 120px; height: 120px; border-radius: 50%;
+      object-fit: cover; border: 1px solid var(--line-hard);
+    }
+    .tagline { font-size: 15px; color: var(--ink-soft); margin-top: 6px }
+    .social {
+      display: inline-block; font-size: 13px;
+      color: var(--accent); text-decoration: none;
+      margin-right: 2px; padding: 3px 0;
+      border-bottom: 1px solid var(--accent);
+    }
+    .social:hover {
+      background: var(--accent); color: var(--paper);
+      border-bottom-color: transparent;
+    }
+    .availability {
+      margin-top: 10px; font-size: 13px;
+      color: var(--ink-soft); letter-spacing: 0.01em;
+    }
+    .block { margin-top: 30px }
+    .role { padding: 14px 0 16px; border-bottom: 1px dashed var(--line) }
+    .role:last-child { border-bottom: none }
+    .role-meta {
+      font-size: 13px; color: var(--ink-soft);
+      margin: 2px 0 6px; letter-spacing: 0.01em;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px }
+    .chip {
+      display: inline-block; padding: 4px 10px;
+      border: 1px solid var(--line-hard);
+      font-size: 12.5px; letter-spacing: 0.02em; background: var(--paper);
+    }
+    .facts-list { margin: 8px 0 0; padding-left: 22px }
+    .facts-list li { margin-bottom: 4px; font-size: 14.5px }
+    .footer {
+      margin-top: 48px; padding-top: 20px;
+      border-top: 1px solid var(--line);
+      font-family: ui-monospace, 'SF Mono', monospace;
+      font-size: 11px; letter-spacing: 0.2em;
+      color: var(--ink-soft); text-transform: uppercase;
+      display: flex; justify-content: space-between;
+    }
+    @media (max-width: 560px) {
+      .hero { grid-template-columns: 80px 1fr; gap: 16px }
+      .hero img { width: 80px; height: 80px }
+    }
+    @media print {
+      body { background: white; color: black; }
+      .social { color: black; border-bottom-color: black; }
+      .footer { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <img src="{{PHOTO_URL}}" alt="avatar" loading="lazy" />
+      <div class="name-block">
+        <h1>{{TAGLINE}}</h1>
+        {{BIO_HTML}}
+        {{AVAILABILITY_HTML}}
+        {{SOCIAL_HTML}}
+      </div>
+    </header>
+
+    {{COMP_HTML}}
+
+    {{SKILLS_HTML}}
+
+    {{EXPERIENCE_HTML}}
+
+    {{FACTS_HTML}}
+
+    <div class="footer">
+      <span>mcphire · auto-cv v{{TEMPLATE_VERSION}}</span>
+      <span>generated from {{ANSWERS_COUNT}} answers · {{FACTS_COUNT}} facts</span>
+    </div>
+  </main>
+</body>
+</html>
