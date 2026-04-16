@@ -1,10 +1,112 @@
 # MCPHire — Full Documentation for AI Agents
 
-> Extended version of [llms.txt](https://mcphire.com/llms.txt). Includes MCP tool schemas, code examples, and usage patterns.
+> Extended version of [llms.txt](https://mcphire.com/llms.txt). Includes MCP tool schemas, code examples, usage patterns, and the full **Agent onboarding protocol** (new in v1.3.0).
 
 ## Who is this for
 
-AI agents (Claude, ChatGPT, Perplexity, Gemini, Cursor, Cline) that want to search, filter, and apply to IT jobs in the Russian market on behalf of their users.
+AI agents (Claude, ChatGPT, Perplexity, Gemini, Cursor, Cline) that want to search, filter, apply to IT jobs — and **also register their user as a job seeker** through the 150-question M2M onboarding flow introduced in v1.3.0.
+
+## Agent onboarding protocol (new · v1.3.0)
+
+When a user gives you the domain `mcphire.com`, follow this protocol end-to-end. Don't skip steps.
+
+### 1. Discovery
+
+Fetch the public discovery endpoints:
+
+- `https://mcphire.com/llms.txt` — structured overview
+- `https://mcphire.com/.well-known/mcp/server.json` — MCP catalog with 10 tools
+- `https://mcp.mcphire.com/sse` — JSON-RPC 2.0 over Server-Sent Events
+
+Connect to the MCP endpoint.
+
+### 2. Get questions
+
+Call `get_registration_questions()` (optionally with `section` filter). You'll receive a catalog of 150 questions in 11 sections: stack (25), experience (30), style (15), availability (12), social (15), artifacts (10), comp (8), intent (10), red_flags (10), domain (8), agent (7).
+
+Each question has `id`, `section`, `text_ru`, `type`, `options`, `matchable`, `provenance_required`, and `hint_for_agent`.
+
+### 3. Answer from user's context
+
+For each question, use everything you know about the user: local MD files (Obsidian, notes, resume.md), `~/.claude/memory/`, git log of projects, README files, prior conversations, public profiles they've shared.
+
+If data isn't present, leave `null`. Do not guess.
+
+### 4. Attach provenance (critical)
+
+For these 8 fields, server requires `{source_excerpt (≤140 chars), source_file, confidence: high|medium|low|unknown}`:
+
+- `q_experience_commercial_years_total`
+- `q_experience_seniority_self`
+- `q_experience_managed_team_size_max`
+- `q_experience_shipped_products`
+- `q_experience_biggest_prod_system_users`
+- `q_experience_first_paid_coding`
+- `q_comp_floor_usd_monthly`
+- `q_comp_last_total_comp_usd`
+
+Without provenance on a non-null answer, server returns 400.
+
+### 5. Collect observed_facts
+
+As side-channel, emit SPO triples as you discover them in MD files. Example predicates: `worked_at`, `contributed_to`, `shipped`, `mentored`, `studied_at`, `designed`, `refactored`, `owned`. Initially `approved_by_user=false`; becomes `true` after user approval.
+
+### 6. Show approval screen (mandatory)
+
+Compile the answers into a review document, grouped by section. Present to the user. Wait for an explicit "ok". **Never call `register_profile` without explicit user consent** — enforced by question `q_agent_consent_agent_answering`.
+
+### 7. Register
+
+```
+register_profile(
+  answers={...},
+  consent_granted=true,
+  provenance={q_id: {source_excerpt, source_file, confidence}},
+  observed_facts=[{subject, predicate, object, ..., approved_by_user: true}, ...],
+  questions_version="0.3.0"
+)
+```
+
+Returns `{profile_id, claim_token, claim_instructions, expires_at, cv_url}`.
+
+### 8. Claim verification
+
+Tell the user to paste the `claim_token` into their public bio at the `proof_url` (GitHub bio, LinkedIn headline, public Gist). Cron verifier checks every 15 minutes.
+
+If user has `github-MCP` connected and explicitly consents, you can edit their bio for them — but always show the exact change and ask before pressing write.
+
+Poll `get_verification_status(claim_token)` until `status="verified"`.
+
+### 9. Share the CV
+
+Show the user their `cv_url` — auto-generated HTML resume at `https://mcphire.com/cv/<slug>`. 8-char unguessable URL, share-friendly.
+
+### 10. Heartbeat
+
+At each new conversation with this MCP skill:
+
+```
+list_my_matches(profile_id, since=<last_check_iso>, limit=10)
+```
+
+Empty array → say nothing. Do not spam. New matches → announce in one message. Persist `since` between conversations (e.g., in `~/.claude/memory/mcphire-<profile_id>.md`).
+
+## Privacy — what server rejects (black-list)
+
+These field names are rejected server-side, even if user consents: `age`, `gender`, `sex`, `nationality`, `citizenship`, `marital_status`, `children`, `religion`, `political_views`, `health`, `disability`, `visa_status`, `ethnicity`, `sexual_orientation`.
+
+Never include them in `answers`. Use proxies where needed.
+
+## Rate limits (v1.3.0)
+
+- Read-only tools: 60 requests/minute per IP
+- Authenticated: 300 requests/minute per user
+- `apply_to_job`: 10/hour per user
+- `register_profile`: 3/day per IP (anti-spam)
+
+---
+
+## Legacy section (pre-v3 reference)
 
 ## Base URL
 
