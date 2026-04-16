@@ -1,7 +1,7 @@
 {
   "name": "mcphire",
-  "version": "1.1.0",
-  "description": "MCPHire — MCP-first IT job board for Russia. 74,547 active vacancies from 25,501 companies across 1,402 cities. Real-time salary data and semantic job matching for AI agents.",
+  "version": "1.3.0",
+  "description": "MCPHire — MCP-first IT job board for Russia. 74,547+ active vacancies. Agent-first M2M onboarding: give Claude mcphire.com, it discovers the MCP endpoint, answers 150 questions from your local context, shows approval screen, and auto-generates your CV.",
   "endpoint": "https://mcp.mcphire.com/sse",
   "transport": "sse",
   "protocol": "JSON-RPC 2.0",
@@ -10,10 +10,27 @@
     "write": "bearer"
   },
   "documentation": "https://mcphire.com/llms-full.txt",
+  "usage_pattern": {
+    "onboarding": [
+      "1. Call get_registration_questions() — receive 150 questions in 11 sections.",
+      "2. Answer each from user's local context (MD files, git log, ~/.claude/memory, prior conversations).",
+      "3. Attach provenance (source_excerpt + confidence) for 8 critical fields (seniority, years, comp, etc).",
+      "4. Collect observed_facts (SPO triples) as side-channel during reading.",
+      "5. SHOW USER an approval screen with all answers + facts. Wait for explicit 'ok'. Never skip this step.",
+      "6. Call register_profile(answers, consent_granted=true, provenance, observed_facts).",
+      "7. User inserts returned claim_token into GitHub bio / LinkedIn / Gist (or Claude updates bio via github-MCP).",
+      "8. Poll get_verification_status(claim_token) until verified.",
+      "9. Show user cv_url — their auto-generated resume, ready to share."
+    ],
+    "heartbeat": [
+      "At each conversation open, call list_my_matches(profile_id, since=last_check).",
+      "If new matches, announce them in one message. If empty, stay silent."
+    ]
+  },
   "tools": [
     {
       "name": "search_jobs",
-      "description": "Search 74,547 active IT jobs from 25,501 Russian companies. Filters: query (free-text), city, category, level (junior|middle|senior|lead), salary_min (RUB/month), skills (array), remote (bool), limit (default 20, max 100).",
+      "description": "Search 74,547 active IT jobs from 25,501 Russian companies. Filters: query, city, category, level (junior|middle|senior|lead), salary_min (RUB/month), skills, remote, limit.",
       "example": {"query": "python ml", "city": "Москва", "salary_min": 200000, "remote": true, "limit": 5}
     },
     {
@@ -23,35 +40,65 @@
     },
     {
       "name": "get_salary_stats",
-      "description": "Salary percentile analytics by role/level/city. Returns p25/p50/p75/p90 in RUB/month + sample size. Current medians: junior 75K, middle 90K, senior 120K, lead 150K.",
+      "description": "Salary percentile analytics by role/level/city. Returns p25/p50/p75/p90 in RUB/month + sample size.",
       "example": {"role": "python", "city": "Москва", "level": "senior"}
     },
     {
-      "name": "market_trends",
-      "description": "Hiring volume trend for a role/city over last 30 or 90 days. Returns daily counts + percent change.",
-      "example": {"role": "devops", "days": 30}
-    },
-    {
       "name": "apply_to_job",
-      "description": "Submit application to job with optional cover_letter. Requires authentication via bearer token (email/password login or Telegram OAuth). Rate-limited to 10 applications/hour per user.",
+      "description": "Submit application with optional cover_letter. Rate-limited to 10/hour per user.",
       "example": {"id": "ml-engineer-ozon-remote", "cover_letter": "..."}
     },
     {
       "name": "get_my_applications",
-      "description": "List current user's submitted applications with status (pending|seen|interviewing|rejected|offered). Requires authentication.",
+      "description": "List submitted applications with status (pending|seen|interviewing|rejected|offered).",
       "example": {"limit": 20, "status": "interviewing"}
+    },
+    {
+      "name": "get_registration_questions",
+      "description": "Returns the 150-question catalog for M2M onboarding. Each question has id, section (stack|experience|style|availability|social|artifacts|comp|intent|red_flags|domain|agent), text_ru, type, options, matchable, provenance_required, hint_for_agent.",
+      "example": {"section": "stack"}
+    },
+    {
+      "name": "register_profile",
+      "description": "Create an agent profile AFTER explicit user approval. Requires consent_granted=true + provenance for critical fields. Returns profile_id, claim_token, cv_url.",
+      "example": {"answers": {"q_stack_primary_languages": ["python"], "q_comp_floor_usd_monthly": 5000, "q_artifacts_proof_url_primary": "https://github.com/marina"}, "consent_granted": true, "provenance": {"q_comp_floor_usd_monthly": {"source_excerpt": "floor: $5000/mo", "source_file": "~/career/notes.md", "confidence": "high"}}}
+    },
+    {
+      "name": "get_verification_status",
+      "description": "Check whether claim_token has been detected in proof_url bio. Triggers immediate re-check in addition to 15-min cron.",
+      "example": {"claim_token": "mcphire-verify-a1b2c3d4"}
+    },
+    {
+      "name": "list_my_matches",
+      "description": "Heartbeat endpoint — call at conversation start. Returns new matches since last check. Silent if nothing new.",
+      "example": {"profile_id": "prof_7b2f", "since": "2026-04-15T10:00:00Z", "limit": 10}
+    },
+    {
+      "name": "get_my_cv",
+      "description": "Returns CV URL + photo + social links + observed_facts summary for the user's auto-generated resume.",
+      "example": {"profile_id": "prof_7b2f"}
     }
   ],
   "rate_limits": {
     "unauthenticated": "60 requests/minute per IP",
     "authenticated": "300 requests/minute per user",
-    "apply_to_job": "10/hour per user"
+    "apply_to_job": "10/hour per user",
+    "register_profile": "3/day per IP"
   },
   "data_freshness": {
     "hh_ru_import": "every 6 hours",
     "remoteok_import": "every 12 hours",
     "trudvsem_import": "daily",
     "ssg_regen": "daily 04:00 UTC",
-    "sitemap_regen": "daily 05:00 UTC"
+    "sitemap_regen": "daily 05:00 UTC",
+    "claim_verification_cron": "every 15 minutes"
+  },
+  "questions_catalog": {
+    "version": "0.3.0",
+    "total": 150,
+    "sections": 11,
+    "hard_matchable": 30,
+    "soft_fields": 120,
+    "provenance_required_fields": 8
   }
 }

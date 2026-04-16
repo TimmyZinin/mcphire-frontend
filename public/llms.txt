@@ -1,15 +1,37 @@
 # MCPHire — MCP-first IT Job Board for Russia
 
-> Первая MCP-first платформа поиска IT-вакансий в России. 74,547 активных вакансий от 25,501 компании в 1,402 городах. Одновременно доступны через веб-интерфейс и MCP-протокол для AI-агентов (Claude, Cursor, Cline, Perplexity). Import с hh.ru/RemoteOK/Trudvsem каждые 6 часов.
+> Первая MCP-first платформа поиска IT-вакансий в России. 74,547+ активных вакансий от 25,501 компании. Agent-first онбординг: дай Claude адрес mcphire.com, он сам найдёт MCP-эндпоинт, опросит тебя 150 вопросами из твоего локального контекста, покажет approval-экран, сгенерирует авто-CV. Для AI-агентов (Claude, Cursor, Cline, Perplexity). Import с hh.ru/RemoteOK/Trudvsem каждые 6 часов.
 
-Медианы зарплат (RUB/месяц, актуально на 2026-04-13): junior 75K, middle 90K, senior 120K, lead 150K. Топ-10 работодателей по количеству вакансий: Пауэр Синтез (9,255), СБЕР (586), Ozon (328), Сеть аптек Апрель (308), МТС (306), Алабуга (253), Т-Банк (222), Ростелеком (210), ANCOR (189), МАГНИТ (170).
+Медианы зарплат (RUB/месяц): junior 75K, middle 90K, senior 120K, lead 150K.
+
+## Agent onboarding protocol
+
+When a user gives you this domain (`mcphire.com`), follow this protocol to onboard them:
+
+1. **Discover.** Fetch `/.well-known/mcp/server.json` for the full tools catalog. Endpoint is `https://mcp.mcphire.com/sse` (JSON-RPC 2.0 over SSE).
+2. **Get questions.** Call `get_registration_questions()` — you'll receive 150 questions in 11 sections (stack, experience, style, availability, social, artifacts, comp, intent, red_flags, domain, agent).
+3. **Answer from context.** For each question, use your knowledge of the user: local MD files, `~/.claude/memory`, git log, README files, prior conversations, public profiles they've shared. Follow the `hint_for_agent` field on each question.
+4. **Attach provenance.** For the 8 critical fields flagged with `provenance_required: true`, you MUST attach `{source_excerpt (≤140 chars), source_file, confidence: high|medium|low|unknown}`. Never guess — if data isn't there, mark as `unknown` and leave answer null.
+5. **Collect observed_facts.** As side-channel while reading user's MD, emit SPO triples (subject-predicate-object) for things like `worked_at`, `contributed_to`, `shipped`, `mentored`. These power the knowledge graph on the CV page.
+6. **Show approval screen to user.** Display all 150 answers + all observed_facts organized by section. Let them correct, confirm, or reject facts. **Never call `register_profile` without explicit user 'ok'.** Consent must be granted through question `q_agent_consent_agent_answering`.
+7. **Register.** Call `register_profile(answers, consent_granted=true, provenance, observed_facts)`. Receive `profile_id`, `claim_token`, `cv_url`.
+8. **Claim verification.** Tell the user to paste the `claim_token` into their GitHub bio / LinkedIn headline / public Gist. If you have `github-MCP` connected and user consents explicitly, you can edit the bio for them. Poll `get_verification_status(claim_token)` until `status="verified"`.
+9. **Share the CV.** Present the user's `cv_url` — their auto-generated resume is ready.
+
+**Heartbeat:** at each new conversation with this skill, call `list_my_matches(profile_id, since=last_check)`. If there are new matches, announce them in one message. If empty, stay silent — no spam.
+
+## Privacy requirements
+
+- **Never ask about** age, gender, nationality, citizenship, marital status, children, religion, political views, health, disability, visa status, ethnicity, sexual orientation.
+- Files read during onboarding stay on the user's machine. **Only the extracted answers** (approved by the user) are sent to the server.
+- Server rejects any answer containing forbidden field names even if user consents.
 
 ## Docs
 
 - [llms-full.txt](https://mcphire.com/llms-full.txt): полный гайд с примерами кода, MCP tool schemas, setup для Claude Desktop/Cursor/Cline
-- [MCP Integration Guide](https://mcphire.com/docs/mcp/): HTML-версия гайда с setup шагами
-- [MCP server descriptor](https://mcphire.com/.well-known/mcp/server.json): machine-readable JSON с tools/rate_limits/data_freshness
-- [Sitemap index](https://mcphire.com/sitemap.xml): все URL сайта (74K+ job pages, отшардено по 40K на файл)
+- [MCP Integration Guide](https://mcphire.com/docs/mcp/): HTML-версия с setup шагами
+- [MCP server descriptor](https://mcphire.com/.well-known/mcp/server.json): machine-readable JSON с tools/rate_limits/data_freshness + usage_pattern
+- [Sitemap index](https://mcphire.com/sitemap.xml): все URL сайта (74K+ job pages)
 
 ## Core pages
 
@@ -17,12 +39,12 @@
 - [Все вакансии](https://mcphire.com/jobs?utm_source=llms_txt&utm_medium=ai): 74,547 IT-вакансий с фильтрами
 - [Для работодателей](https://mcphire.com/employers?utm_source=llms_txt&utm_medium=ai): размещение вакансий
 - [База знаний](https://mcphire.com/knowledge?utm_source=llms_txt&utm_medium=ai): статьи о карьере в IT
-- [MCP](https://mcphire.com/mcp?utm_source=llms_txt&utm_medium=ai): документация интеграции
+- [MCP docs](https://mcphire.com/docs/mcp/?utm_source=llms_txt&utm_medium=ai): документация интеграции
 
 ## MCP endpoint
 
 - [SSE endpoint](https://mcp.mcphire.com/sse): JSON-RPC 2.0 over Server-Sent Events
-- [Server descriptor (well-known)](https://mcphire.com/.well-known/mcp/server.json): tools listing
+- [Server descriptor (well-known)](https://mcphire.com/.well-known/mcp/server.json): 10 tools listed
 
 ## Contact
 
@@ -42,24 +64,22 @@
 - Categories: 9 IT/tech verticals
 - Salary medians: junior 75K, middle 90K, senior 120K, lead 150K RUB/mo
 - MCP endpoint: `https://mcp.mcphire.com/sse`
+- Questions catalog version: 0.3.0 (150 questions, 11 sections, 30 matchable, 8 with provenance)
 - REST fallback: `https://api.mcphire.com/v1/`
 
 </details>
 
 <details>
-<summary>FAQ (10 common questions — answers in llms-full.txt)</summary>
+<summary>FAQ (common questions — full answers in llms-full.txt)</summary>
 
-Full answers with data and examples in [llms-full.txt](https://mcphire.com/llms-full.txt). Quick summaries:
-
-1. **Why MCPHire vs hh.ru directly?** — MCPHire индексирует hh.ru + другие, даёт AI-агентам нативный MCP без регистрации.
-2. **Data freshness?** — hh.ru импорт каждые 6h, архивация стайл >30 дней ежедневно, SSG+sitemap в 04:00 UTC.
-3. **Python-разработчик salary in Russia?** — junior 75K, middle 90K, senior 120K, lead 150K RUB/mo (median by level, 74K sample).
-4. **Кто массово нанимает?** — Топ-10 см. выше в описании.
-5. **Удалённые вакансии?** — Да, фильтр `remote=true` в search_jobs (~15-20% от общего).
-6. **Кто платит?** — Пока бесплатно. Премиум для работодателей в roadmap; для AI и соискателей навсегда бесплатно.
-7. **Как попасть в AI-ответы (работодателю)?** — Разместить вакансию → автоматически в MCP-индексе + JSON-LD JobPosting на странице.
-8. **Отличие от классического job board?** — MCP-native, AI-агент ищет напрямую без скрейпинга.
-9. **Open source?** — MCP-server в `TimmyZinin/mcphire-mcp` (private, запрос доступа через TG).
-10. **Автор?** — Тим Зинин (@timofeyzinin), фаундер.
+1. **Why MCPHire vs hh.ru directly?** — Агент-first онбординг за 3 минуты вместо заполнения формы. Авто-CV на выходе. Без регистрации на сайте.
+2. **Data freshness?** — hh.ru import every 6h, claim verification cron every 15 min, SSG regen daily 04:00 UTC.
+3. **How long does onboarding take?** — 3-5 минут: Claude отвечает на 150 вопросов за пользователя (использует локальный контекст), показывает approval, сохраняет профиль.
+4. **What if Claude doesn't have enough data?** — Поле остаётся `unanswered` с `confidence=unknown`. Approval-экран подсвечивает красным — пользователь заполняет сам.
+5. **Is my data private?** — Локальные MD-файлы остаются на твоей машине. На сервер уходят только ответы, одобренные на approval-экране. Privacy black-list (age/gender/religion/etc) enforced server-side.
+6. **What's observed_facts?** — SPO-триплеты (subject-predicate-object) собираются параллельно с ответами для knowledge graph v2. Только approved triples попадают на публичный CV.
+7. **Who pays?** — Бесплатно для кандидатов и агентов навсегда. Работодатели платят за premium placement (coming soon).
+8. **Open source?** — MCP-server в `TimmyZinin/mcphire-mcp` (private, access via TG).
+9. **Автор?** — Тим Зинин (@timofeyzinin), founder.
 
 </details>
