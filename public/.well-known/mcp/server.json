@@ -1,13 +1,13 @@
 {
   "name": "mcphire",
   "version": "1.3.0",
-  "description": "MCPHire — MCP-first IT job board for Russia. 74,547+ active vacancies. Agent-first M2M onboarding: give Claude mcphire.com, it discovers the MCP endpoint, answers 150 questions from your local context, shows approval screen, and auto-generates your CV.",
+  "description": "MCPHire — MCP-first IT job board for Russia. 65,000+ active vacancies. Agent-first M2M onboarding: give Claude mcphire.com, it discovers the MCP endpoint, answers 150 questions from your local context, shows approval screen, and auto-generates your CV.",
   "endpoint": "https://mcp.mcphire.com/sse",
   "transport": "sse",
   "protocol": "JSON-RPC 2.0",
   "authentication": {
-    "read": "none",
-    "write": "bearer"
+    "model": "sentinel_plus_payload_scoped",
+    "notes": "MCP stream has no bearer. Discovery/search tools (search_jobs, get_job_details, get_salary_stats, get_registration_questions) and sentinel-backed writes (apply_to_job, get_my_applications) attribute to a shared MCP sentinel user derived from uuid5(NAMESPACE_DNS, 'mcp.mcphire.com'). Profile-scoped tools (list_my_matches, get_my_cv) require profile_id (UUID) in payload — the UUID functions as a secret returned only to the registering client. get_verification_status takes claim_token instead. register_profile is open but rate-limited 3/day per IP and rejects requests without consent_granted=true. Per-profile bearer tokens are post-MVP."
   },
   "documentation": "https://mcphire.com/llms-full.txt",
   "usage_pattern": {
@@ -20,38 +20,40 @@
       "6. Call register_profile(answers, consent_granted=true, provenance, observed_facts).",
       "7. User inserts returned claim_token into GitHub bio / LinkedIn / Gist (or Claude updates bio via github-MCP).",
       "8. Poll get_verification_status(claim_token) until verified.",
-      "9. Show user cv_url — their auto-generated resume, ready to share."
+      "9. Show user cv_url — their auto-generated resume, ready to share.",
+      "10. Telegram linking (post-deploy, not live yet in v1.3.0 launch). Once @mcphire_bot is registered in BotFather and bot.mcphire.com is online, users will open the bot and send /link <claim_token> to enable instant match pushes. Until then, show users the cv_url and inform them that TG push notifications will be available after the deploy sprint."
     ],
     "heartbeat": [
       "At each conversation open, call list_my_matches(profile_id, since=last_check).",
-      "If new matches, announce them in one message. If empty, stay silent."
+      "In v1.3.0 this is a Sprint 1 placeholder: for verified profiles it always returns matches: [] with note: 'matching_pipeline_coming_sprint_2'. Actual match delivery in v1.3.0 goes through Telegram after step 10 of onboarding.",
+      "Stay silent if empty — no spam."
     ]
   },
   "tools": [
     {
       "name": "search_jobs",
-      "description": "Search 74,547 active IT jobs from 25,501 Russian companies. Filters: query, city, category, level (junior|middle|senior|lead), salary_min (RUB/month), skills, remote, limit.",
-      "example": {"query": "python ml", "city": "Москва", "salary_min": 200000, "remote": true, "limit": 5}
+      "description": "Search 65,000+ active IT jobs from Russian companies. Filters: query (text), city, salary_from (RUB/month), skills (comma-separated ILIKE), remote (bool → work_format IN remote/hybrid), level (junior|middle|senior|lead), limit, offset.",
+      "example": {"query": "python ml", "city": "Москва", "salary_from": 200000, "skills": "Python,FastAPI", "remote": true, "limit": 5}
     },
     {
       "name": "get_job_details",
-      "description": "Get full job details by ID or slug. Returns Schema.org JobPosting with description, hiring organization, baseSalary, key_skills, validThrough.",
-      "example": {"id": "ml-engineer-ozon-remote"}
+      "description": "Get full job details by UUID. Requires job_id (UUID only — slug lookup not supported by this tool).",
+      "example": {"job_id": "a3f91c0e-1234-5678-90ab-cdef12345678"}
     },
     {
       "name": "get_salary_stats",
-      "description": "Salary percentile analytics by role/level/city. Returns p25/p50/p75/p90 in RUB/month + sample size.",
-      "example": {"role": "python", "city": "Москва", "level": "senior"}
+      "description": "Aggregate salary stats grouped by level and currency. Optional category keyword narrows by job title (ILIKE). Returns averages + counts per (level,currency).",
+      "example": {"category": "Python"}
     },
     {
       "name": "apply_to_job",
-      "description": "Submit application with optional cover_letter. Rate-limited to 10/hour per user.",
-      "example": {"id": "ml-engineer-ozon-remote", "cover_letter": "..."}
+      "description": "Submit application (attributed to sentinel MCP user) with optional cover_letter. Requires job_id (UUID). Rate-limited to 10/hour.",
+      "example": {"job_id": "a3f91c0e-1234-5678-90ab-cdef12345678", "cover_letter": "..."}
     },
     {
       "name": "get_my_applications",
-      "description": "List submitted applications with status (pending|seen|interviewing|rejected|offered).",
-      "example": {"limit": 20, "status": "interviewing"}
+      "description": "List applications made by the sentinel MCP user in this session. No filter params.",
+      "example": {}
     },
     {
       "name": "get_registration_questions",
@@ -70,13 +72,13 @@
     },
     {
       "name": "list_my_matches",
-      "description": "Heartbeat endpoint — call at conversation start. Returns new matches since last check. Silent if nothing new.",
-      "example": {"profile_id": "prof_7b2f", "since": "2026-04-15T10:00:00Z", "limit": 10}
+      "description": "Heartbeat endpoint — call at conversation start. In v1.3.0 this is a Sprint 1 placeholder: for verified profiles always returns matches: [] with note: 'matching_pipeline_coming_sprint_2'. Actual match delivery currently goes through Telegram (see onboarding step 10). profile_id must be a UUID returned by register_profile.",
+      "example": {"profile_id": "7b2f8e4a-9c33-4a1e-bb5f-e0d1a28c7f91", "since": "2026-04-15T10:00:00Z", "limit": 10}
     },
     {
       "name": "get_my_cv",
       "description": "Returns CV URL + photo + social links + observed_facts summary for the user's auto-generated resume.",
-      "example": {"profile_id": "prof_7b2f"}
+      "example": {"profile_id": "7b2f8e4a-9c33-4a1e-bb5f-e0d1a28c7f91"}
     }
   ],
   "rate_limits": {

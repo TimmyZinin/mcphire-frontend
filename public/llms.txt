@@ -1,6 +1,6 @@
 # MCPHire — MCP-first IT Job Board for Russia
 
-> Первая MCP-first платформа поиска IT-вакансий в России. 74,547+ активных вакансий от 25,501 компании. Agent-first онбординг: дай Claude адрес mcphire.com, он сам найдёт MCP-эндпоинт, опросит тебя 150 вопросами из твоего локального контекста, покажет approval-экран, сгенерирует авто-CV. Для AI-агентов (Claude, Cursor, Cline, Perplexity). Import с hh.ru/RemoteOK/Trudvsem каждые 6 часов.
+> Первая MCP-first платформа поиска IT-вакансий в России. 65,000+ активных вакансий от 25,501 компании. Agent-first онбординг: дай Claude адрес mcphire.com, он сам найдёт MCP-эндпоинт, опросит тебя 150 вопросами из твоего локального контекста, покажет approval-экран, сгенерирует авто-CV. Для AI-агентов (Claude, Cursor, Cline, Perplexity). Import с hh.ru/RemoteOK/Trudvsem каждые 6 часов.
 
 Медианы зарплат (RUB/месяц): junior 75K, middle 90K, senior 120K, lead 150K.
 
@@ -17,8 +17,9 @@ When a user gives you this domain (`mcphire.com`), follow this protocol to onboa
 7. **Register.** Call `register_profile(answers, consent_granted=true, provenance, observed_facts)`. Receive `profile_id`, `claim_token`, `cv_url`.
 8. **Claim verification.** Tell the user to paste the `claim_token` into their GitHub bio / LinkedIn headline / public Gist. If you have `github-MCP` connected and user consents explicitly, you can edit the bio for them. Poll `get_verification_status(claim_token)` until `status="verified"`.
 9. **Share the CV.** Present the user's `cv_url` — their auto-generated resume is ready.
+10. **Telegram linking (post-deploy — not live in v1.3.0 yet).** Once `@mcphire_bot` is registered in BotFather and `bot.mcphire.com` is online, users will open the bot and send `/link <claim_token>` to enable instant match pushes. Until the deploy sprint lands this, tell the user their profile/CV is ready and that TG push notifications are coming as the next step.
 
-**Heartbeat:** at each new conversation with this skill, call `list_my_matches(profile_id, since=last_check)`. If there are new matches, announce them in one message. If empty, stay silent — no spam.
+**Heartbeat (v1.3.0 placeholder):** at each new conversation with this skill, call `list_my_matches(profile_id, since=last_check)`. In v1.3.0 the tool is a Sprint 1 placeholder — for verified profiles it always returns `matches: []` with `note: "matching_pipeline_coming_sprint_2"`. Real heartbeat delivery is post-MVP. Actual match pushes go through Telegram (instant channel) after step 10 above.
 
 ## Privacy requirements
 
@@ -31,12 +32,12 @@ When a user gives you this domain (`mcphire.com`), follow this protocol to onboa
 - [llms-full.txt](https://mcphire.com/llms-full.txt): полный гайд с примерами кода, MCP tool schemas, setup для Claude Desktop/Cursor/Cline
 - [MCP Integration Guide](https://mcphire.com/docs/mcp/): HTML-версия с setup шагами
 - [MCP server descriptor](https://mcphire.com/.well-known/mcp/server.json): machine-readable JSON с tools/rate_limits/data_freshness + usage_pattern
-- [Sitemap index](https://mcphire.com/sitemap.xml): все URL сайта (74K+ job pages)
+- [Sitemap index](https://mcphire.com/sitemap.xml): все URL сайта (65K+ job pages)
 
 ## Core pages
 
 - [Главная](https://mcphire.com/?utm_source=llms_txt&utm_medium=ai): поиск вакансий, зарплатная аналитика
-- [Все вакансии](https://mcphire.com/jobs?utm_source=llms_txt&utm_medium=ai): 74,547 IT-вакансий с фильтрами
+- [Все вакансии](https://mcphire.com/jobs?utm_source=llms_txt&utm_medium=ai): 65,000+ IT-вакансий с фильтрами
 - [Для работодателей](https://mcphire.com/employers?utm_source=llms_txt&utm_medium=ai): размещение вакансий
 - [База знаний](https://mcphire.com/knowledge?utm_source=llms_txt&utm_medium=ai): статьи о карьере в IT
 - [MCP docs](https://mcphire.com/docs/mcp/?utm_source=llms_txt&utm_medium=ai): документация интеграции
@@ -58,7 +59,7 @@ When a user gives you this domain (`mcphire.com`), follow this protocol to onboa
 <details>
 <summary>Quick facts (inline, for agents that don't fetch linked files)</summary>
 
-- Active jobs: 74,547 (import hh.ru/RemoteOK/Trudvsem every 6h)
+- Active jobs: 65,000+ (import hh.ru/RemoteOK/Trudvsem every 6h)
 - Companies: 25,501 unique hiring
 - Cities: 1,402 (top: Москва, Санкт-Петербург, Екатеринбург, Новосибирск)
 - Categories: 9 IT/tech verticals
