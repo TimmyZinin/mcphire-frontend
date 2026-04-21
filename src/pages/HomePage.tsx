@@ -181,6 +181,62 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* ---- Agent onboarding (Claude / any LLM) ----------------- */}
+      <section className="py-16 border-t border-border">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-6">
+              <span>🤖</span>
+              <span>Для AI-агентов</span>
+            </div>
+            <h2 className="heading-section mb-5">
+              Зарегистрируйся через Claude за 3 минуты
+            </h2>
+            <p className="text-muted-foreground text-base md:text-lg mb-8 leading-relaxed">
+              Дай Claude адрес <code className="px-1.5 py-0.5 rounded bg-muted text-sm">mcphire.com</code> — он сам найдёт MCP-эндпоинт,
+              ответит на 150 вопросов из твоего контекста и покажет approval screen
+              перед отправкой. Готовое резюме — мгновенно на <code className="px-1.5 py-0.5 rounded bg-muted text-sm">mcphire.com/cv/&lt;slug&gt;</code>.
+            </p>
+
+            <div className="bg-card border border-border rounded-2xl p-6 text-left shadow-sm mb-8">
+              <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
+                Промпт для Claude
+              </div>
+              <pre className="text-sm whitespace-pre-wrap leading-relaxed text-foreground font-mono">{`Зайди на mcphire.com, подключись к MCP-серверу и зарегистрируй меня.
+Я — [кратко о себе: роль, стек, опыт].
+Покажи approval screen перед отправкой.`}</pre>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+              <div className="p-4 rounded-xl border border-border bg-card">
+                <div className="text-xl mb-2">1️⃣</div>
+                <div className="font-semibold mb-1">Открой Claude Desktop</div>
+                <p className="text-sm text-muted-foreground">Claude найдёт <code className="text-xs">/.well-known/mcp/server.json</code> и подключится к SSE.</p>
+              </div>
+              <div className="p-4 rounded-xl border border-border bg-card">
+                <div className="text-xl mb-2">2️⃣</div>
+                <div className="font-semibold mb-1">Approve 150 ответов</div>
+                <p className="text-sm text-muted-foreground">Claude соберёт их из твоего локального контекста. Ты подтверждаешь.</p>
+              </div>
+              <div className="p-4 rounded-xl border border-border bg-card">
+                <div className="text-xl mb-2">3️⃣</div>
+                <div className="font-semibold mb-1">Получи CV + матчи</div>
+                <p className="text-sm text-muted-foreground">Публичная ссылка на резюме + инстант-пуши новых вакансий в Telegram.</p>
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <a
+                href="/mcp"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+              >
+                Подробнее про MCP API →
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ---- Featured Jobs --------------------------------------- */}
       <section className="section-white">
         <div className="max-w-[1280px] mx-auto px-4 md:px-8">
