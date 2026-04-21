@@ -181,7 +181,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ---- Agent onboarding (Claude / any LLM) ----------------- */}
+      {/* ---- Agent onboarding (Moltbook-style: one canonical prompt) ---- */}
       <section className="py-16 border-t border-border">
         <div className="max-w-[1280px] mx-auto px-4 md:px-8">
           <div className="max-w-3xl mx-auto text-center">
@@ -190,47 +190,84 @@ const HomePage = () => {
               <span>Для AI-агентов</span>
             </div>
             <h2 className="heading-section mb-5">
-              Зарегистрируйся через Claude за 3 минуты
+              Твой AI-агент регистрирует тебя. За 3 минуты.
             </h2>
             <p className="text-muted-foreground text-base md:text-lg mb-8 leading-relaxed">
-              Дай Claude адрес <code className="px-1.5 py-0.5 rounded bg-muted text-sm">mcphire.com</code> — он сам найдёт MCP-эндпоинт,
-              ответит на 150 вопросов из твоего контекста и покажет approval screen
-              перед отправкой. Готовое резюме — мгновенно на <code className="px-1.5 py-0.5 rounded bg-muted text-sm">mcphire.com/cv/&lt;slug&gt;</code>.
+              Отправь своему агенту (Claude, Cursor, Cline, любой MCP-клиент) одну строку ниже. Он прочитает инструкцию из <code className="px-1.5 py-0.5 rounded bg-muted text-sm">skill.md</code>, соберёт ответы на ~150 вопросов из твоего локального контекста, покажет approval screen — ты жмёшь «ок», получаешь публичное CV + instant TG-пуши матчей.
             </p>
 
-            <div className="bg-card border border-border rounded-2xl p-6 text-left shadow-sm mb-8">
-              <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
-                Промпт для Claude
+            <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-left shadow-lg mb-8">
+              <div className="text-xs uppercase tracking-wider text-primary mb-3 font-semibold">
+                Отправь это своему агенту
               </div>
-              <pre className="text-sm whitespace-pre-wrap leading-relaxed text-foreground font-mono">{`Зайди на mcphire.com, подключись к MCP-серверу и зарегистрируй меня.
-Я — [кратко о себе: роль, стек, опыт].
-Покажи approval screen перед отправкой.`}</pre>
+              <pre className="text-base md:text-lg whitespace-pre-wrap leading-relaxed text-foreground font-mono">{`Read https://mcphire.com/skill.md and follow the instructions to register me on mcphire. Show me the approval screen before calling register_profile.`}</pre>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left mb-10">
               <div className="p-4 rounded-xl border border-border bg-card">
                 <div className="text-xl mb-2">1️⃣</div>
-                <div className="font-semibold mb-1">Открой Claude Desktop</div>
-                <p className="text-sm text-muted-foreground">Claude найдёт <code className="text-xs">/.well-known/mcp/server.json</code> и подключится к SSE.</p>
+                <div className="font-semibold mb-1">Отправь агенту</div>
+                <p className="text-sm text-muted-foreground">Одну строку выше. Агент сам читает skill.md и знает что делать.</p>
               </div>
               <div className="p-4 rounded-xl border border-border bg-card">
                 <div className="text-xl mb-2">2️⃣</div>
-                <div className="font-semibold mb-1">Approve 150 ответов</div>
-                <p className="text-sm text-muted-foreground">Claude соберёт их из твоего локального контекста. Ты подтверждаешь.</p>
+                <div className="font-semibold mb-1">Подтверди ответы</div>
+                <p className="text-sm text-muted-foreground">Агент покажет approval screen с собранными данными. Правишь, жмёшь «ок».</p>
               </div>
               <div className="p-4 rounded-xl border border-border bg-card">
                 <div className="text-xl mb-2">3️⃣</div>
-                <div className="font-semibold mb-1">Получи CV + матчи</div>
+                <div className="font-semibold mb-1">CV + матчи</div>
                 <p className="text-sm text-muted-foreground">Публичная ссылка на резюме + инстант-пуши новых вакансий в Telegram.</p>
               </div>
             </div>
 
-            <div className="mt-8">
+            <details className="text-left bg-muted/40 border border-border rounded-xl p-5">
+              <summary className="cursor-pointer text-sm font-semibold text-muted-foreground hover:text-foreground">
+                Если MCP не настроен — технические детали подключения
+              </summary>
+              <div className="mt-4 space-y-4 text-sm text-muted-foreground">
+                <p>
+                  Один раз в терминале (macOS / Linux / WSL):
+                </p>
+                <pre className="text-xs whitespace-pre-wrap leading-relaxed text-foreground font-mono bg-background p-3 rounded border border-border">{`curl -fsSL https://mcphire.com/install.sh | bash`}</pre>
+                <p>
+                  Или вручную добавь в <code className="text-xs">claude_desktop_config.json</code>:
+                </p>
+                <pre className="text-xs whitespace-pre-wrap leading-relaxed text-foreground font-mono bg-background p-3 rounded border border-border">{`{
+  "mcpServers": {
+    "mcphire": {
+      "type": "sse",
+      "url": "https://mcp.mcphire.com/sse"
+    }
+  }
+}`}</pre>
+                <p className="text-xs">
+                  Путь к файлу: macOS <code>~/Library/Application Support/Claude/</code> · Windows <code>%APPDATA%/Claude/</code>. Полностью quit Claude Desktop (⌘Q / File → Quit) и запусти заново.
+                </p>
+                <p className="text-xs">
+                  Нет MCP? REST fallback живёт по адресу <code>https://api.mcphire.com/api/v1/candidate/register</code> — любой агент с <code>curl</code> может зарегать человека без MCP-клиента.
+                </p>
+              </div>
+            </details>
+
+            <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm">
+              <a
+                href="https://mcphire.com/skill.md"
+                className="font-semibold text-primary hover:text-primary/80 transition-colors"
+              >
+                skill.md (canonical) →
+              </a>
               <a
                 href="/mcp"
-                className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+                className="font-semibold text-muted-foreground hover:text-foreground transition-colors"
               >
-                Подробнее про MCP API →
+                MCP API docs →
+              </a>
+              <a
+                href="https://mcphire.com/.well-known/mcp/server.json"
+                className="font-semibold text-muted-foreground hover:text-foreground transition-colors"
+              >
+                server.json (manifest) →
               </a>
             </div>
           </div>
