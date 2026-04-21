@@ -1,6 +1,6 @@
 # mcphire-frontend
 
-Публичный веб-интерфейс **MCPHire** — MCP-first job marketplace для России. React 18 SPA с SSG для 3 000+ вакансий + публичные CV-страницы кандидатов + agent-discovery манифест для AI-клиентов (Claude Desktop, Cursor, Cline).
+Публичный веб-интерфейс **MCPHire** — MCP-first job marketplace. React 18 SPA с SSG для ~3 000 вакансий + публичные CV-страницы кандидатов + agent-discovery манифест для AI-клиентов (Claude Desktop, Cursor, Cline). Language- и currency-agnostic (на стороне данных любая ISO-4217, в UI готовимся к RU/EN toggle).
 
 **Backend:** [`TimmyZinin/mcphire-mcp`](https://github.com/TimmyZinin/mcphire-mcp) (FastAPI + FastMCP + 6 Docker services).
 

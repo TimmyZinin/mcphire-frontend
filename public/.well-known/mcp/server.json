@@ -1,38 +1,50 @@
 {
   "name": "mcphire",
   "version": "1.4.0-alpha",
-  "description": "MCPHire — MCP-first IT job marketplace for Russia. 59,000+ active vacancies. Two-sided: candidates register via Claude Desktop (10 candidate tools, 150-Q onboarding), and employers register companies + post vacancies via Claude too (5 employer tools, 40-Q onboarding, S13).",
+  "description": "MCPHire — MCP-first job marketplace. Two-sided: candidates register through Claude Desktop (10 tools, ~150-question onboarding) and employers register companies + post vacancies through Claude (5 tools, ~40-question onboarding). Primary audience today is Russian-speaking tech, but the data model, tools, and documentation are language- and currency-agnostic; any company can register and any candidate can apply regardless of location.",
   "endpoint": "https://mcp.mcphire.com/sse",
   "transport": "sse",
   "protocol": "JSON-RPC 2.0",
+  "supported_languages": ["ru", "en"],
+  "default_currency": "RUB",
+  "currency_policy": "All salary fields accept any ISO-4217 currency code (e.g. RUB, USD, EUR, GBP, AED, TRY, KZT). RUB is the default when currency is omitted because most existing job data is denominated in it, not because the service is Russia-only.",
   "authentication": {
     "model": "sentinel_plus_payload_scoped",
-    "notes": "MCP stream has no bearer. Discovery/search tools (search_jobs, get_job_details, get_salary_stats, get_registration_questions) and sentinel-backed writes (apply_to_job, get_my_applications) attribute to a shared MCP sentinel user derived from uuid5(NAMESPACE_DNS, 'mcp.mcphire.com'). Profile-scoped tools (list_my_matches, get_my_cv) require profile_id (UUID) in payload — the UUID functions as a secret returned only to the registering client. get_verification_status takes claim_token instead. register_profile is open but rate-limited 3/day per IP and rejects requests without consent_granted=true. Per-profile bearer tokens are post-MVP."
+    "notes": "MCP stream has no bearer. Discovery/search tools (search_jobs, get_job_details, get_salary_stats, get_registration_questions, get_employer_questions) and sentinel-backed writes (apply_to_job, get_my_applications) attribute to a shared MCP sentinel user derived from uuid5(NAMESPACE_DNS, 'mcp.mcphire.com'). Profile-scoped read tools (list_my_matches, get_my_cv) currently take profile_id (UUID) as a payload-scoped secret — a stronger session_token is planned and tracked as tech debt. get_verification_status takes claim_token. apply_to_job accepts optional claim_token to structurally link the application to the candidate's agent_profile. register_profile and register_employer_profile require consent_granted=true."
   },
   "documentation": "https://mcphire.com/llms-full.txt",
   "usage_pattern": {
-    "onboarding": [
-      "1. Call get_registration_questions() — receive 150 questions in 11 sections.",
-      "2. Answer each from user's local context (MD files, git log, ~/.claude/memory, prior conversations).",
-      "3. Attach provenance (source_excerpt + confidence) for 8 critical fields (seniority, years, comp, etc).",
-      "4. Collect observed_facts (SPO triples) as side-channel during reading.",
+    "candidate_onboarding": [
+      "1. Call get_registration_questions(section?, language?) — ~150 questions in 11 sections; pass language='en' for English wording.",
+      "2. Answer each from the user's local context (MD files, git log, ~/.claude/memory, prior conversations).",
+      "3. Attach provenance (source_excerpt + confidence) for critical fields (seniority, years, compensation).",
+      "4. Collect observed_facts (SPO triples) as a side-channel while reading context.",
       "5. SHOW USER an approval screen with all answers + facts. Wait for explicit 'ok'. Never skip this step.",
       "6. Call register_profile(answers, consent_granted=true, provenance, observed_facts).",
-      "7. User inserts returned claim_token into GitHub bio / LinkedIn / Gist (or Claude updates bio via github-MCP).",
-      "8. Poll get_verification_status(claim_token) until verified.",
-      "9. Show user cv_url — their auto-generated resume, ready to share.",
-      "10. Telegram linking (live). Ask the user to open @mcphire_match_bot in Telegram and send /link <claim_token> to wire the profile to instant match pushes. Webhook at https://bot.mcphire.com (TLS active since 2026-04-21)."
+      "7. User inserts the returned claim_token into GitHub bio / LinkedIn headline / pinned Gist (or Claude updates the bio via an appropriate MCP).",
+      "8. Poll get_verification_status(claim_token) until status is 'verified'.",
+      "9. Share cv_url — the user's auto-generated public resume.",
+      "10. Ask the user to open @mcphire_match_bot in Telegram and send /link <claim_token> to enable instant match pushes."
+    ],
+    "employer_onboarding": [
+      "1. Call get_employer_questions(section?, language?) — ~40 questions in 7 sections (company, team, culture, hiring_now, comp_band, process, integrations).",
+      "2. Answer from GitHub org, website, careers page, README, team page.",
+      "3. SHOW USER an approval screen. Wait for explicit 'ok'.",
+      "4. Call register_employer_profile(answers, consent_granted=true) → receive employer_id + employer_url.",
+      "5. Call post_vacancy(employer_id, title, description, skills, salary_from, salary_to, currency, level, work_format, city, requirements) for each opening. Matching + Telegram push to candidates fires automatically.",
+      "6. Use get_my_vacancies(employer_id) to monitor applicant counts.",
+      "7. Use get_applicants(employer_id, vacancy_id) to review responders (cv_url + stack summary only; email and phone are revealed only after a consent-gated shortlist → interest → interview-accept flow that is rolled out iteratively)."
     ],
     "heartbeat": [
       "At each conversation open, call list_my_matches(profile_id, since=last_check).",
-      "Real matches are returned: union of notification_deliveries (append-only log) and notification_queue (pending). Each match carries score, reasons, job metadata (title, company, salary, slug) and a source flag ('delivered' | 'queued'). Instant pushes also fire into Telegram the moment a matching vacancy is indexed.",
+      "Real matches are returned as a union of notification_deliveries (append-only log) and notification_queue (pending). Each match carries score, reasons, job metadata (title, company, salary, currency, slug) and a source flag ('delivered' | 'queued'). Instant pushes also fire into Telegram the moment a matching vacancy is indexed.",
       "Stay silent if empty — no spam."
     ]
   },
   "tools": [
     {
       "name": "search_jobs",
-      "description": "Search 65,000+ active IT jobs from Russian companies. Filters: query (text), city, salary_from (RUB/month), skills (comma-separated ILIKE), remote (bool → work_format IN remote/hybrid), level (junior|middle|senior|lead), limit, offset.",
+      "description": "Search active job vacancies across the platform. Accepts query (free text against title/description), city (ILIKE), salary_from (integer in the currency of the jobs; no automatic conversion), skills (comma-separated keywords), remote (boolean → work_format IN remote/hybrid), level (junior|middle|senior|lead), limit (1..100, default 20), offset. Returns rows with currency preserved per job.",
       "example": {
         "query": "python ml",
         "city": "Москва",
@@ -44,48 +56,48 @@
     },
     {
       "name": "get_job_details",
-      "description": "Get full job details by UUID. Requires job_id (UUID only — slug lookup not supported by this tool).",
+      "description": "Return full job details by UUID. job_id must be a UUID (slug lookup not supported by this tool).",
       "example": {
         "job_id": "a3f91c0e-1234-5678-90ab-cdef12345678"
       }
     },
     {
       "name": "get_salary_stats",
-      "description": "Aggregate salary stats grouped by level and currency. Optional category keyword narrows by job title (ILIKE). Returns averages + counts per (level,currency).",
+      "description": "Aggregate salary statistics grouped by seniority level and currency. Optional category keyword narrows by job title (ILIKE). Returns avg_salary_from, avg_salary_to, job_count, currency per row.",
       "example": {
         "category": "Python"
       }
     },
     {
       "name": "apply_to_job",
-      "description": "Submit application (attributed to sentinel MCP user) with optional cover_letter. Requires job_id (UUID). Rate-limited to 10/hour.",
+      "description": "Submit an application for a job. Requires job_id (UUID). Optional cover_letter and claim_token. When claim_token is provided the application is structurally linked to the candidate's agent_profile so the employer can see it in get_applicants with the candidate's CV context; without claim_token the application is attributed only to the shared MCP sentinel user and will not surface in employer views. UPSERT semantics: re-applying with the same (job_id, sentinel_user) updates the row rather than erroring.",
       "example": {
         "job_id": "a3f91c0e-1234-5678-90ab-cdef12345678",
-        "cover_letter": "..."
+        "cover_letter": "Short motivation text",
+        "claim_token": "mcphire-verify-a1b2c3d4"
       }
     },
     {
       "name": "get_my_applications",
-      "description": "List applications made by the sentinel MCP user in this session. No filter params.",
+      "description": "List applications submitted in this MCP session via the shared sentinel user. No parameters.",
       "example": {}
     },
     {
       "name": "get_registration_questions",
-      "description": "Returns the 150-question catalog for M2M onboarding. Each question has id, section (stack|experience|style|availability|social|artifacts|comp|intent|red_flags|domain|agent), text_ru, type, options, matchable, provenance_required, hint_for_agent.",
+      "description": "Return the candidate onboarding catalog of ~150 questions grouped into 11 sections. Optional section filter; optional language ('ru' default, 'en' supported). Each question has id, section, localized text, type, options, matchable, provenance_required, and an agent hint.",
       "example": {
-        "section": "stack"
+        "section": "stack",
+        "language": "en"
       }
     },
     {
       "name": "register_profile",
-      "description": "Create an agent profile AFTER explicit user approval. Requires consent_granted=true + provenance for critical fields. Returns profile_id, claim_token, cv_url.",
+      "description": "Create a candidate agent profile after the user has explicitly approved the compiled answers. Requires consent_granted=true, proof_url, and provenance for the critical fields. Returns profile_id, claim_token, claim_instructions, expires_at, cv_url.",
       "example": {
         "answers": {
-          "q_stack_primary_languages": [
-            "python"
-          ],
+          "q_stack_primary_languages": ["python"],
           "q_comp_floor_usd_monthly": 5000,
-          "q_artifacts_proof_url_primary": "https://github.com/marina"
+          "q_artifacts_proof_url_primary": "https://github.com/example"
         },
         "consent_granted": true,
         "provenance": {
@@ -99,14 +111,14 @@
     },
     {
       "name": "get_verification_status",
-      "description": "Check whether claim_token has been detected in proof_url bio. Triggers immediate re-check in addition to 15-min cron.",
+      "description": "Check whether the claim_token has been detected in the candidate's proof_url. Triggers an immediate re-check in addition to the background 15-minute cron.",
       "example": {
         "claim_token": "mcphire-verify-a1b2c3d4"
       }
     },
     {
       "name": "list_my_matches",
-      "description": "Heartbeat endpoint — call at conversation start. Returns real matches from both the append-only notification_deliveries log and the live notification_queue, joined with jobs + companies. Each match includes job_id, title, company, salary_from/to, currency, work_format, slug, score, reasons (why we matched), matched_at, source ('delivered' | 'queued'). profile_id must be a UUID returned by register_profile.",
+      "description": "Heartbeat endpoint — call this at the start of every new conversation. Returns matches as a union of notification_deliveries (append-only log) and notification_queue (pending), joined with jobs + companies. Each match includes job_id, title, company, salary_from/to, currency, work_format, slug, score, reasons, matched_at, source ('delivered' | 'queued'). profile_id is a UUID returned by register_profile.",
       "example": {
         "profile_id": "7b2f8e4a-9c33-4a1e-bb5f-e0d1a28c7f91",
         "since": "2026-04-15T10:00:00Z",
@@ -115,29 +127,30 @@
     },
     {
       "name": "get_my_cv",
-      "description": "Returns CV URL + photo + social links + observed_facts summary for the user's auto-generated resume.",
+      "description": "Return the candidate's auto-generated CV URL plus photo, social links, and an observed_facts summary.",
       "example": {
         "profile_id": "7b2f8e4a-9c33-4a1e-bb5f-e0d1a28c7f91"
       }
     },
     {
       "name": "get_employer_questions",
-      "description": "SPRINT 13. Returns ~40 employer onboarding questions in 7 sections (company, team, culture, hiring_now, comp_band, process, integrations). Claude reads them and answers from GitHub org, website, careers page, README.",
+      "description": "Return the employer onboarding catalog of ~40 questions grouped into 7 sections (company, team, culture, hiring_now, comp_band, process, integrations). Optional section filter; optional language ('ru' default, 'en' supported). Claude reads a company's context (GitHub org, website, careers page, README) and answers these before showing an approval screen.",
       "example": {
-        "section": "company"
+        "section": "company",
+        "language": "en"
       }
     },
     {
       "name": "register_employer_profile",
-      "description": "SPRINT 13. Create an employer profile AFTER explicit user approval (q_consent_company_representation=true). Required keys: q_company_legal_name, q_company_slug (url-safe), q_team_size, q_team_remote_split, q_team_lang, q_comp_currency, q_consent_company_representation. Returns {employer_id, employer_url, slug, name, verified}.",
+      "description": "Create an employer profile after the user has explicitly approved the compiled answers. Requires q_consent_company_representation=true plus q_company_legal_name, q_company_slug (URL-safe), q_team_size, q_team_remote_split, q_team_lang, q_comp_currency. Returns employer_id, employer_url, slug, name, verified.",
       "example": {
         "answers": {
-          "q_company_legal_name": "SBFF",
-          "q_company_slug": "sbff",
+          "q_company_legal_name": "Example Co",
+          "q_company_slug": "example-co",
           "q_team_size": "6-20",
           "q_team_remote_split": "all_remote",
-          "q_team_lang": "ru_en",
-          "q_comp_currency": "rub",
+          "q_team_lang": "en",
+          "q_comp_currency": "usd",
           "q_consent_company_representation": true
         },
         "consent_granted": true
@@ -145,23 +158,23 @@
     },
     {
       "name": "post_vacancy",
-      "description": "SPRINT 13. Create a job attributed to employer. Triggers pg_notify('job_event') → dispatcher from S7 matches the 59K-candidate pool and pushes top-N to Telegram automatically. Returns {job_id, slug, job_url, employer_id, status}.",
+      "description": "Create a job vacancy attributed to an employer. Inserting the job fires a database notify event that asynchronously matches the existing candidate pool and pushes relevant matches to Telegram. Currency accepts any ISO-4217 code; salary_from/salary_to are integers in that currency. Returns job_id, slug, job_url, employer_id, status.",
       "example": {
         "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
-        "title": "Senior Backend Python",
-        "description": "...",
+        "title": "Senior Backend Engineer",
+        "description": "We are hiring ...",
         "skills": ["python", "fastapi"],
-        "salary_from": 280000,
-        "salary_to": 450000,
-        "currency": "RUB",
+        "salary_from": 4500,
+        "salary_to": 7000,
+        "currency": "USD",
         "level": "senior",
         "work_format": "remote",
-        "city": "Moscow"
+        "city": null
       }
     },
     {
       "name": "get_my_vacancies",
-      "description": "SPRINT 13. List open vacancies for this employer with per-job applicant_count. Ordered posted_at DESC.",
+      "description": "List open vacancies posted by this employer with per-job applicant_count (live COUNT over the applications table). Ordered by posted_at DESC.",
       "example": {
         "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
         "limit": 20
@@ -169,7 +182,7 @@
     },
     {
       "name": "get_applicants",
-      "description": "SPRINT 13. List applicants for employer's vacancy with MASKED PII — cv_url + stack_summary + seniority only. Email/phone hidden until S14 shortlist + S15 interview-invite accept. 403 if vacancy belongs to different employer.",
+      "description": "List applicants for an employer's vacancy. Returns cv_url + stack_summary + seniority only. Email and phone are never returned by this tool — they become available only after a future consent-gated shortlist / interview-invite / accept flow. Returns 403 if the vacancy belongs to a different employer.",
       "example": {
         "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
         "vacancy_id": "c51443dd-8651-4e2c-be37-3a07b50cee89"
@@ -177,25 +190,27 @@
     }
   ],
   "rate_limits": {
-    "unauthenticated": "60 requests/minute per IP",
-    "authenticated": "300 requests/minute per user",
-    "apply_to_job": "10/hour per user",
-    "register_profile": "3/day per IP"
+    "global_default": "100 requests/minute per IP (slowapi)",
+    "notes": "Per-tool overrides are applied in backend routers as needed. No tool guarantees a specific limit in this manifest — treat values in backend/app/main.py as source of truth."
   },
   "data_freshness": {
-    "hh_ru_import": "every 6 hours",
-    "remoteok_import": "every 12 hours",
-    "trudvsem_import": "daily",
+    "notes": "Jobs come from two paths: (1) scheduled imports from public job boards where available, and (2) employer-posted vacancies via post_vacancy. Claim verification runs on a 15-minute cron.",
     "ssg_regen": "daily 04:00 UTC",
     "sitemap_regen": "daily 05:00 UTC",
     "claim_verification_cron": "every 15 minutes"
   },
-  "questions_catalog": {
-    "version": "0.3.0",
-    "total": 150,
-    "sections": 11,
-    "hard_matchable": 30,
-    "soft_fields": 120,
-    "provenance_required_fields": 8
+  "questions_catalogs": {
+    "candidate": {
+      "version": "0.3.0",
+      "total": 150,
+      "sections": 11,
+      "languages": ["ru", "en"]
+    },
+    "employer": {
+      "version": "0.1.0",
+      "total": 40,
+      "sections": 7,
+      "languages": ["ru", "en"]
+    }
   }
 }

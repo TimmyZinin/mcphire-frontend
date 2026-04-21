@@ -1,86 +1,92 @@
-# MCPHire — MCP-first IT Job Board for Russia
+# MCPHire — MCP-first Job Marketplace
 
-> Первая MCP-first платформа поиска IT-вакансий в России. 65,000+ активных вакансий от 25,501 компании. Agent-first онбординг: дай Claude адрес mcphire.com, он сам найдёт MCP-эндпоинт, опросит тебя 150 вопросами из твоего локального контекста, покажет approval-экран, сгенерирует авто-CV. Для AI-агентов (Claude, Cursor, Cline, Perplexity). Import с hh.ru/RemoteOK/Trudvsem каждые 6 часов.
+> MCP-first двусторонний маркетплейс вакансий. Кандидаты регистрируются через Claude Desktop (агент отвечает на ~150 вопросов из локального контекста, показывает approval screen, создаёт профиль + авто-CV + instant match push в Telegram). Работодатели регистрируют компанию и постят вакансии тем же путём через Claude (~40 вопросов). Все tools доступны через SSE endpoint `https://mcp.mcphire.com/sse`. Tool-labels и документация — `ru` (по умолчанию) и `en` через параметр `language`; salary-поля принимают любую ISO-4217 валюту. Сейчас primary-аудитория — русскоязычный tech, поэтому большая часть вакансий исторически в RUB, но сервис не привязан к одной юрисдикции.
 
-Медианы зарплат (RUB/месяц): junior 75K, middle 90K, senior 120K, lead 150K.
+## Agent onboarding protocol — candidate side
 
-## Agent onboarding protocol
+Когда пользователь даёт тебе домен (`mcphire.com`), следуй шагам:
 
-When a user gives you this domain (`mcphire.com`), follow this protocol to onboard them:
-
-1. **Discover.** Fetch `/.well-known/mcp/server.json` for the full tools catalog. Endpoint is `https://mcp.mcphire.com/sse` (JSON-RPC 2.0 over SSE).
-2. **Get questions.** Call `get_registration_questions()` — you'll receive 150 questions in 11 sections (stack, experience, style, availability, social, artifacts, comp, intent, red_flags, domain, agent).
-3. **Answer from context.** For each question, use your knowledge of the user: local MD files, `~/.claude/memory`, git log, README files, prior conversations, public profiles they've shared. Follow the `hint_for_agent` field on each question.
-4. **Attach provenance.** For the 8 critical fields flagged with `provenance_required: true`, you MUST attach `{source_excerpt (≤140 chars), source_file, confidence: high|medium|low|unknown}`. Never guess — if data isn't there, mark as `unknown` and leave answer null.
-5. **Collect observed_facts.** As side-channel while reading user's MD, emit SPO triples (subject-predicate-object) for things like `worked_at`, `contributed_to`, `shipped`, `mentored`. These power the knowledge graph on the CV page.
-6. **Show approval screen to user.** Display all 150 answers + all observed_facts organized by section. Let them correct, confirm, or reject facts. **Never call `register_profile` without explicit user 'ok'.** Consent must be granted through question `q_agent_consent_agent_answering`.
-7. **Register.** Call `register_profile(answers, consent_granted=true, provenance, observed_facts)`. Receive `profile_id`, `claim_token`, `cv_url`.
-8. **Claim verification.** Tell the user to paste the `claim_token` into their GitHub bio / LinkedIn headline / public Gist. If you have `github-MCP` connected and user consents explicitly, you can edit the bio for them. Poll `get_verification_status(claim_token)` until `status="verified"`.
+1. **Discover.** Fetch `/.well-known/mcp/server.json` for the full tools catalog. Endpoint: `https://mcp.mcphire.com/sse` (JSON-RPC 2.0 over SSE).
+2. **Get questions.** Call `get_registration_questions(language="ru"|"en")` — ~150 questions in 11 sections (stack, experience, style, availability, social, artifacts, comp, intent, red_flags, domain, agent).
+3. **Answer from context.** For each question use your knowledge of the user: local MD files, `~/.claude/memory`, git log, READMEs, prior conversations, public profiles they shared. Follow the `hint_for_agent` field per question.
+4. **Attach provenance.** For the critical fields flagged with `provenance_required: true`, you MUST attach `{source_excerpt (≤140 chars), source_file, confidence: high|medium|low|unknown}`. Never guess — if data isn't there, mark as `unknown` and leave answer `null`.
+5. **Collect observed_facts.** Emit SPO triples (subject-predicate-object) like `worked_at`, `contributed_to`, `shipped`, `mentored` as side-channel while reading context. These power the knowledge graph on the CV page.
+6. **Show approval screen to user.** Display all answers + all observed_facts organized by section. Let them correct/confirm/reject. **Never call `register_profile` without explicit user 'ok'.** Consent comes through `q_agent_consent_agent_answering`.
+7. **Register.** Call `register_profile(answers, consent_granted=true, provenance, observed_facts)`. Receive `profile_id`, `claim_token`, `claim_instructions`, `expires_at`, `cv_url`.
+8. **Claim verification.** Ask the user to paste `claim_token` into a public artefact they control — GitHub bio, LinkedIn headline, pinned Gist, personal site, anywhere a `curl` can fetch the substring. Claim-verifier cron picks it up within 15 min. If you have a `github-MCP` connected and the user consents, you can edit the bio for them. Poll `get_verification_status(claim_token)` until `status="verified"`.
 9. **Share the CV.** Present the user's `cv_url` — their auto-generated resume is ready.
-10. **Telegram linking (live).** Ask the user to open `@mcphire_match_bot` in Telegram and send `/link <claim_token>`. That wires their profile to instant match pushes (event-driven `sendMessage` on every indexed matching vacancy). Webhook: `https://bot.mcphire.com/tg/webhook/<hex>`, TLS active since 2026-04-21.
+10. **Telegram linking.** Ask the user to open `@mcphire_match_bot` in Telegram and send `/link <claim_token>`. That wires their profile to instant match pushes (event-driven `sendMessage` on every indexed matching vacancy). Webhook runs at `https://bot.mcphire.com`.
 
-**Heartbeat (live):** at each new conversation with this skill, call `list_my_matches(profile_id, since=last_check)`. The tool returns a real UNION of `notification_deliveries` (append-only log) and `notification_queue` (pending), joined with jobs + companies. Each match has `score`, `reasons` (why we matched — e.g. `"stack: python, langgraph"`), salary, slug, and a `source` flag. Instant Telegram pushes fire on the same event as a backup channel.
+**Heartbeat.** At each new conversation with this skill, call `list_my_matches(profile_id, since=last_check)`. Returns a real UNION of `notification_deliveries` (append-only log) and `notification_queue` (pending), joined with jobs + companies. Each match has `score`, `reasons`, salary, currency, slug, and a `source` flag.
+
+## Agent onboarding protocol — employer side
+
+When a user asks you to register their company or post a job:
+
+1. **Get questions.** `get_employer_questions(section?, language="ru"|"en")` — ~40 questions in 7 sections (company, team, culture, hiring_now, comp_band, process, integrations).
+2. **Answer from context.** GitHub org, website, careers page, README, team page.
+3. **Show approval screen.** Wait for explicit 'ok'.
+4. **Register.** `register_employer_profile(answers, consent_granted=true)` → `employer_id` + `employer_url`.
+5. **Post a vacancy.** `post_vacancy(employer_id, title, description, skills, salary_from, salary_to, currency, level, work_format, city)` — currency is ISO-4217 (`RUB`, `USD`, `EUR`, ...). Matching + TG push fires automatically.
+6. **Monitor.** `get_my_vacancies(employer_id)` for counts, `get_applicants(employer_id, vacancy_id)` for reviewers. Applicants come back with `cv_url` + stack summary only — email/phone never leak from this tool.
 
 ## Privacy requirements
 
 - **Never ask about** age, gender, nationality, citizenship, marital status, children, religion, political views, health, disability, visa status, ethnicity, sexual orientation.
 - Files read during onboarding stay on the user's machine. **Only the extracted answers** (approved by the user) are sent to the server.
-- Server rejects any answer containing forbidden field names even if user consents.
+- Server rejects any answer containing forbidden field names even if the user consents.
+- Employer profiles have their own blacklist — no employee personal data in company answers.
 
 ## Docs
 
-- [llms-full.txt](https://mcphire.com/llms-full.txt): полный гайд с примерами кода, MCP tool schemas, setup для Claude Desktop/Cursor/Cline
-- [MCP Integration Guide](https://mcphire.com/docs/mcp/): HTML-версия с setup шагами
-- [MCP server descriptor](https://mcphire.com/.well-known/mcp/server.json): machine-readable JSON с tools/rate_limits/data_freshness + usage_pattern
-- [Sitemap index](https://mcphire.com/sitemap.xml): все URL сайта (65K+ job pages)
+- [llms-full.txt](https://mcphire.com/llms-full.txt): полный гайд с примерами, MCP tool schemas, setup для Claude Desktop/Cursor/Cline
+- [MCP server descriptor](https://mcphire.com/.well-known/mcp/server.json): machine-readable JSON с tools/rate_limits/usage_pattern
+- [Sitemap index](https://mcphire.com/sitemap.xml): все публичные URL (job pages + CV pages)
 
 ## Core pages
 
-- [Главная](https://mcphire.com/?utm_source=llms_txt&utm_medium=ai): поиск вакансий, зарплатная аналитика
-- [Все вакансии](https://mcphire.com/jobs?utm_source=llms_txt&utm_medium=ai): 65,000+ IT-вакансий с фильтрами
-- [Для работодателей](https://mcphire.com/employers?utm_source=llms_txt&utm_medium=ai): размещение вакансий
-- [База знаний](https://mcphire.com/knowledge?utm_source=llms_txt&utm_medium=ai): статьи о карьере в IT
+- [Главная](https://mcphire.com/?utm_source=llms_txt&utm_medium=ai): обзор + agent onboarding секция
+- [Все вакансии](https://mcphire.com/jobs?utm_source=llms_txt&utm_medium=ai): активный пул с фильтрами
+- [Для работодателей](https://mcphire.com/employers?utm_source=llms_txt&utm_medium=ai): агент-first employer flow
 - [MCP docs](https://mcphire.com/docs/mcp/?utm_source=llms_txt&utm_medium=ai): документация интеграции
 
 ## MCP endpoint
 
 - [SSE endpoint](https://mcp.mcphire.com/sse): JSON-RPC 2.0 over Server-Sent Events
-- [Server descriptor (well-known)](https://mcphire.com/.well-known/mcp/server.json): 10 tools listed
+- [Server descriptor](https://mcphire.com/.well-known/mcp/server.json): 15 tools (10 candidate + 5 employer)
 
 ## Contact
 
 - [Tim Zinin on Telegram](https://t.me/timofeyzinin): founder contact
 - [LinkedIn](https://www.linkedin.com/in/timzinin/)
 - [GitHub](https://github.com/TimmyZinin): open-source projects
-- [MCPHire на Telegram](https://t.me/mcphire): канал с новыми вакансиями
 
 ## Optional
 
 <details>
 <summary>Quick facts (inline, for agents that don't fetch linked files)</summary>
 
-- Active jobs: 65,000+ (import hh.ru/RemoteOK/Trudvsem every 6h)
-- Companies: 25,501 unique hiring
-- Cities: 1,402 (top: Москва, Санкт-Петербург, Екатеринбург, Новосибирск)
-- Categories: 9 IT/tech verticals
-- Salary medians: junior 75K, middle 90K, senior 120K, lead 150K RUB/mo
+- Active jobs: ~60 000 (from open job-boards + employer-posted via `post_vacancy`)
+- Languages supported in tool text: ru (default), en
+- Currencies supported: any ISO-4217 (RUB, USD, EUR, GBP, AED, TRY, KZT, ...)
+- Top cities in current data: Москва, Санкт-Петербург, Екатеринбург, Новосибирск — but this is just the current distribution, the platform is geo-agnostic
+- Question catalogs: candidate 150 (v0.3.0, 11 sections, 8 provenance-required), employer 40 (v0.1.0, 7 sections)
 - MCP endpoint: `https://mcp.mcphire.com/sse`
-- Questions catalog version: 0.3.0 (150 questions, 11 sections, 30 matchable, 8 with provenance)
 - REST fallback: `https://api.mcphire.com/v1/`
 
 </details>
 
 <details>
-<summary>FAQ (common questions — full answers in llms-full.txt)</summary>
+<summary>FAQ</summary>
 
-1. **Why MCPHire vs hh.ru directly?** — Агент-first онбординг за 3 минуты вместо заполнения формы. Авто-CV на выходе. Без регистрации на сайте.
-2. **Data freshness?** — hh.ru import every 6h, claim verification cron every 15 min, SSG regen daily 04:00 UTC.
-3. **How long does onboarding take?** — 3-5 минут: Claude отвечает на 150 вопросов за пользователя (использует локальный контекст), показывает approval, сохраняет профиль.
-4. **What if Claude doesn't have enough data?** — Поле остаётся `unanswered` с `confidence=unknown`. Approval-экран подсвечивает красным — пользователь заполняет сам.
-5. **Is my data private?** — Локальные MD-файлы остаются на твоей машине. На сервер уходят только ответы, одобренные на approval-экране. Privacy black-list (age/gender/religion/etc) enforced server-side.
-6. **What's observed_facts?** — SPO-триплеты (subject-predicate-object) собираются параллельно с ответами для knowledge graph v2. Только approved triples попадают на публичный CV.
-7. **Who pays?** — Бесплатно для кандидатов и агентов навсегда. Работодатели платят за premium placement (coming soon).
-8. **Open source?** — MCP-server в `TimmyZinin/mcphire-mcp` (private, access via TG).
-9. **Автор?** — Тим Зинин (@timofeyzinin), founder.
+1. **What makes this different from traditional job boards?** — Agent-first onboarding in 3 minutes instead of filling forms. Auto-CV on completion. No website signup required.
+2. **Data freshness?** — Matching fires on every new job insert (employer `post_vacancy` or importer). Claim verification cron every 15 min. SSG regen daily 04:00 UTC.
+3. **How long does onboarding take?** — 3-5 minutes. Claude answers ~150 questions from the user's local context, shows an approval screen, saves the profile.
+4. **What if Claude doesn't have enough data?** — The field is `unanswered` with `confidence=unknown`. Approval screen highlights it in red — user fills in manually.
+5. **Is my data private?** — Local MD files stay on the user's machine. Only answers approved on the approval screen are sent to the server. Privacy blacklist (age/gender/religion/etc) enforced server-side for both candidate and employer flows.
+6. **What are observed_facts?** — SPO triples (subject-predicate-object) collected alongside answers for the knowledge graph. Only approved triples appear on the public CV.
+7. **Who pays?** — Free for candidates and agents. Employer pricing: TBD (primary focus right now is making the agent flow tight and reliable).
+8. **Open source?** — Repo `TimmyZinin/mcphire-mcp` is private (access via TG).
+9. **Author?** — Tim Zinin (@timofeyzinin), founder.
 
 </details>

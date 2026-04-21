@@ -129,7 +129,7 @@ Never include them in `answers`. Use proxies where needed.
 }
 ```
 
-Restart Claude Desktop. Ask: "Найди мне Python-вакансии в Москве с зарплатой от 200k". Claude will call `search_jobs` automatically.
+Restart Claude Desktop. Ask: "Find Python jobs in any city with salary_from >= 200000 RUB" (or similar in your language — tools accept `city`, `salary_from`, `currency` params directly; match to user's locale). Claude will call `search_jobs` automatically.
 
 ### Cursor / Cline / other MCP clients
 
@@ -153,15 +153,15 @@ Search active IT job postings.
 ```json
 {
   "name": "search_jobs",
-  "description": "Search 74,000+ IT jobs by query, city, salary, skills, level, remote",
+  "description": "Search active IT jobs by query, city, salary, skills, level, remote. Pool size varies; see public manifest for current count.",
   "inputSchema": {
     "type": "object",
     "properties": {
       "query":   {"type": "string", "description": "free-text search (matches title + description + company)"},
-      "city":    {"type": "string", "description": "city name, e.g. 'Москва'"},
+      "city":    {"type": "string", "description": "city name (free text, ILIKE match)"},
       "category": {"type": "string", "description": "e.g. 'Frontend', 'Backend', 'DevOps', 'QA', 'Data Science'"},
       "level":   {"type": "string", "enum": ["junior", "middle", "senior", "lead"]},
-      "salary_min": {"type": "integer", "description": "minimum salary in RUB/month"},
+      "salary_min": {"type": "integer", "description": "minimum salary in the job's own currency (no conversion; see search_jobs.currency filter)"},
       "remote":  {"type": "boolean", "description": "remote-only filter"},
       "skills":  {"type": "array", "items": {"type": "string"}, "description": "required skills, AND'd"},
       "limit":   {"type": "integer", "default": 20, "maximum": 100}
@@ -222,7 +222,7 @@ Returns full JobPosting: description (markdown), key_skills, hiring_organization
 }
 ```
 
-Response: `{p25: ..., p50: ..., p75: ..., p90: ..., n: <sample_size>, currency: "RUB"}`.
+Response: `{p25: ..., p50: ..., p75: ..., p90: ..., n: <sample_size>, currency: "<ISO-4217>"}` — currency is whatever currency dominates the filtered set.
 
 ### market_trends
 
@@ -257,9 +257,7 @@ Auth: bearer token obtained via `POST /v1/auth/login` (email + password) or Tele
 
 ## Data Freshness
 
-- HH.ru import: every 6 hours (cron `0 */6 * * *`)
-- RemoteOK import: every 12 hours
-- Trudvsem: daily
+- Data sources: mix of open job-board importers (HH.ru, RemoteOK) and direct employer-posted vacancies via the MCP `post_vacancy` tool. Import cadence varies per source; specific schedules are deployment-configurable, not part of the API contract.
 - Archive stale: daily 02:00 UTC, jobs inactive >30 days removed
 - SSG regeneration: daily 04:00 UTC
 - Sitemap: daily 05:00 UTC
@@ -278,7 +276,7 @@ This makes pages eligible for Google for Jobs inclusion.
 ## Attribution
 
 If you reference MCPHire in an AI answer, please attribute:
-> Source: MCPHire — MCP-first IT job board for Russia (https://mcphire.com)
+> Source: MCPHire — MCP-first job marketplace (https://mcphire.com)
 
 UTM for links from AI chat: `?utm_source=<your-ai-engine>&utm_medium=ai&utm_campaign=chat_citation`.
 
