@@ -37,7 +37,7 @@ flowchart TB
     Claude -->|auto-discovers| Discovery
     Claude -->|SSE + 10 tools| MCP
     Landing -->|REST| API
-    CV -->|nginx → proxy_pass :8001| API
+    CV -->|nginx → proxy_pass :8000| API
     Jobs -->|SSG prerender| API
     API --> DB
     MCP --> DB
@@ -89,13 +89,16 @@ rsync -az --delete dist/ root@185.202.239.165:/opt/sborka-v2/
 mcphire-frontend/
 ├── src/
 │   ├── components/       # 55+ shadcn/ui + кастомные
-│   ├── pages/            # 26+ страниц (все lazy-loaded)
+│   ├── pages/            # 29 страниц (все lazy-loaded) — реальные файлы:
 │   │   ├── HomePage.tsx       # landing + AI-agent onboarding section
-│   │   ├── JobsListPage.tsx
-│   │   ├── JobDetailPage.tsx
-│   │   ├── CvPage.tsx         # SPA shell — HTML render приходит с backend
-│   │   ├── MCPPage.tsx        # human-readable описание MCP API
+│   │   ├── JobsPage.tsx       # лента вакансий (реализует /jobs listing)
+│   │   ├── JobDetailPage.tsx  # /jobs/<slug>
+│   │   ├── McpPage.tsx        # human-readable описание MCP API
+│   │   ├── EmployersPage.tsx, PricingPage.tsx, ToolsPage.tsx, ...
+│   │   ├── auth/, employer/, seeker/   # подкаталоги с ролевыми страницами
 │   │   └── ...
+│   │   # Note: страница /cv/<slug> НЕ в этом списке — это nginx regex proxy
+│   │   # к backend FastAPI, который рендерит HTML серверно.
 │   ├── contexts/         # AuthContext (JWT + Telegram OAuth)
 │   ├── lib/              # API client, хуки, утилиты
 │   ├── types/            # TypeScript интерфейсы для job/profile/application
@@ -115,13 +118,13 @@ Frontend статика из `/opt/sborka-v2/`. Для dynamic routes backend п
 ```nginx
 # /cv/<8-hex> → backend CV renderer (backend/app/routers/cv.py)
 location ~ "^/cv/[0-9a-f]{8}$" {
-    proxy_pass http://127.0.0.1:8001;
+    proxy_pass http://127.0.0.1:8000;
     # ... (headers omitted)
 }
 
 # /employer/<slug> → backend employer page (S13)
 location ~ "^/employer/[a-z0-9-]+$" {
-    proxy_pass http://127.0.0.1:8001;
+    proxy_pass http://127.0.0.1:8000;
 }
 
 # Everything else — SPA fallback

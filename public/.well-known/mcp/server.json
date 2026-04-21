@@ -1,7 +1,7 @@
 {
   "name": "mcphire",
-  "version": "1.3.0",
-  "description": "MCPHire — MCP-first IT job board for Russia. 65,000+ active vacancies. Agent-first M2M onboarding: give Claude mcphire.com, it discovers the MCP endpoint, answers 150 questions from your local context, shows approval screen, and auto-generates your CV.",
+  "version": "1.4.0-alpha",
+  "description": "MCPHire — MCP-first IT job marketplace for Russia. 59,000+ active vacancies. Two-sided: candidates register via Claude Desktop (10 candidate tools, 150-Q onboarding), and employers register companies + post vacancies via Claude too (5 employer tools, 40-Q onboarding, S13).",
   "endpoint": "https://mcp.mcphire.com/sse",
   "transport": "sse",
   "protocol": "JSON-RPC 2.0",
@@ -118,6 +118,61 @@
       "description": "Returns CV URL + photo + social links + observed_facts summary for the user's auto-generated resume.",
       "example": {
         "profile_id": "7b2f8e4a-9c33-4a1e-bb5f-e0d1a28c7f91"
+      }
+    },
+    {
+      "name": "get_employer_questions",
+      "description": "SPRINT 13. Returns ~40 employer onboarding questions in 7 sections (company, team, culture, hiring_now, comp_band, process, integrations). Claude reads them and answers from GitHub org, website, careers page, README.",
+      "example": {
+        "section": "company"
+      }
+    },
+    {
+      "name": "register_employer_profile",
+      "description": "SPRINT 13. Create an employer profile AFTER explicit user approval (q_consent_company_representation=true). Required keys: q_company_legal_name, q_company_slug (url-safe), q_team_size, q_team_remote_split, q_team_lang, q_comp_currency, q_consent_company_representation. Returns {employer_id, employer_url, slug, name, verified}.",
+      "example": {
+        "answers": {
+          "q_company_legal_name": "SBFF",
+          "q_company_slug": "sbff",
+          "q_team_size": "6-20",
+          "q_team_remote_split": "all_remote",
+          "q_team_lang": "ru_en",
+          "q_comp_currency": "rub",
+          "q_consent_company_representation": true
+        },
+        "consent_granted": true
+      }
+    },
+    {
+      "name": "post_vacancy",
+      "description": "SPRINT 13. Create a job attributed to employer. Triggers pg_notify('job_event') → dispatcher from S7 matches the 59K-candidate pool and pushes top-N to Telegram automatically. Returns {job_id, slug, job_url, employer_id, status}.",
+      "example": {
+        "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
+        "title": "Senior Backend Python",
+        "description": "...",
+        "skills": ["python", "fastapi"],
+        "salary_from": 280000,
+        "salary_to": 450000,
+        "currency": "RUB",
+        "level": "senior",
+        "work_format": "remote",
+        "city": "Moscow"
+      }
+    },
+    {
+      "name": "get_my_vacancies",
+      "description": "SPRINT 13. List open vacancies for this employer with per-job applicant_count. Ordered posted_at DESC.",
+      "example": {
+        "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
+        "limit": 20
+      }
+    },
+    {
+      "name": "get_applicants",
+      "description": "SPRINT 13. List applicants for employer's vacancy with MASKED PII — cv_url + stack_summary + seniority only. Email/phone hidden until S14 shortlist + S15 interview-invite accept. 403 if vacancy belongs to different employer.",
+      "example": {
+        "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
+        "vacancy_id": "c51443dd-8651-4e2c-be37-3a07b50cee89"
       }
     }
   ],
