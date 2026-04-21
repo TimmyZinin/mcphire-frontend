@@ -21,11 +21,11 @@
       "7. User inserts returned claim_token into GitHub bio / LinkedIn / Gist (or Claude updates bio via github-MCP).",
       "8. Poll get_verification_status(claim_token) until verified.",
       "9. Show user cv_url — their auto-generated resume, ready to share.",
-      "10. Telegram linking (post-deploy, not live yet in v1.3.0 launch). Once @mcphire_bot is registered in BotFather and bot.mcphire.com is online, users will open the bot and send /link <claim_token> to enable instant match pushes. Until then, show users the cv_url and inform them that TG push notifications will be available after the deploy sprint."
+      "10. Telegram linking (live). Ask the user to open @mcphire_match_bot in Telegram and send /link <claim_token> to wire the profile to instant match pushes. Webhook at https://bot.mcphire.com (TLS active since 2026-04-21)."
     ],
     "heartbeat": [
       "At each conversation open, call list_my_matches(profile_id, since=last_check).",
-      "In v1.3.0 this is a Sprint 1 placeholder: for verified profiles it always returns matches: [] with note: 'matching_pipeline_coming_sprint_2'. Actual match delivery in v1.3.0 goes through Telegram after step 10 of onboarding.",
+      "Real matches are returned: union of notification_deliveries (append-only log) and notification_queue (pending). Each match carries score, reasons, job metadata (title, company, salary, slug) and a source flag ('delivered' | 'queued'). Instant pushes also fire into Telegram the moment a matching vacancy is indexed.",
       "Stay silent if empty — no spam."
     ]
   },
@@ -33,22 +33,36 @@
     {
       "name": "search_jobs",
       "description": "Search 65,000+ active IT jobs from Russian companies. Filters: query (text), city, salary_from (RUB/month), skills (comma-separated ILIKE), remote (bool → work_format IN remote/hybrid), level (junior|middle|senior|lead), limit, offset.",
-      "example": {"query": "python ml", "city": "Москва", "salary_from": 200000, "skills": "Python,FastAPI", "remote": true, "limit": 5}
+      "example": {
+        "query": "python ml",
+        "city": "Москва",
+        "salary_from": 200000,
+        "skills": "Python,FastAPI",
+        "remote": true,
+        "limit": 5
+      }
     },
     {
       "name": "get_job_details",
       "description": "Get full job details by UUID. Requires job_id (UUID only — slug lookup not supported by this tool).",
-      "example": {"job_id": "a3f91c0e-1234-5678-90ab-cdef12345678"}
+      "example": {
+        "job_id": "a3f91c0e-1234-5678-90ab-cdef12345678"
+      }
     },
     {
       "name": "get_salary_stats",
       "description": "Aggregate salary stats grouped by level and currency. Optional category keyword narrows by job title (ILIKE). Returns averages + counts per (level,currency).",
-      "example": {"category": "Python"}
+      "example": {
+        "category": "Python"
+      }
     },
     {
       "name": "apply_to_job",
       "description": "Submit application (attributed to sentinel MCP user) with optional cover_letter. Requires job_id (UUID). Rate-limited to 10/hour.",
-      "example": {"job_id": "a3f91c0e-1234-5678-90ab-cdef12345678", "cover_letter": "..."}
+      "example": {
+        "job_id": "a3f91c0e-1234-5678-90ab-cdef12345678",
+        "cover_letter": "..."
+      }
     },
     {
       "name": "get_my_applications",
@@ -58,27 +72,53 @@
     {
       "name": "get_registration_questions",
       "description": "Returns the 150-question catalog for M2M onboarding. Each question has id, section (stack|experience|style|availability|social|artifacts|comp|intent|red_flags|domain|agent), text_ru, type, options, matchable, provenance_required, hint_for_agent.",
-      "example": {"section": "stack"}
+      "example": {
+        "section": "stack"
+      }
     },
     {
       "name": "register_profile",
       "description": "Create an agent profile AFTER explicit user approval. Requires consent_granted=true + provenance for critical fields. Returns profile_id, claim_token, cv_url.",
-      "example": {"answers": {"q_stack_primary_languages": ["python"], "q_comp_floor_usd_monthly": 5000, "q_artifacts_proof_url_primary": "https://github.com/marina"}, "consent_granted": true, "provenance": {"q_comp_floor_usd_monthly": {"source_excerpt": "floor: $5000/mo", "source_file": "~/career/notes.md", "confidence": "high"}}}
+      "example": {
+        "answers": {
+          "q_stack_primary_languages": [
+            "python"
+          ],
+          "q_comp_floor_usd_monthly": 5000,
+          "q_artifacts_proof_url_primary": "https://github.com/marina"
+        },
+        "consent_granted": true,
+        "provenance": {
+          "q_comp_floor_usd_monthly": {
+            "source_excerpt": "floor: $5000/mo",
+            "source_file": "~/career/notes.md",
+            "confidence": "high"
+          }
+        }
+      }
     },
     {
       "name": "get_verification_status",
       "description": "Check whether claim_token has been detected in proof_url bio. Triggers immediate re-check in addition to 15-min cron.",
-      "example": {"claim_token": "mcphire-verify-a1b2c3d4"}
+      "example": {
+        "claim_token": "mcphire-verify-a1b2c3d4"
+      }
     },
     {
       "name": "list_my_matches",
-      "description": "Heartbeat endpoint — call at conversation start. In v1.3.0 this is a Sprint 1 placeholder: for verified profiles always returns matches: [] with note: 'matching_pipeline_coming_sprint_2'. Actual match delivery currently goes through Telegram (see onboarding step 10). profile_id must be a UUID returned by register_profile.",
-      "example": {"profile_id": "7b2f8e4a-9c33-4a1e-bb5f-e0d1a28c7f91", "since": "2026-04-15T10:00:00Z", "limit": 10}
+      "description": "Heartbeat endpoint — call at conversation start. Returns real matches from both the append-only notification_deliveries log and the live notification_queue, joined with jobs + companies. Each match includes job_id, title, company, salary_from/to, currency, work_format, slug, score, reasons (why we matched), matched_at, source ('delivered' | 'queued'). profile_id must be a UUID returned by register_profile.",
+      "example": {
+        "profile_id": "7b2f8e4a-9c33-4a1e-bb5f-e0d1a28c7f91",
+        "since": "2026-04-15T10:00:00Z",
+        "limit": 10
+      }
     },
     {
       "name": "get_my_cv",
       "description": "Returns CV URL + photo + social links + observed_facts summary for the user's auto-generated resume.",
-      "example": {"profile_id": "7b2f8e4a-9c33-4a1e-bb5f-e0d1a28c7f91"}
+      "example": {
+        "profile_id": "7b2f8e4a-9c33-4a1e-bb5f-e0d1a28c7f91"
+      }
     }
   ],
   "rate_limits": {
