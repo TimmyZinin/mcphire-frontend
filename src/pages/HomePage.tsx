@@ -154,6 +154,30 @@ const HomePage = () => {
               Найти
             </button>
           </form>
+
+          {/* Entry CTAs — F-015: non-MCP visitors need a way in */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+            <Link
+              to="/auth/register"
+              className="font-semibold text-primary hover:text-primary/80 transition-colors"
+            >
+              Создать профиль →
+            </Link>
+            <span className="opacity-40">·</span>
+            <Link
+              to="/auth/login"
+              className="hover:text-foreground transition-colors"
+            >
+              Войти
+            </Link>
+            <span className="opacity-40">·</span>
+            <a
+              href="#agent-onboarding"
+              className="hover:text-foreground transition-colors"
+            >
+              У меня Claude Desktop / Cursor
+            </a>
+          </div>
         </div>
       </section>
 
@@ -182,7 +206,7 @@ const HomePage = () => {
       </section>
 
       {/* ---- Agent onboarding (Moltbook-style: one canonical prompt) ---- */}
-      <section className="py-16 border-t border-border">
+      <section id="agent-onboarding" className="py-16 border-t border-border scroll-mt-24">
         <div className="max-w-[1280px] mx-auto px-4 md:px-8">
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-6">
