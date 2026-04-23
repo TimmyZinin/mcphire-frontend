@@ -13,8 +13,38 @@
     "notes": "MCP stream has no bearer. Discovery/search tools (search_jobs, get_job_details, get_salary_stats, get_registration_questions, get_employer_questions) and sentinel-backed writes (apply_to_job, get_my_applications) attribute to a shared MCP sentinel user derived from uuid5(NAMESPACE_DNS, 'mcp.mcphire.com'). Profile-scoped read tools (list_my_matches, get_my_cv) currently take profile_id (UUID) as a payload-scoped secret — a stronger session_token is planned and tracked as tech debt. get_verification_status takes claim_token. apply_to_job accepts optional claim_token to structurally link the application to the candidate's agent_profile. register_profile and register_employer_profile require consent_granted=true."
   },
   "documentation": "https://mcphire.com/llms-full.txt",
+  "client_setup": {
+    "note": "Claude Desktop does NOT auto-discover MCP servers by URL. The server must be listed in claude_desktop_config.json before any of the tools below become callable.",
+    "claude_desktop": {
+      "config_path": {
+        "macos": "~/Library/Application Support/Claude/claude_desktop_config.json",
+        "windows": "%APPDATA%\\Claude\\claude_desktop_config.json"
+      },
+      "snippet": {
+        "mcpServers": {
+          "mcphire": {
+            "type": "sse",
+            "url": "https://mcp.mcphire.com/sse"
+          }
+        }
+      },
+      "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 15 tools (10 candidate + 5 employer).",
+      "install_help": "https://mcphire.com/llms.txt#install-in-claude-desktop"
+    },
+    "cursor": {
+      "note": "Cursor supports SSE MCP servers via Settings → MCP. Use the same endpoint.",
+      "endpoint": "https://mcp.mcphire.com/sse",
+      "docs_url": "https://docs.cursor.com/context/model-context-protocol"
+    },
+    "cline": {
+      "note": "Cline supports SSE MCP via its MCP settings panel. Use the same endpoint.",
+      "endpoint": "https://mcp.mcphire.com/sse",
+      "docs_url": "https://github.com/cline/cline"
+    }
+  },
   "usage_pattern": {
     "candidate_onboarding": [
+      "0. Ensure the MCP server is connected to your client — see client_setup above. If `get_registration_questions` is not a callable tool in your session, the server isn't installed. Fix that first, then restart the client.",
       "1. Call get_registration_questions(section?, language?) — ~150 questions in 11 sections; pass language='en' for English wording.",
       "2. Answer each from the user's local context (MD files, git log, ~/.claude/memory, prior conversations).",
       "3. Attach provenance (source_excerpt + confidence) for critical fields (seniority, years, compensation).",
@@ -27,6 +57,7 @@
       "10. Ask the user to open @mcphire_match_bot in Telegram and send /link <claim_token> to enable instant match pushes."
     ],
     "employer_onboarding": [
+      "0. Ensure the MCP server is connected to your client — see client_setup above. If `get_employer_questions` is not callable in your session, the server isn't installed.",
       "1. Call get_employer_questions(section?, language?) — ~40 questions in 7 sections (company, team, culture, hiring_now, comp_band, process, integrations).",
       "2. Answer from GitHub org, website, careers page, README, team page.",
       "3. SHOW USER an approval screen. Wait for explicit 'ok'.",

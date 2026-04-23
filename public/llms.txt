@@ -2,6 +2,31 @@
 
 > MCP-first двусторонний маркетплейс вакансий. Кандидаты регистрируются через Claude Desktop (агент отвечает на ~150 вопросов из локального контекста, показывает approval screen, создаёт профиль + авто-CV + instant match push в Telegram). Работодатели регистрируют компанию и постят вакансии тем же путём через Claude (~40 вопросов). Все tools доступны через SSE endpoint `https://mcp.mcphire.com/sse`. Tool-labels и документация — `ru` (по умолчанию) и `en` через параметр `language`; salary-поля принимают любую ISO-4217 валюту. Сейчас primary-аудитория — русскоязычный tech, поэтому большая часть вакансий исторически в RUB, но сервис не привязан к одной юрисдикции.
 
+## Install in Claude Desktop (one-time, ~60 seconds)
+
+Claude Desktop does NOT auto-discover MCP servers by URL. Before the onboarding protocol below will work, the server must be listed in `claude_desktop_config.json`. Add this block once, restart Claude Desktop, done.
+
+**Config paths:**
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+**Snippet** (merge with existing `mcpServers` if present):
+
+```json
+{
+  "mcpServers": {
+    "mcphire": {
+      "type": "sse",
+      "url": "https://mcp.mcphire.com/sse"
+    }
+  }
+}
+```
+
+**Restart.** Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: *"what mcphire tools are available?"* — you should see 15 tools (10 candidate + 5 employer). If you see 0, the config path is wrong or Claude Desktop wasn't fully restarted.
+
+**For Cursor / Cline / other MCP clients:** same SSE URL, consult your client's MCP settings documentation.
+
 ## Agent onboarding protocol — candidate side
 
 Когда пользователь даёт тебе домен (`mcphire.com`), следуй шагам:
