@@ -31,6 +31,26 @@
       "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 15 tools (10 candidate + 5 employer).",
       "install_help": "https://mcphire.com/llms.txt#install-in-claude-desktop"
     },
+    "claude_code": {
+      "note": "Claude Code CLI uses .mcp.json in the project root (not claude_desktop_config.json). The type field is required — omitting it causes the server to silently fail to connect.",
+      "config_path": {
+        "all_platforms": "<project_root>/.mcp.json"
+      },
+      "config_file": ".mcp.json",
+      "snippet": {
+        "mcpServers": {
+          "mcphire": {
+            "type": "sse",
+            "url": "https://mcp.mcphire.com/sse"
+          }
+        }
+      },
+      "settings_file": ".claude/settings.json",
+      "settings_snippet": {
+        "enableAllProjectMcpServers": true
+      },
+      "restart": "Close and reopen the Claude Code session in the project directory. Verify by asking: 'what mcphire tools are available?'. Expected: 15 tools (10 candidate + 5 employer)."
+    },
     "cursor": {
       "note": "Cursor supports SSE MCP servers via Settings → MCP. Use the same endpoint.",
       "endpoint": "https://mcp.mcphire.com/sse",
@@ -44,17 +64,20 @@
   },
   "usage_pattern": {
     "candidate_onboarding": [
-      "0. Ensure the MCP server is connected to your client — see client_setup above. If `get_registration_questions` is not a callable tool in your session, the server isn't installed. Fix that first, then restart the client.",
-      "1. Call get_registration_questions(section?, language?) — ~150 questions in 11 sections; pass language='en' for English wording.",
-      "2. Answer each from the user's local context (MD files, git log, ~/.claude/memory, prior conversations).",
-      "3. Attach provenance (source_excerpt + confidence) for critical fields (seniority, years, compensation).",
-      "4. Collect observed_facts (SPO triples) as a side-channel while reading context.",
-      "5. SHOW USER an approval screen with all answers + facts. Wait for explicit 'ok'. Never skip this step.",
-      "6. Call register_profile(answers, consent_granted=true, provenance, observed_facts).",
-      "7. User inserts the returned claim_token into GitHub bio / LinkedIn headline / pinned Gist (or Claude updates the bio via an appropriate MCP).",
-      "8. Poll get_verification_status(claim_token) until status is 'verified'.",
-      "9. Share cv_url — the user's auto-generated public resume.",
-      "10. Ask the user to open @mcphire_match_bot in Telegram and send /link <claim_token> to enable instant match pushes."
+      "1. Ensure the MCP server is connected — if get_registration_questions is not callable, the server is not installed. Fix that first and restart the client.",
+      "2. Call get_registration_questions(section?, language?) — ~150 questions in 11 sections; pass language='en' for English wording.",
+      "3. Ask the user for scan consent before reading any files. Show this exact message and wait for an affirmative reply ('да', 'yes', 'поехали', 'ok', 'читай'): 'Чтобы заполнить анкету, мне нужно прочитать твои локальные файлы: • ~/.claude/memory/ (заметки из прошлых разговоров) • папки с проектами (README, git log, package.json) • файлы типа resume, cv, bio, LinkedIn export — если найду. Файлы остаются у тебя — на сервер уйдут только финальные ответы после твоего «я согласен отправить анкету в MCPHire». Читаю твои файлы?' Do NOT read any files until the user confirms.",
+      "4. Read memory files first, in priority order: (1) ~/.claude/memory/*.md and MEMORY.md index — pre-validated biographical facts, highest trust; (2) ~/.claude/projects/*/memory/*.md — per-project memory; (3) any *resume*, *cv*, *bio*, *BRIEF* files found in home or project directories. Memory files outrank file inference which outranks git inference.",
+      "5. Show the user a one-line list of directories found, then ask: 'Хочешь добавить что-то ещё? (Obsidian vault, notes/, linkedin-export/, Notion export, другие папки с проектами)' Wait for their reply — if nothing to add, proceed immediately.",
+      "6. Deep-scan all confirmed directories: glob **/*.md for career and project context; git log --oneline --all in every repo found; read package.json / pyproject.toml / Cargo.toml / go.mod for stack evidence; read LinkedIn export JSON if present. Collect all found projects for q_experience_shipped_products and q_stack_proof_links.",
+      "7. Attach provenance (source_excerpt + confidence) for critical fields (seniority, years, compensation). Collect observed_facts (SPO triples) as a side-channel while reading context.",
+      "8. Show the user an approval screen with all answers and facts. End the screen with this exact line: 'Чтобы отправить анкету, напиши: я согласен отправить анкету в MCPHire'. HARD STOP: entering data or correcting fields is NOT consent. Do NOT call register_profile until the user types the exact phrase 'я согласен отправить анкету в MCPHire' (EN: 'I agree to submit my profile to MCPHire'). Any other input — update the screen and wait again.",
+      "9. Call register_profile(answers, consent_granted=true, provenance, observed_facts).",
+      "10. Immediately after register_profile returns — before anything else — write both tokens to ~/.claude/memory/mcphire.md: { profile_id, session_token, claim_token, cv_url, registered_at }. Do NOT proceed until this file is written. session_token is permanent and is the only key to get_my_cv / list_my_matches / delete_profile. claim_token expires in 48h and is needed for GitHub verification. Both are issued once and never re-issued — if lost, the profile becomes unmanageable.",
+      "11. User inserts the returned claim_token into GitHub bio / LinkedIn headline / pinned Gist (or Claude updates the bio via an appropriate MCP).",
+      "12. Poll get_verification_status(claim_token) until status is 'verified'.",
+      "13. Share cv_url — the user's auto-generated public resume.",
+      "14. Ask the user to open @mcphire_match_bot in Telegram and send /link <claim_token> to enable instant match pushes."
     ],
     "employer_onboarding": [
       "0. Ensure the MCP server is connected to your client — see client_setup above. If `get_employer_questions` is not callable in your session, the server isn't installed.",
@@ -218,6 +241,14 @@
         "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
         "vacancy_id": "c51443dd-8651-4e2c-be37-3a07b50cee89"
       }
+    },
+    {
+      "name": "delete_profile",
+      "description": "Permanently delete the candidate's agent profile and all associated data (applications, matches, observed_facts, CV). Requires session_token (UUID returned by register_profile) and confirm=true as a safety gate. Cascades to all related rows — irreversible.",
+      "example": {
+        "session_token": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "confirm": true
+      }
     }
   ],
   "rate_limits": {
@@ -235,7 +266,8 @@
       "version": "0.3.0",
       "total": 150,
       "sections": 11,
-      "languages": ["ru", "en"]
+      "languages": ["ru", "en"],
+      "global_scan_hint": "Scan sources in this priority order before answering any question: (1) ~/.claude/memory/*.md + MEMORY.md index — pre-validated facts, highest trust; (2) ~/.claude/projects/*/memory/*.md — per-project memory; (3) files matching *resume*, *cv*, *bio*, *BRIEF*, *LANDING_BRIEF* in user-confirmed dirs; (4) git log --oneline --all across all repos in confirmed project dirs; (5) package.json / pyproject.toml / Cargo.toml / go.mod for stack; (6) LinkedIn export JSON (linkedin-export/ folder). Always ask the user which directories to scan BEFORE proceeding (step 2b). Never infer from a single repo only — look across ALL confirmed project directories."
     },
     "employer": {
       "version": "0.1.0",

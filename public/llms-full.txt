@@ -26,13 +26,28 @@ Call `get_registration_questions()` (optionally with `section` filter). You'll r
 
 Each question has `id`, `section`, `text_ru`, `type`, `options`, `matchable`, `provenance_required`, and `hint_for_agent`.
 
-### 3. Answer from user's context
+### 3. Ask scan consent
 
-For each question, use everything you know about the user: local MD files (Obsidian, notes, resume.md), `~/.claude/memory/`, git log of projects, README files, prior conversations, public profiles they've shared.
+Before reading any files, show the user this exact message and wait for an affirmative reply ('да', 'yes', 'ok', 'читай'):
 
-If data isn't present, leave `null`. Do not guess.
+> "Чтобы заполнить анкету, мне нужно прочитать твои локальные файлы: ~/.claude/memory/ (заметки из прошлых разговоров), папки с проектами (README, git log, package.json), файлы типа resume, cv, bio — если найду. Файлы остаются у тебя — на сервер уйдут только финальные ответы после твоего согласия. Читаю твои файлы?"
 
-### 4. Attach provenance (critical)
+Do NOT read any files until the user confirms.
+
+### 4. Scan — memory first
+
+Read sources in this priority order:
+1. `~/.claude/memory/*.md` and `MEMORY.md` index — pre-validated biographical facts, highest trust
+2. `~/.claude/projects/*/memory/*.md` — per-project memory
+3. Files matching `*resume*`, `*cv*`, `*bio*`, `*BRIEF*` in home or project directories
+
+Show the user a one-line list of directories found, then ask: "Хочешь добавить что-то ещё? (Obsidian, notes/, linkedin-export/, другие папки)" — wait for reply, proceed immediately if nothing to add.
+
+For each confirmed directory: glob `**/*.md` for career and project context; `git log --oneline --all` in every repo found; read `package.json` / `pyproject.toml` / `Cargo.toml` / `go.mod` for stack; read LinkedIn export JSON if present.
+
+Memory files outrank file inference which outranks git inference. If data isn't present, leave `null`. Do not guess.
+
+### 5. Attach provenance (critical)
 
 For these 8 fields, server requires `{source_excerpt (≤140 chars), source_file, confidence: high|medium|low|unknown}`:
 
@@ -51,11 +66,16 @@ Without provenance on a non-null answer, server returns 400.
 
 As side-channel, emit SPO triples as you discover them in MD files. Example predicates: `worked_at`, `contributed_to`, `shipped`, `mentored`, `studied_at`, `designed`, `refactored`, `owned`. Initially `approved_by_user=false`; becomes `true` after user approval.
 
-### 6. Show approval screen (mandatory)
+### 7. Show approval screen (mandatory)
 
-Compile the answers into a review document, grouped by section. Present to the user. Wait for an explicit "ok". **Never call `register_profile` without explicit user consent** — enforced by question `q_agent_consent_agent_answering`.
+Compile the answers into a review document, grouped by section. Present to the user. End the screen with this exact line:
 
-### 7. Register
+> "Чтобы отправить анкету, напиши: **я согласен отправить анкету в MCPHire**"
+> (EN: "To submit, type: **I agree to submit my profile to MCPHire**")
+
+**HARD STOP: entering or correcting data on the approval screen is NOT consent. Do NOT call `register_profile` until the user types the exact trigger phrase. Any other input — update the screen and wait again.**
+
+### 8. Register
 
 ```
 register_profile(
@@ -67,9 +87,23 @@ register_profile(
 )
 ```
 
-Returns `{profile_id, claim_token, claim_instructions, expires_at, cv_url}`.
+Returns `{profile_id, session_token, claim_token, claim_instructions, expires_at, cv_url}`.
 
-### 8. Claim verification
+### 9. Save tokens immediately (mandatory)
+
+Before any next step, write to `~/.claude/memory/mcphire.md`:
+
+```
+profile_id:    <uuid>
+session_token: <uuid>   ← permanent, never re-issued — key to get_my_cv / list_my_matches
+claim_token:   mcphire-verify-<hex>   ← expires 48h, needed for GitHub verification
+cv_url:        https://mcphire.com/cv/<slug>
+registered_at: <iso timestamp>
+```
+
+Both tokens are issued once and never re-issued. If lost, the profile becomes unmanageable.
+
+### 10. Claim verification
 
 Tell the user to paste the `claim_token` into their public bio at the `proof_url` (GitHub bio, LinkedIn headline, public Gist). Cron verifier checks every 15 minutes.
 
@@ -77,11 +111,24 @@ If user has `github-MCP` connected and explicitly consents, you can edit their b
 
 Poll `get_verification_status(claim_token)` until `status="verified"`.
 
-### 9. Share the CV
+### 11. Share the CV
 
 Show the user their `cv_url` — auto-generated HTML resume at `https://mcphire.com/cv/<slug>`. 8-char unguessable URL, share-friendly.
 
-### 10. Heartbeat
+### Delete profile
+
+To permanently remove a profile:
+
+```
+delete_profile(
+  session_token="<uuid from ~/.claude/memory/mcphire.md>",
+  confirm=true
+)
+```
+
+Returns `{profile_id, deleted_at, message}`. Cascades to all related rows (applications, matches, observed_facts, CV snapshots). Irreversible — use only when the user explicitly requests deletion.
+
+### 12. Heartbeat
 
 At each new conversation with this MCP skill:
 
