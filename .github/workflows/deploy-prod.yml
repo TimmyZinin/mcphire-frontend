@@ -1,8 +1,13 @@
-name: Deploy to Production (RUVDS)
+name: Deploy to Production (Contabo)
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -23,12 +28,42 @@ jobs:
       - name: Build (production, with prerender)
         run: npm run build
 
-      - name: Deploy to RUVDS
+      - name: Setup SSH
         env:
-          RUVDS_HOST: ${{ secrets.RUVDS_HOST }}
-          RUVDS_PASSWORD: ${{ secrets.RUVDS_PASSWORD }}
+          CONTABO_SSH_KEY: ${{ secrets.CONTABO_SSH_KEY }}
+          CONTABO_KNOWN_HOSTS: ${{ secrets.CONTABO_KNOWN_HOSTS }}
         run: |
-          sudo apt-get install -y sshpass
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$CONTABO_SSH_KEY" > ~/.ssh/contabo
+          chmod 600 ~/.ssh/contabo
+          printf '%s\n' "$CONTABO_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy to Contabo (overlay extract — preserves /jobs SSG cache)
+        run: |
+          set -euo pipefail
           tar czf dist.tar.gz -C dist .
-          sshpass -p "$RUVDS_PASSWORD" scp -o StrictHostKeyChecking=no -o PubkeyAuthentication=no dist.tar.gz root@$RUVDS_HOST:/tmp/sborka-dist.tar.gz
-          sshpass -p "$RUVDS_PASSWORD" ssh -o StrictHostKeyChecking=no -o PubkeyAuthentication=no root@$RUVDS_HOST 'rm -rf /opt/sborka-website/* && tar xzf /tmp/sborka-dist.tar.gz -C /opt/sborka-website/ && rm /tmp/sborka-dist.tar.gz'
+          ls -lh dist.tar.gz
+          scp -i ~/.ssh/contabo dist.tar.gz root@185.202.239.165:/tmp/mcphire-dist.tar.gz
+          ssh -i ~/.ssh/contabo root@185.202.239.165 'set -euo pipefail; \
+            BEFORE=$(ls /opt/sborka-v2/jobs/ | wc -l); \
+            echo "SSG pages before: $BEFORE"; \
+            tar xzf /tmp/mcphire-dist.tar.gz -C /opt/sborka-v2/; \
+            AFTER=$(ls /opt/sborka-v2/jobs/ | wc -l); \
+            echo "SSG pages after: $AFTER"; \
+            if [ "$BEFORE" -gt 0 ] && [ "$AFTER" -lt "$BEFORE" ]; then \
+              echo "FATAL: SSG pages count dropped ($BEFORE -> $AFTER), aborting"; \
+              exit 1; \
+            fi; \
+            rm /tmp/mcphire-dist.tar.gz'
+
+      - name: Verify production
+        run: |
+          set -euo pipefail
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://mcphire.com)
+          echo "mcphire.com -> $STATUS"
+          test "$STATUS" = "200"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://mcphire.com/jobs/-hh-000d9e)
+          echo "sample SSG -> $STATUS"
+          test "$STATUS" = "200"
