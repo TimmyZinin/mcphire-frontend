@@ -76,12 +76,13 @@
       "6. Deep-scan all confirmed directories: glob **/*.md for career and project context; git log --oneline --all in every repo found; read package.json / pyproject.toml / Cargo.toml / go.mod for stack evidence; read LinkedIn export JSON if present. Collect all found projects for q_experience_shipped_products and q_stack_proof_links.",
       "7. Attach provenance (source_excerpt + confidence) for critical fields (seniority, years, compensation). Collect observed_facts (SPO triples) as a side-channel while reading context.",
       "8. Show the user an approval screen with all answers and facts. End the screen with this exact line: 'Чтобы отправить анкету, напиши: я согласен отправить анкету в MCPHire'. HARD STOP: entering data or correcting fields is NOT consent. Do NOT call register_profile until the user types the exact phrase 'я согласен отправить анкету в MCPHire' (EN: 'I agree to submit my profile to MCPHire'). Any other input — update the screen and wait again.",
-      "9. Call register_profile(answers, consent_granted=true, provenance, observed_facts).",
-      "10. Immediately after register_profile returns — before anything else — write both tokens to ~/.claude/memory/mcphire.md: { profile_id, session_token, claim_token, cv_url, registered_at }. Do NOT proceed until this file is written. session_token is permanent and is the only key to get_my_cv / list_my_matches / delete_profile. claim_token expires in 48h and is needed for GitHub verification. Both are issued once and never re-issued — if lost, the profile becomes unmanageable.",
-      "11. User inserts the returned claim_token into GitHub bio / LinkedIn headline / pinned Gist (or Claude updates the bio via an appropriate MCP).",
-      "12. Poll get_verification_status(claim_token) until status is 'verified'.",
-      "13. Share cv_url — the user's auto-generated public resume.",
-      "14. Ask the user to open @mcphire_match_bot in Telegram and send /link <claim_token> to enable instant match pushes."
+      "9. After consent phrase received — save a local copy of the final answers BEFORE calling register_profile: if Write tool is available (Claude Code CLI) write to ~/.claude/memory/mcphire_draft_<YYYY-MM-DD>.json containing {answers, provenance, observed_facts, saved_at}; otherwise render as a JSON code block so the user can copy it. This protects against data loss if the session crashes mid-flight.",
+      "10. Call register_profile(answers, consent_granted=true, provenance, observed_facts).",
+      "11. Immediately after register_profile returns — before anything else — write both tokens to ~/.claude/memory/mcphire.md: { profile_id, session_token, claim_token, cv_url, registered_at }. Do NOT proceed until this file is written. session_token is permanent and is the only key to get_my_cv / list_my_matches / delete_profile. claim_token expires in 48h and is needed for GitHub verification. Both are issued once and never re-issued — if lost, the profile becomes unmanageable.",
+      "12. User inserts the returned claim_token into GitHub bio / LinkedIn headline / pinned Gist (or Claude updates the bio via an appropriate MCP).",
+      "13. Poll get_verification_status(claim_token) until status is 'verified'.",
+      "14. Share cv_url — the user's auto-generated public resume.",
+      "15. Ask the user to open @mcphire_match_bot in Telegram and send /link <claim_token> to enable instant match pushes."
     ],
     "employer_onboarding": [
       "0. Ensure the MCP server is connected to your client — see client_setup above. If `get_employer_questions` is not callable in your session, the server isn't installed.",
