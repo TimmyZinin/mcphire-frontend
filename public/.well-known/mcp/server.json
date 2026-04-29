@@ -1,7 +1,7 @@
 {
   "name": "mcphire",
   "version": "1.4.0-alpha",
-  "description": "MCPHire — MCP-first job marketplace. Two-sided: candidates register through Claude Desktop (10 tools, ~150-question onboarding) and employers register companies + post vacancies through Claude (5 tools, ~40-question onboarding). Primary audience today is Russian-speaking tech, but the data model, tools, and documentation are language- and currency-agnostic; any company can register and any candidate can apply regardless of location.",
+  "description": "MCPHire — MCP-first job marketplace. Two-sided: candidates register through Claude Desktop (11 tools, ~150-question onboarding) and employers register companies + post vacancies through Claude (7 tools, ~40-question onboarding). Primary audience today is Russian-speaking tech, but the data model, tools, and documentation are language- and currency-agnostic; any company can register and any candidate can apply regardless of location.",
   "endpoint": "https://mcp.mcphire.com/sse",
   "transport": "sse",
   "protocol": "JSON-RPC 2.0",
@@ -9,8 +9,12 @@
   "default_currency": "RUB",
   "currency_policy": "All salary fields accept any ISO-4217 currency code (e.g. RUB, USD, EUR, GBP, AED, TRY, KZT). RUB is the default when currency is omitted because most existing job data is denominated in it, not because the service is Russia-only.",
   "authentication": {
-    "model": "sentinel_plus_payload_scoped",
-    "notes": "MCP stream has no bearer. Discovery/search tools (search_jobs, get_job_details, get_salary_stats, get_registration_questions, get_employer_questions) and sentinel-backed writes (apply_to_job, get_my_applications) attribute to a shared MCP sentinel user derived from uuid5(NAMESPACE_DNS, 'mcp.mcphire.com'). Profile-scoped read tools (list_my_matches, get_my_cv) currently take profile_id (UUID) as a payload-scoped secret — a stronger session_token is planned and tracked as tech debt. get_verification_status takes claim_token. apply_to_job accepts optional claim_token to structurally link the application to the candidate's agent_profile. register_profile and register_employer_profile require consent_granted=true."
+    "type": "mixed",
+    "public_tools": ["search_jobs", "get_job_details", "get_salary_stats", "apply_to_job", "get_my_applications", "get_registration_questions", "get_employer_questions"],
+    "session_token_tools": ["list_my_matches", "get_my_cv", "delete_profile"],
+    "claim_token_tools": ["get_verification_status", "apply_to_job"],
+    "consent_required_tools": ["register_profile", "register_employer_profile"],
+    "notes": "No HTTP bearer — all tokens are passed as tool parameters. Public tools attribute to a shared MCP sentinel user (uuid5(NAMESPACE_DNS, 'mcp.mcphire.com')). session_token is a permanent UUID returned by register_profile and never re-issued. claim_token expires in 48 h. apply_to_job accepts an optional claim_token to structurally link the application to the candidate's agent_profile — without it the application is anonymous."
   },
   "documentation": "https://mcphire.com/llms-full.txt",
   "client_setup": {
@@ -28,7 +32,7 @@
           }
         }
       },
-      "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 15 tools (10 candidate + 5 employer).",
+      "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 18 tools (11 candidate + 7 employer).",
       "install_help": "https://mcphire.com/llms.txt#install-in-claude-desktop"
     },
     "claude_code": {
@@ -49,7 +53,7 @@
       "settings_snippet": {
         "enableAllProjectMcpServers": true
       },
-      "restart": "Close and reopen the Claude Code session in the project directory. Verify by asking: 'what mcphire tools are available?'. Expected: 15 tools (10 candidate + 5 employer)."
+      "restart": "Close and reopen the Claude Code session in the project directory. Verify by asking: 'what mcphire tools are available?'. Expected: 18 tools (11 candidate + 7 employer)."
     },
     "cursor": {
       "note": "Cursor supports SSE MCP servers via Settings → MCP. Use the same endpoint.",

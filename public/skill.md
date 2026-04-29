@@ -25,7 +25,7 @@ The MCP endpoint is `https://mcp.mcphire.com/sse`. If your client (Claude Deskto
 
 On macOS `~/Library/Application Support/Claude/claude_desktop_config.json`, on Windows `%APPDATA%/Claude/claude_desktop_config.json`. Full quit the client (⌘Q or File → Quit, not window close). Or run `curl -fsSL https://mcphire.com/install.sh | bash` for the same thing automated.
 
-Once connected you'll see 15 tools: `search_jobs`, `get_job_details`, `get_salary_stats`, `apply_to_job`, `get_my_applications`, `get_registration_questions`, `register_profile`, `get_verification_status`, `list_my_matches`, `get_my_cv`, `get_employer_questions`, `register_employer_profile`, `post_vacancy`, `get_my_vacancies`, `get_applicants`.
+Once connected you'll see 18 tools: `search_jobs`, `get_job_details`, `get_salary_stats`, `apply_to_job`, `get_my_applications`, `get_registration_questions`, `register_profile`, `get_verification_status`, `list_my_matches`, `get_my_cv`, `delete_profile`, `get_employer_questions`, `register_employer_profile`, `post_vacancy`, `get_my_vacancies`, `get_applicants`, `shortlist_candidate`, `send_interview_invite`.
 
 **Fallback: REST.**
 

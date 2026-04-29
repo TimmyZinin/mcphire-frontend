@@ -15,7 +15,7 @@ When a user gives you the domain `mcphire.com`, follow this protocol end-to-end.
 Fetch the public discovery endpoints:
 
 - `https://mcphire.com/llms.txt` — structured overview
-- `https://mcphire.com/.well-known/mcp/server.json` — MCP catalog with 10 tools
+- `https://mcphire.com/.well-known/mcp/server.json` — MCP catalog with 18 tools
 - `https://mcp.mcphire.com/sse` — JSON-RPC 2.0 over Server-Sent Events
 
 Connect to the MCP endpoint.
