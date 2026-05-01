@@ -1,19 +1,40 @@
 {
   "name": "mcphire",
-  "version": "1.4.0-alpha",
+  "version": "1.4.1-alpha",
   "description": "MCPHire — MCP-first job marketplace. Two-sided: candidates register through Claude Desktop (11 tools, ~150-question onboarding) and employers register companies + post vacancies through Claude (7 tools, ~40-question onboarding). Primary audience today is Russian-speaking tech, but the data model, tools, and documentation are language- and currency-agnostic; any company can register and any candidate can apply regardless of location.",
   "endpoint": "https://mcp.mcphire.com/sse",
   "transport": "sse",
   "protocol": "JSON-RPC 2.0",
-  "supported_languages": ["ru", "en"],
+  "supported_languages": [
+    "ru",
+    "en"
+  ],
   "default_currency": "RUB",
   "currency_policy": "All salary fields accept any ISO-4217 currency code (e.g. RUB, USD, EUR, GBP, AED, TRY, KZT). RUB is the default when currency is omitted because most existing job data is denominated in it, not because the service is Russia-only.",
   "authentication": {
     "type": "mixed",
-    "public_tools": ["search_jobs", "get_job_details", "get_salary_stats", "apply_to_job", "get_my_applications", "get_registration_questions", "get_employer_questions"],
-    "session_token_tools": ["list_my_matches", "get_my_cv", "delete_profile"],
-    "claim_token_tools": ["get_verification_status", "apply_to_job"],
-    "consent_required_tools": ["register_profile", "register_employer_profile"],
+    "public_tools": [
+      "search_jobs",
+      "get_job_details",
+      "get_salary_stats",
+      "apply_to_job",
+      "get_my_applications",
+      "get_registration_questions",
+      "get_employer_questions"
+    ],
+    "session_token_tools": [
+      "list_my_matches",
+      "get_my_cv",
+      "delete_profile"
+    ],
+    "claim_token_tools": [
+      "get_verification_status",
+      "apply_to_job"
+    ],
+    "consent_required_tools": [
+      "register_profile",
+      "register_employer_profile"
+    ],
     "notes": "No HTTP bearer — all tokens are passed as tool parameters. Public tools attribute to a shared MCP sentinel user (uuid5(NAMESPACE_DNS, 'mcp.mcphire.com')). session_token is a permanent UUID returned by register_profile and never re-issued. claim_token expires in 48 h. apply_to_job accepts an optional claim_token to structurally link the application to the candidate's agent_profile — without it the application is anonymous."
   },
   "documentation": "https://mcphire.com/llms-full.txt",
@@ -104,6 +125,86 @@
     {
       "name": "search_jobs",
       "description": "Search active job vacancies across the platform. Accepts query (free text against title/description), city (ILIKE), salary_from (integer in the currency of the jobs; no automatic conversion), skills (comma-separated keywords), remote (boolean → work_format IN remote/hybrid), level (junior|middle|senior|lead), limit (1..100, default 20), offset. Returns rows with currency preserved per job.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "salary_from": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "skills": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "remote": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "limit": {
+            "default": 20,
+            "type": "integer"
+          },
+          "offset": {
+            "default": 0,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
       "example": {
         "query": "python ml",
         "city": "Москва",
@@ -111,50 +212,205 @@
         "skills": "Python,FastAPI",
         "remote": true,
         "limit": 5
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
       }
     },
     {
       "name": "get_job_details",
       "description": "Return full job details by UUID. job_id must be a UUID (slug lookup not supported by this tool).",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "job_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "type": "object"
+      },
       "example": {
         "job_id": "a3f91c0e-1234-5678-90ab-cdef12345678"
-      }
-    },
-    {
-      "name": "get_salary_stats",
-      "description": "Aggregate salary statistics grouped by seniority level and currency. Optional category keyword narrows by job title (ILIKE). Returns avg_salary_from, avg_salary_to, job_count, currency per row.",
-      "example": {
-        "category": "Python"
+      },
+      "annotations": {
+        "readOnlyHint": true
       }
     },
     {
       "name": "apply_to_job",
       "description": "Submit an application for a job. Requires job_id (UUID). Optional cover_letter and claim_token. When claim_token is provided the application is structurally linked to the candidate's agent_profile so the employer can see it in get_applicants with the candidate's CV context; without claim_token the application is attributed only to the shared MCP sentinel user and will not surface in employer views. UPSERT semantics: re-applying with the same (job_id, sentinel_user) updates the row rather than erroring.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "job_id": {
+            "type": "string"
+          },
+          "cover_letter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "claim_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "type": "object"
+      },
       "example": {
         "job_id": "a3f91c0e-1234-5678-90ab-cdef12345678",
         "cover_letter": "Short motivation text",
         "claim_token": "mcphire-verify-a1b2c3d4"
+      },
+      "annotations": {
+        "idempotentHint": true
       }
     },
     {
       "name": "get_my_applications",
       "description": "List applications submitted in this MCP session via the shared sentinel user. No parameters.",
-      "example": {}
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "get_salary_stats",
+      "description": "Aggregate salary statistics grouped by seniority level and currency. Optional category keyword narrows by job title (ILIKE). Returns avg_salary_from, avg_salary_to, job_count, currency per row.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "type": "object"
+      },
+      "example": {
+        "category": "Python"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
     },
     {
       "name": "get_registration_questions",
       "description": "Return the candidate onboarding catalog of ~150 questions grouped into 11 sections. Optional section filter; optional language ('ru' default, 'en' supported). Each question has id, section, localized text, type, options, matchable, provenance_required, and an agent hint.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "section": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "language": {
+            "default": "ru",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "example": {
         "section": "stack",
         "language": "en"
+      },
+      "annotations": {
+        "readOnlyHint": true
       }
     },
     {
       "name": "register_profile",
       "description": "Create a candidate agent profile after the user has explicitly approved the compiled answers. Requires consent_granted=true, proof_url, and provenance for the critical fields. Returns profile_id, claim_token, claim_instructions, expires_at, cv_url.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "answers": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "consent_granted": {
+            "type": "boolean"
+          },
+          "provenance": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "observed_facts": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "questions_version": {
+            "default": "0.3.0",
+            "type": "string"
+          }
+        },
+        "required": [
+          "answers",
+          "consent_granted"
+        ],
+        "type": "object"
+      },
       "example": {
         "answers": {
-          "q_stack_primary_languages": ["python"],
+          "q_stack_primary_languages": [
+            "python"
+          ],
           "q_comp_floor_usd_monthly": 5000,
           "q_artifacts_proof_url_primary": "https://github.com/example"
         },
@@ -166,42 +422,191 @@
             "confidence": "high"
           }
         }
+      },
+      "annotations": {
+        "idempotentHint": false
       }
     },
     {
       "name": "get_verification_status",
       "description": "Check whether the claim_token has been detected in the candidate's proof_url. Triggers an immediate re-check in addition to the background 15-minute cron.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "claim_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_token"
+        ],
+        "type": "object"
+      },
       "example": {
         "claim_token": "mcphire-verify-a1b2c3d4"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "idempotentHint": true
       }
     },
     {
       "name": "list_my_matches",
       "description": "Heartbeat endpoint — call this at the start of every new conversation. Returns matches as a union of notification_deliveries (append-only log) and notification_queue (pending), joined with jobs + companies. Each match includes job_id, title, company, salary_from/to, currency, work_format, slug, score, reasons, matched_at, source ('delivered' | 'queued'). profile_id is a UUID returned by register_profile.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "session_token": {
+            "type": "string"
+          },
+          "since": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "limit": {
+            "default": 10,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "session_token"
+        ],
+        "type": "object"
+      },
       "example": {
         "profile_id": "7b2f8e4a-9c33-4a1e-bb5f-e0d1a28c7f91",
         "since": "2026-04-15T10:00:00Z",
         "limit": 10
+      },
+      "annotations": {
+        "readOnlyHint": true
       }
     },
     {
       "name": "get_my_cv",
       "description": "Return the candidate's auto-generated CV URL plus photo, social links, and an observed_facts summary.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "session_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_token"
+        ],
+        "type": "object"
+      },
       "example": {
         "profile_id": "7b2f8e4a-9c33-4a1e-bb5f-e0d1a28c7f91"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "delete_profile",
+      "description": "Permanently delete the candidate's agent profile and all associated data (applications, matches, observed_facts, CV). Requires session_token (UUID returned by register_profile) and confirm=true as a safety gate. Cascades to all related rows — irreversible.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "session_token": {
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "session_token"
+        ],
+        "type": "object"
+      },
+      "example": {
+        "session_token": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "confirm": true
+      },
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": true
       }
     },
     {
       "name": "get_employer_questions",
       "description": "Return the employer onboarding catalog of ~40 questions grouped into 7 sections (company, team, culture, hiring_now, comp_band, process, integrations). Optional section filter; optional language ('ru' default, 'en' supported). Claude reads a company's context (GitHub org, website, careers page, README) and answers these before showing an approval screen.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "section": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "language": {
+            "default": "ru",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "example": {
         "section": "company",
         "language": "en"
+      },
+      "annotations": {
+        "readOnlyHint": true
       }
     },
     {
       "name": "register_employer_profile",
       "description": "Create an employer profile after the user has explicitly approved the compiled answers. Requires q_consent_company_representation=true plus q_company_legal_name, q_company_slug (URL-safe), q_team_size, q_team_remote_split, q_team_lang, q_comp_currency. Returns employer_id, employer_url, slug, name, verified.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "answers": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "consent_granted": {
+            "type": "boolean"
+          },
+          "provenance": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "questions_version": {
+            "default": "0.1.0",
+            "type": "string"
+          }
+        },
+        "required": [
+          "answers",
+          "consent_granted"
+        ],
+        "type": "object"
+      },
       "example": {
         "answers": {
           "q_company_legal_name": "Example Co",
@@ -213,46 +618,271 @@
           "q_consent_company_representation": true
         },
         "consent_granted": true
+      },
+      "annotations": {
+        "idempotentHint": false
       }
     },
     {
       "name": "post_vacancy",
       "description": "Create a job vacancy attributed to an employer. Inserting the job fires a database notify event that asynchronously matches the existing candidate pool and pushes relevant matches to Telegram. Currency accepts any ISO-4217 code; salary_from/salary_to are integers in that currency. Returns job_id, slug, job_url, employer_id, status.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "employer_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "skills": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "salary_from": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "salary_to": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "currency": {
+            "default": "RUB",
+            "type": "string"
+          },
+          "level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "work_format": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "requirements": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "employer_id",
+          "title",
+          "description"
+        ],
+        "type": "object"
+      },
       "example": {
         "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
         "title": "Senior Backend Engineer",
         "description": "We are hiring ...",
-        "skills": ["python", "fastapi"],
+        "skills": [
+          "python",
+          "fastapi"
+        ],
         "salary_from": 4500,
         "salary_to": 7000,
         "currency": "USD",
         "level": "senior",
         "work_format": "remote",
         "city": null
+      },
+      "annotations": {
+        "idempotentHint": false
       }
     },
     {
       "name": "get_my_vacancies",
       "description": "List open vacancies posted by this employer with per-job applicant_count (live COUNT over the applications table). Ordered by posted_at DESC.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "employer_id": {
+            "type": "string"
+          },
+          "limit": {
+            "default": 20,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "employer_id"
+        ],
+        "type": "object"
+      },
       "example": {
         "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
         "limit": 20
+      },
+      "annotations": {
+        "readOnlyHint": true
       }
     },
     {
       "name": "get_applicants",
       "description": "List applicants for an employer's vacancy. Returns cv_url + stack_summary + seniority only. Email and phone are never returned by this tool — they become available only after a future consent-gated shortlist / interview-invite / accept flow. Returns 403 if the vacancy belongs to a different employer.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "employer_id": {
+            "type": "string"
+          },
+          "vacancy_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "employer_id",
+          "vacancy_id"
+        ],
+        "type": "object"
+      },
       "example": {
         "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
         "vacancy_id": "c51443dd-8651-4e2c-be37-3a07b50cee89"
+      },
+      "annotations": {
+        "readOnlyHint": true
       }
     },
     {
-      "name": "delete_profile",
-      "description": "Permanently delete the candidate's agent profile and all associated data (applications, matches, observed_facts, CV). Requires session_token (UUID returned by register_profile) and confirm=true as a safety gate. Cascades to all related rows — irreversible.",
-      "example": {
-        "session_token": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-        "confirm": true
+      "name": "shortlist_candidate",
+      "description": "Signal to a candidate that you want to talk. Triggers a Telegram push\nwith inline consent buttons (💎 Interested / 🚫 Not interested).\n\nContact details of the candidate (email / phone / telegram) are NOT\nreturned at this step. They appear in the next ``get_applicants`` call\nfor this vacancy only after the candidate clicks 💎 Interested.\n\nArgs:\n    employer_id: UUID of the employer (must own the vacancy).\n    profile_id: UUID of the candidate's verified agent_profile.\n    vacancy_id: UUID of the vacancy the shortlist is attached to.\n    note: Optional short message to the candidate (<=500 chars).\n\nReturns:\n    {shortlist_id, employer_id, profile_id, vacancy_id, candidate_response,\n     created_at, push_queued}",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "employer_id": {
+            "type": "string"
+          },
+          "profile_id": {
+            "type": "string"
+          },
+          "vacancy_id": {
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "employer_id",
+          "profile_id",
+          "vacancy_id"
+        ],
+        "type": "object"
+      },
+      "annotations": {
+        "idempotentHint": true
+      }
+    },
+    {
+      "name": "send_interview_invite",
+      "description": "Send a slot-based interview invitation to a candidate who already\nconsented via shortlist (candidate_response='interested').\n\nHard prerequisite: the candidate must have replied 💎 Interested to a\nprior shortlist invite for the same (employer, vacancy). Otherwise the\ncall fails with a consent-gate error.\n\nOnce sent, the candidate sees the first three proposed slots as inline\nbuttons plus options to Reschedule or Decline. On Accept, the employer's\nnext ``get_applicants`` response surfaces the accepted slot + .ics link.\n\nArgs:\n    employer_id: UUID of the employer (must own the vacancy).\n    profile_id: UUID of the verified candidate profile.\n    vacancy_id: UUID of the vacancy.\n    slots: Up to 5 ISO-8601 datetimes (e.g. ``2026-04-25T15:00:00+03:00``).\n        The first three are rendered as quick-pick buttons.\n    message: Optional short note to the candidate (<=500 chars).\n\nReturns:\n    {invite_id, employer_id, profile_id, vacancy_id, vacancy_title,\n     company, slots, invite_status, created_at, tg_push_queued}",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "employer_id": {
+            "type": "string"
+          },
+          "profile_id": {
+            "type": "string"
+          },
+          "vacancy_id": {
+            "type": "string"
+          },
+          "slots": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "employer_id",
+          "profile_id",
+          "vacancy_id",
+          "slots"
+        ],
+        "type": "object"
+      },
+      "annotations": {
+        "idempotentHint": false
       }
     }
   ],
@@ -271,14 +901,20 @@
       "version": "0.3.0",
       "total": 150,
       "sections": 11,
-      "languages": ["ru", "en"],
+      "languages": [
+        "ru",
+        "en"
+      ],
       "global_scan_hint": "Scan sources in this priority order before answering any question: (1) ~/.claude/memory/*.md + MEMORY.md index — pre-validated facts, highest trust; (2) ~/.claude/projects/*/memory/*.md — per-project memory; (3) files matching *resume*, *cv*, *bio*, *BRIEF*, *LANDING_BRIEF* in user-confirmed dirs; (4) git log --oneline --all across all repos in confirmed project dirs; (5) package.json / pyproject.toml / Cargo.toml / go.mod for stack; (6) LinkedIn export JSON (linkedin-export/ folder). Always ask the user which directories to scan BEFORE proceeding (step 2b). Never infer from a single repo only — look across ALL confirmed project directories."
     },
     "employer": {
       "version": "0.1.0",
       "total": 40,
       "sections": 7,
-      "languages": ["ru", "en"]
+      "languages": [
+        "ru",
+        "en"
+      ]
     }
   }
 }
