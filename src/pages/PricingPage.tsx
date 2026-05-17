@@ -1,28 +1,18 @@
 // ============================================================
 // MCPHire — Pricing page
-// Route: /pricing (public, wrapped in MainLayout)
+// Route: /pricing — HIDDEN until monetization launch.
+//
+// Sprint 1 (MCP-first parity): pricing is intentionally hidden.
+// Tim's call: surface monetization only after MCP onboarding flow
+// is stable and we know what to charge.
+//
+// Implementation: <Navigate replace to="/" />. We do NOT 404 here —
+// /pricing might still be linked from external sources (old emails,
+// old SMM posts) and redirect-to-home preserves that traffic.
 // ============================================================
 
-import { PageMeta } from "@/components/seo/PageMeta";
-import PricingSection from "@/components/PricingSection";
+import { Navigate } from "react-router-dom";
 
 export default function PricingPage() {
-  return (
-    <>
-      <PageMeta
-        title="Тарифы"
-        description="Тарифы для работодателей MCPHire. Размещайте IT-вакансии и получайте отклики от лучших специалистов."
-        canonical="/pricing"
-      />
-      <div className="max-w-[1280px] mx-auto px-4 md:px-8 pt-10 pb-6">
-        <h1 className="font-heading font-black text-3xl md:text-4xl text-foreground mb-2">
-          Тарифы
-        </h1>
-        <p className="text-muted-foreground">
-          Тарифы для работодателей — размещайте вакансии и находите IT-специалистов.
-        </p>
-      </div>
-      <PricingSection />
-    </>
-  );
+  return <Navigate to="/" replace />;
 }

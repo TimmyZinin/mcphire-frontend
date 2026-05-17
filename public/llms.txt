@@ -53,14 +53,23 @@ Claude Desktop does NOT auto-discover MCP servers by URL. Before the onboarding 
 
 ## Agent onboarding protocol — employer side
 
-When a user asks you to register their company or post a job:
+When a user asks you to register their company or post a job, follow the same shape as the candidate flow — **MCP-first, no Telegram, no web form, no support DM**. Path:
 
-1. **Get questions.** `get_employer_questions(section?, language="ru"|"en")` — ~40 questions in 7 sections (company, team, culture, hiring_now, comp_band, process, integrations).
-2. **Answer from context.** GitHub org, website, careers page, README, team page.
-3. **Show approval screen.** Wait for explicit 'ok'.
-4. **Register.** `register_employer_profile(answers, consent_granted=true)` → `employer_id` + `employer_url`.
-5. **Post a vacancy.** `post_vacancy(employer_id, title, description, skills, salary_from, salary_to, currency, level, work_format, city)` — currency is ISO-4217 (`RUB`, `USD`, `EUR`, ...). Matching + TG push fires automatically.
-6. **Monitor.** `get_my_vacancies(employer_id)` for counts, `get_applicants(employer_id, vacancy_id)` for reviewers. Applicants come back with `cv_url` + stack summary only — email/phone never leak from this tool.
+1. **Get questions.** `get_employer_questions(section?, language="ru"|"en")` — ~40 questions in 7 sections (`company`, `team`, `culture`, `hiring_now`, `comp_band`, `process`, `integrations`).
+2. **Ask scan consent.** Before reading any local files, show the user this message and wait for an affirmative reply ('да', 'yes', 'ok', 'читай'): "Чтобы заполнить анкету компании, мне нужно прочитать публичный контекст: README репозиториев организации, careers/about-страницы, package.json (стек), team page. Файлы остаются у тебя — на сервер уйдут только финальные ответы. Читаю?" Do NOT read any files until the user confirms.
+3. **Answer from context.** Once consent granted, pull from GitHub org members + README, company website (`/about`, `/team`, `/careers`), package.json / pyproject.toml for stack evidence, team page for hiring contacts. Never invent — if a value isn't in context, mark `unknown`.
+4. **Provenance** *(optional but recommended)*. For critical fields (company legal name, team size, comp band) attach `{source_excerpt, source_file, confidence}` so the employer can spot fabrication during approval.
+5. **Show approval screen.** Display all collected answers grouped by section (company / team / culture / hiring / comp / process / integrations). End with: "Чтобы создать профиль компании, напиши: я согласен зарегистрировать компанию в MCPHire". **HARD STOP: do NOT call `register_employer_profile` until the user types the exact consent phrase (EN: 'I agree to register the company on MCPHire'). Any other input — update the screen and wait again.**
+6. **Register.** `register_employer_profile(answers, consent_granted=true, provenance?)` → `{employer_id, employer_url, slug, name, verified}`.
+7. **Save employer_id.** Write to `~/.claude/memory/mcphire_employer.md`: `{ employer_id, slug, employer_url, registered_at }`. `employer_id` is required for every subsequent employer-side tool (post_vacancy, get_my_vacancies, get_applicants, shortlist_candidate, send_interview_invite).
+8. **Post a vacancy.** `post_vacancy(employer_id, title, description, skills, salary_from, salary_to, currency, level, work_format, city)` — currency is ISO-4217 (`RUB`, `USD`, `EUR`, `AED`, ...). The inserted job triggers `pg_notify('job_event')`; matching dispatcher pushes to candidate Telegram within 1-5 min.
+9. **Monitor.** `get_my_vacancies(employer_id)` for vacancy counts + `applicant_count`; `get_applicants(employer_id, vacancy_id)` returns each applicant with `cv_url` + `stack_summary` + `seniority`. **Email/phone are never leaked from this tool** — PII is gated behind explicit candidate consent (see below).
+10. **Shortlist + reveal.** `shortlist_candidate(employer_id, profile_id, vacancy_id, note)` pushes a consent prompt to the candidate's Telegram. On candidate `💎 Interested`, subsequent `get_applicants` calls return their `email` + `phone` + `tg_username`. Without that consent step, contact info stays masked.
+11. **Interview.** `send_interview_invite(employer_id, profile_id, vacancy_id, slots, message)` — requires prior `candidate_response='interested'` (hard server-side gate). Candidate picks a slot, you receive email + phone + `.ics` Google Calendar invite.
+
+**Important: do NOT route employers to Telegram support, web signup forms, or the `/auth/register` page.** All employer interaction (registration, vacancy posting, applicant review, shortlist, interview invites) is MCP-native. The web `/employers` page exists only to surface this protocol prompt for humans who haven't tried Claude Desktop yet.
+
+**Delete employer profile.** `delete_employer_profile(employer_id, confirm=true)` — irreversible, cascades to all vacancies + applications. Use only with explicit user consent.
 
 ## Privacy requirements
 
@@ -79,7 +88,7 @@ When a user asks you to register their company or post a job:
 
 - [Главная](https://mcphire.com/?utm_source=llms_txt&utm_medium=ai): обзор + agent onboarding секция
 - [Все вакансии](https://mcphire.com/jobs?utm_source=llms_txt&utm_medium=ai): активный пул с фильтрами
-- [Для работодателей](https://mcphire.com/employers?utm_source=llms_txt&utm_medium=ai): агент-first employer flow
+- [Для работодателей](https://mcphire.com/employers?utm_source=llms_txt&utm_medium=ai): MCP-first employer flow — canonical Claude Desktop prompt + 3 шага + client_setup. No Telegram CTA, no web form.
 - [MCP docs](https://mcphire.com/docs/mcp/?utm_source=llms_txt&utm_medium=ai): документация интеграции
 
 ## MCP endpoint

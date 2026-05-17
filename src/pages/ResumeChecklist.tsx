@@ -57,9 +57,6 @@ const ResumeChecklist = () => {
           <Link to="/" className="font-black text-xl uppercase tracking-tight">
             MCPHire
           </Link>
-          <a href="/#pricing" className="cta-text text-sm">
-            Тарифы
-          </a>
         </div>
       </header>
 

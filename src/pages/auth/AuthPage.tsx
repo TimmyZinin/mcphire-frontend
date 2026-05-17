@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { TelegramLoginButton } from "@/components/auth/TelegramLoginButton";
 import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
+import { Info } from "lucide-react";
 import { PageMeta } from "@/components/seo/PageMeta";
 import { useAuth } from "@/contexts/AuthContext";
 import type { TelegramAuthData } from "@/types";
@@ -146,7 +147,8 @@ export default function AuthPage() {
 
           {/* Card */}
           <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
-            {/* Social login buttons */}
+            {/* Social login buttons — for seekers / quick login.
+                For employer flow we route to MCP-first onboarding (see notice on Register tab). */}
             <div className="space-y-3">
               <TelegramLoginButton
                 botName={import.meta.env.VITE_TELEGRAM_BOT_NAME ?? "mcphire_bot"}
@@ -170,7 +172,7 @@ export default function AuthPage() {
               </div>
             </div>
 
-            <Tabs defaultValue={isRegister ? "register" : "login"}>
+            <Tabs defaultValue={isRegister ? "register" : "login"} key={isRegister ? "register" : "login"}>
               <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="login">Вход</TabsTrigger>
                 <TabsTrigger value="register">Регистрация</TabsTrigger>
@@ -273,6 +275,34 @@ export default function AuthPage() {
                       </p>
                     )}
                   </div>
+
+                  {/* MCP-first parity: employer registration goes through Claude Desktop, not Telegram.
+                      We still allow email signup as a manual fallback (for non-MCP users), but the
+                      canonical path is the Claude Desktop prompt on /employers. */}
+                  {registerForm.watch("role") === "employer" && (
+                    <div
+                      role="region"
+                      aria-label="MCP-first onboarding для работодателя"
+                      className="border border-primary/30 bg-primary/5 rounded-xl p-4 flex gap-3"
+                    >
+                      <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+                      <div className="text-sm">
+                        <p className="font-semibold mb-1">Рекомендуем: регистрация через Claude Desktop</p>
+                        <p className="text-muted-foreground mb-2">
+                          Работодатели на MCPHire регистрируют компанию через MCP-агента: один промт, ~40 вопросов из
+                          вашего публичного контекста, approval screen, готово. Telegram-логин для работодателя не
+                          нужен.
+                        </p>
+                        <Link
+                          to="/employers"
+                          className="font-semibold text-primary hover:text-primary/80 transition-colors"
+                        >
+                          Открыть инструкцию для Claude Desktop →
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+
                   <div>
                     <Label htmlFor="reg-name">Имя</Label>
                     <Input
