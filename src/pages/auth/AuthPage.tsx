@@ -28,13 +28,16 @@ const loginSchema = z.object({
   password: z.string().min(6, "Минимум 6 символов"),
 });
 
+// MCP-first parity (Sprint 4 fix F-H1): web email registration is candidate-only.
+// Employer onboarding lives on /employers (Claude Desktop prompt → MCP register_employer_profile).
+// We hard-code role='seeker' on the schema so this form physically cannot create an employer account
+// — the toggle is gone and the API call below cannot be flipped from devtools either.
 const registerSchema = z
   .object({
     name: z.string().min(2, "Минимум 2 символа"),
     email: z.string().email("Введите корректный email"),
     password: z.string().min(8, "Минимум 8 символов"),
     confirmPassword: z.string(),
-    role: z.enum(["seeker", "employer"], { required_error: "Выберите роль" }),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Пароли не совпадают",
@@ -77,7 +80,11 @@ export default function AuthPage() {
   const handleRegister = registerForm.handleSubmit(async (data) => {
     try {
       setError(null);
-      await register({ name: data.name, email: data.email, password: data.password, role: data.role });
+      // Sprint 4 fix F-H1: web email registration is candidate-only.
+      // Employer onboarding goes through MCP (see /employers). Backend
+      // additionally force-coerces role='seeker' regardless of payload
+      // (RegisterRequest.force_seeker_role validator).
+      await register({ name: data.name, email: data.email, password: data.password });
       setRegistrationSuccess(true);
     } catch {
       setError("Этот email уже зарегистрирован");
@@ -232,76 +239,31 @@ export default function AuthPage() {
               {/* Register */}
               <TabsContent value="register">
                 <form onSubmit={handleRegister} className="space-y-4">
-                  {/* Role Selection */}
-                  <div>
-                    <Label className="mb-2 block">Я хочу</Label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <label
-                        className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all text-center ${
-                          registerForm.watch("role") === "seeker"
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:border-primary/30"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          value="seeker"
-                          {...registerForm.register("role")}
-                          className="sr-only"
-                        />
-                        <span className="text-2xl">🔍</span>
-                        <span className="text-sm font-semibold">Найти работу</span>
-                      </label>
-                      <label
-                        className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all text-center ${
-                          registerForm.watch("role") === "employer"
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:border-primary/30"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          value="employer"
-                          {...registerForm.register("role")}
-                          className="sr-only"
-                        />
-                        <span className="text-2xl">🏢</span>
-                        <span className="text-sm font-semibold">Нанять сотрудника</span>
-                      </label>
-                    </div>
-                    {registerForm.formState.errors.role && (
-                      <p className="text-xs text-destructive mt-1">
-                        {registerForm.formState.errors.role.message}
+                  {/* MCP-first parity (Sprint 4 fix F-H1):
+                      Web email registration is candidate-only. Employers don't
+                      use a web form at all — registration runs through Claude
+                      Desktop (MCP register_employer_profile). The banner below
+                      is the canonical path for anyone who landed here looking
+                      to hire. */}
+                  <div
+                    role="region"
+                    aria-label="Работодателям: регистрация через Claude Desktop"
+                    className="border border-primary/30 bg-primary/5 rounded-xl p-4 flex gap-3"
+                  >
+                    <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+                    <div className="text-sm">
+                      <p className="font-semibold mb-1">Ищешь сотрудника? Регистрация работодателя — через Claude Desktop</p>
+                      <p className="text-muted-foreground mb-2">
+                        Работодатели на MCPHire регистрируют компанию через MCP-агента: один промт, ~40 вопросов из публичного контекста компании, approval screen с точной фразой согласия, готово. Email-форма ниже — только для кандидатов (поиск работы).
                       </p>
-                    )}
-                  </div>
-
-                  {/* MCP-first parity: employer registration goes through Claude Desktop, not Telegram.
-                      We still allow email signup as a manual fallback (for non-MCP users), but the
-                      canonical path is the Claude Desktop prompt on /employers. */}
-                  {registerForm.watch("role") === "employer" && (
-                    <div
-                      role="region"
-                      aria-label="MCP-first onboarding для работодателя"
-                      className="border border-primary/30 bg-primary/5 rounded-xl p-4 flex gap-3"
-                    >
-                      <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" aria-hidden="true" />
-                      <div className="text-sm">
-                        <p className="font-semibold mb-1">Рекомендуем: регистрация через Claude Desktop</p>
-                        <p className="text-muted-foreground mb-2">
-                          Работодатели на MCPHire регистрируют компанию через MCP-агента: один промт, ~40 вопросов из
-                          вашего публичного контекста, approval screen, готово. Telegram-логин для работодателя не
-                          нужен.
-                        </p>
-                        <Link
-                          to="/employers"
-                          className="font-semibold text-primary hover:text-primary/80 transition-colors"
-                        >
-                          Открыть инструкцию для Claude Desktop →
-                        </Link>
-                      </div>
+                      <Link
+                        to="/employers"
+                        className="font-semibold text-primary hover:text-primary/80 transition-colors"
+                      >
+                        Открыть инструкцию для работодателей →
+                      </Link>
                     </div>
-                  )}
+                  </div>
 
                   <div>
                     <Label htmlFor="reg-name">Имя</Label>

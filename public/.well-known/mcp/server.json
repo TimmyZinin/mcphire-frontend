@@ -1,6 +1,6 @@
 {
   "name": "mcphire",
-  "version": "1.4.1-alpha",
+  "version": "1.4.2-alpha",
   "description": "MCPHire — MCP-first job marketplace. Two-sided: candidates register through Claude Desktop (11 tools, ~150-question onboarding) and employers register companies + post vacancies through Claude (7 tools, ~40-question onboarding). Primary audience today is Russian-speaking tech, but the data model, tools, and documentation are language- and currency-agnostic; any company can register and any candidate can apply regardless of location.",
   "endpoint": "https://mcp.mcphire.com/sse",
   "transport": "sse",
@@ -106,14 +106,17 @@
       "15. Ask the user to open @mcphire_match_bot in Telegram and send /link <claim_token> to enable instant match pushes."
     ],
     "employer_onboarding": [
-      "0. Ensure the MCP server is connected to your client — see client_setup above. If `get_employer_questions` is not callable in your session, the server isn't installed.",
-      "1. Call get_employer_questions(section?, language?) — ~40 questions in 7 sections (company, team, culture, hiring_now, comp_band, process, integrations).",
-      "2. Answer from GitHub org, website, careers page, README, team page.",
-      "3. SHOW USER an approval screen. Wait for explicit 'ok'.",
-      "4. Call register_employer_profile(answers, consent_granted=true) → receive employer_id + employer_url.",
-      "5. Call post_vacancy(employer_id, title, description, skills, salary_from, salary_to, currency, level, work_format, city, requirements) for each opening. Matching + Telegram push to candidates fires automatically.",
-      "6. Use get_my_vacancies(employer_id) to monitor applicant counts.",
-      "7. Use get_applicants(employer_id, vacancy_id) to review responders (cv_url + stack summary only; email and phone are revealed only after a consent-gated shortlist → interest → interview-accept flow that is rolled out iteratively)."
+      "1. Ensure the MCP server is connected to your client — see client_setup above. If `get_employer_questions` is not callable in your session, the server isn't installed; fix that first.",
+      "2. Call get_employer_questions(section?, language?) — ~40 questions in 7 sections (company, team, culture, hiring_now, comp_band, process, integrations); pass language='en' for English wording.",
+      "3. Ask the user for scan consent before reading any local files. Show this exact message and wait for an affirmative reply ('да', 'yes', 'ok', 'читай'): 'Чтобы заполнить анкету компании, мне нужно прочитать публичный контекст: README репозиториев организации, careers/about-страницы, package.json (стек), team page. Файлы остаются у тебя — на сервер уйдут только финальные ответы. Читаю?' Do NOT read any local files or repositories until the user confirms.",
+      "4. Once consent granted, answer from GitHub org members + README, company website ('/about', '/team', '/careers'), package.json / pyproject.toml / Cargo.toml / go.mod for stack evidence, team page for hiring contacts. Never invent — if a value isn't in context, mark `unknown`.",
+      "5. Attach provenance (source_excerpt + source_file + confidence) for critical fields (q_company_legal_name, q_team_size, q_comp_currency, comp_band) so the user can spot fabrication during approval.",
+      "6. Show the user an approval screen with all answers organized by section (company / team / culture / hiring / comp / process / integrations). End the screen with this exact line: 'Чтобы создать профиль компании, напиши: я согласен зарегистрировать компанию в MCPHire'. HARD STOP: entering data or correcting fields is NOT consent. Do NOT call register_employer_profile until the user types the exact phrase 'я согласен зарегистрировать компанию в MCPHire' (EN: 'I agree to register the company on MCPHire'). Any other input — update the screen and wait again.",
+      "7. After consent phrase received — before calling register_employer_profile — save a local copy of the final answers: if Write tool is available (Claude Code CLI) write to ~/.claude/memory/mcphire_employer_draft_<YYYY-MM-DD>.json with {answers, provenance, saved_at}; otherwise render as a JSON code block so the user can copy it. Protects against data loss if the session crashes mid-flight.",
+      "8. Call register_employer_profile(answers, consent_granted=true, provenance) → receive {employer_id, employer_url, slug, name, verified}.",
+      "9. Immediately after register_employer_profile returns — before anything else — write to ~/.claude/memory/mcphire_employer.md: { employer_id, slug, employer_url, registered_at }. employer_id is required for every subsequent employer-side tool (post_vacancy, get_my_vacancies, get_applicants, shortlist_candidate, send_interview_invite).",
+      "10. Call post_vacancy(employer_id, title, description, skills, salary_from, salary_to, currency, level, work_format, city, requirements) for each opening. Currency accepts any ISO-4217 code. Matching dispatcher pushes instant Telegram notifications to relevant candidates within 1-5 minutes.",
+      "11. Monitor + funnel: get_my_vacancies(employer_id) returns applicant_count per vacancy; get_applicants(employer_id, vacancy_id) returns cv_url + stack_summary + seniority (no email/phone). To unlock contacts: shortlist_candidate(employer_id, profile_id, vacancy_id, note) pushes a consent prompt to the candidate's Telegram — on '💎 Interested', subsequent get_applicants calls reveal email + phone + tg_username. To schedule a call: send_interview_invite(employer_id, profile_id, vacancy_id, slots, message) — hard-gated by prior candidate_response='interested'."
     ],
     "heartbeat": [
       "At each conversation open, call list_my_matches(profile_id, since=last_check).",
@@ -777,7 +780,7 @@
     },
     {
       "name": "get_applicants",
-      "description": "List applicants for an employer's vacancy. Returns cv_url + stack_summary + seniority only. Email and phone are never returned by this tool — they become available only after a future consent-gated shortlist / interview-invite / accept flow. Returns 403 if the vacancy belongs to a different employer.",
+      "description": "List applicants for an employer's vacancy. Returns cv_url + stack_summary + seniority by default. Email, phone, and tg_username are gated: they appear only AFTER (a) the employer called shortlist_candidate for this (vacancy, profile) AND (b) the candidate replied 💎 Interested via Telegram inline buttons. Without that flow, contact PII stays masked. Returns 403 if the vacancy belongs to a different employer.",
       "inputSchema": {
         "additionalProperties": false,
         "properties": {

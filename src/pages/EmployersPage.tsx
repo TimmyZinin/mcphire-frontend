@@ -11,7 +11,7 @@ const EmployersPage = () => {
     },
     {
       title: "Подтверди approval screen",
-      desc: "Claude покажет собранные ответы. Правишь неточности, говоришь «ok» — агент создаёт employer-профиль через MCP.",
+      desc: "Claude покажет собранные ответы. Правишь неточности и пишешь точную фразу: «я согласен зарегистрировать компанию в MCPHire». Только после неё агент вызывает register_employer_profile — любой другой ввод трактуется как правка анкеты, не как consent.",
     },
     {
       title: "Постишь вакансию той же командой",
@@ -167,8 +167,8 @@ const EmployersPage = () => {
               <div className="text-lg font-bold mb-3">[MCP]</div>
               <h3 className="font-bold mb-2">Регистрация без форм</h3>
               <p className="text-sm text-muted-foreground">
-                5 employer-tools в проде: register_employer_profile, post_vacancy, get_my_vacancies, get_applicants,
-                delete_employer_profile.
+                7 employer-tools в проде: register_employer_profile, post_vacancy, get_my_vacancies, get_applicants,
+                shortlist_candidate, send_interview_invite, get_employer_questions.
               </p>
             </div>
 

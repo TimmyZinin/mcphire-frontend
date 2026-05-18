@@ -359,7 +359,10 @@ const HomePage = () => {
             ))}
           </div>
 
-          <Link to="/employer/jobs/create" className="cta-hot">
+          {/* Sprint 4 fix F-H1: MCP-first parity — public employer CTA goes to /employers
+              (Claude Desktop prompt), not to /employer/jobs/create which is the protected
+              dashboard route reserved for already-onboarded employers. */}
+          <Link to="/employers" className="cta-hot">
             Разместить вакансию бесплатно
           </Link>
         </div>

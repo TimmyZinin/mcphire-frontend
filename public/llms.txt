@@ -69,7 +69,7 @@ When a user asks you to register their company or post a job, follow the same sh
 
 **Important: do NOT route employers to Telegram support, web signup forms, or the `/auth/register` page.** All employer interaction (registration, vacancy posting, applicant review, shortlist, interview invites) is MCP-native. The web `/employers` page exists only to surface this protocol prompt for humans who haven't tried Claude Desktop yet.
 
-**Delete employer profile.** `delete_employer_profile(employer_id, confirm=true)` — irreversible, cascades to all vacancies + applications. Use only with explicit user consent.
+**Closing a vacancy or wind-down.** Today there is no `delete_employer_profile` MCP tool — to close a vacancy use `post_vacancy` for replacements and contact `support` (see [Tim Zinin on Telegram](https://t.me/timofeyzinin)) for full employer-profile takedown.
 
 ## Privacy requirements
 
