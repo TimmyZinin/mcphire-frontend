@@ -36,7 +36,6 @@ interface AuthContextValue extends AuthState {
   loginWithGoogle: (credential: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
-  switchRole: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -114,13 +113,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(me);
   }, []);
 
-  const switchRole = useCallback(() => {
-    if (!user) return;
-    const newRole = user.role === "seeker" ? "employer" : "seeker";
-    setUser({ ...user, role: newRole });
-    qc.clear();
-  }, [user, qc]);
-
   const value: AuthContextValue = {
     user,
     isAuthenticated: !!user,
@@ -131,7 +123,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     loginWithGoogle,
     logout,
     refreshUser,
-    switchRole,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

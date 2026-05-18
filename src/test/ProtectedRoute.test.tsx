@@ -19,7 +19,6 @@ const mockAuthState = {
   loginWithTelegram: vi.fn(),
   logout: vi.fn(),
   refreshUser: vi.fn(),
-  switchRole: vi.fn(),
 };
 
 describe("ProtectedRoute", () => {

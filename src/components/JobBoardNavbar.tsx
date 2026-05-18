@@ -5,7 +5,7 @@
 
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, LogOut, User, FileText, LayoutDashboard, ArrowLeftRight } from "lucide-react";
+import { Menu, LogOut, User, FileText, LayoutDashboard } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -52,7 +52,7 @@ const JobBoardNavbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const { isAuthenticated, user, logout, switchRole } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
 
   const isActive = (path: string) => location.pathname.startsWith(path);
 
@@ -149,16 +149,17 @@ const JobBoardNavbar = () => {
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="flex items-center gap-2 cursor-pointer"
-                  onClick={() => {
-                    switchRole();
-                    navigate(user.role === "seeker" ? "/employer/dashboard" : "/profile");
-                  }}
-                >
-                  <ArrowLeftRight className="w-4 h-4" />
-                  {user.role === "seeker" ? "Режим работодателя" : "Режим соискателя"}
-                </DropdownMenuItem>
+                {user.role === "seeker" && (
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/employers"
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      Стать работодателем
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem
                   className="flex items-center gap-2 text-destructive focus:text-destructive cursor-pointer"
                   onClick={handleLogout}
@@ -239,14 +240,24 @@ const JobBoardNavbar = () => {
                       {dashboardLabel}
                     </Link>
                     {user.role === "seeker" && (
-                      <Link
-                        to="/applications"
-                        onClick={() => setOpen(false)}
-                        className="px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted transition-colors flex items-center gap-2"
-                      >
-                        <FileText className="w-4 h-4 text-muted-foreground" />
-                        Мои отклики
-                      </Link>
+                      <>
+                        <Link
+                          to="/applications"
+                          onClick={() => setOpen(false)}
+                          className="px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted transition-colors flex items-center gap-2"
+                        >
+                          <FileText className="w-4 h-4 text-muted-foreground" />
+                          Мои отклики
+                        </Link>
+                        <Link
+                          to="/employers"
+                          onClick={() => setOpen(false)}
+                          className="px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted transition-colors flex items-center gap-2"
+                        >
+                          <LayoutDashboard className="w-4 h-4 text-muted-foreground" />
+                          Стать работодателем
+                        </Link>
+                      </>
                     )}
                     <button
                       onClick={async () => {

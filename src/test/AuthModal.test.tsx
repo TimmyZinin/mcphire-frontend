@@ -16,7 +16,6 @@ vi.mock("@/contexts/AuthContext", () => ({
     loginWithTelegram: vi.fn(),
     logout: vi.fn(),
     refreshUser: vi.fn(),
-    switchRole: vi.fn(),
   }),
 }));
 

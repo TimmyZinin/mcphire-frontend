@@ -12,7 +12,6 @@ import ScheduleSection from "@/components/ScheduleSection";
 import ForWhomSection from "@/components/ForWhomSection";
 import FoundersSection from "@/components/FoundersSection";
 import WebinarsSection from "@/components/WebinarsSection";
-import PricingSection from "@/components/PricingSection";
 import FAQSection from "@/components/FAQSection";
 import FinalCTASection from "@/components/FinalCTASection";
 import JobBoardSection from "@/components/JobBoardSection";
@@ -42,7 +41,6 @@ const Index = () => {
       <ForWhomSection />
       <FoundersSection />
       <WebinarsSection />
-      <PricingSection />
       <FAQSection />
       <FinalCTASection />
       <JobBoardSection />
