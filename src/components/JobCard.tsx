@@ -50,9 +50,15 @@ export function JobCard({ job, showMatchScore = true }: JobCardProps) {
   const matchScore = getMatchScore(job.id);
   const canShowMatch = showMatchScore && isAuthenticated;
 
+  // P0-4 (Sprint 8): the public SSR fallback only knows slugs, so links
+  // must point at job.slug. job.id is kept as a fallback for legacy callers
+  // that don't populate slug — but every JobListItem produced by the API
+  // ships with a slug today.
+  const jobLinkParam = job.slug || job.id;
+
   return (
     <Link
-      to={`/jobs/${job.id}`}
+      to={`/jobs/${jobLinkParam}`}
       className="block bg-card border border-border rounded-2xl p-6 hover:border-primary hover:shadow-lg hover:-translate-y-0.5 transition-all relative"
     >
       {/* Badges — top right */}

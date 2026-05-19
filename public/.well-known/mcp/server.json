@@ -1,7 +1,7 @@
 {
   "name": "mcphire",
-  "version": "1.4.3-alpha",
-  "description": "MCPHire — MCP-first job marketplace. Two-sided: candidates register through Claude Desktop (11 tools, ~150-question onboarding) and employers register companies + post vacancies through Claude (7 tools, ~40-question onboarding). Primary audience today is Russian-speaking tech, but the data model, tools, and documentation are language- and currency-agnostic; any company can register and any candidate can apply regardless of location.",
+  "version": "1.5.0-alpha",
+  "description": "MCPHire — MCP-first job marketplace. Two-sided: candidates register through Claude Desktop (11 tools, ~150-question onboarding) and employers register companies + post vacancies through Claude (8 tools, ~40-question onboarding). Primary audience today is Russian-speaking tech, but the data model, tools, and documentation are language- and currency-agnostic; any company can register and any candidate can apply regardless of location. Sprint 8: server-side consent_phrase validation, employer_session_token bearer, draft-status gate for unverified-employer vacancies.",
   "endpoint": "https://mcp.mcphire.com/sse",
   "transport": "sse",
   "protocol": "JSON-RPC 2.0",
@@ -53,7 +53,7 @@
           }
         }
       },
-      "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 18 tools (11 candidate + 7 employer).",
+      "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 19 tools (11 candidate + 8 employer).",
       "install_help": "https://mcphire.com/llms.txt#install-in-claude-desktop"
     },
     "claude_code": {
@@ -74,7 +74,7 @@
       "settings_snippet": {
         "enableAllProjectMcpServers": true
       },
-      "restart": "Close and reopen the Claude Code session in the project directory. Verify by asking: 'what mcphire tools are available?'. Expected: 18 tools (11 candidate + 7 employer)."
+      "restart": "Close and reopen the Claude Code session in the project directory. Verify by asking: 'what mcphire tools are available?'. Expected: 19 tools (11 candidate + 8 employer)."
     },
     "cursor": {
       "note": "Cursor supports SSE MCP servers via Settings → MCP. Use the same endpoint.",
