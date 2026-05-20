@@ -23,7 +23,7 @@ Claude Desktop does NOT auto-discover MCP servers by URL. Before the onboarding 
 }
 ```
 
-**Restart.** Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: *"what mcphire tools are available?"* — you should see 18 tools (11 candidate + 7 employer). If you see 0, the config path is wrong or Claude Desktop wasn't fully restarted.
+**Restart.** Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: *"what mcphire tools are available?"* — you should see 19 tools (11 candidate + 8 employer, including `publish_vacancy`). If you see 0, the config path is wrong or Claude Desktop wasn't fully restarted.
 
 **For Cursor / Cline / other MCP clients:** same SSE URL, consult your client's MCP settings documentation.
 
@@ -94,7 +94,7 @@ When a user asks you to register their company or post a job, follow the same sh
 ## MCP endpoint
 
 - [SSE endpoint](https://mcp.mcphire.com/sse): JSON-RPC 2.0 over Server-Sent Events
-- [Server descriptor](https://mcphire.com/.well-known/mcp/server.json): 18 tools (11 candidate + 7 employer)
+- [Server descriptor](https://mcphire.com/.well-known/mcp/server.json): 19 tools (11 candidate + 8 employer, includes `publish_vacancy` for unverified-employer draft → active flip)
 
 ## Contact
 
