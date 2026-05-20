@@ -259,7 +259,7 @@ export default function EmployerDashboardPage() {
   const { data: profile, isLoading } = useEmployerProfile();
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="v3-canvas min-h-screen">
       <PageMeta
         title="Кабинет работодателя | MCPHire"
         description="Управляйте вакансиями и откликами"

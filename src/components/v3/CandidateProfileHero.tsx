@@ -12,6 +12,7 @@ interface CandidateProfileHeroProps {
   ask?: string;
   available?: string;
   match: number;
+  matchSubtitle?: string;        // e.g. "композитный · 8 сигналов" or "completeness preview"
   skillSignals?: ReadonlyArray<readonly [string, number]>;
   highlights?: string[];
   primaryAction?: ReactNode;
@@ -36,6 +37,7 @@ export function V3CandidateProfileHero({
   ask,
   available,
   match,
+  matchSubtitle,
   skillSignals = [],
   highlights = [],
   primaryAction,
@@ -119,7 +121,7 @@ export function V3CandidateProfileHero({
             >
               {match}
             </div>
-            <div className="text-sm opacity-90 mt-1">композитный · {skillSignals.length || 8} сигналов</div>
+            <div className="text-sm opacity-90 mt-1">{matchSubtitle ?? `композитный · ${skillSignals.length || 8} сигналов`}</div>
           </div>
           {skillSignals.length > 0 && (
             <div className="grid gap-2 mt-4">

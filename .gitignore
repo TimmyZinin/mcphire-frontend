@@ -31,3 +31,4 @@ dist-ssr
 *.sw?
 .vercel
 .playwright-cli/
+mcphire_*.png

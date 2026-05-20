@@ -18,6 +18,8 @@ import { PageMeta } from "@/components/seo/PageMeta";
 import { ProfileSkeleton } from "@/components/ui/SkeletonCard";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/contexts/AuthContext";
+import { V3CandidateProfileHero } from "@/components/v3/CandidateProfileHero";
 import { useSeekerProfile, useUpdateSeekerProfile, useUploadResume } from "@/hooks/useSeeker";
 import { applicationStatusLabels, applicationStatusColors } from "@/lib/formatters";
 import { useSeekerApplications } from "@/hooks/useSeeker";
@@ -118,6 +120,7 @@ function ApplicationsTab() {
 
 export default function SeekerProfilePage() {
   const { data: profile, isLoading } = useSeekerProfile();
+  const { user } = useAuth();
   const { mutateAsync: updateProfile, isPending: isSaving } = useUpdateSeekerProfile();
   const { mutateAsync: uploadResume, isPending: isUploading } = useUploadResume();
   const [skillInput, setSkillInput] = useState("");
@@ -193,7 +196,7 @@ export default function SeekerProfilePage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="v3-canvas min-h-screen">
       <PageMeta
         title="Мой профиль | MCPHire"
         description="Заполните профиль и резюме для отклика на вакансии"
@@ -201,12 +204,55 @@ export default function SeekerProfilePage() {
       />
       <JobBoardNavbar />
 
+      <div className="max-w-[1320px] mx-auto px-4 md:px-8 pt-6">
+        {/* V3 hero — Candidate snapshot (Sprint 11).
+            `match` is derived from profile completeness signals — the same
+            inputs feed both the big score and the per-signal bars below it.
+            Real MCP scoring will replace this once the data layer exposes
+            it; until then we show an honest "fill your profile" feedback
+            loop instead of a hardcoded 94. */}
+        {(() => {
+          const signals: ReadonlyArray<readonly [string, number]> = [
+            ["Профиль", profile?.headline ? 90 : 30],
+            ["Опыт", profile?.experience && profile.experience.length > 0 ? 95 : 40],
+            ["Навыки", profile?.skills && profile.skills.length >= 3 ? 92 : 50],
+            ["Резюме", profile?.resumeUrl ? 100 : 30],
+          ];
+          const completeness = Math.round(
+            signals.reduce((sum, [, v]) => sum + v, 0) / signals.length
+          );
+          return (
+            <V3CandidateProfileHero
+              name={user?.name || (profile?.headline ? profile.headline.split(" — ")[0] : "Профиль")}
+              title={profile?.headline || "Заполни заголовок профиля"}
+              location={profile?.city || undefined}
+              ask={
+                profile?.desiredSalaryFrom && profile?.desiredSalaryTo
+                  ? `${profile.desiredSalaryFrom.toLocaleString()}–${profile.desiredSalaryTo.toLocaleString()} ${profile.desiredCurrency}`
+                  : undefined
+              }
+              available={profile?.availableFrom || undefined}
+              match={completeness}
+              matchSubtitle="заполненность профиля · 4 сигнала"
+              skillSignals={signals}
+              highlights={[
+                profile?.experience?.[0]?.company ? `${profile.experience[0].company} · ${profile.experience[0].position}` : "Добавь опыт работы",
+                profile?.skills && profile.skills.length > 0 ? `Навыки: ${profile.skills.slice(0, 3).map((s) => s.name).join(", ")}` : "Добавь ключевые навыки",
+                profile?.education?.[0] ? `${profile.education[0].institution}` : "Добавь образование",
+              ]}
+              statusLabel={profile?.isOpenToWork ? "Открыт к офферам · агент онлайн" : "Не ищу работу"}
+              avatarUrl={user?.avatarUrl ?? undefined}
+            />
+          );
+        })()}
+      </div>
+
       <div className="max-w-4xl mx-auto px-4 md:px-8 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="heading-lg">Мой профиль</h1>
-            <p className="text-muted-foreground text-sm mt-1">
-              Заполните резюме, чтобы откликаться на вакансии
+            <h2 className="text-2xl font-bold" style={{ letterSpacing: "-.02em" }}>Резюме</h2>
+            <p className="text-v3-ink2 text-sm mt-1">
+              Заполни разделы — они синхронизируются с CV по ссылке /cv/&lt;id&gt;
             </p>
           </div>
           {/* Open to work toggle */}
@@ -219,7 +265,7 @@ export default function SeekerProfilePage() {
             <div
               className={cn(
                 "relative w-10 h-5 rounded-full transition-colors",
-                form.watch("isOpenToWork") ? "bg-primary" : "bg-muted"
+                form.watch("isOpenToWork") ? "bg-v3-hot" : "bg-v3-bg"
               )}
               onClick={() => form.setValue("isOpenToWork", !form.watch("isOpenToWork"))}
             >
