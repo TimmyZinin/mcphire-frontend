@@ -27,6 +27,31 @@ Claude Desktop does NOT auto-discover MCP servers by URL. Before the onboarding 
 
 **For Cursor / Cline / other MCP clients:** same SSE URL, consult your client's MCP settings documentation.
 
+## Tools (19)
+
+Candidate-side (11):
+- search_jobs
+- get_job_details
+- apply_to_job
+- get_my_applications
+- get_salary_stats
+- get_registration_questions
+- register_profile
+- get_verification_status
+- list_my_matches
+- get_my_cv
+- delete_profile
+
+Employer-side (8):
+- get_employer_questions
+- register_employer_profile
+- post_vacancy
+- get_my_vacancies
+- get_applicants
+- shortlist_candidate
+- send_interview_invite
+- publish_vacancy
+
 ## Agent onboarding protocol — candidate side
 
 Когда пользователь даёт тебе домен (`mcphire.com`), следуй шагам:
@@ -69,7 +94,7 @@ When a user asks you to register their company or post a job, follow the same sh
 
 **Important: do NOT route employers to Telegram support, web signup forms, or the `/auth/register` page.** All employer interaction (registration, vacancy posting, applicant review, shortlist, interview invites) is MCP-native. The web `/employers` page exists only to surface this protocol prompt for humans who haven't tried Claude Desktop yet.
 
-**Wind-down.** There is no delete_employer_profile MCP tool today — for full employer-profile takedown contact support (Tim Zinin on Telegram: https://t.me/timofeyzinin). To close an individual vacancy use post_vacancy for replacements.
+13. Wind-down. There is no delete_employer_profile MCP tool today — for full employer-profile takedown contact support (Tim Zinin on Telegram: https://t.me/timofeyzinin). To close an individual vacancy use post_vacancy for replacements.
 
 ## Privacy requirements
 
