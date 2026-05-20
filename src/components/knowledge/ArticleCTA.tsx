@@ -1,6 +1,6 @@
 // ============================================================
 // MCPHire — Article CTA (V3 «Optimist» — MCPHire MCP-flow)
-// Was a Sborka webinar CTA; now points to /#agent-onboarding
+// Points to /#agent-onboarding — canonical MCPHire connect flow
 // and the canonical MCP install entry point.
 // ============================================================
 

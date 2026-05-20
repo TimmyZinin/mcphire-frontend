@@ -10,7 +10,7 @@ from urllib.request import Request, urlopen
 from urllib.parse import urlencode
 from urllib.error import HTTPError
 
-HEADERS = {"User-Agent": "SborkaCareerBot/1.0 (tim.zinin@gmail.com)"}
+HEADERS = {"User-Agent": "MCPHireBot/1.0 (tim.zinin@gmail.com)"}
 BASE_URL = "https://api.hh.ru/vacancies"
 DELAY = 0.5
 
