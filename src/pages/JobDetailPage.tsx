@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import { SkeletonCard } from "@/components/JobCard";
 import { ApplyDialog } from "@/components/jobs/ApplyDialog";
 import { JobPostingJsonLd } from "@/components/seo/JsonLd";
+import { V3JobDetailHero } from "@/components/v3/JobDetailHero";
 
 /** Sanitize job description HTML: fix HH tags, strip dangerous content. */
 function sanitizeDescription(html: string): string {
@@ -39,27 +40,19 @@ const JobDetailPage = () => {
   const { isAuthenticated } = useAuth();
   const [applyOpen, setApplyOpen] = useState(false);
 
-  // Company colors
-  const companyColors: Record<string, { bg: string; text: string }> = {
-    "Яндекс": { bg: "#fc0", text: "#000" },
-    "МТС": { bg: "#e30611", text: "#fff" },
-    "Сбер": { bg: "#21a038", text: "#fff" },
-    "Тинькофф": { bg: "#ffdd2d", text: "#333" },
-    VK: { bg: "#0077ff", text: "#fff" },
-    Ozon: { bg: "#005bff", text: "#fff" },
-    Wildberries: { bg: "#cb11ab", text: "#fff" },
-    Авито: { bg: "#00aaff", text: "#fff" },
-    Lamoda: { bg: "#000", text: "#fff" },
-    Kaspersky: { bg: "#006d5c", text: "#fff" },
+  // Deterministic 80-99 match score until real scoring is wired in
+  const getMatchScore = (jobId: string): number => {
+    let hash = 0;
+    for (let i = 0; i < jobId.length; i++) hash = (hash * 17 + jobId.charCodeAt(i)) | 0;
+    return 80 + (Math.abs(hash) % 20);
   };
 
-  const getCompanyColor = (companyName: string) => companyColors[companyName]?.bg || "#e6f5ee";
-  const getCompanyTextColor = (companyName: string) => companyColors[companyName]?.text || "#1b6b52";
-
-  // Match score calculation
-  const getMatchScore = (jobId: string): number => {
-    const scores: Record<string, number> = { Senior: 90, Middle: 85, Lead: 88, Junior: 75 };
-    return (scores["Middle"] || 80) + (parseInt(jobId, 10) % 10);
+  // Deterministic V3 gradient class for the Similar Jobs sidebar avatars
+  const SIDEBAR_GRADIENTS = ["v3-grad-hot", "v3-grad-cool", "v3-grad-plum", "v3-grad-leaf", "v3-grad-sun"];
+  const gradientForId = (s: string): string => {
+    let hash = 0;
+    for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) | 0;
+    return SIDEBAR_GRADIENTS[Math.abs(hash) % SIDEBAR_GRADIENTS.length];
   };
 
   // If loading
@@ -138,8 +131,8 @@ const JobDetailPage = () => {
         <meta name="description" content={`${job.title} в компании ${companyName}. ${job.city}. Зарплата ${job.salaryFrom && job.salaryTo ? `${formatSalary(job.salaryFrom)} - ${formatSalary(job.salaryTo)} ${job.currency}` : ""}. ${job.description?.slice(0, 150)}`} />
         <meta property="og:title" content={`${job.title} в ${companyName}`} />
         <meta property="og:description" content={`${job.city} · ${job.salaryFrom && job.salaryTo ? `${formatSalary(job.salaryFrom)} - ${formatSalary(job.salaryTo)} ${job.currency}` : ""}`} />
-        <meta property="og:url" content={`https://mcphire.com/jobs/${job.id}`} />
-        <link rel="canonical" href={`https://mcphire.com/jobs/${job.id}`} />
+        <meta property="og:url" content={`https://mcphire.com/jobs/${job.slug || job.id}`} />
+        <link rel="canonical" href={`https://mcphire.com/jobs/${job.slug || job.id}`} />
       </Helmet>
 
       <JobBoardNavbar />
@@ -152,66 +145,40 @@ const JobDetailPage = () => {
           <span className="text-foreground">{job.title}</span>
         </nav>
 
-        {/* Job Header */}
-        <div className="flex justify-between items-start pb-8 gap-8 flex-wrap">
-          {/* Left */}
-          <div className="flex-1 min-w-[300px]">
-            {/* Company row */}
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-extrabold text-2xl shrink-0"
-                style={{ background: getCompanyColor(companyName), color: getCompanyTextColor(companyName) }}>
-                {companyName[0]}
-              </div>
-              <div>
-                <div className="text-base font-semibold">{companyName}</div>
-                <span className="text-xs text-primary font-semibold">✓ Верифицированная компания</span>
-              </div>
-            </div>
-            {/* Title */}
-            <h1 className="text-3xl font-extrabold tracking-tight mb-2">{job.title}</h1>
-            {/* Salary */}
-            <div className="text-xl font-semibold text-primary mb-3" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-              {job.salaryFrom && job.salaryTo
-                ? `${formatSalary(job.salaryFrom)} — ${formatSalary(job.salaryTo)} ${job.currency}`
-                : "Зарплата не указана"}
-            </div>
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2">
-              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                job.format === "Удалённо" ? "bg-emerald-50 text-emerald-700" : "bg-muted text-muted-foreground"
-              }`}>{job.format}</span>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">{job.level}</span>
-              {skills.slice(0, 3).map((skill) => (
-                <span key={skill} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">{skill}</span>
-              ))}
-            </div>
-          </div>
-
-          {/* Right — Match Circle + Actions */}
-          <div className="flex flex-col items-end gap-4 min-w-[220px]">
-            {/* SVG Match Circle — only for authenticated users */}
-            {isAuthenticated && (
-              <div className="relative w-[100px] h-[100px] flex items-center justify-center flex-col">
-                <svg width="100" height="100" viewBox="0 0 100 100" className="absolute top-0 left-0" style={{ transform: "rotate(-90deg)" }}>
-                  <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" strokeWidth="6" className="text-border" />
-                  <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" strokeWidth="6" className="text-primary"
-                    strokeDasharray="276.5" strokeDashoffset={276.5 - (276.5 * matchScore / 100)} strokeLinecap="round" />
-                </svg>
-                <span className="text-2xl font-extrabold text-primary" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{matchScore}%</span>
-                <span className="text-[0.7rem] text-muted-foreground">Ваш матч</span>
-              </div>
-            )}
-            {/* Action Buttons */}
-            <div className="flex gap-3 w-full">
-              <button onClick={() => setApplyOpen(true)} className="flex-1 px-6 py-3 rounded-full bg-cta-hot text-white text-sm font-semibold text-center hover:bg-cta-hot/90 transition-colors">
-                Откликнуться
-              </button>
-              <button className="px-4 py-3 rounded-full border border-border text-sm font-medium hover:bg-muted transition-colors">
-                Сохранить
-              </button>
-            </div>
-          </div>
-        </div>
+        {/* Job Header — V3 grad-hot full-width card */}
+        <V3JobDetailHero
+          companyName={companyName}
+          companyVerified={typeof job.company === "object" && Boolean((job.company as { isVerified?: boolean }).isVerified)}
+          title={job.title}
+          salaryLabel={
+            job.salaryFrom && job.salaryTo
+              ? `${formatSalary(job.salaryFrom)} — ${formatSalary(job.salaryTo)} ${job.currency}`
+              : "Зарплата не указана"
+          }
+          location={job.city}
+          freshLabel={formatRelativeTime(job.postedAt)}
+          matchScore={isAuthenticated ? matchScore : null}
+          matchLabel="матч"
+          tags={[job.format, job.level, ...skills.slice(0, 3)].filter(Boolean)}
+          primaryAction={
+            <button
+              onClick={() => setApplyOpen(true)}
+              className="v3-btn"
+              style={{ background: "#fff", color: "var(--v3-ink)", boxShadow: "0 4px 0 rgba(0,0,0,.12)" }}
+            >
+              ▶ Откликнуться
+            </button>
+          }
+          secondaryAction={
+            <button
+              className="v3-btn"
+              style={{ background: "rgba(255,255,255,.18)", color: "#fff", backdropFilter: "blur(20px)" }}
+            >
+              ★ Сохранить
+            </button>
+          }
+        />
+        <div className="h-8" />
 
         {/* Two-column Layout */}
         <div className="grid lg:grid-cols-[1fr_340px] gap-8 pb-12">
@@ -317,10 +284,12 @@ const JobDetailPage = () => {
                   {similarJobs.map((rj) => {
                     const rjCompanyName = typeof rj.company === "string" ? rj.company : rj.company.name;
                     return (
-                      <Link key={rj.id} to={`/jobs/${rj.id}`} className="flex gap-3 py-3 border-b border-border last:border-0 hover:opacity-80 transition-opacity">
-                        <div className="w-9 h-9 rounded-lg shrink-0 flex items-center justify-center font-bold text-xs"
-                          style={{ background: getCompanyColor(rjCompanyName), color: getCompanyTextColor(rjCompanyName) }}>
-                          {rjCompanyName[0]}
+                      <Link key={rj.id} to={`/jobs/${rj.slug || rj.id}`} className="flex gap-3 py-3 border-b border-border last:border-0 hover:opacity-80 transition-opacity">
+                        <div
+                          className={`${gradientForId(rj.id)} w-9 h-9 rounded-lg shrink-0 flex items-center justify-center font-bold text-xs text-white`}
+                          aria-hidden
+                        >
+                          {rjCompanyName[0]?.toUpperCase()}
                         </div>
                         <div>
                           <div className="text-sm font-semibold hover:text-primary transition-colors">{rj.title}</div>

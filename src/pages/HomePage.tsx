@@ -30,6 +30,9 @@ import { V3StatsRow } from "@/components/v3/StatsRow";
 import { V3IntegrationsStrip } from "@/components/v3/IntegrationsStrip";
 import { V3LiveTicker } from "@/components/v3/LiveTicker";
 import { V3LogosStrip } from "@/components/v3/LogosStrip";
+import { V3HowSection } from "@/components/v3/HowSection";
+import { V3M2MManifesto } from "@/components/v3/M2MManifesto";
+import { V3InstallBlock } from "@/components/v3/InstallBlock";
 import type { AudienceMode, Lang } from "@/components/v3/data";
 
 import Footer from "@/components/Footer";
@@ -332,6 +335,15 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {/* ---- How it works (Sprint 10) ---------------------------- */}
+      <V3HowSection lang={lang} />
+
+      {/* ---- M2M Manifesto (Sprint 10) --------------------------- */}
+      <V3M2MManifesto lang={lang} />
+
+      {/* ---- Install harness tabs (Sprint 10) -------------------- */}
+      <V3InstallBlock lang={lang} />
 
       {/* ---- Featured Jobs --------------------------------------- */}
       <section className="px-4 py-16">

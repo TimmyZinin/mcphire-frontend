@@ -1,5 +1,7 @@
 // ============================================================
-// MCPHire — Reusable Job Card Component
+// MCPHire V3 — Job Card
+// Bento-style card with gradient avatar, role/company, tags,
+// salary band, location/posted-at meta, MCP match-score badge.
 // ============================================================
 
 import { Link } from "react-router-dom";
@@ -12,36 +14,27 @@ interface JobCardProps {
   showMatchScore?: boolean;
 }
 
-const companyColors: Record<string, { bg: string; text: string }> = {
-  "Яндекс": { bg: "#fc0", text: "#000" },
-  "МТС": { bg: "#e30611", text: "#fff" },
-  "Сбер": { bg: "#21a038", text: "#fff" },
-  "Тинькофф": { bg: "#ffdd2d", text: "#333" },
-  VK: { bg: "#0077ff", text: "#fff" },
-  Ozon: { bg: "#005bff", text: "#fff" },
-  Wildberries: { bg: "#cb11ab", text: "#fff" },
-  Авито: { bg: "#00aaff", text: "#fff" },
-  Lamoda: { bg: "#000", text: "#fff" },
-  Kaspersky: { bg: "#006d5c", text: "#fff" },
-};
+// 6-stop gradient rotation for company avatars
+const GRADIENTS = [
+  "v3-grad-hot",
+  "v3-grad-cool",
+  "v3-grad-plum",
+  "v3-grad-leaf",
+  "v3-grad-sun",
+  "v3-grad-hot",
+] as const;
 
-function getCompanyColor(companyName: string): string {
-  return companyColors[companyName]?.bg || "#e6f5ee";
-}
-
-function getCompanyTextColor(companyName: string): string {
-  return companyColors[companyName]?.text || "#1b6b52";
+function gradientForId(id: string): string {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) | 0;
+  return GRADIENTS[Math.abs(hash) % GRADIENTS.length];
 }
 
 function getMatchScore(id: string): number {
-  const scores: Record<string, number> = {
-    Senior: 90,
-    Middle: 85,
-    Lead: 88,
-    Junior: 75,
-  };
-  const base = scores["Middle"] || 80;
-  return base + (parseInt(id, 10) % 10);
+  // Deterministic 80-99 pseudo-match while real scoring isn't wired in.
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = (hash * 17 + id.charCodeAt(i)) | 0;
+  return 80 + (Math.abs(hash) % 20);
 }
 
 export function JobCard({ job, showMatchScore = true }: JobCardProps) {
@@ -50,73 +43,90 @@ export function JobCard({ job, showMatchScore = true }: JobCardProps) {
   const matchScore = getMatchScore(job.id);
   const canShowMatch = showMatchScore && isAuthenticated;
 
-  // P0-4 (Sprint 8): the public SSR fallback only knows slugs, so links
-  // must point at job.slug. job.id is kept as a fallback for legacy callers
-  // that don't populate slug — but every JobListItem produced by the API
-  // ships with a slug today.
+  // Sprint 8 P0-4: SSR fallback only knows slugs.
   const jobLinkParam = job.slug || job.id;
+  const gradient = gradientForId(job.id);
 
   return (
     <Link
       to={`/jobs/${jobLinkParam}`}
-      className="block bg-card border border-border rounded-2xl p-6 hover:border-primary hover:shadow-lg hover:-translate-y-0.5 transition-all relative"
+      className="v3-card block p-5 relative overflow-hidden no-underline hover:-translate-y-0.5 transition-transform"
     >
-      {/* Badges — top right */}
-      <div className="absolute top-4 right-4 flex items-center gap-1.5">
-        {job.isPremium && (
-          <span className="bg-amber-400 text-amber-950 font-mono text-[0.65rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">
-            Premium
-          </span>
-        )}
-        {canShowMatch && (
-          <span className="bg-primary text-white font-mono text-xs font-bold px-2.5 py-1 rounded-full">
-            {matchScore}% матч
-          </span>
-        )}
-      </div>
-
-      {/* Company Row */}
-      <div className="flex items-center gap-3 mb-3">
-        <div
-          className="w-11 h-11 rounded-xl bg-muted flex items-center justify-center font-bold text-base shrink-0"
-          style={{ background: getCompanyColor(companyName), color: getCompanyTextColor(companyName) }}
+      {/* Premium badge — top right */}
+      {job.isPremium && (
+        <span
+          className="absolute top-4 right-4 v3-mono text-[10px] font-bold px-2 py-0.5 rounded-full uppercase"
+          style={{ background: "var(--v3-sun)", color: "var(--v3-ink)", letterSpacing: ".06em" }}
         >
-          {companyName[0]}
-        </div>
-        <div>
-          <div className="text-sm text-muted-foreground font-medium">{companyName}</div>
-          {typeof job.company === "object" && job.company.isVerified && (
-            <span className="text-[0.7rem] text-primary font-semibold">✓ Верифицирован</span>
-          )}
-        </div>
-      </div>
+          Premium
+        </span>
+      )}
 
-      {/* Title */}
-      <h3 className="font-bold text-lg mb-2 leading-snug pr-16">{job.title}</h3>
-
-      {/* Salary */}
-      <div className="font-mono font-semibold text-base text-primary mb-3" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-        {formatSalaryRange(job.salaryFrom, job.salaryTo, job.currency)}
+      {/* Top row: gradient avatar + role + match score */}
+      <div className="flex items-start gap-3.5">
+        <div
+          className={`${gradient} grid place-items-center text-white font-bold text-base shrink-0`}
+          style={{ width: 52, height: 52, borderRadius: 16, letterSpacing: "-.01em" }}
+          aria-hidden
+        >
+          {companyName[0].toUpperCase()}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-sm text-v3-ink2 font-medium truncate">
+            {companyName}
+            {typeof job.company === "object" && job.company.isVerified && (
+              <span className="ml-1.5 text-[10px] text-v3-leaf font-semibold align-middle">✓</span>
+            )}
+          </div>
+          <div className="text-[18px] font-bold mt-0.5 leading-tight" style={{ letterSpacing: "-.02em" }}>
+            {job.title}
+          </div>
+        </div>
+        {canShowMatch && (
+          <div className="text-right shrink-0">
+            <div className="v3-mono text-[10px] text-v3-mute uppercase" style={{ letterSpacing: ".06em" }}>
+              MATCH
+            </div>
+            <div className="text-[24px] font-bold text-v3-hot leading-none" style={{ letterSpacing: "-.02em" }}>
+              {matchScore}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Tags */}
-      <div className="flex flex-wrap gap-1.5 mb-3">
+      <div className="flex flex-wrap gap-1.5 mt-3.5">
         {job.skills.slice(0, 4).map((skill) => (
-          <span key={skill} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+          <span key={skill} className="v3-chip">
             {skill}
           </span>
         ))}
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-          job.format === "Удалённо" ? "bg-emerald-50 text-emerald-700" : "bg-muted text-muted-foreground"
-        }`}>
-          {job.format}
-        </span>
+        {job.format && (
+          <span
+            className="v3-chip"
+            style={{
+              background: job.format === "Удалённо" ? "rgba(10,138,82,.12)" : undefined,
+              color: job.format === "Удалённо" ? "var(--v3-leaf)" : undefined,
+            }}
+          >
+            {job.format}
+          </span>
+        )}
       </div>
 
-      {/* Meta */}
-      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-        <span>{job.city}</span>
-        <span>{formatRelativeTime(job.postedAt)}</span>
+      {/* Footer row: salary + city + freshness */}
+      <div
+        className="flex items-center gap-3.5 flex-wrap mt-4 pt-3.5 border-t"
+        style={{ borderColor: "var(--v3-line2)" }}
+      >
+        <span className="v3-mono text-[13px] font-semibold text-v3-ink">
+          {formatSalaryRange(job.salaryFrom, job.salaryTo, job.currency)}
+        </span>
+        {job.city && (
+          <span className="text-[13px] text-v3-mute">· {job.city}</span>
+        )}
+        <span className="flex-1" />
+        <span className="text-xs text-v3-leaf font-semibold">● {formatRelativeTime(job.postedAt)}</span>
       </div>
     </Link>
   );
@@ -128,24 +138,22 @@ export function JobCard({ job, showMatchScore = true }: JobCardProps) {
 
 export function SkeletonCard() {
   return (
-    <div className="bg-card border border-border rounded-2xl p-6 animate-pulse">
-      <div className="flex items-center gap-3 mb-3">
-        <div className="w-11 h-11 rounded-xl bg-muted" />
-        <div className="space-y-1.5">
-          <div className="h-3 w-24 bg-muted rounded" />
-          <div className="h-2 w-16 bg-muted rounded" />
+    <div className="v3-card p-5 animate-pulse">
+      <div className="flex items-start gap-3.5">
+        <div className="w-[52px] h-[52px] rounded-2xl bg-v3-bg shrink-0" />
+        <div className="flex-1 space-y-2">
+          <div className="h-3 w-24 bg-v3-bg rounded" />
+          <div className="h-4 w-3/4 bg-v3-bg rounded" />
         </div>
       </div>
-      <div className="h-5 w-3/4 bg-muted rounded mb-2" />
-      <div className="h-4 w-1/2 bg-muted rounded mb-3" />
-      <div className="flex gap-1.5 mb-3">
-        <div className="h-6 w-16 bg-muted rounded-full" />
-        <div className="h-6 w-20 bg-muted rounded-full" />
-        <div className="h-6 w-14 bg-muted rounded-full" />
+      <div className="flex gap-1.5 mt-3.5">
+        <div className="h-6 w-16 bg-v3-bg rounded-lg" />
+        <div className="h-6 w-20 bg-v3-bg rounded-lg" />
+        <div className="h-6 w-14 bg-v3-bg rounded-lg" />
       </div>
-      <div className="flex gap-4">
-        <div className="h-3 w-16 bg-muted rounded" />
-        <div className="h-3 w-20 bg-muted rounded" />
+      <div className="flex items-center gap-3 mt-4 pt-3.5 border-t" style={{ borderColor: "var(--v3-line2)" }}>
+        <div className="h-3 w-24 bg-v3-bg rounded" />
+        <div className="h-3 w-16 bg-v3-bg rounded" />
       </div>
     </div>
   );
@@ -157,7 +165,7 @@ export function SkeletonCard() {
 
 export function SkeletonGrid({ count = 12 }: { count?: number }) {
   return (
-    <div className="grid md:grid-cols-2 gap-4 pb-8">
+    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 pb-8">
       {Array.from({ length: count }).map((_, i) => (
         <SkeletonCard key={i} />
       ))}

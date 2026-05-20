@@ -1,10 +1,21 @@
+// ============================================================
+// MCPHire — JobCard (V3 «Optimist» bento variant) tests
+// ============================================================
+
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { JobCard } from "@/components/jobs/JobCard";
+import { JobCard } from "@/components/JobCard";
 import type { JobListItem } from "@/types";
 
-const mockJob: JobListItem = {
+// `useAuth` mock — JobCard hides match score until authenticated. We expose
+// a switch so individual tests can flip authentication on/off.
+let mockIsAuthenticated = false;
+vi.mock("@/contexts/AuthContext", () => ({
+  useAuth: () => ({ isAuthenticated: mockIsAuthenticated, user: null, login: vi.fn(), logout: vi.fn() }),
+}));
+
+const baseJob: JobListItem = {
   id: "job-1",
   title: "Senior Frontend Developer",
   slug: "senior-frontend-developer",
@@ -32,110 +43,95 @@ function renderWithRouter(component: React.ReactElement) {
   return render(<BrowserRouter>{component}</BrowserRouter>);
 }
 
-describe("JobCard", () => {
-  it("renders job title", () => {
-    renderWithRouter(<JobCard job={mockJob} />);
+describe("JobCard (V3)", () => {
+  it("renders job title and company", () => {
+    mockIsAuthenticated = false;
+    renderWithRouter(<JobCard job={baseJob} />);
     expect(screen.getByText("Senior Frontend Developer")).toBeInTheDocument();
-  });
-
-  it("renders company name", () => {
-    renderWithRouter(<JobCard job={mockJob} />);
     expect(screen.getByText("Tech Corp")).toBeInTheDocument();
   });
 
-  it("renders verified badge when company is verified", () => {
-    renderWithRouter(<JobCard job={mockJob} />);
-    expect(screen.getByText("Верифицирован")).toBeInTheDocument();
+  it("renders verified ✓ glyph when company is verified", () => {
+    mockIsAuthenticated = false;
+    renderWithRouter(<JobCard job={baseJob} />);
+    expect(screen.getByText("✓")).toBeInTheDocument();
   });
 
-  it("does not render verified badge when company is not verified", () => {
+  it("does not render verified glyph when company is not verified", () => {
+    mockIsAuthenticated = false;
     const unverifiedJob = {
-      ...mockJob,
-      company: { ...mockJob.company, isVerified: false },
+      ...baseJob,
+      company: { ...baseJob.company, isVerified: false },
     };
     renderWithRouter(<JobCard job={unverifiedJob} />);
-    expect(screen.queryByText("Верифицирован")).not.toBeInTheDocument();
+    expect(screen.queryByText("✓")).not.toBeInTheDocument();
   });
 
-  it("renders salary range", () => {
-    renderWithRouter(<JobCard job={mockJob} />);
-    expect(screen.getByText((content) => content.includes("150"))).toBeInTheDocument();
+  it("renders salary range in monospace footer", () => {
+    mockIsAuthenticated = false;
+    renderWithRouter(<JobCard job={baseJob} />);
+    expect(
+      screen.getByText((content) => content.includes("150"))
+    ).toBeInTheDocument();
   });
 
-  it("renders skills tags", () => {
-    renderWithRouter(<JobCard job={mockJob} />);
+  it("renders all listed skills (up to 4)", () => {
+    mockIsAuthenticated = false;
+    renderWithRouter(<JobCard job={baseJob} />);
     expect(screen.getByText("React")).toBeInTheDocument();
     expect(screen.getByText("TypeScript")).toBeInTheDocument();
     expect(screen.getByText("Node.js")).toBeInTheDocument();
   });
 
-  it("renders format tag", () => {
-    renderWithRouter(<JobCard job={mockJob} />);
+  it("renders format chip and city", () => {
+    mockIsAuthenticated = false;
+    renderWithRouter(<JobCard job={baseJob} />);
     expect(screen.getByText("Удалённо")).toBeInTheDocument();
+    expect(screen.getByText(/Москва/)).toBeInTheDocument();
   });
 
-  it("renders level tag", () => {
-    renderWithRouter(<JobCard job={mockJob} />);
-    expect(screen.getByText("Senior")).toBeInTheDocument();
-  });
-
-  it("renders city", () => {
-    renderWithRouter(<JobCard job={mockJob} />);
-    expect(screen.getByText("Москва")).toBeInTheDocument();
-  });
-
-  it("renders premium badge when isPremium is true", () => {
-    renderWithRouter(<JobCard job={mockJob} isPremium />);
+  it("renders Premium badge when job is premium", () => {
+    mockIsAuthenticated = false;
+    renderWithRouter(<JobCard job={{ ...baseJob, isPremium: true }} />);
     expect(screen.getByText("Premium")).toBeInTheDocument();
   });
 
-  it("does not render premium badge when isPremium is false", () => {
-    renderWithRouter(<JobCard job={mockJob} isPremium={false} />);
+  it("does not render Premium badge by default", () => {
+    mockIsAuthenticated = false;
+    renderWithRouter(<JobCard job={baseJob} />);
     expect(screen.queryByText("Premium")).not.toBeInTheDocument();
   });
 
-  it("renders match score when provided", () => {
-    renderWithRouter(<JobCard job={mockJob} matchScore={85} />);
-    expect(screen.getByText("85% матч")).toBeInTheDocument();
+  it("hides MATCH score for anonymous users", () => {
+    mockIsAuthenticated = false;
+    renderWithRouter(<JobCard job={baseJob} />);
+    expect(screen.queryByText("MATCH")).not.toBeInTheDocument();
   });
 
-  it("renders save button when onSave is provided", () => {
-    const onSave = vi.fn();
-    renderWithRouter(<JobCard job={mockJob} onSave={onSave} />);
-    expect(screen.getByLabelText("Сохранить вакансию")).toBeInTheDocument();
+  it("renders MATCH badge for authenticated users", () => {
+    mockIsAuthenticated = true;
+    renderWithRouter(<JobCard job={baseJob} />);
+    expect(screen.getByText("MATCH")).toBeInTheDocument();
   });
 
-  it("calls onSave when save button is clicked", () => {
-    const onSave = vi.fn();
-    renderWithRouter(<JobCard job={mockJob} onSave={onSave} />);
-    screen.getByLabelText("Сохранить вакансию").click();
-    expect(onSave).toHaveBeenCalledWith("job-1");
-  });
-
-  it("renders saved state correctly", () => {
-    const onSave = vi.fn();
-    renderWithRouter(<JobCard job={mockJob} onSave={onSave} isSaved />);
-    expect(screen.getByLabelText("Убрать из сохранённых")).toBeInTheDocument();
-  });
-
-  it("renders compact variant", () => {
-    const { container } = renderWithRouter(
-      <JobCard job={mockJob} variant="compact" />
-    );
-    const article = container.querySelector("article");
-    expect(article).toHaveClass("group");
-  });
-
-  it("links to correct job URL", () => {
-    renderWithRouter(<JobCard job={mockJob} />);
+  it("links to /jobs/:slug (slug-first per Sprint 8 P0-4)", () => {
+    mockIsAuthenticated = false;
+    renderWithRouter(<JobCard job={baseJob} />);
     const link = screen.getByRole("link");
     expect(link.getAttribute("href")).toBe("/jobs/senior-frontend-developer");
   });
 
-  it("renders company initial when no logo", () => {
-    renderWithRouter(<JobCard job={mockJob} />);
-    // Should render company initial "T" in avatar
-    const avatar = screen.getByText("T");
-    expect(avatar).toBeInTheDocument();
+  it("falls back to id when slug is missing", () => {
+    mockIsAuthenticated = false;
+    const jobNoSlug: JobListItem = { ...baseJob, slug: undefined as unknown as string };
+    renderWithRouter(<JobCard job={jobNoSlug} />);
+    expect(screen.getByRole("link").getAttribute("href")).toBe("/jobs/job-1");
+  });
+
+  it("renders gradient avatar with company initial uppercased", () => {
+    mockIsAuthenticated = false;
+    renderWithRouter(<JobCard job={baseJob} />);
+    // Company "Tech Corp" → "T"
+    expect(screen.getByText("T")).toBeInTheDocument();
   });
 });
