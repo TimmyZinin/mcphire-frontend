@@ -3,8 +3,6 @@ import { Trash2, MapPin, Briefcase, TrendingUp } from "lucide-react";
 import { useSavedJobs } from "@/hooks/useJobs";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
-import CareerClubBanner from "@/components/CareerClubBanner";
-import TopBanner from "@/components/TopBanner";
 import { formatSalary } from "@/lib/formatters";
 
 const SavedJobs = () => {
@@ -32,7 +30,6 @@ const SavedJobs = () => {
 
       {/* Header */}
       <JobBoardNavbar />
-      <TopBanner utmSource="saved_jobs" />
 
       <section className="section-white">
         <div className="section-container">
@@ -119,7 +116,6 @@ const SavedJobs = () => {
           )}
         </div>
       </section>
-      <CareerClubBanner variant="block" utmSource="saved_jobs" />
       <Footer />
     </main>
   );

@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import StickyHeader from "@/components/StickyHeader";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/knowledge/ArticleCard";
 import Breadcrumbs from "@/components/knowledge/Breadcrumbs";
@@ -35,7 +34,6 @@ const KnowledgeCategory = () => {
       </Helmet>
 
       <main className="min-h-screen">
-        <StickyHeader />
 
         <div className="max-w-5xl mx-auto px-6 md:px-8 py-12 md:py-16">
           <Breadcrumbs

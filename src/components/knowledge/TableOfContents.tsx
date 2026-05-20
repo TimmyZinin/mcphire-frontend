@@ -43,20 +43,33 @@ const TableOfContents = ({ sections }: TOCProps) => {
           </ul>
         </nav>
 
-        {/* Sidebar Banner */}
-        <div className="mt-6 p-4 bg-gradient-to-br from-[hsl(174,62%,40%)] to-[hsl(174,62%,28%)] rounded-lg text-white">
-          <p className="font-black text-sm uppercase tracking-wider mb-1">MCPHire</p>
-          <p className="text-xs text-white/80 mb-3 leading-relaxed">
-            Карьерный клуб для IT-специалистов. Менторы, мок-собеседования, системный поиск работы.
-          </p>
-          <a
-            href="https://t.me/Sborka_work_bot?start=knowledge_sidebar"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-center px-3 py-2 bg-white text-[hsl(174,62%,30%)] text-xs font-bold rounded-md hover:bg-white/90 transition-colors"
-          >
-            Подробнее →
-          </a>
+        {/* Sidebar — MCP CTA */}
+        <div
+          className="mt-6 v3-card relative overflow-hidden p-4"
+          style={{ background: "var(--v3-ink)", color: "#fff" }}
+        >
+          <div
+            aria-hidden
+            className="v3-grad-hot absolute"
+            style={{
+              right: -40, top: -40, width: 120, height: 120,
+              borderRadius: "50%", filter: "blur(30px)", opacity: 0.5,
+            }}
+          />
+          <div className="relative">
+            <p className="font-mono text-[11px] uppercase tracking-wider mb-1 opacity-80">MCP-first</p>
+            <p className="text-sm font-semibold mb-1">Подключи Claude / Cursor</p>
+            <p className="text-xs opacity-75 mb-3 leading-relaxed">
+              Твой AI-агент найдёт вакансию, поторгуется и забронирует интервью.
+            </p>
+            <a
+              href="/#agent-onboarding"
+              className="block text-center px-3 py-2 text-xs font-bold rounded-lg text-v3-ink hover:opacity-90 transition-opacity"
+              style={{ background: "var(--v3-hot)" }}
+            >
+              Подключить MCP →
+            </a>
+          </div>
         </div>
       </aside>
 

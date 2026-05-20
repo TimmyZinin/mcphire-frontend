@@ -17,9 +17,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Source Sans 3", "Noto Sans Arabic", "Noto Sans Devanagari", "system-ui", "sans-serif"],
-        heading: ["Bricolage Grotesque", "Georgia", "serif"],
-        mono: ["JetBrains Mono", "Fira Code", "monospace"],
+        sans: ["Inter Tight", "Inter", "Noto Sans Arabic", "Noto Sans Devanagari", "system-ui", "sans-serif"],
+        heading: ["Inter Tight", "Inter", "system-ui", "sans-serif"],
+        serif: ["Instrument Serif", "ui-serif", "Georgia", "serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "Menlo", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -80,6 +81,21 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        // V3 Optimist brand colors — direct hex aliases for new components
+        v3: {
+          bg:    "#f7f2ec",
+          card:  "#ffffff",
+          ink:   "#181410",
+          ink2:  "#5a534b",
+          mute:  "#9a9085",
+          line:  "var(--v3-line)",
+          line2: "var(--v3-line2)",
+          hot:   "#ff5b28",
+          cool:  "#2a4dff",
+          leaf:  "#0a8a52",
+          plum:  "#a04bff",
+          sun:   "#ffd55a",
         },
       },
       borderRadius: {

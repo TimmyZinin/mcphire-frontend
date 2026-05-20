@@ -14,14 +14,12 @@ import { AuthLayout } from "@/components/layouts/AuthLayout";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 // ---- Eagerly loaded (critical path) -----------------------
-import Index from "./pages/Index";
 import HomePage from "./pages/HomePage";
 import JobsPage from "./pages/JobsPage";
 import JobDetailPage from "./pages/JobDetailPage";
 import NotFound from "./pages/NotFound";
 
 // ---- Lazy loaded (code-split) -----------------------------
-const Partners = lazy(() => import("./pages/Partners"));
 const Knowledge = lazy(() => import("./pages/Knowledge"));
 const KnowledgeCategory = lazy(() => import("./pages/KnowledgeCategory"));
 const KnowledgeArticle = lazy(() => import("./pages/KnowledgeArticle"));
@@ -105,8 +103,6 @@ const App = () => (
                 <Routes>
                   {/* ---- Public routes (pages include their own Navbar + Footer) ---- */}
                   <Route path="/" element={<HomePage />} />
-                  <Route path="/club" element={<Index />} />
-                  <Route path="/partners" element={<Partners />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />
 
                   {/* ---- Knowledge base ---- */}

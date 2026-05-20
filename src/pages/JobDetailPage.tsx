@@ -7,8 +7,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { formatSalary, formatDate, formatRelativeTime } from "@/lib/formatters";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
-import CareerClubBanner from "@/components/CareerClubBanner";
-import TopBanner from "@/components/TopBanner";
 import { SkeletonCard } from "@/components/JobCard";
 import { ApplyDialog } from "@/components/jobs/ApplyDialog";
 import { JobPostingJsonLd } from "@/components/seo/JsonLd";
@@ -72,7 +70,6 @@ const JobDetailPage = () => {
           <title>Загрузка вакансии | MCPHire Вакансии</title>
         </Helmet>
         <JobBoardNavbar />
-        <TopBanner utmSource="job_detail" />
         <div className="max-w-[1280px] mx-auto px-8 py-12">
           <div className="grid lg:grid-cols-[1fr_340px] gap-8">
             <div className="space-y-4">
@@ -146,7 +143,6 @@ const JobDetailPage = () => {
       </Helmet>
 
       <JobBoardNavbar />
-      <TopBanner utmSource="job_detail" />
 
       <div className="max-w-[1280px] mx-auto px-8">
         {/* Breadcrumb */}
@@ -276,7 +272,6 @@ const JobDetailPage = () => {
               Источник: {job.source || "MCPHire"} · Опубликовано: {formatDate(job.postedAt)}
             </p>
 
-            <CareerClubBanner variant="inline" utmSource="job_detail" />
           </div>
 
           {/* Sidebar */}
@@ -347,7 +342,6 @@ const JobDetailPage = () => {
       </div>
       {/* Spacer for mobile sticky bar */}
       <div className="h-20 lg:hidden" />
-      <CareerClubBanner variant="block" utmSource="job_detail_footer" />
       <Footer />
 
       {/* Mobile Sticky Apply Bar */}

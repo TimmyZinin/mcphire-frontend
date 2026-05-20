@@ -14,8 +14,6 @@ import { useJobFilters } from "@/hooks/useJobFilters";
 import { cityMap, categoryMap } from "@/data/jobCategories";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
-import CareerClubBanner from "@/components/CareerClubBanner";
-import TopBanner from "@/components/TopBanner";
 import { JobCard, SkeletonGrid } from "@/components/JobCard";
 
 // ---- Filter Sidebar Content (reused in desktop sidebar + mobile sheet) ----
@@ -226,7 +224,6 @@ const JobsPage = () => {
       </Helmet>
 
       <JobBoardNavbar />
-      <TopBanner utmSource="jobs" />
 
       {/* Page Header */}
       <div className="max-w-[1280px] mx-auto px-8 pt-10 pb-4">
@@ -369,7 +366,6 @@ const JobsPage = () => {
               </span>
             </div>
 
-            <CareerClubBanner variant="inline" utmSource="jobs" />
 
             {/* Jobs Grid */}
             {isLoading ? (

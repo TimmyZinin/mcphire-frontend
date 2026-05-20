@@ -1,389 +1,418 @@
 // ============================================================
-// MCPHire — Job Board Home Page
-// Route: /home  (job board entry point, NOT the club landing)
+// MCPHire V3 «Optimist» — home (job board entry point)
+// Route: /home  |  Default `/` also routes here (see App.tsx)
+//
+// Layout: warm-cream canvas → V3Navbar → AudienceSwitcher →
+// AgentBanner → Hero (candidate/recruiter) → Stats →
+// (IntegrationsStrip only for recruiter) → LiveTicker →
+// LogosStrip → AgentOnboarding (MCP install snippet, PRESERVED
+// because it's the canonical agent-entry affordance) →
+// Featured jobs → Employer CTA → Footer.
+//
+// MCP-flow contracts NOT broken:
+//  - /skill.md link preserved
+//  - /.well-known/mcp/server.json link preserved
+//  - https://mcp.mcphire.com/sse SSE endpoint preserved
+//  - REST fallback api.mcphire.com preserved
+//  - `agent-onboarding` anchor preserved (hero CTA + banner target)
 // ============================================================
 
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Search } from "lucide-react";
-import JobBoardNavbar from "@/components/JobBoardNavbar";
+import { useTranslation } from "react-i18next";
+
+import { V3Navbar } from "@/components/v3/Navbar";
+import { V3AudienceSwitcher } from "@/components/v3/AudienceSwitcher";
+import { V3AgentBanner } from "@/components/v3/AgentBanner";
+import { V3Hero } from "@/components/v3/Hero";
+import { V3StatsRow } from "@/components/v3/StatsRow";
+import { V3IntegrationsStrip } from "@/components/v3/IntegrationsStrip";
+import { V3LiveTicker } from "@/components/v3/LiveTicker";
+import { V3LogosStrip } from "@/components/v3/LogosStrip";
+import type { AudienceMode, Lang } from "@/components/v3/data";
+
 import Footer from "@/components/Footer";
 import { JobCard, SkeletonGrid } from "@/components/JobCard";
-import { useJobs, useJobStats } from "@/hooks/useJobs";
+import { useJobs } from "@/hooks/useJobs";
 
-// ---- Typing Rotator ------------------------------------------
+// ---- Audience mode persistence -------------------------------
+// Source of truth (priority): URL ?mode=  →  localStorage  →  default candidate.
 
-const rotatingPhrases = ["через AI", "через MCP", "сегодня", "удалённо"];
+const STORAGE_KEY = "mcphire.audience-mode";
 
-function TypingRotator() {
-  const [text, setText] = useState("");
-  const [idx, setIdx] = useState(0);
-  const [phase, setPhase] = useState<"typing" | "pause" | "deleting">("typing");
-
-  useEffect(() => {
-    const target = rotatingPhrases[idx];
-
-    if (phase === "pause") {
-      const t = setTimeout(() => setPhase("deleting"), 2200);
-      return () => clearTimeout(t);
-    }
-
-    if (phase === "deleting") {
-      if (text.length === 0) {
-        setIdx((i) => (i + 1) % rotatingPhrases.length);
-        setPhase("typing");
-        return;
-      }
-      const t = setTimeout(() => setText((s) => s.slice(0, -1)), 45);
-      return () => clearTimeout(t);
-    }
-
-    // typing
-    if (text.length < target.length) {
-      const t = setTimeout(
-        () => setText(target.slice(0, text.length + 1)),
-        85,
-      );
-      return () => clearTimeout(t);
-    }
-
-    setPhase("pause");
-  }, [text, idx, phase]);
-
-  return (
-    <span className="inline-flex items-baseline">
-      <span>{text}</span>
-      <span
-        className={`hero-typing-cursor${phase === "pause" ? " blinking" : ""}`}
-      />
-    </span>
-  );
-}
-
-// ---- Stat Card -----------------------------------------------
-
-interface StatCardProps {
-  label: string;
-  value: string | number;
-  mono?: boolean;
-}
-
-function StatCard({ label, value, mono = true }: StatCardProps) {
-  return (
-    <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-2">
-      <span
-        className={`text-3xl md:text-4xl font-bold text-primary leading-none ${mono ? "font-mono" : ""}`}
-        style={mono ? { fontFamily: "'JetBrains Mono', monospace" } : undefined}
-      >
-        {value}
-      </span>
-      <span className="text-sm text-muted-foreground font-medium">{label}</span>
-    </div>
-  );
+function readPersistedMode(): AudienceMode | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    return stored === "recruiter" || stored === "candidate" ? stored : null;
+  } catch {
+    /* SecurityError / localStorage unavailable (Safari private mode) */
+    return null;
+  }
 }
 
 // ---- Component -----------------------------------------------
 
 const HomePage = () => {
-  const navigate = useNavigate();
-  const [query, setQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { i18n } = useTranslation();
+  const lang: Lang = i18n.language.startsWith("en") ? "en" : "ru";
+
+  const initialMode: AudienceMode = (() => {
+    const fromUrl = searchParams.get("mode");
+    if (fromUrl === "recruiter" || fromUrl === "candidate") return fromUrl;
+    return readPersistedMode() ?? "candidate";
+  })();
+
+  const [mode, setMode] = useState<AudienceMode>(initialMode);
+
+  // Sync state ↔ URL bidirectionally so browser back/forward and in-app
+  // navigation to `?mode=…` update the active audience.
+  // Functional setSearchParams reads the latest URLSearchParams without
+  // keeping `searchParams` in deps (it's a new object on every render).
+  useEffect(() => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      const current = next.get("mode");
+      if (mode === "candidate") {
+        if (current === null) return prev; // no-op → avoid extra history entry
+        next.delete("mode");
+      } else {
+        if (current === mode) return prev;
+        next.set("mode", mode);
+      }
+      return next;
+    }, { replace: true });
+    try {
+      window.localStorage.setItem(STORAGE_KEY, mode);
+    } catch {
+      /* localStorage unavailable (private browsing) — non-fatal */
+    }
+  }, [mode, setSearchParams]);
+
+  // URL → state: react to browser back/forward or external link with ?mode=…
+  // We only sync when URL carries an explicit valid value — null URL is treated
+  // as "no opinion" and leaves the existing state alone, which keeps URL
+  // canonical without fighting the state→URL effect during initial reconcile.
+  const urlMode = searchParams.get("mode");
+  useEffect(() => {
+    if (urlMode === "recruiter" || urlMode === "candidate") {
+      setMode((prev) => (prev === urlMode ? prev : urlMode));
+    }
+  }, [urlMode]);
 
   const { data: jobsData, isLoading: jobsLoading } = useJobs({ perPage: 6 });
-  const { data: stats } = useJobStats();
-
   const jobs = jobsData?.data ?? [];
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const trimmed = query.trim();
-    if (trimmed) {
-      navigate(`/jobs?q=${encodeURIComponent(trimmed)}`);
-    } else {
-      navigate("/jobs");
-    }
-  };
-
   return (
-    <main className="min-h-screen bg-background">
+    <main className="v3-canvas min-h-screen">
       <Helmet>
-        <title>Найди IT-работу через AI | MCPHire</title>
+        <title>MCPHire — найди IT-работу через AI-агента</title>
         <meta
           name="description"
-          content="MCPHire — AI-платформа для поиска IT-работы. Тысячи вакансий, AI-подбор, MCP-агенты для автоматизации поиска."
+          content="MCPHire — первый MCP-маркетплейс вакансий. Подключи Claude, Cursor или своего AI-агента — он найдёт работу, поторгуется и забронирует интервью за тебя."
         />
-        <meta property="og:title" content="Найди IT-работу через AI | MCPHire" />
+        <meta property="og:title" content="MCPHire — найди IT-работу через AI-агента" />
         <meta
           property="og:description"
-          content="MCPHire — AI-платформа для поиска IT-работы. Тысячи вакансий, AI-подбор, MCP-агенты для автоматизации поиска."
+          content="MCPHire — первый MCP-маркетплейс вакансий. Подключи Claude, Cursor или своего AI-агента — он найдёт работу, поторгуется и забронирует интервью за тебя."
         />
-        <link rel="canonical" href="https://mcphire.com/home" />
+        <link rel="canonical" href="https://mcphire.com/" />
       </Helmet>
 
-      <JobBoardNavbar />
+      <V3Navbar lang={lang} />
 
-      {/* ---- Hero Section ---------------------------------------- */}
-      <section className="section-white border-0 py-20 md:py-28">
-        <div className="section-container text-center">
-          <h1 className="heading-hero mb-6">
-            Найди работу<br className="hidden md:block" />{" "}
-            <TypingRotator />
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-            AI-платформа для поиска IT-работы.
-            MCP-агенты подбирают вакансии, оценивают совместимость и помогают откликнуться.
-          </p>
-
-          {/* Search bar */}
-          <form
-            onSubmit={handleSearch}
-            className="flex items-center gap-2 max-w-xl mx-auto bg-card border border-border rounded-2xl px-4 py-2 shadow-sm focus-within:border-primary transition-colors"
+      {/* ---- Hero region ----------------------------------------- */}
+      <section className="px-4 pb-14" style={{ paddingTop: 24 }}>
+        <div className="mx-auto" style={{ maxWidth: 1320 }}>
+          <V3AudienceSwitcher mode={mode} setMode={setMode} lang={lang} />
+          <V3AgentBanner lang={lang} />
+          <div
+            role="tabpanel"
+            id="v3-audience-panel"
+            aria-labelledby={`v3-audience-tab-${mode}`}
           >
-            <Search className="w-5 h-5 text-muted-foreground shrink-0" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Должность, навык или компания..."
-              className="flex-1 bg-transparent text-sm md:text-base outline-none placeholder:text-muted-foreground py-2"
-            />
-            <button
-              type="submit"
-              className="shrink-0 px-5 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors"
-            >
-              Найти
-            </button>
-          </form>
-
-          {/* Entry CTAs — F-015: non-MCP visitors need a way in */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-            <Link
-              to="/auth/register"
-              className="font-semibold text-primary hover:text-primary/80 transition-colors"
-            >
-              Создать профиль →
-            </Link>
-            <span className="opacity-40">·</span>
-            <Link
-              to="/auth/login"
-              className="hover:text-foreground transition-colors"
-            >
-              Войти
-            </Link>
-            <span className="opacity-40">·</span>
-            <a
-              href="#agent-onboarding"
-              className="hover:text-foreground transition-colors"
-            >
-              У меня Claude Desktop / Cursor
-            </a>
+            <V3Hero lang={lang} mode={mode} />
+            <V3StatsRow lang={lang} mode={mode} />
+            {mode === "recruiter" && <V3IntegrationsStrip lang={lang} />}
           </div>
+          <div className="mt-4 lg:mt-5">
+            <V3LiveTicker lang={lang} />
+          </div>
+          <V3LogosStrip lang={lang} mode={mode} />
         </div>
       </section>
 
-      {/* ---- Stats Cards ----------------------------------------- */}
-      <section className="py-12 border-t border-border bg-muted/20">
-        <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard
-              label="Активных вакансий"
-              value={stats?.totalJobs ?? "—"}
-            />
-            <StatCard
-              label="Городов"
-              value={stats?.citiesCount ?? "—"}
-            />
-            <StatCard
-              label="Специализаций"
-              value={stats?.categoriesCount ?? "—"}
-            />
-            <StatCard
-              label="MCP-агентов"
-              value="10+"
-            />
-          </div>
-        </div>
-      </section>
+      {/* ---- Agent onboarding (CANONICAL MCP-flow affordance) ----
+          This block is the entry point AI agents land on.
+          Preserves: /skill.md, server.json, mcp.mcphire.com/sse,
+          install.sh, REST fallback. Restyled in V3 surface idiom. */}
+      <section id="agent-onboarding" className="px-4 py-16 scroll-mt-24">
+        <div className="mx-auto" style={{ maxWidth: 1320 }}>
+          <div className="v3-card p-8 md:p-11">
+            <div className="max-w-3xl mx-auto text-center">
+              <span className="v3-pin">
+                <span className="v3-pin-dot" />
+                {lang === "ru" ? "Для AI-агентов · MCP-first" : "For AI agents · MCP-first"}
+              </span>
+              <h2 className="v3-h2 mt-4 mb-4">
+                {lang === "ru" ? (
+                  <>
+                    Твой агент регистрирует тебя.{" "}
+                    <span className="v3-serif text-v3-hot">за 3 минуты.</span>
+                  </>
+                ) : (
+                  <>
+                    Your agent registers you.{" "}
+                    <span className="v3-serif text-v3-hot">in 3 minutes.</span>
+                  </>
+                )}
+              </h2>
+              <p className="text-v3-ink2 text-base md:text-[17px] mb-6 leading-relaxed">
+                {lang === "ru" ? (
+                  <>
+                    Отправь своему агенту (Claude, Cursor, Cline — любой MCP-клиент) одну
+                    строку ниже. Он прочитает инструкцию из{" "}
+                    <code className="font-mono text-[14px] px-1.5 py-0.5 rounded bg-v3-bg">
+                      skill.md
+                    </code>
+                    , соберёт ответы на ~150 вопросов из локального контекста, покажет
+                    approval screen — ты жмёшь «ок», получаешь публичное CV + instant
+                    TG-пуши матчей.
+                  </>
+                ) : (
+                  <>
+                    Send your agent (Claude, Cursor, Cline — any MCP client) one line below.
+                    It reads instructions from{" "}
+                    <code className="font-mono text-[14px] px-1.5 py-0.5 rounded bg-v3-bg">
+                      skill.md
+                    </code>
+                    , collects answers from local context, shows you an approval screen — you
+                    confirm, get a public CV + instant TG match pings.
+                  </>
+                )}
+              </p>
 
-      {/* ---- Agent onboarding (Moltbook-style: one canonical prompt) ---- */}
-      <section id="agent-onboarding" className="py-16 border-t border-border scroll-mt-24">
-        <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-6">
-              <span>🤖</span>
-              <span>Для AI-агентов</span>
-            </div>
-            <h2 className="heading-section mb-5">
-              Твой AI-агент регистрирует тебя. За 3 минуты.
-            </h2>
-            <p className="text-muted-foreground text-base md:text-lg mb-8 leading-relaxed">
-              Отправь своему агенту (Claude, Cursor, Cline, любой MCP-клиент) одну строку ниже. Он прочитает инструкцию из <code className="px-1.5 py-0.5 rounded bg-muted text-sm">skill.md</code>, соберёт ответы на ~150 вопросов из твоего локального контекста, покажет approval screen — ты жмёшь «ок», получаешь публичное CV + instant TG-пуши матчей.
-            </p>
+              {/* Canonical agent prompt — DO NOT translate verbatim string */}
+              <div className="v3-card text-left mb-6" style={{ padding: 22, border: "2px solid rgba(255,91,40,.3)" }}>
+                <div className="font-mono text-xs uppercase tracking-wider text-v3-ink mb-3 font-semibold">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle" style={{ background: "var(--v3-hot)" }} aria-hidden />
+                  {lang === "ru" ? "Отправь это своему агенту" : "Send this to your agent"}
+                </div>
+                <pre className="font-mono text-[15px] md:text-base whitespace-pre-wrap leading-relaxed text-v3-ink">
+{`Read https://mcphire.com/skill.md and follow the instructions to register me on mcphire. Show me the approval screen before calling register_profile.`}
+                </pre>
+              </div>
 
-            <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-left shadow-lg mb-8">
-              <div className="text-xs uppercase tracking-wider text-primary mb-3 font-semibold">
-                Отправь это своему агенту
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-left mb-8">
+                {[
+                  {
+                    n: "01",
+                    t: lang === "ru" ? "Отправь агенту" : "Send to your agent",
+                    d: lang === "ru"
+                      ? "Одну строку выше. Агент сам читает skill.md и знает что делать."
+                      : "One line above. The agent reads skill.md and knows what to do.",
+                  },
+                  {
+                    n: "02",
+                    t: lang === "ru" ? "Подтверди ответы" : "Approve the answers",
+                    d: lang === "ru"
+                      ? "Агент покажет approval screen с собранными данными. Правишь, жмёшь «ок»."
+                      : "Agent shows an approval screen with collected data. Edit, confirm.",
+                  },
+                  {
+                    n: "03",
+                    t: lang === "ru" ? "CV + матчи" : "CV + matches",
+                    d: lang === "ru"
+                      ? "Публичная ссылка на резюме + инстант-пуши новых вакансий в Telegram."
+                      : "Public CV URL + instant Telegram pings for new matching jobs.",
+                  },
+                ].map((s) => (
+                  <div key={s.n} className="v3-card p-5">
+                    <div className="font-mono w-8 h-8 grid place-items-center rounded-lg bg-v3-ink text-white font-bold text-sm">
+                      {s.n}
+                    </div>
+                    <div className="font-semibold mt-3 mb-1">{s.t}</div>
+                    <p className="text-sm text-v3-ink2 leading-snug">{s.d}</p>
+                  </div>
+                ))}
               </div>
-              <pre className="text-base md:text-lg whitespace-pre-wrap leading-relaxed text-foreground font-mono">{`Read https://mcphire.com/skill.md and follow the instructions to register me on mcphire. Show me the approval screen before calling register_profile.`}</pre>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left mb-10">
-              <div className="p-4 rounded-xl border border-border bg-card">
-                <div className="text-xl mb-2">1️⃣</div>
-                <div className="font-semibold mb-1">Отправь агенту</div>
-                <p className="text-sm text-muted-foreground">Одну строку выше. Агент сам читает skill.md и знает что делать.</p>
-              </div>
-              <div className="p-4 rounded-xl border border-border bg-card">
-                <div className="text-xl mb-2">2️⃣</div>
-                <div className="font-semibold mb-1">Подтверди ответы</div>
-                <p className="text-sm text-muted-foreground">Агент покажет approval screen с собранными данными. Правишь, жмёшь «ок».</p>
-              </div>
-              <div className="p-4 rounded-xl border border-border bg-card">
-                <div className="text-xl mb-2">3️⃣</div>
-                <div className="font-semibold mb-1">CV + матчи</div>
-                <p className="text-sm text-muted-foreground">Публичная ссылка на резюме + инстант-пуши новых вакансий в Telegram.</p>
-              </div>
-            </div>
-
-            <details className="text-left bg-muted/40 border border-border rounded-xl p-5">
-              <summary className="cursor-pointer text-sm font-semibold text-muted-foreground hover:text-foreground">
-                Если MCP не настроен — технические детали подключения
-              </summary>
-              <div className="mt-4 space-y-4 text-sm text-muted-foreground">
-                <p>
-                  Один раз в терминале (macOS / Linux / WSL):
-                </p>
-                <pre className="text-xs whitespace-pre-wrap leading-relaxed text-foreground font-mono bg-background p-3 rounded border border-border">{`curl -fsSL https://mcphire.com/install.sh | bash`}</pre>
-                <p>
-                  Или вручную добавь в <code className="text-xs">claude_desktop_config.json</code>:
-                </p>
-                <pre className="text-xs whitespace-pre-wrap leading-relaxed text-foreground font-mono bg-background p-3 rounded border border-border">{`{
+              {/* Technical fallback for users without MCP set up */}
+              <details className="text-left v3-card" style={{ padding: 20, background: "rgba(241,236,227,.6)" }}>
+                <summary className="cursor-pointer text-sm font-semibold text-v3-ink2 hover:text-v3-ink">
+                  {lang === "ru"
+                    ? "Если MCP не настроен — технические детали подключения"
+                    : "If MCP isn't set up — connection details"}
+                </summary>
+                <div className="mt-4 space-y-4 text-sm text-v3-ink2">
+                  <p>
+                    {lang === "ru"
+                      ? "Один раз в терминале (macOS / Linux / WSL):"
+                      : "One-time in terminal (macOS / Linux / WSL):"}
+                  </p>
+                  <pre className="font-mono text-xs whitespace-pre-wrap leading-relaxed text-v3-ink bg-v3-bg p-3 rounded-lg border" style={{ borderColor: "var(--v3-line2)" }}>
+{`curl -fsSL https://mcphire.com/install.sh | bash`}
+                  </pre>
+                  <p>
+                    {lang === "ru"
+                      ? "Или вручную добавь в claude_desktop_config.json:"
+                      : "Or manually add to claude_desktop_config.json:"}
+                  </p>
+                  <pre className="font-mono text-xs whitespace-pre-wrap leading-relaxed text-v3-ink bg-v3-bg p-3 rounded-lg border" style={{ borderColor: "var(--v3-line2)" }}>
+{`{
   "mcpServers": {
     "mcphire": {
       "type": "sse",
       "url": "https://mcp.mcphire.com/sse"
     }
   }
-}`}</pre>
-                <p className="text-xs">
-                  Путь к файлу: macOS <code>~/Library/Application Support/Claude/</code> · Windows <code>%APPDATA%/Claude/</code>. Полностью quit Claude Desktop (⌘Q / File → Quit) и запусти заново.
-                </p>
-                <p className="text-xs">
-                  Нет MCP? REST fallback живёт по адресу <code>https://api.mcphire.com/api/v1/candidate/register</code> — любой агент с <code>curl</code> может зарегать человека без MCP-клиента.
-                </p>
-              </div>
-            </details>
+}`}
+                  </pre>
+                  <p className="text-xs">
+                    {lang === "ru" ? (
+                      <>
+                        Путь к файлу: macOS{" "}
+                        <code className="font-mono">~/Library/Application Support/Claude/</code>{" "}
+                        · Windows <code className="font-mono">%APPDATA%/Claude/</code>. Полностью quit
+                        Claude Desktop (⌘Q / File → Quit) и запусти заново.
+                      </>
+                    ) : (
+                      <>
+                        File path: macOS{" "}
+                        <code className="font-mono">~/Library/Application Support/Claude/</code>{" "}
+                        · Windows <code className="font-mono">%APPDATA%/Claude/</code>. Fully quit
+                        Claude Desktop (⌘Q / File → Quit) and relaunch.
+                      </>
+                    )}
+                  </p>
+                  <p className="text-xs">
+                    {lang === "ru" ? (
+                      <>
+                        Нет MCP? REST fallback живёт по адресу{" "}
+                        <code className="font-mono">https://api.mcphire.com/api/v1/candidate/register</code>{" "}
+                        — любой агент с <code className="font-mono">curl</code> может зарегать
+                        человека без MCP-клиента.
+                      </>
+                    ) : (
+                      <>
+                        No MCP? REST fallback lives at{" "}
+                        <code className="font-mono">https://api.mcphire.com/api/v1/candidate/register</code>{" "}
+                        — any agent with <code className="font-mono">curl</code> can register a user
+                        without an MCP client.
+                      </>
+                    )}
+                  </p>
+                </div>
+              </details>
 
-            <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm">
-              <a
-                href="https://mcphire.com/skill.md"
-                className="font-semibold text-primary hover:text-primary/80 transition-colors"
-              >
-                skill.md (canonical) →
-              </a>
-              <a
-                href="/mcp"
-                className="font-semibold text-muted-foreground hover:text-foreground transition-colors"
-              >
-                MCP API docs →
-              </a>
-              <a
-                href="https://mcphire.com/.well-known/mcp/server.json"
-                className="font-semibold text-muted-foreground hover:text-foreground transition-colors"
-              >
-                server.json (manifest) →
-              </a>
+              <div className="mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+                <a
+                  href="https://mcphire.com/skill.md"
+                  className="font-semibold text-v3-ink underline decoration-2 underline-offset-4 hover:opacity-80 transition-opacity"
+                  style={{ textDecorationColor: "var(--v3-hot)" }}
+                >
+                  skill.md (canonical) →
+                </a>
+                <Link
+                  to="/mcp"
+                  className="font-semibold text-v3-ink2 hover:text-v3-ink transition-colors no-underline"
+                >
+                  MCP API docs →
+                </Link>
+                <a
+                  href="https://mcphire.com/.well-known/mcp/server.json"
+                  className="font-semibold text-v3-ink2 hover:text-v3-ink transition-colors no-underline"
+                >
+                  server.json (manifest) →
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ---- Featured Jobs --------------------------------------- */}
-      <section className="section-white">
-        <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-          <div className="flex items-end justify-between mb-8 gap-4 flex-wrap">
-            <h2 className="heading-lg">Свежие вакансии</h2>
-            <Link to="/jobs" className="cta-text text-sm">
-              Все вакансии →
+      <section className="px-4 py-16">
+        <div className="mx-auto" style={{ maxWidth: 1320 }}>
+          <div className="flex items-end justify-between mb-7 gap-4 flex-wrap">
+            <h2 className="v3-h2">
+              {lang === "ru" ? (
+                <>Свежие <span className="v3-serif text-v3-hot">вакансии</span></>
+              ) : (
+                <>Fresh <span className="v3-serif text-v3-hot">jobs</span></>
+              )}
+            </h2>
+            <Link to="/jobs" className="v3-btn v3-btn-ghost">
+              {lang === "ru" ? "Все вакансии" : "All jobs"} →
             </Link>
           </div>
 
           {jobsLoading ? (
             <SkeletonGrid count={6} />
           ) : jobs.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {jobs.map((job) => (
-                <JobCard key={job.id} job={job} showMatchScore={true} />
+                <JobCard key={job.id} job={job} showMatchScore />
               ))}
             </div>
           ) : (
-            <p className="text-muted-foreground text-center py-16">
-              Вакансии загружаются...
+            <p className="text-v3-mute text-center py-16">
+              {lang === "ru" ? "Вакансии загружаются..." : "Loading jobs..."}
             </p>
           )}
-
-          {/* All Jobs CTA */}
-          <div className="flex justify-center pt-4 pb-4">
-            <Link to="/jobs" className="cta-primary">
-              Все вакансии
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* ---- Employer CTA Section -------------------------------- */}
-      <section className="section-black">
-        <div className="section-container text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-white/60 mb-4">
-            Для работодателей
-          </p>
-          <h2 className="heading-xl text-white mb-6">
-            Разместите вакансию —<br className="hidden md:block" /> первая бесплатно
-          </h2>
-          <p className="text-white/70 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-            Более 2 000 IT-специалистов уже ищут работу на платформе.
-            AI-подбор, верифицированные кандидаты, MCP-доступ для ваших агентов.
-          </p>
-
-          {/* Selling points */}
-          <div className="flex flex-wrap justify-center gap-6 mb-10 text-sm text-white/80">
-            {[
-              "Без переплат за первую вакансию",
-              "AI-подбор кандидатов",
-              "MCP API для AI-агентов",
-            ].map((point) => (
-              <div key={point} className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-cta-hot shrink-0" />
-                {point}
+      {/* ---- Employer CTA (V3 dark card) ------------------------- */}
+      <section className="px-4 py-16">
+        <div className="mx-auto" style={{ maxWidth: 1320 }}>
+          <div
+            className="v3-card relative overflow-hidden p-10 md:p-14 text-center"
+            style={{ background: "var(--v3-ink)", color: "#fff" }}
+          >
+            <div
+              aria-hidden
+              className="v3-grad-cool absolute"
+              style={{
+                left: -120, bottom: -120, width: 360, height: 360, borderRadius: "50%",
+                filter: "blur(40px)", opacity: 0.45,
+              }}
+            />
+            <div className="relative">
+              <p className="font-mono text-xs uppercase tracking-widest opacity-60 mb-3">
+                {lang === "ru" ? "Для работодателей" : "For employers"}
+              </p>
+              <h2 className="v3-h2 mb-5" style={{ color: "#fff" }}>
+                {lang === "ru" ? (
+                  <>Разместите вакансию — <span className="v3-serif text-v3-hot">первая бесплатно</span></>
+                ) : (
+                  <>Post a role — <span className="v3-serif text-v3-hot">first one free</span></>
+                )}
+              </h2>
+              <p className="text-base md:text-lg opacity-80 max-w-xl mx-auto mb-7 leading-relaxed">
+                {lang === "ru"
+                  ? "AI-подбор, верифицированные кандидаты, MCP-доступ для ваших агентов. Платите только за реальные интервью."
+                  : "AI matching, vetted candidates, MCP access for your agents. Pay only for real interviews."}
+              </p>
+              <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-8 text-sm opacity-80">
+                {[
+                  lang === "ru" ? "Без переплат за первую вакансию" : "First role free",
+                  lang === "ru" ? "AI-подбор кандидатов" : "AI candidate matching",
+                  lang === "ru" ? "MCP API для AI-агентов" : "MCP API for AI agents",
+                ].map((point) => (
+                  <div key={point} className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-v3-hot shrink-0" />
+                    {point}
+                  </div>
+                ))}
               </div>
-            ))}
+              <Link to="/employers" className="v3-btn v3-btn-primary" style={{ background: "var(--v3-hot)" }}>
+                {lang === "ru" ? "Разместить вакансию бесплатно" : "Post a role free"}
+              </Link>
+            </div>
           </div>
-
-          {/* Sprint 4 fix F-H1: MCP-first parity — public employer CTA goes to /employers
-              (Claude Desktop prompt), not to /employer/jobs/create which is the protected
-              dashboard route reserved for already-onboarded employers. */}
-          <Link to="/employers" className="cta-hot">
-            Разместить вакансию бесплатно
-          </Link>
-        </div>
-      </section>
-
-      {/* ---- Career Club Cross-Promo ------------------------------ */}
-      <section className="section-white">
-        <div className="section-container text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
-            Партнёрский проект
-          </p>
-          <h2 className="heading-xl mb-6">
-            Подготовка к<br className="hidden md:block" /> собеседованиям — СБОРКА
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-            Система с метриками и дедлайнами для IT-специалистов, которые ищут
-            работу или хотят вырасти. Менторы, мок-собеседования, разбор резюме.
-          </p>
-          <a href="https://sborka.work?utm_source=mcphire&utm_medium=homepage&utm_campaign=cross_promo" className="cta-text text-base">
-            Узнать о СБОРКЕ на sborka.work →
-          </a>
         </div>
       </section>
 

@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import StickyHeader from "@/components/StickyHeader";
 import Footer from "@/components/Footer";
 import CategoryFilter from "@/components/knowledge/CategoryFilter";
 import ArticleCard from "@/components/knowledge/ArticleCard";
@@ -29,7 +28,6 @@ const Knowledge = () => {
       </Helmet>
 
       <main className="min-h-screen">
-        <StickyHeader />
 
         <div className="max-w-5xl mx-auto px-6 md:px-8 py-12 md:py-16">
           <Breadcrumbs

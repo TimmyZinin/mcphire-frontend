@@ -1,76 +1,106 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* СБОРКА V2 Design System — Warm Professional
-   Terracotta primary (#B5563E), warm neutrals
-   Fonts: Bricolage Grotesque (headings), Source Sans 3 (body)
+/* MCPHire V3 «Optimist» Design System
+   Warm cream canvas (#f7f2ec) + multi-radial tint, hot vermillion (#ff5b28) primary,
+   cool cobalt (#2a4dff) for recruiter mode, leaf/plum/sun accent gradients.
+   Fonts: Inter Tight (sans), Instrument Serif (italic accents), JetBrains Mono.
    All colors HSL format for shadcn/ui compatibility.
 */
 
 @layer base {
   :root {
-    /* Core palette — Warm Professional */
-    --background: 40 20% 98%;        /* #FAFAF7 warm white */
-    --foreground: 30 10% 12%;        /* #221F1B warm black */
+    /* Core palette — V3 Optimist (warm cream + ink) */
+    --background: 33 33% 95%;        /* #f7f2ec warm cream */
+    --foreground: 26 22% 8%;         /* #181410 ink */
 
     /* Cards */
-    --card: 40 15% 99%;              /* #FBFBF9 */
-    --card-foreground: 30 10% 12%;
+    --card: 0 0% 100%;               /* #ffffff */
+    --card-foreground: 26 22% 8%;
 
     /* Popover */
-    --popover: 40 15% 99%;
-    --popover-foreground: 30 10% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 26 22% 8%;
 
-    /* Primary — Terracotta #B5563E = hsl(16, 52%, 48%) */
-    --primary: 16 52% 48%;
+    /* Primary — Hot vermillion #ff5b28 (candidate accent + CTA hover) */
+    --primary: 14 100% 58%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary — Warm Dark #585048 */
-    --secondary: 35 8% 32%;
+    /* Secondary — Ink #181410 (dark CTA + nav active) */
+    --secondary: 26 22% 8%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Muted — Warm Gray */
-    --muted: 35 12% 94%;             /* #F2F0EB */
-    --muted-foreground: 30 6% 45%;   /* #787470 — 4.5:1 AA */
+    /* Muted — Soft warm gray */
+    --muted: 35 28% 92%;             /* #f1ece3 */
+    --muted-foreground: 26 11% 36%;  /* #5a534b */
 
-    /* Accent — Warm Gold #B3974D */
-    --accent: 40 35% 52%;
-    --accent-foreground: 30 10% 12%;
+    /* Accent — Cool cobalt #2a4dff (recruiter accent) */
+    --accent: 231 100% 58%;
+    --accent-foreground: 0 0% 100%;
 
-    /* Success — Warm Green */
-    --success: 145 40% 42%;          /* #3F9664 */
+    /* Success — Leaf #0a8a52 */
+    --success: 150 86% 29%;
     --success-foreground: 0 0% 100%;
 
-    /* Warning */
-    --warning: 38 92% 50%;           /* #F59E0B */
-    --warning-foreground: 30 10% 12%;
+    /* Warning — Sun #ffd55a */
+    --warning: 45 100% 68%;
+    --warning-foreground: 26 22% 8%;
 
-    /* Destructive */
-    --destructive: 0 72% 51%;        /* #DC2626 */
+    /* Destructive — Hot vermillion */
+    --destructive: 14 100% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Info */
-    --info: 210 60% 50%;             /* #3B82F6 */
+    /* Info — Cool cobalt */
+    --info: 231 100% 58%;
     --info-foreground: 0 0% 100%;
 
-    /* Borders — warm gray */
-    --border: 35 8% 86%;             /* #DDD9D3 */
-    --input: 35 8% 91%;              /* #EAE8E3 */
-    --ring: 16 52% 48%;
+    /* Borders — warm ink @ 10% / 6% */
+    --border: 30 11% 88%;            /* #e6dfd4 visible 1px */
+    --input: 30 11% 92%;
+    --ring: 14 100% 58%;             /* hot vermillion focus ring */
 
-    /* CTA hot — Coral #DD4F38 */
-    --cta-hot: 8 70% 55%;
+    /* CTA hot — Hot vermillion */
+    --cta-hot: 14 100% 58%;
     --cta-hot-foreground: 0 0% 100%;
 
-    --radius: 0.75rem;
+    --radius: 1.5rem;                /* 24px — V3 main card radius */
+
+    /* V3 brand tokens — raw hex equivalents for direct use */
+    --v3-bg: #f7f2ec;
+    --v3-card: #ffffff;
+    --v3-ink: #181410;
+    --v3-ink2: #5a534b;
+    --v3-mute: #9a9085;
+    --v3-line: #1814101a;
+    --v3-line2: #18141010;
+    --v3-hot: #ff5b28;
+    --v3-cool: #2a4dff;
+    --v3-leaf: #0a8a52;
+    --v3-plum: #a04bff;
+    --v3-sun: #ffd55a;
+
+    /* V3 multi-radial canvas tint (used on body / V3 layouts) */
+    --v3-bg-tint:
+      radial-gradient(80% 60% at 20% 10%, #ffd8c2 0%, transparent 55%),
+      radial-gradient(70% 50% at 90% 30%, #d8e3ff 0%, transparent 60%),
+      radial-gradient(60% 60% at 50% 100%, #f3e1ff 0%, transparent 55%),
+      #f7f2ec;
+
+    /* V3 gradients */
+    --v3-grad-hot:  linear-gradient(135deg, #ff7a3e 0%, #ff5b28 50%, #c93010 100%);
+    --v3-grad-cool: linear-gradient(135deg, #6a8cff 0%, #2a4dff 60%, #0a26a8 100%);
+    --v3-grad-plum: linear-gradient(135deg, #d68fff 0%, #a04bff 60%, #5b21b6 100%);
+    --v3-grad-leaf: linear-gradient(135deg, #4fcf8d 0%, #0a8a52 60%, #053a23 100%);
+    --v3-grad-sun:  linear-gradient(135deg, #fff19a 0%, #ffd55a 50%, #cc9700 100%);
 
     /* Typography */
-    --font-heading: 'Bricolage Grotesque', 'Georgia', serif;
-    --font-sans: 'Source Sans 3', 'Noto Sans Arabic', 'Noto Sans Devanagari', system-ui, sans-serif;
-    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --font-heading: 'Inter Tight', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Inter Tight', 'Inter', 'Noto Sans Arabic', 'Noto Sans Devanagari', system-ui, sans-serif;
+    --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
     /* Spacing scale (design tokens) */
     --space-1: 0.25rem;  /* 4px */
@@ -106,27 +136,27 @@
     --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
     --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(16, 52%, 48%) 0%, hsl(16, 52%, 38%) 100%);
-    --gradient-cta: linear-gradient(135deg, hsl(8, 70%, 55%) 0%, hsl(8, 70%, 45%) 100%);
-    --gradient-warm: linear-gradient(135deg, hsl(40, 20%, 98%) 0%, hsl(35, 12%, 94%) 100%);
+    /* Gradients (legacy aliases — V3 *grad-* canonical) */
+    --gradient-hero: var(--v3-grad-hot);
+    --gradient-cta:  var(--v3-grad-hot);
+    --gradient-warm: linear-gradient(135deg, #f7f2ec 0%, #f1ece3 100%);
 
     /* Sidebar (required by shadcn) */
-    --sidebar-background: 40 20% 98%;
-    --sidebar-foreground: 30 10% 12%;
-    --sidebar-primary: 16 52% 48%;
+    --sidebar-background: 33 33% 95%;
+    --sidebar-foreground: 26 22% 8%;
+    --sidebar-primary: 14 100% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 35 12% 94%;
-    --sidebar-accent-foreground: 30 10% 12%;
-    --sidebar-border: 35 8% 86%;
-    --sidebar-ring: 16 52% 48%;
+    --sidebar-accent: 35 28% 92%;
+    --sidebar-accent-foreground: 26 22% 8%;
+    --sidebar-border: 30 11% 88%;
+    --sidebar-ring: 14 100% 58%;
 
-    /* Chart colors (required by shadcn) */
-    --chart-1: 16 52% 48%;
-    --chart-2: 40 35% 52%;
-    --chart-3: 145 40% 42%;
-    --chart-4: 210 60% 50%;
-    --chart-5: 8 70% 55%;
+    /* Chart colors — V3 5-stop palette */
+    --chart-1: 14 100% 58%;   /* hot */
+    --chart-2: 231 100% 58%;  /* cool */
+    --chart-3: 150 86% 29%;   /* leaf */
+    --chart-4: 273 100% 65%;  /* plum */
+    --chart-5: 45 100% 68%;   /* sun */
   }
 }
 
@@ -157,7 +187,7 @@
     color: hsl(var(--primary-foreground));
   }
 
-  /* Headings use Bricolage Grotesque */
+  /* Headings use Inter Tight */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
   }
@@ -283,7 +313,7 @@
     background-color: hsl(var(--secondary));
   }
 
-  /* Heading styles using Bricolage Grotesque */
+  /* Heading styles using Inter Tight */
   .heading-hero {
     font-family: var(--font-heading);
     @apply text-[56px] md:text-[80px] lg:text-[120px] font-black uppercase tracking-tighter leading-[0.9];
@@ -332,7 +362,7 @@
     @apply text-red-400 font-bold flex-shrink-0;
   }
 
-  /* Article typography — Source Sans 3 for body */
+  /* Article typography — Inter Tight for body */
   .article-content {
     font-family: var(--font-sans);
     font-size: 1.0625rem;
@@ -392,4 +422,207 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
   }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   V3 «Optimist» component utilities
+   All `.v3-*` classes are scoped to keep legacy pages untouched
+   while we migrate. New components use these directly.
+   ───────────────────────────────────────────────────────────── */
+
+@layer components {
+  /* Canvas — warm cream + multi-radial tint */
+  .v3-canvas {
+    background: var(--v3-bg-tint);
+    color: var(--v3-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  /* Cards — 24px radius, layered shadow, hairline border */
+  .v3-card {
+    background: var(--v3-card);
+    border-radius: 24px;
+    border: 0.5px solid var(--v3-line2);
+    box-shadow:
+      0 1px 0 #fff inset,
+      0 2px 0 rgba(0, 0, 0, 0.02),
+      0 24px 60px -28px rgba(24, 20, 16, 0.18),
+      0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Buttons */
+  .v3-btn {
+    @apply inline-flex items-center gap-2 cursor-pointer;
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.005em;
+    border: 1px solid transparent;
+    user-select: none;
+    transition: transform 80ms, box-shadow 150ms, background 150ms;
+  }
+  .v3-btn:active { transform: translateY(1px); }
+
+  .v3-btn-primary {
+    background: var(--v3-ink);
+    color: #fff;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.15) inset,
+      0 4px 0 rgba(0, 0, 0, 0.12),
+      0 16px 30px -10px rgba(24, 20, 16, 0.4);
+  }
+  .v3-btn-primary:hover {
+    background: var(--v3-hot);
+    box-shadow:
+      0 4px 0 rgba(0, 0, 0, 0.12),
+      0 14px 26px -8px rgba(255, 91, 40, 0.45);
+  }
+
+  .v3-btn-cool {
+    background: var(--v3-cool);
+    color: #fff;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.15) inset,
+      0 4px 0 rgba(0, 0, 0, 0.12),
+      0 16px 30px -10px rgba(42, 77, 255, 0.45);
+  }
+  .v3-btn-cool:hover { filter: brightness(1.05); }
+
+  .v3-btn-ghost {
+    background: #fff;
+    color: var(--v3-ink);
+    border-color: var(--v3-line);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.6) inset,
+      0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  .v3-btn-ghost:hover { background: var(--v3-bg); }
+
+  /* Pills, chips, pins */
+  .v3-pill {
+    @apply inline-flex items-center;
+    height: 30px;
+    padding: 0 12px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 0.5px solid var(--v3-line);
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--v3-ink2);
+  }
+  .v3-pill-hot  { background: var(--v3-hot);  color: #fff; border-color: transparent; }
+  .v3-pill-cool { background: var(--v3-cool); color: #fff; border-color: transparent; }
+
+  .v3-chip {
+    @apply inline-flex items-center gap-1.5;
+    height: 24px;
+    padding: 0 9px;
+    border-radius: 8px;
+    background: #f1ece3;
+    color: var(--v3-ink);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .v3-pin {
+    @apply inline-flex items-center gap-2;
+    padding: 6px 12px;
+    background: #fff;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 0.5px solid var(--v3-line);
+    color: var(--v3-ink);
+  }
+  .v3-pin-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--v3-leaf);
+    box-shadow: 0 0 0 4px rgba(10, 138, 82, 0.16);
+    display: inline-block;
+  }
+
+  /* Gradient surfaces */
+  .v3-grad-hot  { background: var(--v3-grad-hot); }
+  .v3-grad-cool { background: var(--v3-grad-cool); }
+  .v3-grad-plum { background: var(--v3-grad-plum); }
+  .v3-grad-leaf { background: var(--v3-grad-leaf); }
+  .v3-grad-sun  { background: var(--v3-grad-sun); }
+
+  /* Typography helpers */
+  .v3-mono  { font-family: var(--font-mono); }
+  .v3-serif { font-family: var(--font-serif); font-style: italic; }
+
+  /* Hero h1 sizing */
+  .v3-h1 {
+    font-family: var(--font-sans);
+    font-size: clamp(48px, 5.8vw, 84px);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+  .v3-h2 {
+    font-family: var(--font-sans);
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  /* Logo cursor blink */
+  .v3-logo-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .v3-logo-mark::after {
+    content: "";
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    width: 3px;
+    height: 9px;
+    background: #fff;
+    border-radius: 1px;
+    animation: v3-blink 1.05s steps(1) infinite;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  }
+  @keyframes v3-blink {
+    0%, 55% { opacity: 1; }
+    55.01%, 100% { opacity: 0; }
+  }
+
+  /* Live ticker pulse dot */
+  @keyframes v3-pulse {
+    0%   { transform: scale(1);   opacity: 0.7; }
+    80%  { transform: scale(2.4); opacity: 0; }
+    100% { opacity: 0; }
+  }
+  .v3-pulse-dot {
+    position: relative;
+    display: inline-flex;
+    width: 10px;
+    height: 10px;
+  }
+  .v3-pulse-dot::before,
+  .v3-pulse-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 5px;
+    background: var(--v3-hot);
+  }
+  .v3-pulse-dot::before { animation: v3-pulse 1.6s ease-out infinite; }
 }

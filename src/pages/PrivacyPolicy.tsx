@@ -60,7 +60,7 @@ const PrivacyPolicy = () => {
               3.1. Мы используем персональные данные для следующих целей:
             </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Оказание услуг платформы MCPHire и партнёрских сервисов СБОРКА</li>
+              <li>Оказание услуг платформы MCPHire</li>
               <li>Обратная связь с пользователями</li>
               <li>Информирование о новых материалах и мероприятиях</li>
               <li>Аналитика посещаемости Сайта (через Umami)</li>
@@ -115,7 +115,7 @@ const PrivacyPolicy = () => {
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Telegram: @mcphire_bot</li>
-              <li>Канал: <a href="https://t.me/public_sborka" className="text-primary hover:underline">@public_sborka</a></li>
+              <li>Канал: <a href="https://t.me/mcphire" className="text-v3-ink underline decoration-2 underline-offset-4 hover:opacity-80" style={{textDecorationColor:"var(--v3-hot)"}}>@mcphire</a></li>
             </ul>
 
             <p className="mt-8 text-sm">

@@ -4,8 +4,6 @@ import { useJobs } from "@/hooks/useJobs";
 import { cityMap, categoryMap } from "@/data/jobCategories";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
-import CareerClubBanner from "@/components/CareerClubBanner";
-import TopBanner from "@/components/TopBanner";
 import { JobCard, SkeletonGrid } from "@/components/JobCard";
 
 const JobsByCategory = () => {
@@ -50,7 +48,6 @@ const JobsByCategory = () => {
       </Helmet>
 
       <JobBoardNavbar />
-      <TopBanner utmSource="jobs_category" />
 
       <section className="section-white">
         <div className="section-container">
@@ -68,7 +65,6 @@ const JobsByCategory = () => {
             Найдено {totalJobs} вакансий
           </p>
 
-          <CareerClubBanner variant="inline" utmSource="jobs_category" />
 
           {/* Jobs Grid */}
           {isLoading ? (
