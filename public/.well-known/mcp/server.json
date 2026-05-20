@@ -401,6 +401,18 @@
           "questions_version": {
             "default": "0.3.0",
             "type": "string"
+          },
+          "consent_phrase": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Sprint 8 P0-1: exact phrase the user must say to confirm registration intent. See llms.txt for the required text per role (candidate must say 'я согласен отправить анкету в MCPHire' or 'I agree to submit my profile to MCPHire'). During the 30-day deprecation window this field is optional but a missing value emits a WARNING log; after the window, missing or mismatched phrase → HTTP 400 CONSENT_PHRASE_MISMATCH."
           }
         },
         "required": [
@@ -418,6 +430,7 @@
           "q_artifacts_proof_url_primary": "https://github.com/example"
         },
         "consent_granted": true,
+        "consent_phrase": "я согласен отправить анкету в MCPHire",
         "provenance": {
           "q_comp_floor_usd_monthly": {
             "source_excerpt": "floor: $5000/mo",
@@ -576,7 +589,7 @@
     },
     {
       "name": "register_employer_profile",
-      "description": "Create an employer profile after the user has explicitly approved the compiled answers. Requires q_consent_company_representation=true plus q_company_legal_name, q_company_slug (URL-safe), q_team_size, q_team_remote_split, q_team_lang, q_comp_currency. Returns employer_id, employer_url, slug, name, verified.",
+      "description": "Create an employer profile after the user has explicitly approved the compiled answers. Requires q_consent_company_representation=true plus q_company_legal_name, q_company_slug (URL-safe), q_team_size, q_team_remote_split, q_team_lang, q_comp_currency. Returns employer_id, employer_session_token (Sprint 8 P0-2 bearer — store it, all subsequent employer tools take it as employer_session_token), employer_url, slug, name, verified.",
       "inputSchema": {
         "additionalProperties": false,
         "properties": {
@@ -602,6 +615,18 @@
           "questions_version": {
             "default": "0.1.0",
             "type": "string"
+          },
+          "consent_phrase": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Sprint 8 P0-1: exact phrase the user must say to confirm registration intent. See llms.txt for the required text per role (employer must say 'я согласен зарегистрировать компанию в MCPHire' or 'I agree to register the company on MCPHire'). During the 30-day deprecation window this field is optional but a missing value emits a WARNING log; after the window, missing or mismatched phrase → HTTP 400 CONSENT_PHRASE_MISMATCH."
           }
         },
         "required": [
@@ -620,7 +645,8 @@
           "q_comp_currency": "usd",
           "q_consent_company_representation": true
         },
-        "consent_granted": true
+        "consent_granted": true,
+        "consent_phrase": "I agree to register the company on MCPHire"
       },
       "annotations": {
         "idempotentHint": false
@@ -628,12 +654,33 @@
     },
     {
       "name": "post_vacancy",
-      "description": "Create a job vacancy attributed to an employer. Inserting the job fires a database notify event that asynchronously matches the existing candidate pool and pushes relevant matches to Telegram. Currency accepts any ISO-4217 code; salary_from/salary_to are integers in that currency. Returns job_id, slug, job_url, employer_id, status.",
+      "description": "Create a job vacancy attributed to an employer. Inserting the job fires a database notify event that asynchronously matches the existing candidate pool and pushes relevant matches to Telegram. Currency accepts any ISO-4217 code; salary_from/salary_to are integers in that currency. Sprint 8 P0-3: vacancies posted by an unverified employer land in status='draft' and DO NOT appear publicly until the employer is admin-verified and calls publish_vacancy. Returns job_id, slug, job_url, employer_id, status.",
       "inputSchema": {
         "additionalProperties": false,
         "properties": {
+          "employer_session_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Sprint 8 P0-2: PREFERRED bearer credential — UUID returned once by register_employer_profile. Pass this and omit employer_id."
+          },
           "employer_id": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "DEPRECATED — accepted for 30 days after Sprint 8 (15 May 2026). Pass employer_session_token instead."
           },
           "title": {
             "type": "string"
@@ -726,14 +773,13 @@
           }
         },
         "required": [
-          "employer_id",
           "title",
           "description"
         ],
         "type": "object"
       },
       "example": {
-        "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
+        "employer_session_token": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
         "title": "Senior Backend Engineer",
         "description": "We are hiring ...",
         "skills": [
@@ -757,21 +803,40 @@
       "inputSchema": {
         "additionalProperties": false,
         "properties": {
+          "employer_session_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Sprint 8 P0-2: PREFERRED bearer credential. Pass this and omit employer_id."
+          },
           "employer_id": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "DEPRECATED — accepted for 30 days after Sprint 8."
           },
           "limit": {
             "default": 20,
             "type": "integer"
           }
         },
-        "required": [
-          "employer_id"
-        ],
+        "required": [],
         "type": "object"
       },
       "example": {
-        "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
+        "employer_session_token": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
         "limit": 20
       },
       "annotations": {
@@ -784,21 +849,41 @@
       "inputSchema": {
         "additionalProperties": false,
         "properties": {
+          "employer_session_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Sprint 8 P0-2: PREFERRED bearer credential."
+          },
           "employer_id": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "DEPRECATED — accepted for 30 days after Sprint 8."
           },
           "vacancy_id": {
             "type": "string"
           }
         },
         "required": [
-          "employer_id",
           "vacancy_id"
         ],
         "type": "object"
       },
       "example": {
-        "employer_id": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
+        "employer_session_token": "90b17d27-6a23-4b25-bf13-bb4d47bc863c",
         "vacancy_id": "c51443dd-8651-4e2c-be37-3a07b50cee89"
       },
       "annotations": {
@@ -807,12 +892,31 @@
     },
     {
       "name": "shortlist_candidate",
-      "description": "Signal to a candidate that you want to talk. Triggers a Telegram push\nwith inline consent buttons (💎 Interested / 🚫 Not interested).\n\nContact details of the candidate (email / phone / telegram) are NOT\nreturned at this step. They appear in the next ``get_applicants`` call\nfor this vacancy only after the candidate clicks 💎 Interested.\n\nArgs:\n    employer_id: UUID of the employer (must own the vacancy).\n    profile_id: UUID of the candidate's verified agent_profile.\n    vacancy_id: UUID of the vacancy the shortlist is attached to.\n    note: Optional short message to the candidate (<=500 chars).\n\nReturns:\n    {shortlist_id, employer_id, profile_id, vacancy_id, candidate_response,\n     created_at, push_queued}",
+      "description": "Signal to a candidate that you want to talk. Triggers a Telegram push\nwith inline consent buttons (💎 Interested / 🚫 Not interested).\n\nContact details of the candidate (email / phone / telegram) are NOT\nreturned at this step. They appear in the next ``get_applicants`` call\nfor this vacancy only after the candidate clicks 💎 Interested.\n\nArgs:\n    employer_session_token: Sprint 8 P0-2 PREFERRED bearer.\n    employer_id: DEPRECATED — accepted for 30 days after Sprint 8.\n    profile_id: UUID of the candidate's verified agent_profile.\n    vacancy_id: UUID of the vacancy the shortlist is attached to.\n    note: Optional short message to the candidate (<=500 chars).\n\nReturns:\n    {shortlist_id, employer_id, profile_id, vacancy_id, candidate_response,\n     created_at, push_queued}",
       "inputSchema": {
         "additionalProperties": false,
         "properties": {
+          "employer_session_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
           "employer_id": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
           },
           "profile_id": {
             "type": "string"
@@ -833,7 +937,6 @@
           }
         },
         "required": [
-          "employer_id",
           "profile_id",
           "vacancy_id"
         ],
@@ -849,8 +952,29 @@
       "inputSchema": {
         "additionalProperties": false,
         "properties": {
+          "employer_session_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Sprint 8 P0-2: preferred employer auth bearer (UUID). When present, employer_id is ignored for authentication and only used as ownership lookup. employer_id is deprecated (30-day window) — emit a WARNING log on use."
+          },
           "employer_id": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "DEPRECATED Sprint 8: use employer_session_token. Accepted as fallback during 30-day window."
           },
           "profile_id": {
             "type": "string"
@@ -877,7 +1001,6 @@
           }
         },
         "required": [
-          "employer_id",
           "profile_id",
           "vacancy_id",
           "slots"
@@ -886,6 +1009,36 @@
       },
       "annotations": {
         "idempotentHint": false
+      }
+    },
+    {
+      "name": "publish_vacancy",
+      "description": "Flip a draft vacancy (status='draft') to status='active', triggering pg_notify('job_event') and the matching dispatcher. Sprint 8 P0-3: vacancies posted by an unverified employer land in 'draft' and are invisible on /jobs until either the employer is admin-verified (auto-flip) or the employer calls this tool explicitly after verification. Requires the employer_session_token issued at register_employer_profile. Returns {vacancy_id, status, slug, job_url, published_at}.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "employer_session_token": {
+            "type": "string",
+            "description": "Sprint 8 P0-2: the bearer UUID issued at register_employer_profile. Required."
+          },
+          "vacancy_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the draft vacancy to publish. Must be owned by the employer behind employer_session_token."
+          }
+        },
+        "required": [
+          "employer_session_token",
+          "vacancy_id"
+        ],
+        "type": "object"
+      },
+      "example": {
+        "employer_session_token": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "vacancy_id": "a1b2c3d4-1234-5678-90ab-cdef01234567"
+      },
+      "annotations": {
+        "idempotentHint": true
       }
     }
   ],
