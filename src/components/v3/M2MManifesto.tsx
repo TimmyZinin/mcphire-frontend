@@ -37,10 +37,11 @@ export function V3M2MManifesto({ lang }: M2MManifestoProps) {
               />
               {m.tag}
             </span>
+            {/* Sergei feedback 2026-05-21: точки в заголовках непоследовательны.
+                V3 sans-serif стиль — без точек в H1/H2. Удалена замыкающая точка. */}
             <h2 className="v3-h2 mt-4 leading-tight">
               {lang === "ru" ? "Мы верим в " : "We believe in "}
               <span className="v3-serif text-v3-hot">machine-to-machine</span>
-              <span>.</span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 mt-7">
               {m.body.map((p, i) => (

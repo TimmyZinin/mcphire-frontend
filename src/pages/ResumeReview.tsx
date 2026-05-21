@@ -251,15 +251,6 @@ const ResumeReview = () => {
         <meta property="og:url" content="https://mcphire.com/tools/resume-review" />
       </Helmet>
 
-      {/* Header */}
-      <header className="border-b border-border">
-        <div className="section-container py-4 flex items-center justify-between">
-          <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            MCPHire
-          </Link>
-        </div>
-      </header>
-
       <section className="section-white">
         <div className="section-container max-w-3xl">
           <h1 className="heading-xl mb-4">ПРОВЕРКА РЕЗЮМЕ</h1>

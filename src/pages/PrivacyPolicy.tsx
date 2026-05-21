@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
 const PrivacyPolicy = () => {
@@ -9,15 +8,6 @@ const PrivacyPolicy = () => {
         <meta name="description" content="Политика конфиденциальности платформы MCPHire. Обработка персональных данных в соответствии с ФЗ-152." />
         <link rel="canonical" href="https://mcphire.com/privacy" />
       </Helmet>
-
-      {/* Header */}
-      <header className="border-b border-border">
-        <div className="section-container py-4 flex items-center justify-between">
-          <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            MCPHire
-          </Link>
-        </div>
-      </header>
 
       <section className="section-white">
         <div className="section-container">
@@ -125,25 +115,6 @@ const PrivacyPolicy = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-background py-8 border-t border-foreground">
-        <div className="section-container">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm text-muted-foreground">
-            <div>
-              <Link to="/" className="font-bold text-foreground hover:text-muted-foreground transition-colors">
-                MCPHire
-              </Link>
-              <p>Клуб карьерной дисциплины</p>
-            </div>
-            <Link to="/" className="cta-text text-sm">
-              На главную
-            </Link>
-            <p>
-              &copy; MCPHire 2026
-            </p>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 };

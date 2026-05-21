@@ -574,30 +574,38 @@
     line-height: 1.05;
   }
 
-  /* Logo cursor blink */
+  /* Logo cursor blink
+     Sergei feedback 2026-05-21: курсор "съехал вниз / в другой регистр".
+     Раньше был в bottom-right corner (right:5px bottom:5px) — выглядел
+     оторванным от глифа "m". Теперь — рядом с "m", выровнен по cap-height
+     самой буквы (top/bottom paddings от центра grid). */
   .v3-logo-mark {
     width: 28px;
     height: 28px;
     border-radius: 9px;
-    display: grid;
-    place-items: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
     color: #fff;
     font-family: var(--font-mono);
     font-size: 14px;
+    line-height: 1;
     position: relative;
     overflow: hidden;
+    padding-right: 4px;
   }
   .v3-logo-mark::after {
     content: "";
-    position: absolute;
-    right: 5px;
-    bottom: 5px;
-    width: 3px;
-    height: 9px;
+    display: inline-block;
+    width: 2px;
+    height: 11px;
     background: #fff;
     border-radius: 1px;
     animation: v3-blink 1.05s steps(1) infinite;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    align-self: center;
+    margin-left: 1px;
   }
   @keyframes v3-blink {
     0%, 55% { opacity: 1; }

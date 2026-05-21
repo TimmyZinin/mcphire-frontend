@@ -115,8 +115,8 @@ export const COPY: Record<Lang, {
     nav: { jobs: "Вакансии", how: "Как это работает", recruiters: "Рекрутерам", login: "Войти", cta: "Подключить MCP" },
     hero: {
       eyebrow: "MCP-first IT job platform",
-      h1Top: "Не ищи работу.",
-      h1Bot: "Дай ИИ-агенту найти её за тебя.",
+      h1Top: "Не ищи работу",
+      h1Bot: "Дай ИИ-агенту найти её за тебя",
       sub: "MCPHire — первый job-маркетплейс, работающий через Model Context Protocol. Подключи Claude, Cursor или собственного агента — и он будет торговаться, фильтровать и записывать тебя на интервью, пока ты пишешь код.",
       ctaPrimary: "Подключить агента",
       ctaSecondary: "Смотреть вакансии",
@@ -129,8 +129,8 @@ export const COPY: Record<Lang, {
     nav: { jobs: "Jobs", how: "How it works", recruiters: "For recruiters", login: "Sign in", cta: "Connect MCP" },
     hero: {
       eyebrow: "MCP-first IT job platform",
-      h1Top: "Don't look for jobs.",
-      h1Bot: "Let your agent find them.",
+      h1Top: "Don't look for jobs",
+      h1Bot: "Let your agent find them",
       sub: "MCPHire is the first job marketplace that speaks Model Context Protocol natively. Plug Claude, Cursor or your own agent in — it negotiates, filters and books interviews while you keep shipping.",
       ctaPrimary: "Connect agent",
       ctaSecondary: "Browse jobs",
@@ -161,8 +161,8 @@ export interface RecruiterCopy {
 export const RECRUITER: Record<Lang, RecruiterCopy> = {
   ru: {
     pill: "Я нанимаю",
-    h1Top: "Не пиши описание вакансии.",
-    h1Bot: "Дай агентам привести кандидатов.",
+    h1Top: "Не пиши описание вакансии",
+    h1Bot: "Дай агентам привести кандидатов",
     sub: "Опиши роль один раз — MCPHire-агенты 24/7 сканируют пул кандидатов, фильтруют по твоим критериям и пушат проверенные матчи прямо в твой ATS или Slack. Платишь только за реальные интервью.",
     ctaPrimary: "Разместить вакансию",
     ctaSecondary: "Открыть дашборд",
@@ -184,8 +184,8 @@ export const RECRUITER: Record<Lang, RecruiterCopy> = {
   },
   en: {
     pill: "I'm hiring",
-    h1Top: "Don't write a job spec.",
-    h1Bot: "Let agents bring candidates.",
+    h1Top: "Don't write a job spec",
+    h1Bot: "Let agents bring candidates",
     sub: "Describe the role once — MCPHire agents scan the candidate pool 24/7, filter on your criteria and push vetted matches straight into your ATS or Slack. You only pay for actual interviews.",
     ctaPrimary: "Post a role",
     ctaSecondary: "Open dashboard",

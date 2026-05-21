@@ -12,7 +12,7 @@ import {
 import { useJobs, useJobStats } from "@/hooks/useJobs";
 import { useJobFilters } from "@/hooks/useJobFilters";
 import { cityMap, categoryMap } from "@/data/jobCategories";
-import JobBoardNavbar from "@/components/JobBoardNavbar";
+import { V3Navbar } from "@/components/v3/Navbar";
 import Footer from "@/components/Footer";
 import { JobCard, SkeletonGrid } from "@/components/JobCard";
 
@@ -213,6 +213,10 @@ const JobsPage = () => {
   const endIndex = Math.min(currentPage * 12, totalJobs);
 
   return (
+    // NOTE: overflow-x-hidden удалён — он делал <main> sticky-containing
+    // ancestor и ломал position:sticky на navbar+search. Codex R2 2026-05-22.
+    // Реальный source overflow (MCP code blocks) уже починен в InstallBlock через
+    // max-w-full + overflow-x-auto на pre.
     <main className="min-h-screen bg-background">
       <Helmet>
         <title>IT-вакансии в России 2026 | MCPHire</title>
@@ -223,35 +227,39 @@ const JobsPage = () => {
         <meta property="og:url" content="https://mcphire.com/jobs" />
       </Helmet>
 
-      <JobBoardNavbar />
+      {/* Sergei feedback 2026-05-21: V3 navbar consistent across site,
+          mobile menu работает (раньше /jobs показывал legacy JobBoardNavbar). */}
+      <V3Navbar />
 
       {/* Page Header */}
-      <div className="max-w-[1280px] mx-auto px-8 pt-10 pb-4">
-        <h1 className="heading-lg">Вакансии</h1>
-        <p className="text-muted-foreground mt-1">{totalJobs} вакансий в IT</p>
-        <div className="flex flex-wrap gap-4 mt-3 text-xs text-muted-foreground">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8 pt-8 md:pt-10 pb-4">
+        <h1 className="heading-lg text-2xl md:text-4xl">Вакансии</h1>
+        <p className="text-muted-foreground mt-1">{totalJobs.toLocaleString()} вакансий в IT</p>
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span>{stats?.totalJobs?.toLocaleString() || 0} вакансий</span>
           <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span>{stats?.citiesCount || 0} городов</span>
           <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span>{stats?.categoriesCount || 0} специализаций</span>
         </div>
       </div>
 
-      {/* Sticky Search */}
-      <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-xl py-4 border-b border-border/50">
-        <div className="max-w-[1280px] mx-auto px-8">
-          <div className="flex items-center bg-card border-2 border-border rounded-3xl px-2 shadow-sm focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+      {/* Sticky Search — нижестоит под navbar (V3Navbar sticky top-0 z-30,
+          высота ~60px). Поэтому top-[60px] z-20 — навбар над search.
+          Codex review 2026-05-22. */}
+      <div className="sticky top-[60px] z-20 bg-background/95 backdrop-blur-xl py-3 md:py-4 border-b border-border/50">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+          <div className="flex flex-col md:flex-row md:items-center bg-card border-2 border-border rounded-2xl md:rounded-3xl px-2 py-2 md:py-0 shadow-sm focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 gap-2 md:gap-0">
             <input
               type="text"
               placeholder="Должность, навыки или компания..."
               value={filters.query}
               onChange={(e) => setFilters({ query: e.target.value, page: 1 })}
-              className="flex-1 px-4 py-3 bg-transparent outline-none text-foreground placeholder:text-muted-foreground"
+              className="flex-1 min-w-0 px-3 md:px-4 py-2.5 md:py-3 bg-transparent outline-none text-foreground placeholder:text-muted-foreground"
             />
-            <div className="w-px h-7 bg-border mx-1" />
+            <div className="hidden md:block w-px h-7 bg-border mx-1" />
             <select
               value={filters.city}
               onChange={(e) => setFilters({ city: e.target.value, page: 1 })}
-              className="px-3 py-2 bg-transparent outline-none text-foreground cursor-pointer"
+              className="px-3 py-2 bg-transparent outline-none text-foreground cursor-pointer max-w-full md:max-w-[180px]"
             >
               <option value="">Вся Россия</option>
               {Object.entries(cityMap).map(([slug, name]) => (
@@ -260,7 +268,7 @@ const JobsPage = () => {
             </select>
             <button
               onClick={() => setFilters({ page: 1 })}
-              className="ml-2 px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors shrink-0"
+              className="md:ml-2 px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors shrink-0"
             >
               Найти
             </button>

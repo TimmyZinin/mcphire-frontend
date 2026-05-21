@@ -12,6 +12,8 @@ import { queryClient } from "@/lib/queryClient";
 import { MainLayout } from "@/components/layouts/MainLayout";
 import { AuthLayout } from "@/components/layouts/AuthLayout";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
+import { V3Layout } from "@/components/layouts/V3Layout";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 // ---- Eagerly loaded (critical path) -----------------------
 import HomePage from "./pages/HomePage";
@@ -88,6 +90,14 @@ function MainLayoutRoute() {
   );
 }
 
+function V3LayoutRoute() {
+  return (
+    <V3Layout>
+      <Outlet />
+    </V3Layout>
+  );
+}
+
 // ---- App ---------------------------------------------------
 
 const App = () => (
@@ -98,12 +108,21 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter basename={import.meta.env.BASE_URL}>
+            <ScrollToTop />
             <ErrorBoundary>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   {/* ---- Public routes (pages include their own Navbar + Footer) ---- */}
                   <Route path="/" element={<HomePage />} />
-                  <Route path="/privacy" element={<PrivacyPolicy />} />
+
+                  {/* ---- Pages without inline navbar/footer — V3Layout wrap ---- */}
+                  <Route element={<V3LayoutRoute />}>
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
+                    <Route path="/tools" element={<ToolsPage />} />
+                    <Route path="/tools/salary" element={<SalaryCalculator />} />
+                    <Route path="/tools/resume-checklist" element={<ResumeChecklist />} />
+                    <Route path="/tools/resume-review" element={<ResumeReview />} />
+                  </Route>
 
                   {/* ---- Knowledge base ---- */}
                   <Route path="/knowledge" element={<Knowledge />} />
@@ -123,17 +142,11 @@ const App = () => (
                   {/* ---- Company profiles ---- */}
                   <Route path="/companies/:slug" element={<CompanyDetailPage />} />
 
-                  {/* ---- Tools ---- */}
-                  <Route path="/tools" element={<ToolsPage />} />
-                  <Route path="/tools/salary" element={<SalaryCalculator />} />
-                  <Route path="/tools/resume-checklist" element={<ResumeChecklist />} />
-                  <Route path="/tools/resume-review" element={<ResumeReview />} />
-
                   {/* ---- MCP ---- */}
                   <Route path="/mcp" element={<McpPage />} />
 
-                  {/* ---- Pricing (MainLayout — no inline navbar/footer) ---- */}
-                  <Route element={<MainLayoutRoute />}>
+                  {/* ---- Pricing (V3 layout — no inline navbar/footer) ---- */}
+                  <Route element={<V3LayoutRoute />}>
                     <Route path="/pricing" element={<PricingPage />} />
                   </Route>
 

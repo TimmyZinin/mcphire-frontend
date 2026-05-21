@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
   Select,
@@ -39,15 +38,6 @@ const SalaryCalculator = () => {
           content="Узнай рыночную зарплату для своей роли, города и уровня. Данные hh.ru, февраль 2026."
         />
       </Helmet>
-
-      {/* Header */}
-      <header className="border-b border-border">
-        <div className="section-container py-4 flex items-center justify-between">
-          <Link to="/" className="font-black text-xl uppercase tracking-tight">
-            MCPHire
-          </Link>
-        </div>
-      </header>
 
       {/* Hero */}
       <section className="section-white">
@@ -197,23 +187,6 @@ const SalaryCalculator = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-background py-8 border-t border-foreground">
-        <div className="section-container">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm text-muted-foreground">
-            <div>
-              <Link to="/" className="font-bold text-foreground hover:text-muted-foreground transition-colors">
-                MCPHire
-              </Link>
-              <p>AI-powered IT job marketplace</p>
-            </div>
-            <Link to="/" className="cta-text text-sm">
-              На главную
-            </Link>
-            <p>&copy; MCPHire 2026</p>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 };

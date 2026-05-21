@@ -6,7 +6,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Menu, LogOut, User, FileText, LayoutDashboard } from "lucide-react";
+import { Menu, LogOut, User, FileText, LayoutDashboard, X } from "lucide-react";
 import {
   Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger,
 } from "@/components/ui/sheet";
@@ -21,10 +21,12 @@ import { EmailVerificationBanner } from "@/components/auth/EmailVerificationBann
 import { V3Logo } from "./Logo";
 import type { Lang } from "./data";
 
+// /tools intentionally NOT linked in nav per Sergei feedback 2026-05-21
+// ("страница нужна в доработке, содержит непонятные инструменты").
+// Page remains reachable via direct link.
 const navLinks = [
   { to: "/jobs",      labelRu: "Вакансии",        labelEn: "Jobs" },
   { to: "/employers", labelRu: "Для работодателей", labelEn: "For employers" },
-  { to: "/tools",     labelRu: "Инструменты",     labelEn: "Tools" },
   { to: "/mcp",       labelRu: "MCP",             labelEn: "MCP" },
 ];
 
@@ -46,6 +48,15 @@ export function V3Navbar({ lang: langProp, agentsOnline = 1247 }: V3NavbarProps)
   const { isAuthenticated, user, logout } = useAuth();
 
   const isActive = (path: string) => location.pathname.startsWith(path);
+
+  // CTA "Connect MCP" целит #agent-onboarding на главной. На остальных
+  // страницах якорь отсутствует — навигируем на главную с хэшем.
+  // BASE_URL уважает Vite basename (deploy под /sborka/ → "/sborka/#...").
+  // Codex review 2026-05-22 R3.
+  const baseUrl = import.meta.env.BASE_URL.endsWith("/")
+    ? import.meta.env.BASE_URL
+    : import.meta.env.BASE_URL + "/";
+  const onboardingHref = location.pathname === "/" ? "#agent-onboarding" : `${baseUrl}#agent-onboarding`;
 
   const handleLogout = async () => {
     await logout();
@@ -166,7 +177,7 @@ export function V3Navbar({ lang: langProp, agentsOnline = 1247 }: V3NavbarProps)
 
           {/* CTA: connect MCP */}
           <a
-            href="#agent-onboarding"
+            href={onboardingHref}
             className="hidden md:inline-flex v3-btn v3-btn-primary"
             style={{ height: 36, padding: "0 14px", fontSize: 13 }}
           >
@@ -176,12 +187,29 @@ export function V3Navbar({ lang: langProp, agentsOnline = 1247 }: V3NavbarProps)
           {/* Mobile hamburger */}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
-              className="md:hidden p-2 rounded-lg hover:bg-v3-bg transition-colors"
+              className="md:hidden grid place-items-center w-11 h-11 rounded-lg hover:bg-v3-bg transition-colors"
               aria-label={lang === "ru" ? "Меню" : "Menu"}
             >
               <Menu className="w-5 h-5" />
             </SheetTrigger>
-            <SheetContent side="right" className="w-[280px]">
+            <SheetContent
+              side="right"
+              hideClose
+              className="w-[300px] sm:w-[340px] bg-v3-bg-tint border-l border-v3-line"
+            >
+              {/* Explicit close X — Sergei feedback 2026-05-21:
+                  стандартный Radix close был слишком маленький / невидимый
+                  на Samsung Android. 44×44 tap-target, белый ring, hot focus.
+                  Radix default close скрыт через hideClose prop, чтобы
+                  не дублировался aria-role. */}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label={lang === "ru" ? "Закрыть меню" : "Close menu"}
+                className="absolute right-3 top-3 z-10 grid place-items-center w-11 h-11 rounded-full bg-white text-v3-ink shadow-md ring-1 ring-v3-line focus:outline-none focus-visible:ring-2 focus-visible:ring-v3-hot transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
               <SheetHeader>
                 <SheetTitle className="text-left">
                   <V3Logo />
@@ -248,7 +276,7 @@ export function V3Navbar({ lang: langProp, agentsOnline = 1247 }: V3NavbarProps)
                   </Link>
                 )}
                 <a
-                  href="#agent-onboarding"
+                  href={onboardingHref}
                   onClick={() => setOpen(false)}
                   className="mt-2 px-4 py-3 rounded-xl text-base font-semibold text-white text-center no-underline"
                   style={{ background: "var(--v3-hot)" }}

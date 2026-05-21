@@ -92,13 +92,14 @@ function HeroCandidate({ lang }: { lang: Lang }) {
             ? "📅 Бронь: ср 10:00 PT · prep.md → 2 страницы"
             : "📅 Booked: Wed 10am PT · prep.md → 2 pages"} />
         </div>
+        {/* Sergei feedback 2026-05-21: cursor должен мигать В КОНЦЕ текста,
+            а не отцентрирован справа (flex-1 удалён). */}
         <div className="font-mono mt-auto p-3 rounded-2xl bg-v3-bg flex items-center gap-2">
           <span className="text-v3-ink font-bold" aria-hidden>$</span>
-          <span className="text-v3-ink2 text-[13px]">
+          <span className="text-v3-ink2 text-[13px] inline-flex items-center gap-1.5">
             {lang === "ru" ? "поторгуйся ещё на 10к" : "push for 10k more"}
+            <span className="inline-block w-[2px] h-3.5 bg-v3-ink" style={{ animation: "v3-blink 1s steps(1) infinite" }} />
           </span>
-          <span className="flex-1" />
-          <span className="inline-block w-[2px] h-3.5 bg-v3-ink" style={{ animation: "v3-blink 1s steps(1) infinite" }} />
         </div>
       </div>
     </div>
@@ -176,11 +177,13 @@ function HeroRecruiter({ lang }: { lang: Lang }) {
             <V3Bubble key={`${c.who}-${i}`} who={c.who} text={c.text} />
           ))}
         </div>
+        {/* Sergei feedback 2026-05-21: cursor в конце текста, не отцентрирован. */}
         <div className="font-mono mt-auto p-3 rounded-2xl bg-v3-bg flex items-center gap-2">
           <span className="text-v3-ink font-bold" aria-hidden>$</span>
-          <span className="text-v3-ink2 text-[13px]">{r.chatCmd}</span>
-          <span className="flex-1" />
-          <span className="inline-block w-[2px] h-3.5 bg-v3-ink" style={{ animation: "v3-blink 1s steps(1) infinite" }} />
+          <span className="text-v3-ink2 text-[13px] inline-flex items-center gap-1.5">
+            {r.chatCmd}
+            <span className="inline-block w-[2px] h-3.5 bg-v3-ink" style={{ animation: "v3-blink 1s steps(1) infinite" }} />
+          </span>
         </div>
       </div>
     </div>
