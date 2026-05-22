@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>MCPHire OG · Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background:
+      radial-gradient(ellipse at 12% 28%, rgba(255,91,40,0.20) 0%, transparent 48%),
+      radial-gradient(ellipse at 88% 78%, rgba(42,77,255,0.14) 0%, transparent 52%),
+      radial-gradient(ellipse at 50% 110%, rgba(255,91,40,0.10) 0%, transparent 55%),
+      #f7f2ec;
+    font-family: 'Inter Tight', sans-serif;
+    color: #1a1a1a;
+    position: relative;
+  }
+
+  /* Top bar */
+  .top {
+    position: absolute; top: 48px; left: 64px; right: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .dot { width: 20px; height: 20px; border-radius: 50%; background: #ff5b28; }
+  .wordmark {
+    font-family: 'Instrument Serif', serif;
+    font-size: 42px; font-weight: 400;
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .eyebrow {
+    font-size: 15px; font-weight: 500;
+    color: #1a1a1a99;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+  }
+
+  /* Headline */
+  .headline {
+    position: absolute; left: 64px; right: 64px; top: 140px;
+    max-width: 1000px;
+  }
+  .h1-top {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 70px; font-weight: 700;
+    line-height: 1.02; letter-spacing: -0.035em;
+    color: #1a1a1a;
+  }
+  .h1-bot {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 76px; font-weight: 400;
+    line-height: 1.02; letter-spacing: -0.025em;
+    color: #1a1a1a;
+    margin-top: 6px;
+  }
+  .h1-bot .accent { color: #ff5b28; }
+
+  /* Stats row */
+  .stats {
+    position: absolute; left: 64px; right: 64px; top: 410px;
+    display: flex; gap: 56px;
+  }
+  .stat .v {
+    font-family: 'Instrument Serif', serif;
+    font-size: 52px; font-weight: 400;
+    line-height: 1; letter-spacing: -0.03em;
+    color: #1a1a1a;
+  }
+  .stat:nth-child(2) .v { color: #2a4dff; }
+  .stat:nth-child(3) .v { color: #6f3aa3; }
+  .stat .l {
+    margin-top: 8px;
+    font-size: 16px; font-weight: 500;
+    color: #1a1a1a99;
+    line-height: 1.3;
+    max-width: 200px;
+  }
+
+  /* Bottom — install one-liner + URL */
+  .bottom {
+    position: absolute;
+    left: 64px; right: 64px; bottom: 48px;
+    display: flex; align-items: center; justify-content: flex-end;
+  }
+  .install {
+    background: #1a1a1a;
+    color: #f7f2ec;
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    box-shadow: 0 16px 36px -12px rgba(0,0,0,0.25);
+  }
+  .install .pr { color: #ff5b28; margin-right: 10px; font-weight: 600; }
+  .url {
+    font-size: 22px; font-weight: 600;
+    color: #1a1a1a;
+    letter-spacing: -0.01em;
+  }
+  .url .pre { color: #1a1a1a66; font-weight: 500; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">
+      <div class="dot"></div>
+      <div class="wordmark">MCPHire<span style="color:#ff5b28">.</span></div>
+    </div>
+    <div class="eyebrow">MCP-first IT job platform</div>
+  </div>
+
+  <div class="headline">
+    <div class="h1-top">Не ищи работу.</div>
+    <div class="h1-bot">Дай ИИ-агенту <span class="accent">найти её за тебя</span></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="v">90k+</div><div class="l">активных IT‑вакансий</div></div>
+    <div class="stat"><div class="v">3.4×</div><div class="l">быстрее, чем LinkedIn</div></div>
+    <div class="stat"><div class="v">41 сек</div><div class="l">медианный первый отклик</div></div>
+  </div>
+
+  <div class="bottom">
+    <div class="url"><span class="pre">→ </span>mcphire.com</div>
+  </div>
+</body>
+</html>
