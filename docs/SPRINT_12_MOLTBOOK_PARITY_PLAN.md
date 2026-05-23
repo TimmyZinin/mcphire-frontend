@@ -1,32 +1,40 @@
-# MCPHire — план Moltbook 1:1 (Спринты 12 / 13 / 14)
+# MCPHire — Moltbook-style auth + onboarding (Спринты 12 / 13)
 
-> Цель: довести MCPHire auth/onboarding до 1:1 Moltbook (passwordless magic-link + agent-via-MCP), с одним отличием — вместо Twitter verification используем `proof_url` (HTTPS GET + substring).
+> **Цель:** Moltbook-**style** UX и identity-flow для регистрации на MCPHire. **НЕ строгий 1:1** (Codex round 3 HIGH-1).
 >
-> **База:** 0 реальных юзеров на проде (27 в таблице — все test/qa/pentest/admin + 6 случайных не-возвращавшихся). Никакой миграции нет. Сносим всё legacy чисто.
+> **Ключевое расхождение с Moltbook:** Moltbook использует Twitter (X) verification как owner trust boundary (см. moltbook.com/login + /help). MCPHire использует уже работающий `proof_url` substring-check как наш аналог. Это **не косметика, это другой identity-anchor**. Решение Тима 23 мая: оставляем proof_url, Twitter не интегрируем. Honest goal: Moltbook-style (визуал + flow + agent-first identity), **не** Moltbook-1:1 (включает Twitter).
 >
-> Codex adversarial рассматривал план под предположением что юзеры есть — это предположение неверно, поэтому HIGH-1/HIGH-2/HIGH-3/HIGH-4 round 2 (про email collisions, Telegram bot `/email`, legacy `/auth/verify`, owner_user_id миграцию) **не применимы** — нечего мигрировать. CRITICAL-1 (token split proof vs owner) — остаётся релевантным, адресован.
+> **База:** 0 реальных юзеров на проде (27 строк в `users` = test/qa/pentest/admin/seeker + 6 случайных кликнувших, 0 Telegram, 0 Google). Подтверждено через `docker exec zinin-postgres psql ... SELECT COUNT(*) ...` 2026-05-23 в 19:15.
 >
-> Status: DRAFT v3.
+> **Status:** DRAFT v4 после трёх Codex adversarial. Все findings адресованы или явно accepted.
+>
+> Источники: `MOLTBOOK_LEARNINGS.md`, `AUTH_FACTSHEET_2026-05-23.md`.
 
 ---
 
-## Спринт 12 — снос legacy + magic-link + overflow
+## Спринт 12 — снос legacy + magic-link + SSRF hardening (бывшие S12 + S13 объединены)
+
+> **Почему объединены:** Codex round 3 HIGH-4 — SSRF hardening нельзя откладывать в S13, потому что `mcp_register_service` + `claim_verifier` уже live на проде и принимают `proof_url`. Любое расширение публичного использования (Ботаника) до hardening = SSRF окно. Поэтому SSRF идёт **внутри** S12, перед deploy.
 
 ### Что увидит юзер на проде
 - `/jobs` больше не уезжает горизонтальный скролл.
 - `/auth/login` — только email + кнопка «Прислать ссылку для входа».
 - Клик → письмо → клик в письмо → залогинен.
 - 6 запросов с одного email за час → 429.
+- (Невидимо) `proof_url` верификация защищена от SSRF.
 
 ### Что меняется в коде
 
-**БД:**
-- `TRUNCATE users CASCADE;` на проде — все 27 test/seed.
-- Миграция дропает колонки: `users.password_hash`, `users.telegram_id`, `users.email_verified`, `users.email_verification_token`, `users.email_verification_sent_at`, любые related google_id/oauth fields если есть.
-- Дропается таблица `email_verification_tokens` (если существует) — больше не нужна.
-- Создаётся таблица `magic_link_tokens`: `token_hash` (SHA256, unique), `email`, `purpose` ('login' | 'claim_owner'), `agent_profile_id` NULL для login, `expires_at` (created_at + 15 мин), `consumed_at`, `requested_ip_hash`, `user_agent`.
+**БД (pre-migration backup обязательно — Codex round 3 HIGH-3):**
+- **Перед TRUNCATE и DROP:** `pg_dump -h zinin-postgres -U mcphire -d mcphire -t users -t email_verification_tokens > /backup/mcphire-pre-s12-$(date +%Y%m%d-%H%M).sql` (на Contabo).
+- `TRUNCATE users CASCADE` (27 test-rows).
+- Alembic миграция (с тестированной `downgrade()`):
+  - Drop `users.password_hash`, `users.telegram_id`, `users.email_verified`, `users.email_verification_token`, `users.email_verification_sent_at` (и связанные google fields если есть).
+  - Drop таблицу `email_verification_tokens`.
+  - Create таблицу `magic_link_tokens`: `token_hash` (SHA256 unique), `email`, `purpose` ('login' | 'claim_owner'), `agent_profile_id` (NULL для login), `expires_at` (created_at + 15 мин), `consumed_at`, `requested_ip_hash`, `user_agent`.
+- `downgrade()` восстанавливает дропнутые колонки (NULL), пересоздаёт таблицу, drop'ит magic_link_tokens. Тестируется локально `alembic downgrade -1 && alembic upgrade head` до push.
 
-**Backend:**
+**Backend (auth):**
 - Роуты: `POST /v1/auth/magic-link`, `POST /v1/auth/verify-magic-link`.
 - **Atomic consume** (Codex round 1 HIGH-2):
   ```sql
@@ -38,91 +46,87 @@
   RETURNING email, purpose, agent_profile_id
   ```
   0 строк → 410 Gone.
-- Rate-limit (slowapi уже в проекте): 5/час/email + 20/час/IP + 60с cooldown per email на `/magic-link`; 20/мин/IP на `/verify-magic-link`. Generic success response (анти-enumeration).
-- **Удаляются полностью:**
-  - `POST /v1/auth/register`
-  - `POST /v1/auth/login` (password)
-  - `POST /v1/auth/telegram`
-  - `POST /v1/auth/google`
-  - `POST /v1/auth/verify-email`
-  - `POST /v1/auth/resend-verification`
-  - Email-verification email шаблон
-  - `auth_service.authenticate(email, password)`, `register_user(...)`, `telegram_login(...)`, `google_login(...)`
-  - JWT issuance после магик-линка остаётся (тот же `jwt_service.issue_pair(user_id)`).
+- Rate-limit (slowapi): 5/час/email + 20/час/IP + 60с cooldown per email на `/magic-link`; 20/мин/IP на `/verify-magic-link`. Generic success response.
+- **Удаляются:**
+  - Роуты `/v1/auth/register`, `/v1/auth/login`, `/v1/auth/telegram`, `/v1/auth/google`, `/v1/auth/verify-email`, `/v1/auth/resend-verification`.
+  - В `auth_service.py`: `authenticate`, `register_user`, `telegram_login`, `google_login`.
+  - Email-verification email шаблон.
+
+**Backend (SSRF hardening claim_verifier — внутри S12, до deploy):**
+
+`backend/app/workers/claim_verifier.py` — добавить fetch-policy перед `httpx.get`:
+
+1. Scheme allowlist: только `https://`. Остальное → reject.
+2. DNS resolve до fetch (`socket.getaddrinfo(host, None)`): любой резолв в private/link-local/loopback/CGNAT/IPv6-ULA → reject. Включая 169.254.169.254.
+3. `follow_redirects=False` + manual redirect handling max 3 hops, per-hop check.
+4. Timeouts: connect=5s, read=10s, total=15s.
+5. Stream чтение через `aiter_bytes`, hard stop на 1 MB.
+6. Content-type allowlist: `text/*`, `application/json`.
+7. Retry budget: 3 попытки с экспоненциальным backoff.
 
 **Frontend:**
-- `AuthPage.tsx`: всё содержимое заменяется на одну форму — email + checkbox terms + кнопка «Прислать ссылку для входа». Никаких табов, кнопок Telegram/Google, password-полей.
-- Удаляются файлы: `TelegramLoginButton.tsx`, `GoogleLoginButton.tsx`, `EmailVerificationBanner.tsx`, `VerifyEmailPage.tsx` (старый), любая страница `RegisterPage.tsx` если есть.
-- `App.tsx`: убираются routes `/auth/register`, `/auth/verify`. Добавляется `/auth/verify-magic-link?token=...`.
-- Новая страница `VerifyMagicLinkPage.tsx`.
-- `AuthContext.tsx`: убираются `login(email, password)`, `register(...)`, `telegramLogin(...)`, `googleLogin(...)`, `verifyEmail(...)`, `resendVerification(...)`. Остаются: `requestMagicLink(email)`, `verifyMagicLink(token)`, `logout()`, `me()`.
+- `AuthPage.tsx` → одна форма email + checkbox terms + кнопка «Прислать ссылку для входа».
+- Новая `VerifyMagicLinkPage.tsx` на `/auth/verify-magic-link`.
+- Удаляются файлы: `TelegramLoginButton`, `GoogleLoginButton`, `EmailVerificationBanner`, `VerifyEmailPage`, `RegisterPage` (если есть).
+- `App.tsx`: убрать `/auth/register`, `/auth/verify`. Добавить `/auth/verify-magic-link`.
+- `AuthContext.tsx`: убрать `login`/`register`/`telegramLogin`/`googleLogin`/`verifyEmail`/`resendVerification`. Оставить `requestMagicLink`, `verifyMagicLink`, `logout`, `me`.
 
 **`/jobs` overflow fix:**
-- Открыть `/jobs` через playwright, найти элемент с `scrollWidth > 1280`, root cause (карточка/сетка/sticky-overflow по [[learning-css-sticky-overflow-ancestor]]), точечный фикс.
+- Playwright open `/jobs`, найти element с `scrollWidth > 1280`, root cause (карточка/grid/sticky-overflow), точечный фикс.
 
 ### Что НЕ меняется
-- MCP-side регистрация employer/candidate через `mcp_register_service.py` — продолжает работать как есть. Возвращает `proof_token` + claim instructions. Claim flow расширяется в Спринте 14.
-- `claim_verifier.py` worker — продолжает работать (доработка SSRF в Спринте 13).
-- `users.id`, `users.email` (unique), `users.created_at` — остаются. Email становится единственным identity-полем.
+- MCP-side регистрация employer/candidate через `mcp_register_service.py` продолжает работать. Расширение claim-flow и token split — в S13.
+- `users.id`, `users.email` (unique), `users.created_at` остаются.
 
 ### Тесты
 - Unit `test_magic_link_atomic_consume_concurrent` — 50 параллельных через `asyncio.gather` → 1 успех, 49 → 410.
-- Unit: TTL, one-time, email normalization, generic success, rate-limit (6-й/21-й → 429), 60-сек cooldown.
-- E2E `test_magic_link_full_flow` — POST → достать token → POST verify → /me 200.
-- Smoke: localhost + prod canary с реальным email Тима.
-- **Не должно остаться** — никаких импортов `password_hash`, `telegram_id`, `verify_email` в коде. Проверка `rg -l "password_hash|telegram_id|verify_email" backend/app/` → пусто (кроме миграции).
+- Unit: TTL, one-time, email normalization, generic success response, rate-limit (6-й/21-й → 429), cooldown 60с.
+- Unit SSRF (10 кейсов): http scheme, localhost, AWS metadata 169.254.169.254, RFC1918, redirect-to-private, redirect chain, timeout 15s, oversized 5MB, binary content-type, accept public https markdown.
+- E2E `test_magic_link_full_flow` — POST magic-link → DB token → POST verify → /me 200.
+- Alembic downgrade test: `alembic downgrade -1 && alembic upgrade head` на пустой БД проходит.
+- **Не должно остаться** — `rg -l "password_hash|telegram_id|verify_email" backend/app/ ` пусто (кроме миграций).
 
-### Готовность
+### Готовность Спринта 12
 - Codex review APPROVED.
-- `git push` → CI deploy → миграция применена → `users` таблица пустая.
-- Тим зашёл magic-link'ом со своего email на проде.
+- Все unit + E2E + alembic downgrade тесты зелёные.
+- pg_dump backup сохранён в `/backup/mcphire-pre-s12-*.sql` на Contabo.
+- `git push` → CI deploy → миграция применена → `users` пустая.
+- Тим зашёл magic-link'ом со своего реального email на проде.
+- `claim_verifier` SSRF-safe (не open для proof_url атак).
+
+### Rollback (DB-aware — Codex round 3 HIGH-3)
+
+| Сценарий | Действие |
+|---|---|
+| Magic-link не работает (smoke fail в течение часа после deploy) | 1) `alembic downgrade -1` на проде. 2) `git revert <merge>` → CI deploy предыдущей версии. 3) Restore users из `pg_dump` если нужно (но у нас 0 реальных юзеров — restore чисто косметика). |
+| SSRF hardening что-то сломало в `claim_verifier` (existing proof_urls перестали верифицироваться) | 1) `git revert` только commit claim_verifier. 2) Если проблема в фетч-policy — quick-fix добавить exception list. 3) DB не трогаем. |
+| Email-провайдер лёг | Cloudflare Bot Challenge или временно `1/час/email`. DB rollback не нужен. |
 
 ---
 
-## Спринт 13 — proof_url SSRF hardening
+## Спринт 13 — Moltbook-style UX (главная + claim page + skill.md + token split + heartbeat/home)
 
-### Что увидит юзер
-Ничего видимого. Под капотом — `claim_verifier.py` становится безопасным перед расширением в Спринте 14.
-
-### Что меняется в коде
-`backend/app/workers/claim_verifier.py` — добавить fetch-policy перед `httpx.get`:
-
-1. **Scheme allowlist:** только `https://`. Остальное (http, file, gopher, ftp, data) → reject.
-2. **DNS resolve до fetch:** `socket.getaddrinfo(host, None)`. Хоть один резолв в private/link-local/loopback/CGNAT/IPv6-ULA → reject. Включая 169.254.169.254 (AWS metadata).
-3. **Redirect handling:** `httpx.AsyncClient(follow_redirects=False)`. На редирект — рекурсивная проверка через ту же policy (max 3 hops). Private IP в цепочке → reject.
-4. **Timeouts:** connect=5s, read=10s, total=15s.
-5. **Response size cap:** stream через `aiter_bytes`, hard stop на 1 MB.
-6. **Content-type allowlist:** только `text/*` и `application/json`.
-7. **Worker retry budget:** 3 попытки, экспоненциальный backoff. Без бесконечных циклов.
-
-### Тесты
-`backend/tests/unit/test_proof_url_ssrf.py` — 10 кейсов: http scheme, localhost, AWS metadata, RFC1918, redirect-to-private, redirect chain, timeout, oversized, binary content-type, accept public https markdown.
-
-### Готовность
-- 10 тестов проходят.
-- Codex security review APPROVED.
-
----
-
-## Спринт 14 — Moltbook UX 1:1 (главная + claim page + skill.md + token split)
+> **Что добавлено по Codex round 3 MEDIUM-1:** `/heartbeat.md` + `/api/v1/home` state-diff endpoint. Это паттерны Moltbook из `MOLTBOOK_LEARNINGS.md` (state-diff на главной, heartbeat для агента, next_suggested_action).
 
 ### Что увидит юзер на проде
-- Главная `mcphire.com` — Moltbook-style: огромный «MCP-first IT job marketplace», под ним 2 кнопки «👤 Я ищу работу» / «🤖 Я агент». Клик — инструкция: «Скажи своему ИИ-агенту: `Read https://mcphire.com/skill.md and register me`». Никакой формы регистрации.
+
+**Для человека (web):**
+- Главная `mcphire.com` — Moltbook-style: огромный «MCP-first IT job marketplace», 2 CTA «👤 Я ищу работу» / «🤖 Я агент». Клик — инструкция «Скажи своему ИИ-агенту: `Read https://mcphire.com/skill.md and register me`». Никакой формы регистрации.
+- `mcphire.com/auth/register` → 301 на `/`.
 - `mcphire.com/skill.md` отдаёт plain markdown для агента.
-- Агент через MCP регистрируется → получает `proof_token` (public marker для proof_url) + `owner_claim_url` (private, secret) → отдаёт человеку только `owner_claim_url`.
-- Человек открывает `mcphire.com/claim/<owner_token>` → форма «Твой агент <name> хочет привязаться к тебе. Введи email» → magic-link → клик → агент привязан (`agent_profiles.user_id` заполнен).
-- Параллельно `claim_verifier` worker делает SSRF-safe проверку `proof_url` на наличие `proof_token`.
+- `mcphire.com/heartbeat.md` отдаёт инструкции для recurring агент-loop.
+
+**Для агента (MCP):**
+- Регистрируется через MCP → получает `proof_token` (public, для proof_url) + `owner_claim_url` (private, разово, для человека).
+- Отдаёт `owner_claim_url` человеку → человек открывает → email → magic-link → claim.
+- `GET /api/v1/home` — единая ручка для агента: state-diff с прошлого heartbeat + `next_suggested_action` (новая вакансия / unread reply / proof_url failed → fix).
 
 ### 🔴 Token split (Codex round 2 CRITICAL-1)
 
-Проблема: текущий `claim_token` (4 байта, public) попадает в gist на GitHub. Если он же = bearer для `/claim/` — любой кто видел gist может перехватить владение.
-
-**Решение:** два отдельных токена.
-
 | Токен | Назначение | Видимость | Энтропия | Хранение |
 |---|---|---|---|---|
-| `proof_token` (rename текущего `claim_token`) | Marker в proof_url. Worker ищет substring в body. | Публичный | 32 бита OK | plain в `agent_profiles.proof_token` |
-| `owner_claim_token` (новый) | Bearer для `/claim/<token>`. Связывает агент с человеком. | Приватный (только в API response) | 256 бит (`secrets.token_urlsafe(32)`) | SHA256 в `agent_profiles.owner_claim_token_hash` |
+| `proof_token` (rename `claim_token`) | Marker в proof_url, worker substring check | публичный | 32 бит OK | plain в `agent_profiles.proof_token` |
+| `owner_claim_token` (новый) | Bearer для `/claim/<token>` | приватный | 256 бит | SHA256 в `agent_profiles.owner_claim_token_hash`, one-time |
 
 Atomic claim:
 ```sql
@@ -131,70 +135,78 @@ SET user_id = $user_id, owner_claim_token_hash = NULL
 WHERE owner_claim_token_hash = $hash AND user_id IS NULL
 RETURNING id
 ```
-0 строк → 410 (already claimed или wrong token).
+0 строк → 410.
 
-**Используем existing колонку `agent_profiles.user_id`** как owner link (HIGH-2 round 2 ушёл сам — мы не вводим `owner_user_id`).
+Owner link — переиспользуем existing `agent_profiles.user_id` (никаких новых колонок).
 
 ### Что меняется в коде
 
 **Backend:**
-- `mcp_register_service.py`: добавить генерацию `owner_claim_token` (256 бит), хранить hash, возвращать raw в response → `owner_claim_url`.
-- Новые роуты:
-  - `GET /v1/agents/by-claim-token/<owner_token>` — возвращает `{agent_name, agent_description, status}`. **Не возвращает api_key, не возвращает proof_token.**
-  - `GET /skill.md` — plain markdown, файл в `backend/static/skill.md`.
-- `consume_magic_link(purpose='claim_owner')`: атомарный UPDATE по `owner_claim_token_hash`.
+- `mcp_register_service.py`: + генерация `owner_claim_token` (256 бит, `secrets.token_urlsafe(32)`), hash в БД, raw в response → `owner_claim_url`. Старое поле `claim_token` rename → `proof_token` (в ответе можно оставить алиас 1 спринт для backward-compat MCP-клиентов).
+- `GET /v1/agents/by-claim-token/<owner_token>` — `{agent_name, agent_description, status}`. **Не возвращает api_key / proof_token.**
+- `GET /skill.md` — plain markdown, файл `backend/static/skill.md`.
+- `GET /heartbeat.md` — plain markdown, инструкция агенту: «Каждые 30 мин делай `GET /api/v1/home`, обрабатывай `next_suggested_action`, отправляй ping `POST /api/v1/heartbeat`».
+- `GET /api/v1/home` — для агента (Bearer api_key): возвращает state-diff с момента `last_seen_at`, поля `{new_jobs: [...], unread_replies: [...], proof_url_status, next_suggested_action: "..."}`.
+- `POST /api/v1/heartbeat` — обновляет `agent_profiles.last_seen_at`.
+- `consume_magic_link(purpose='claim_owner')` — atomic UPDATE по `owner_claim_token_hash`, параллельно триггерит `claim_verifier` для `proof_token`.
 
 **Frontend:**
-- `Hero.tsx`: переписать под 2-CTA Moltbook layout.
-- `App.tsx`: добавить `/claim/:token`.
+- `Hero.tsx` rewrite под 2-CTA Moltbook layout.
+- `App.tsx`: убрать `/auth/register`, добавить `/claim/:token`.
 - Новая `ClaimPage.tsx`.
 
-### Тесты
-- `test_public_proof_token_cannot_claim_ownership` — попытка `/claim/<proof_token>` → 404. Только `owner_claim_token` работает.
-- `test_owner_claim_token_one_time` — второй claim с тем же токеном → 410.
-- E2E `test_moltbook_parity_full` — `POST /candidate/register` → `owner_claim_url` → playwright open → email → magic-link → dashboard показывает агента.
-- Manual: Тим в Claude Desktop говорит «Read mcphire.com/skill.md and register me» → claim → success.
+**nginx:** 301 `/auth/register` → `/`.
 
-### Готовность
+### Тесты
+- `test_public_proof_token_cannot_claim_ownership` — попытка `/claim/<proof_token>` → 404.
+- `test_owner_claim_token_one_time` — второй claim → 410.
+- `test_heartbeat_updates_last_seen` — POST → `last_seen_at` обновлён.
+- `test_home_state_diff` — два запроса с интервалом, между ними новая вакансия → второй запрос отдаёт её в `new_jobs`.
+- E2E `test_moltbook_style_parity_full` — `POST /candidate/register` → `owner_claim_url` → playwright open → email → magic-link → dashboard показывает агента → `GET /home` отдаёт state-diff.
+- Manual: Тим в Claude Desktop — «Read mcphire.com/skill.md and register me» → claim → heartbeat → home → success.
+
+### Готовность Спринта 13
 - Codex review APPROVED.
 - Тим прошёл flow в Claude Desktop без вмешательства.
+- 2 знакомых из Ботаники прошли flow без вмешательства Тима.
 
 ---
 
-## Спринт 15 — не нужен
+## Что НЕ делаем (явные decisions — Codex round 3 HIGH-1 accepted)
 
-Cleanup в Спринте 15 не требуется — всё legacy уже снесено в Спринте 12. Если в Спринтах 12-14 что-то останется временно (например feature flag) — оно дропается в финале того же спринта.
-
----
-
-## Rollback план
-
-### Если magic-link не работает на проде после Спринта 12
-- `git revert <merge_commit>` → push → CI deploy prev-версии (~1 минута).
-- Реальных юзеров нет → терять нечего → можно делать жёсткие rollback'и без церемоний.
-
-### Если magic-link DDoS-ят
-- Cloudflare Bot Challenge на `/v1/auth/magic-link`.
-- Уменьшить лимит до 1/час/email.
-
----
-
-## Codex adversarial findings — addressed (после переоценки на 0 реальных юзеров)
-
-### Round 1 (security)
-| # | Finding | Решение |
+| Moltbook-фича | MCPHire | Обоснование |
 |---|---|---|
-| HIGH-1 | Lock-out Telegram-only юзеров | **Не применимо**: 0 Telegram юзеров на проде. Snosим Telegram OAuth полностью. |
-| HIGH-2 | Magic-link consume не атомарный | Atomic SQL UPDATE + concurrent test. |
-| HIGH-3 | proof_url SSRF | Отдельный Спринт 13 с 10 unit-тестами. |
+| Twitter (X) verification как owner trust boundary | **НЕТ.** Используем `proof_url` (HTTPS GET + substring). | Тим решил 23 мая 2026: Twitter не интегрируем. Это компромисс — Moltbook-style, не Moltbook-1:1. |
+| Math-challenge anti-bot на POST | **НЕТ.** Только slowapi rate-limit. | Достаточно для текущего масштаба (≤ Ботаника). Если SMM-scale потребует — пост-launch. |
+| Spam ratio + engagement velocity scoring | **НЕТ.** | Метрики не работают пока нет реальных агентов на проде. Пост-launch. |
 
-### Round 2 (migration safety — переоценка)
-| # | Finding | Решение |
-|---|---|---|
-| CRITICAL-1 | Public proof token = owner bearer | Token split в Спринте 14: `proof_token` (public, 32-bit) + `owner_claim_token` (private, 256-bit, hashed, one-time). |
-| HIGH-2 | `owner_user_id` нет в схеме | **Не применимо**: переиспользуем existing `agent_profiles.user_id`. Новой колонки нет. |
-| HIGH-3 | Telegram email collision | **Не применимо**: 0 Telegram юзеров. Email-collision сценарий не существует. |
-| HIGH-4 | `/auth/verify` route collision | **Не применимо**: legacy email-verification полностью удаляется в Спринте 12. Magic-link использует новый path `/auth/verify-magic-link` без коллизий. |
+---
+
+## Codex adversarial findings — addressed
+
+### Round 1 (security, 2026-05-23)
+| # | Решение |
+|---|---|
+| HIGH-1 lock-out Telegram users | Не применимо: 0 Telegram юзеров на проде. |
+| HIGH-2 non-atomic consume | Atomic SQL + concurrent test в S12. |
+| HIGH-3 proof_url SSRF | SSRF hardening в S12 (объединён, не S13). |
+
+### Round 2 (migration safety, 2026-05-23)
+| # | Решение |
+|---|---|
+| CRITICAL-1 public proof token = owner bearer | Token split в S13: `proof_token` (public 32-bit) + `owner_claim_token` (private 256-bit hashed one-time). |
+| HIGH-2 owner_user_id schema | Не применимо: используем existing `agent_profiles.user_id`. |
+| HIGH-3 Telegram email collision | Не применимо: 0 Telegram юзеров. |
+| HIGH-4 `/auth/verify` route collision | Не применимо: legacy email-verification сносится целиком. Новый path `/auth/verify-magic-link`. |
+
+### Round 3 (overall package, 2026-05-23)
+| # | Решение |
+|---|---|
+| HIGH-1 не 1:1 Moltbook (нет Twitter) | Goal переименован: «Moltbook-style», не «Moltbook 1:1». Явный disclaimer вверху + блок «Что НЕ делаем». |
+| HIGH-2 conflicting Sprint 12 spec | `SPRINT_12_SPEC.md` удалён из репо (`git rm`). Этот файл — single source of truth. |
+| HIGH-3 rollback не покрывает DB | Добавлен pg_dump backup перед TRUNCATE + alembic `downgrade()` тестируется до push + явный rollback matrix. |
+| HIGH-4 SSRF после proof_url остаётся live | SSRF hardening перенесён из S13 в S12 (внутри одного спринта, до deploy). |
+| MEDIUM-1 нет heartbeat/home | Добавлены `/heartbeat.md` + `GET /api/v1/home` + `POST /api/v1/heartbeat` в S13. |
 
 ---
 
@@ -202,8 +214,9 @@ Cleanup в Спринте 15 не требуется — всё legacy уже с
 
 | Файл | Назначение |
 |---|---|
-| `SPRINT_12_MOLTBOOK_PARITY_PLAN.md` (этот) | Master plan v3 |
+| `SPRINT_12_MOLTBOOK_PARITY_PLAN.md` (этот) | Single source of truth, v4 |
 | `AUTH_FACTSHEET_2026-05-23.md` | Codex proof-check basis |
+| `~/mcphire-mcp/docs/MOLTBOOK_LEARNINGS.md` | Living docs про Moltbook паттерны |
 | `~/.claude/projects/-Users-timofeyzinin/memory/logs/mcphire.md` | Hourly log |
 | `~/.claude/projects/-Users-timofeyzinin/memory/session_handoff.md` | Snapshot |
-| `~/task_data.js` | Карточки 32-35 + новые под Спринты 13/14 |
+| `~/task_data.js` | Карточки 32-37 |
