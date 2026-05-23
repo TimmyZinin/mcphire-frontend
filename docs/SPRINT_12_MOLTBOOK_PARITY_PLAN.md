@@ -25,14 +25,36 @@
 
 ### Что меняется в коде
 
-**БД (pre-migration backup обязательно — Codex round 3 HIGH-3):**
-- **Перед TRUNCATE и DROP:** `pg_dump -h zinin-postgres -U mcphire -d mcphire -t users -t email_verification_tokens > /backup/mcphire-pre-s12-$(date +%Y%m%d-%H%M).sql` (на Contabo).
-- `TRUNCATE users CASCADE` (27 test-rows).
-- Alembic миграция (с тестированной `downgrade()`):
-  - Drop `users.password_hash`, `users.telegram_id`, `users.email_verified`, `users.email_verification_token`, `users.email_verification_sent_at` (и связанные google fields если есть).
-  - Drop таблицу `email_verification_tokens`.
-  - Create таблицу `magic_link_tokens`: `token_hash` (SHA256 unique), `email`, `purpose` ('login' | 'claim_owner'), `agent_profile_id` (NULL для login), `expires_at` (created_at + 15 мин), `consumed_at`, `requested_ip_hash`, `user_agent`.
-- `downgrade()` восстанавливает дропнутые колонки (NULL), пересоздаёт таблицу, drop'ит magic_link_tokens. Тестируется локально `alembic downgrade -1 && alembic upgrade head` до push.
+**БД (data-loss-aware — Codex round 4 CRITICAL-1):**
+
+⚠️ **Зависимые таблицы (verified 23 мая 2026):** `agent_profiles.user_id` имеет FK `ON DELETE CASCADE`. На проде сейчас: 64 agent_profiles + 63 claim_tokens + 40 observed_facts + 7 cv_snapshots + applications. `TRUNCATE users CASCADE` стёр бы **всю агентскую графовую данную** — это data loss seed контента который мы наполняли для демо.
+
+**Безопасная последовательность:**
+
+1. **Полный pg_dump БД** (не выборочный по таблицам) на Contabo:
+   ```bash
+   ssh root@185.202.239.165 'docker exec zinin-postgres pg_dump -U mcphire -d mcphire -Fc > /backup/mcphire-pre-s12-$(date +%Y%m%d-%H%M).dump'
+   ```
+2. **Targeted DELETE (НЕ TRUNCATE)** — конкретные test-юзеры по email pattern:
+   ```sql
+   DELETE FROM users WHERE
+     email IS NULL
+     OR email LIKE '%@example.com'
+     OR email LIKE '%@mcphire.com'      -- seeder fixtures (admin/seeker/employer)
+     OR email LIKE 'test-%'
+     OR email LIKE 'qa-%'
+     OR email LIKE 'sprint%-%'
+     OR email LIKE 'pentest_%'
+     OR email LIKE 'tim.zinin+%@gmail.com';  -- Тимовы SMTP-тесты
+   ```
+   `ON DELETE CASCADE` на `agent_profiles.user_id` сработает корректно — стираются только agent_profiles **этих конкретных** test-юзеров, не все.
+3. **Pre-flight count** — до DELETE: `SELECT email, COUNT(*) FROM users GROUP BY email`. После DELETE: убедиться что осталось 0 (или только реальный email Тима если он там есть).
+4. **Pre-flight count агент-графа** — до DELETE: `SELECT COUNT(*) FROM agent_profiles`. После DELETE: должно остаться 64 - N (где N = agent_profiles привязанные к удаляемым users). Большинство agent_profiles имеют `user_id IS NULL` (awaiting_claim) — они **не пострадают**.
+5. **Alembic миграция** (после DELETE):
+   - Drop `users.password_hash`, `users.telegram_id`, `users.email_verified`, `users.email_verification_token`, `users.email_verification_sent_at` (+ google_id если есть — проверить по `\d users`).
+   - Drop таблицу `email_verification_tokens`.
+   - Create таблицу `magic_link_tokens`: `token_hash` (SHA256 unique), `email`, `purpose` ('login' | 'claim_owner'), `agent_profile_id` (NULL для login), `expires_at`, `consumed_at`, `requested_ip_hash`, `user_agent`.
+6. **`downgrade()`** восстанавливает дропнутые колонки (как NULL), пересоздаёт таблицу `email_verification_tokens`, drop'ит `magic_link_tokens`. Тестируется локально на копии БД: `alembic downgrade -1 && alembic upgrade head`. Данные DELETE не восстанавливаются downgrade'ом — только restore из pg_dump.
 
 **Backend (auth):**
 - Роуты: `POST /v1/auth/magic-link`, `POST /v1/auth/verify-magic-link`.
@@ -54,15 +76,22 @@
 
 **Backend (SSRF hardening claim_verifier — внутри S12, до deploy):**
 
-`backend/app/workers/claim_verifier.py` — добавить fetch-policy перед `httpx.get`:
+⚠️ **DNS-rebinding защита обязательна** (Codex round 4 HIGH-2). Простой `socket.getaddrinfo` ДО `httpx.get` недостаточен — между preflight resolve и реальным connect атакующий DNS-сервер может вернуть private IP. Защита через **IP-pinning**.
 
-1. Scheme allowlist: только `https://`. Остальное → reject.
-2. DNS resolve до fetch (`socket.getaddrinfo(host, None)`): любой резолв в private/link-local/loopback/CGNAT/IPv6-ULA → reject. Включая 169.254.169.254.
-3. `follow_redirects=False` + manual redirect handling max 3 hops, per-hop check.
-4. Timeouts: connect=5s, read=10s, total=15s.
-5. Stream чтение через `aiter_bytes`, hard stop на 1 MB.
-6. Content-type allowlist: `text/*`, `application/json`.
-7. Retry budget: 3 попытки с экспоненциальным backoff.
+`backend/app/workers/claim_verifier.py` — fetch-policy:
+
+1. **Scheme allowlist:** только `https://`. Остальное (http, file, gopher, ftp, data) → reject.
+2. **Pre-flight DNS resolve + IP-pin:** `socket.getaddrinfo(host, 443, AF_UNSPEC)`. Все возвращённые IP проверяются на private/link-local/loopback/CGNAT/IPv6-ULA (включая 169.254.169.254 AWS metadata). Хоть один в denylist → reject.
+3. **Pin connected IP:** httpx настраивается с кастомным `httpx.AsyncHTTPTransport(local_address=...)` + кастомный resolver через `httpx._transports.default.AsyncHTTPTransport` с явной передачей **vetted IP** вместо hostname. Альтернативно — `aiohttp.AsyncResolver` с заменой на `MockResolver` который возвращает только vetted IP. SNI остаётся = original hostname (для TLS).
+4. **Validate peer per hop:** после connect — `socket.getpeername()`, если peer IP не в vetted list (могло быть из-за race) → abort connection.
+5. **`follow_redirects=False`** + manual redirect handling max 3 hops, **каждый редирект** проходит шаги 1-4 заново.
+6. **`trust_env=False`** — отключаем env-proxies (HTTP_PROXY/HTTPS_PROXY), чтобы атакующий не мог через переменные окружения перенаправить трафик.
+7. **Timeouts:** connect=5s, read=10s, total=15s.
+8. **Stream чтение** через `aiter_bytes`, hard stop на 1 MB.
+9. **Content-type allowlist:** `text/*`, `application/json`.
+10. **Retry budget:** 3 попытки, экспоненциальный backoff.
+
+**Реализация:** обёртка `SafeFetcher.get(url) → text` в новом модуле `backend/app/utils/safe_fetcher.py`. Использует `httpx.AsyncClient(verify=True, trust_env=False)` + custom transport. Documented + unit-tested. `claim_verifier.py:47-53` заменяет `httpx.get` на `SafeFetcher.get`.
 
 **Frontend:**
 - `AuthPage.tsx` → одна форма email + checkbox terms + кнопка «Прислать ссылку для входа».
@@ -81,7 +110,7 @@
 ### Тесты
 - Unit `test_magic_link_atomic_consume_concurrent` — 50 параллельных через `asyncio.gather` → 1 успех, 49 → 410.
 - Unit: TTL, one-time, email normalization, generic success response, rate-limit (6-й/21-й → 429), cooldown 60с.
-- Unit SSRF (10 кейсов): http scheme, localhost, AWS metadata 169.254.169.254, RFC1918, redirect-to-private, redirect chain, timeout 15s, oversized 5MB, binary content-type, accept public https markdown.
+- Unit SSRF (12 кейсов): http scheme, localhost, AWS metadata 169.254.169.254, RFC1918, redirect-to-private, redirect chain, timeout 15s, oversized 5MB, binary content-type, accept public https markdown, **DNS-rebinding attack** (preflight resolve = public, connect-time resolve = private — должен reject через IP-pin), **env-proxy bypass** (export HTTP_PROXY=evil → должно игнориться).
 - E2E `test_magic_link_full_flow` — POST magic-link → DB token → POST verify → /me 200.
 - Alembic downgrade test: `alembic downgrade -1 && alembic upgrade head` на пустой БД проходит.
 - **Не должно остаться** — `rg -l "password_hash|telegram_id|verify_email" backend/app/ ` пусто (кроме миграций).
@@ -121,14 +150,48 @@
 - Отдаёт `owner_claim_url` человеку → человек открывает → email → magic-link → claim.
 - `GET /api/v1/home` — единая ручка для агента: state-diff с прошлого heartbeat + `next_suggested_action` (новая вакансия / unread reply / proof_url failed → fix).
 
-### 🔴 Token split (Codex round 2 CRITICAL-1)
+### 🔴 Token split — DB contract (Codex round 2 CRITICAL-1 + round 4 HIGH-3)
 
-| Токен | Назначение | Видимость | Энтропия | Хранение |
+**Существующая схема на проде:** `agent_profiles` имеет `session_token UUID UNIQUE NOT NULL` (это и есть текущий «api_key» для агента — Bearer для всех его запросов). Отдельная таблица `claim_tokens` (63 рядов) хранит публичный `claim_token` который агент кладёт в `proof_url`.
+
+**Целевая схема:**
+
+| Поле / таблица | Назначение | Видимость | Энтропия | Хранение |
 |---|---|---|---|---|
-| `proof_token` (rename `claim_token`) | Marker в proof_url, worker substring check | публичный | 32 бит OK | plain в `agent_profiles.proof_token` |
-| `owner_claim_token` (новый) | Bearer для `/claim/<token>` | приватный | 256 бит | SHA256 в `agent_profiles.owner_claim_token_hash`, one-time |
+| `agent_profiles.session_token` (existing, **остаётся**) | Bearer для всех агент-ручек (`/home`, `/heartbeat`, и т.д.) | приватный (Bearer) | UUID v4 (122 бит) — OK | plain UUID |
+| `agent_profiles.proof_token` (новая колонка, mirror existing `claim_tokens.claim_token`) | Marker в proof_url, worker substring | публичный | 32 бит OK | plain TEXT |
+| `agent_profiles.owner_claim_token_hash` (новая колонка) | Bearer для `/claim/<token>` (one-time) | приватный | 256 бит raw, hashed в БД | `CHAR(64)` (SHA256 hex), `UNIQUE NULL` |
 
-Atomic claim:
+**Унификация терминологии в плане:** везде где было «api_key» — читать как `session_token` (existing field, не переименовываем).
+
+**Alembic миграция S13:**
+```python
+def upgrade():
+    op.add_column('agent_profiles',
+        sa.Column('proof_token', sa.Text(), nullable=True))
+    op.add_column('agent_profiles',
+        sa.Column('owner_claim_token_hash', sa.CHAR(64), nullable=True))
+    op.create_index('ix_agent_profiles_owner_claim_token_hash',
+        'agent_profiles', ['owner_claim_token_hash'], unique=True)
+    # Backfill: копируем claim_tokens.claim_token → agent_profiles.proof_token
+    op.execute("""
+        UPDATE agent_profiles ap
+        SET proof_token = ct.claim_token
+        FROM claim_tokens ct
+        WHERE ct.agent_profile_id = ap.id
+    """)
+    # owner_claim_token_hash остаётся NULL для existing profiles
+    # (старые агенты не имеют claim-flow — их proof_url уже верифицирован)
+
+def downgrade():
+    op.drop_index('ix_agent_profiles_owner_claim_token_hash', 'agent_profiles')
+    op.drop_column('agent_profiles', 'owner_claim_token_hash')
+    op.drop_column('agent_profiles', 'proof_token')
+```
+
+**Решение по `claim_tokens` таблице:** оставляем как есть для backward-compat существующего `claim_verifier` worker'а. После S13 deploy + smoke OK — в Sprint 14 (опц.) дропаем `claim_tokens` table если она больше не используется. До тех пор — двойное хранение `proof_token` (в agent_profiles + в claim_tokens) допустимо.
+
+**Atomic owner claim:**
 ```sql
 UPDATE agent_profiles
 SET user_id = $user_id, owner_claim_token_hash = NULL
@@ -137,7 +200,7 @@ RETURNING id
 ```
 0 строк → 410.
 
-Owner link — переиспользуем existing `agent_profiles.user_id` (никаких новых колонок).
+Owner link — переиспользуем existing `agent_profiles.user_id` (никаких новых FK-колонок).
 
 ### Что меняется в коде
 
@@ -145,9 +208,22 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 - `mcp_register_service.py`: + генерация `owner_claim_token` (256 бит, `secrets.token_urlsafe(32)`), hash в БД, raw в response → `owner_claim_url`. Старое поле `claim_token` rename → `proof_token` (в ответе можно оставить алиас 1 спринт для backward-compat MCP-клиентов).
 - `GET /v1/agents/by-claim-token/<owner_token>` — `{agent_name, agent_description, status}`. **Не возвращает api_key / proof_token.**
 - `GET /skill.md` — plain markdown, файл `backend/static/skill.md`.
-- `GET /heartbeat.md` — plain markdown, инструкция агенту: «Каждые 30 мин делай `GET /api/v1/home`, обрабатывай `next_suggested_action`, отправляй ping `POST /api/v1/heartbeat`».
-- `GET /api/v1/home` — для агента (Bearer api_key): возвращает state-diff с момента `last_seen_at`, поля `{new_jobs: [...], unread_replies: [...], proof_url_status, next_suggested_action: "..."}`.
-- `POST /api/v1/heartbeat` — обновляет `agent_profiles.last_seen_at`.
+- `GET /heartbeat.md` — plain markdown, инструкция агенту: «Каждые 30 мин делай `GET /api/v1/home`, обрабатывай `next_suggested_action`, **ack курсор через** `POST /api/v1/heartbeat {cursor_as_of}`».
+- `GET /api/v1/home` — для агента (Bearer `session_token` — existing field): state-diff с момента `last_home_checked_at`. **Cursor-based** (Codex round 4 MEDIUM-1 fix):
+  - Возвращает `{cursor_as_of: <ISO8601>, new_jobs: [...], unread_replies: [...], proof_url_status, next_suggested_action: "..."}`.
+  - `cursor_as_of = NOW()` фиксируется **в начале** транзакции, query фильтрует `created_at <= cursor_as_of AND created_at > last_home_checked_at`. Это garantee что между read и ack ничего не потеряется.
+  - `last_home_checked_at` НЕ обновляется в `/home` — только в `/heartbeat` после явного ack от агента.
+- `POST /api/v1/heartbeat {cursor_as_of}` — атомарный UPDATE:
+  ```sql
+  UPDATE agent_profiles
+  SET last_seen_at = NOW(),
+      last_home_checked_at = $cursor_as_of
+  WHERE id = $agent_id
+    AND ($cursor_as_of >= last_home_checked_at OR last_home_checked_at IS NULL)
+  RETURNING id
+  ```
+  0 строк → 409 (агент шлёт stale cursor — игнорируем, но возвращаем ошибку чтобы он перечитал /home).
+- Новая колонка миграция: `ALTER TABLE agent_profiles ADD COLUMN last_home_checked_at TIMESTAMPTZ NULL`.
 - `consume_magic_link(purpose='claim_owner')` — atomic UPDATE по `owner_claim_token_hash`, параллельно триггерит `claim_verifier` для `proof_token`.
 
 **Frontend:**
@@ -160,8 +236,10 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 ### Тесты
 - `test_public_proof_token_cannot_claim_ownership` — попытка `/claim/<proof_token>` → 404.
 - `test_owner_claim_token_one_time` — второй claim → 410.
-- `test_heartbeat_updates_last_seen` — POST → `last_seen_at` обновлён.
+- `test_heartbeat_updates_last_seen` — POST с валидным cursor → `last_seen_at` + `last_home_checked_at` обновлены.
+- `test_heartbeat_stale_cursor_rejected` — POST с cursor старше existing `last_home_checked_at` → 409.
 - `test_home_state_diff` — два запроса с интервалом, между ними новая вакансия → второй запрос отдаёт её в `new_jobs`.
+- `test_home_no_event_loss_under_race` — между `/home` query и heartbeat ack создаётся новая вакансия → она появляется в **следующем** `/home` (не теряется). Симулируется через async race в pytest.
 - E2E `test_moltbook_style_parity_full` — `POST /candidate/register` → `owner_claim_url` → playwright open → email → magic-link → dashboard показывает агента → `GET /home` отдаёт state-diff.
 - Manual: Тим в Claude Desktop — «Read mcphire.com/skill.md and register me» → claim → heartbeat → home → success.
 
@@ -198,6 +276,14 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 | HIGH-2 owner_user_id schema | Не применимо: используем existing `agent_profiles.user_id`. |
 | HIGH-3 Telegram email collision | Не применимо: 0 Telegram юзеров. |
 | HIGH-4 `/auth/verify` route collision | Не применимо: legacy email-verification сносится целиком. Новый path `/auth/verify-magic-link`. |
+
+### Round 4 (data-loss + DNS-rebinding + schema contract, 2026-05-23)
+| # | Решение |
+|---|---|
+| CRITICAL-1 TRUNCATE users CASCADE стёр бы agent_profiles+claim_tokens+observed_facts+cv_snapshots | Заменено на **targeted DELETE** по email pattern (только test fixtures). Полный pg_dump БД (не выборочный) перед DELETE. Pre-flight counts. `ON DELETE CASCADE` сработает только на test-agent_profiles, не на seeded awaiting_claim профили. |
+| HIGH-2 DNS-rebinding в SSRF | IP-pinning: после `getaddrinfo` подменяем resolver на vetted-IP-only. `socket.getpeername()` после connect для проверки. `trust_env=False`. 2 новых теста: DNS-rebinding + env-proxy bypass. |
+| HIGH-3 Token split без alembic + api_key vs session_token | Унифицировано: используем **existing `agent_profiles.session_token`** (не вводим api_key). Явная alembic upgrade/downgrade в S13 для `proof_token` + `owner_claim_token_hash` колонок + backfill из `claim_tokens`. Старая `claim_tokens` таблица остаётся 1 спринт для backward-compat. |
+| MEDIUM-1 home/heartbeat race | Cursor-based ack: `/home` возвращает `cursor_as_of` (NOW() в начале txn), `/heartbeat {cursor_as_of}` атомарно обновляет `last_home_checked_at`. Stale cursor → 409. Тест `test_home_no_event_loss_under_race`. |
 
 ### Round 3 (overall package, 2026-05-23)
 | # | Решение |
