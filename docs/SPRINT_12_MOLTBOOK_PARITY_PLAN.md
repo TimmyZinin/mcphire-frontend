@@ -35,49 +35,91 @@
    ```bash
    ssh root@185.202.239.165 'docker exec zinin-postgres pg_dump -U mcphire -d mcphire -Fc > /backup/mcphire-pre-s12-$(date +%Y%m%d-%H%M).dump'
    ```
-2. **Targeted DELETE — transactional с auto-rollback на mismatch** (Codex round 5 MEDIUM-2):
+2. **Targeted DELETE — enforced guard через PL/pgSQL DO block** (Codex round 5 MEDIUM-2 + round 6 MEDIUM-1):
+
+   ⚠️ **Schema verified 23 мая 2026**, FK references к `users`:
+   - `agent_profiles.user_id` → `ON DELETE CASCADE` (ok, cascade сам сработает).
+   - `applications.user_id` → `NO ACTION` (DELETE упадёт с FK violation если есть applications).
+   - `saved_jobs.user_id` → `NO ACTION` (DELETE упадёт).
+   - `jobs.created_by` → `NO ACTION` (DELETE упадёт если есть jobs).
+
+   Текущее состояние прода: 0 jobs.created_by NOT NULL, 9 applications (8 от NULL-email + 1 от komova.xiu@yandex.ru), 1 saved_jobs. **Без явного очищения дочерних таблиц DELETE FROM users упадёт.**
+
    ```sql
-   BEGIN;
+   DO $$
+   DECLARE
+     expected_users_max INT := 27;
+     expected_agent_profiles_max INT := 5;
+     expected_applications_max INT := 9;
+     expected_saved_jobs_max INT := 1;
+     actual_users INT;
+     actual_agent_profiles INT;
+     actual_applications INT;
+     actual_saved_jobs INT;
+     to_delete_ids UUID[];
+   BEGIN
+     -- 1. Lock target rows under FOR UPDATE — фиксируем set, защита от concurrent insert
+     SELECT array_agg(id) INTO to_delete_ids FROM (
+       SELECT id FROM users
+       WHERE (
+         email IS NULL
+         OR email LIKE '%@example.com'
+         OR email LIKE '%@mcphire.com'
+         OR email LIKE 'test-%'
+         OR email LIKE 'qa-%'
+         OR email LIKE 'sprint%-%'
+         OR email LIKE 'pentest_%'
+         OR email LIKE 'tim.zinin+%@gmail.com'
+       )
+       FOR UPDATE
+     ) sub;
 
-   -- Preflight: точные строки которые будут удалены + cascade impact
-   WITH to_delete AS (
-     SELECT id, email FROM users
-     WHERE email IS NULL
-        OR email LIKE '%@example.com'
-        OR email LIKE '%@mcphire.com'        -- seeder fixtures
-        OR email LIKE 'test-%'
-        OR email LIKE 'qa-%'
-        OR email LIKE 'sprint%-%'
-        OR email LIKE 'pentest_%'
-        OR email LIKE 'tim.zinin+%@gmail.com' -- SMTP-тесты Тима
-   )
-   SELECT
-     (SELECT COUNT(*) FROM to_delete) AS user_delete_count,
-     (SELECT array_agg(email ORDER BY email) FROM to_delete) AS deleted_emails,
-     (SELECT COUNT(*) FROM agent_profiles
-        WHERE user_id IN (SELECT id FROM to_delete)) AS cascade_agent_profiles,
-     (SELECT COUNT(*) FROM applications
-        WHERE agent_profile_id IN
-          (SELECT id FROM agent_profiles
-           WHERE user_id IN (SELECT id FROM to_delete))) AS cascade_applications;
-   -- Expected (verified 23 мая): user_delete_count ≤ 27, cascade_agent_profiles ≤ 5,
-   -- cascade_applications ≤ 0 (test users никогда не подавали applications)
-   --
-   -- ⛔ Если фактические числа > expected — ROLLBACK немедленно и пересмотреть predicate.
+     -- 2. Count exact cascade impact
+     actual_users := COALESCE(array_length(to_delete_ids, 1), 0);
+     SELECT COUNT(*) INTO actual_agent_profiles
+       FROM agent_profiles WHERE user_id = ANY(to_delete_ids);
+     SELECT COUNT(*) INTO actual_applications
+       FROM applications WHERE user_id = ANY(to_delete_ids);
+     SELECT COUNT(*) INTO actual_saved_jobs
+       FROM saved_jobs WHERE user_id = ANY(to_delete_ids);
 
-   -- Реальный DELETE с RETURNING для verification
-   DELETE FROM users WHERE
-     email IS NULL OR email LIKE '%@example.com' OR email LIKE '%@mcphire.com'
-     OR email LIKE 'test-%' OR email LIKE 'qa-%' OR email LIKE 'sprint%-%'
-     OR email LIKE 'pentest_%' OR email LIKE 'tim.zinin+%@gmail.com'
-   RETURNING id, email;
-   -- Сравнить вывод с preflight `deleted_emails` (должны совпасть полностью).
-   -- Mismatch → ROLLBACK.
+     RAISE NOTICE 'Preflight: users=%, agent_profiles=%, applications=%, saved_jobs=%',
+       actual_users, actual_agent_profiles, actual_applications, actual_saved_jobs;
 
-   COMMIT;
+     -- 3. Bounds enforcement — если что-то выше expected, AbortMission
+     IF actual_users > expected_users_max THEN
+       RAISE EXCEPTION 'Aborted: users count % > expected %', actual_users, expected_users_max;
+     END IF;
+     IF actual_agent_profiles > expected_agent_profiles_max THEN
+       RAISE EXCEPTION 'Aborted: agent_profiles count % > expected %',
+         actual_agent_profiles, expected_agent_profiles_max;
+     END IF;
+     IF actual_applications > expected_applications_max THEN
+       RAISE EXCEPTION 'Aborted: applications count % > expected %',
+         actual_applications, expected_applications_max;
+     END IF;
+     IF actual_saved_jobs > expected_saved_jobs_max THEN
+       RAISE EXCEPTION 'Aborted: saved_jobs count % > expected %',
+         actual_saved_jobs, expected_saved_jobs_max;
+     END IF;
+
+     -- 4. Очистка дочерних таблиц без CASCADE (по locked id set)
+     DELETE FROM applications WHERE user_id = ANY(to_delete_ids);
+     DELETE FROM saved_jobs WHERE user_id = ANY(to_delete_ids);
+     -- jobs.created_by — на проде 0 rows, но защищаемся:
+     UPDATE jobs SET created_by = NULL WHERE created_by = ANY(to_delete_ids);
+
+     -- 5. Финальный DELETE users (agent_profiles каскадно)
+     DELETE FROM users WHERE id = ANY(to_delete_ids);
+
+     RAISE NOTICE 'Cleanup complete: % users deleted', actual_users;
+   END $$;
    ```
-3. **Post-check** (вне транзакции): `SELECT COUNT(*) FROM users` (≤ 1 — только реальный email Тима если есть) + `SELECT COUNT(*) FROM agent_profiles WHERE user_id IS NULL` (большинство awaiting_claim — не пострадали).
-4. **Tim's actual email** (`timzinin@gmai.com` typo + `tim.zinin@gmail.com`) — присутствие в `users` после DELETE не критично, magic-link login заработает на них.
+
+   Запускается **внутри транзакции**: `BEGIN; DO $$ ... $$; COMMIT;`. Любой `RAISE EXCEPTION` откатывает всё. Безопаснее обычного SQL preflight.
+
+3. **Post-check** (вне транзакции): `SELECT COUNT(*) FROM users` (≤1 — только реальный email Тима если есть) + `SELECT COUNT(*) FROM agent_profiles WHERE user_id IS NULL` (awaiting_claim — не пострадали).
+4. **Tim's email** (`timzinin@gmai.com` typo + `tim.zinin@gmail.com`) — в predicate **не попадают**, остаются. Magic-link login заработает на них.
 5. **Alembic миграция** (после DELETE):
    - Drop `users.password_hash`, `users.telegram_id`, `users.email_verified`, `users.email_verification_token`, `users.email_verification_sent_at` (+ google_id если есть — проверить по `\d users`).
    - Drop таблицу `email_verification_tokens`.
@@ -102,57 +144,138 @@
   - В `auth_service.py`: `authenticate`, `register_user`, `telegram_login`, `google_login`.
   - Email-verification email шаблон.
 
-**Backend (SSRF hardening claim_verifier — внутри S12, до deploy):**
+**Backend (SSRF hardening claim_verifier — aiohttp-based, end-to-end):**
 
-⚠️ **DNS-rebinding защита обязательна** (Codex round 4 HIGH-2). Простой `socket.getaddrinfo` ДО `httpx.get` недостаточен — между preflight resolve и реальным connect атакующий DNS-сервер может вернуть private IP. Защита через **IP-pinning**.
+⚠️ **DNS-rebinding защита через IP-pinning + custom resolver** (Codex round 4 HIGH-2, round 5 HIGH-2, round 6 HIGH-2).
 
-`backend/app/workers/claim_verifier.py` — fetch-policy:
+**Зависимость:** добавить `aiohttp>=3.9` в `backend/requirements.txt`. httpx (текущий) **не используется** для outbound proof_url fetch — его API не позволяет cleanly pin remote IP с сохранением SNI.
 
-1. **Scheme allowlist:** только `https://`. Остальное (http, file, gopher, ftp, data) → reject.
-2. **Pre-flight DNS resolve + IP-pin:** `socket.getaddrinfo(host, 443, AF_UNSPEC)`. Все возвращённые IP проверяются на private/link-local/loopback/CGNAT/IPv6-ULA (включая 169.254.169.254 AWS metadata). Хоть один в denylist → reject.
-3. **Pin connected IP (shippable implementation):**
-   - Добавить `aiohttp` в `backend/requirements.txt` (httpx без monkey-patch не даёт connect к vetted IP с original SNI).
-   - Класс `VettedIPResolver(aiohttp.abc.AbstractResolver)`:
-     ```python
-     class VettedIPResolver(AbstractResolver):
-         def __init__(self, allowlist: set[str]):
-             self._allowlist = allowlist  # IPs verified via getaddrinfo + denylist check
-         async def resolve(self, host, port=0, family=socket.AF_INET):
-             if host in self._allowlist:
-                 return [{'hostname': host, 'host': host, 'port': port,
-                          'family': family, 'proto': 0, 'flags': 0}]
-             # Защита от DNS-rebinding: aiohttp при connect ещё раз запросит resolve.
-             # Если host в allowlist — возвращаем сам IP. Иначе reject.
-             raise OSError(f"DNS rebinding attempt: {host}")
-     ```
-   - Использование:
-     ```python
-     # 1. getaddrinfo → all IPs, проверка denylist (см. шаг 2 выше)
-     vetted_ips = [...]
-     # 2. URL rewrite: hostname → vetted IP, Host header сохраняется
-     parsed = urlparse(proof_url)
-     ip_url = parsed._replace(netloc=f"{vetted_ips[0]}:{parsed.port or 443}").geturl()
-     # 3. SSL context with original hostname for SNI
-     ssl_ctx = ssl.create_default_context()
-     # 4. aiohttp с VettedIPResolver
-     connector = aiohttp.TCPConnector(resolver=VettedIPResolver({vetted_ips[0]}),
-                                       ssl=ssl_ctx)
-     async with aiohttp.ClientSession(connector=connector, trust_env=False) as session:
-         async with session.get(ip_url,
-                                headers={"Host": parsed.hostname},
-                                server_hostname=parsed.hostname,  # SNI
-                                timeout=aiohttp.ClientTimeout(connect=5, total=15)) as r:
-             ...
-     ```
-4. **Validate peer per hop:** после connect — `transport.get_extra_info('peername')` (aiohttp), если peer IP не в vetted_ips → abort connection.
-5. **`follow_redirects=False`** + manual redirect handling max 3 hops, **каждый редирект** проходит шаги 1-4 заново.
-6. **`trust_env=False`** — отключаем env-proxies (HTTP_PROXY/HTTPS_PROXY), чтобы атакующий не мог через переменные окружения перенаправить трафик.
-7. **Timeouts:** connect=5s, read=10s, total=15s.
-8. **Stream чтение** через `aiter_bytes`, hard stop на 1 MB.
-9. **Content-type allowlist:** `text/*`, `application/json`.
-10. **Retry budget:** 3 попытки, экспоненциальный backoff.
+**Новый модуль** `backend/app/utils/safe_fetcher.py` — `async def safe_fetch(url: str) -> str`:
 
-**Реализация:** обёртка `SafeFetcher.get(url) → text` в новом модуле `backend/app/utils/safe_fetcher.py`. Использует `httpx.AsyncClient(verify=True, trust_env=False)` + custom transport. Documented + unit-tested. `claim_verifier.py:47-53` заменяет `httpx.get` на `SafeFetcher.get`.
+```python
+import socket
+import ssl
+import ipaddress
+import aiohttp
+from aiohttp.abc import AbstractResolver
+from urllib.parse import urlparse
+
+PRIVATE_NETS = [
+    ipaddress.ip_network('10.0.0.0/8'),
+    ipaddress.ip_network('172.16.0.0/12'),
+    ipaddress.ip_network('192.168.0.0/16'),
+    ipaddress.ip_network('127.0.0.0/8'),       # loopback
+    ipaddress.ip_network('169.254.0.0/16'),    # link-local + AWS metadata
+    ipaddress.ip_network('100.64.0.0/10'),     # CGNAT
+    ipaddress.ip_network('0.0.0.0/8'),
+    ipaddress.ip_network('::1/128'),           # IPv6 loopback
+    ipaddress.ip_network('fc00::/7'),          # IPv6 ULA
+    ipaddress.ip_network('fe80::/10'),         # IPv6 link-local
+]
+
+def _is_private(ip_str: str) -> bool:
+    ip = ipaddress.ip_address(ip_str)
+    return any(ip in net for net in PRIVATE_NETS)
+
+
+class VettedIPResolver(AbstractResolver):
+    """aiohttp resolver that only returns pre-vetted IPs.
+       Защита от DNS-rebinding: при втором resolve во время connect
+       возвращает тот же vetted IP, не подвержен повторному запросу."""
+    def __init__(self, hostname: str, vetted_ip: str, port: int):
+        self._hostname = hostname
+        self._vetted_ip = vetted_ip
+        self._port = port
+
+    async def resolve(self, host, port=0, family=socket.AF_INET):
+        if host != self._hostname:
+            raise OSError(f"DNS rebinding blocked: unexpected host {host}")
+        family = socket.AF_INET6 if ':' in self._vetted_ip else socket.AF_INET
+        return [{
+            'hostname': self._hostname,
+            'host': self._vetted_ip,   # ← IP, not hostname
+            'port': port or self._port,
+            'family': family,
+            'proto': 0,
+            'flags': 0,
+        }]
+
+    async def close(self):
+        pass
+
+
+async def safe_fetch(url: str, max_redirects: int = 3,
+                     max_bytes: int = 1024 * 1024) -> str:
+    """SSRF-safe HTTP GET. Returns decoded text or raises SafeFetchError."""
+    for hop in range(max_redirects + 1):
+        parsed = urlparse(url)
+
+        # 1. Scheme allowlist
+        if parsed.scheme != 'https':
+            raise SafeFetchError(f"non-https scheme: {parsed.scheme}")
+
+        # 2. Resolve + denylist check
+        port = parsed.port or 443
+        infos = socket.getaddrinfo(parsed.hostname, port,
+                                    type=socket.SOCK_STREAM)
+        ips = list({info[4][0] for info in infos})
+        for ip in ips:
+            if _is_private(ip):
+                raise SafeFetchError(f"private IP resolved: {ip}")
+        vetted_ip = ips[0]
+
+        # 3. aiohttp с VettedIPResolver — connect to vetted IP, SNI = original hostname
+        resolver = VettedIPResolver(parsed.hostname, vetted_ip, port)
+        connector = aiohttp.TCPConnector(
+            resolver=resolver,
+            ssl=ssl.create_default_context(),
+            family=socket.AF_UNSPEC,
+            use_dns_cache=False,        # каждый раз через VettedIPResolver
+        )
+        timeout = aiohttp.ClientTimeout(connect=5, sock_read=10, total=15)
+        async with aiohttp.ClientSession(connector=connector,
+                                         trust_env=False,   # ← no env proxies
+                                         timeout=timeout) as session:
+            async with session.get(url, allow_redirects=False) as resp:
+                # 4. Validate peer matches vetted_ip
+                peer = resp.connection.transport.get_extra_info('peername')
+                if peer and peer[0] != vetted_ip:
+                    raise SafeFetchError(
+                        f"peer IP {peer[0]} != vetted {vetted_ip}")
+
+                # 5. Manual redirect handling
+                if resp.status in (301, 302, 303, 307, 308):
+                    if hop >= max_redirects:
+                        raise SafeFetchError("too many redirects")
+                    url = resp.headers.get('Location', '')
+                    if not url:
+                        raise SafeFetchError("redirect without Location")
+                    break  # next iteration
+
+                # 6. Content-type allowlist
+                ct = resp.headers.get('Content-Type', '').lower()
+                if not (ct.startswith('text/') or
+                        ct.startswith('application/json')):
+                    raise SafeFetchError(f"bad content-type: {ct}")
+
+                # 7. Stream read with size cap
+                chunks = []
+                total = 0
+                async for chunk in resp.content.iter_chunked(8192):
+                    total += len(chunk)
+                    if total > max_bytes:
+                        raise SafeFetchError(f"response > {max_bytes} bytes")
+                    chunks.append(chunk)
+
+                body = b''.join(chunks)
+                encoding = resp.charset or 'utf-8'
+                return body.decode(encoding, errors='replace')
+    raise SafeFetchError("redirect loop")
+```
+
+**`claim_verifier.py:47-53`** заменяет `httpx.get(proof_url, follow_redirects=True)` на `safe_fetch(proof_url)`. Сохраняется substring check логика.
+
+**Retry budget:** оборачивается в `tenacity.retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=2, max=30))`.
 
 **Frontend:**
 - `AuthPage.tsx` → одна форма email + checkbox terms + кнопка «Прислать ссылку для входа».
@@ -271,13 +394,19 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 - `GET /v1/agents/by-claim-token/<owner_token>` — `{agent_name, agent_description, status}`. **Не возвращает api_key / proof_token.**
 - `GET /skill.md` — plain markdown, файл `backend/static/skill.md`.
 - `GET /heartbeat.md` — plain markdown, инструкция агенту: «Каждые 30 мин делай `GET /api/v1/home`, обрабатывай `next_suggested_action`, **ack курсор через** `POST /api/v1/heartbeat {cursor_as_of}`».
-- `GET /api/v1/home` — для агента (Bearer `session_token` — existing field): state-diff с момента `last_home_checked_at`. **Server-issued cursor** (Codex round 4 MEDIUM-1 + round 5 MEDIUM-1 fix):
-  - В **одной транзакции**:
-    1. `SELECT NOW()` → `cursor_as_of`.
-    2. Query: `created_at <= cursor_as_of AND created_at > COALESCE(last_home_checked_at, '-infinity')`.
-    3. `UPDATE agent_profiles SET pending_home_cursor = cursor_as_of WHERE id = $agent_id` (server-side state).
-  - Возвращает `{new_jobs, unread_replies, proof_url_status, next_suggested_action}`. **Cursor не возвращается клиенту** — он server-side, агент не может его подделать.
-- `POST /api/v1/heartbeat` (без body — никаких client-supplied cursors, Codex round 5 MEDIUM-1):
+- `GET /api/v1/home` — для агента (Bearer `session_token` — existing field): state-diff. **Idempotent + server-issued cursor** (Codex round 4 MEDIUM-1 + round 5 MEDIUM-1 + round 6 HIGH-1 fixes):
+  - В **одной транзакции** под `SELECT FOR UPDATE` на agent_profiles row:
+    ```sql
+    SELECT pending_home_cursor, last_home_checked_at
+    FROM agent_profiles
+    WHERE id = $agent_id FOR UPDATE;
+    ```
+  - Логика:
+    - Если `pending_home_cursor IS NOT NULL` → **переиспользуем** его (single-flight). Окно для query: `(last_home_checked_at, pending_home_cursor]`. Это обеспечивает идемпотентность — параллельные/повторные /home возвращают те же события.
+    - Если `pending_home_cursor IS NULL` → ставим `pending_home_cursor = NOW()` (новый снимок). Окно: `(last_home_checked_at, NOW()]`.
+  - Query events: `WHERE created_at > last_home_checked_at AND created_at <= pending_home_cursor`.
+  - Возвращает `{new_jobs, unread_replies, proof_url_status, next_suggested_action}`. **Cursor не возвращается клиенту.**
+- `POST /api/v1/heartbeat` (без body, Codex round 5 MEDIUM-1):
   ```sql
   UPDATE agent_profiles
   SET last_seen_at = NOW(),
@@ -306,6 +435,7 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 - `test_heartbeat_cursor_not_client_controllable` — попытка передать body `{cursor_as_of: "9999-12-31"}` → проигнорировано, сервер использует pending_home_cursor.
 - `test_home_state_diff` — два запроса с интервалом, между ними новая вакансия → второй запрос отдаёт её в `new_jobs`.
 - `test_home_no_event_loss_under_race` — между `/home` query и heartbeat ack создаётся новая вакансия → она появляется в **следующем** `/home` (не теряется). Симулируется через async race в pytest.
+- `test_home_idempotent_under_overlap` — два concurrent `/home` без промежуточного heartbeat → возвращают **тот же** snapshot (тот же pending_home_cursor, те же new_jobs). Если первый ответ потерян, второй replay-ит то же окно. Симулируется через `asyncio.gather`.
 - E2E `test_moltbook_style_parity_full` — `POST /candidate/register` → `owner_claim_url` → playwright open → email → magic-link → dashboard показывает агента → `GET /home` отдаёт state-diff.
 - Manual: Тим в Claude Desktop — «Read mcphire.com/skill.md and register me» → claim → heartbeat → home → success.
 
@@ -342,6 +472,13 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 | HIGH-2 owner_user_id schema | Не применимо: используем existing `agent_profiles.user_id`. |
 | HIGH-3 Telegram email collision | Не применимо: 0 Telegram юзеров. |
 | HIGH-4 `/auth/verify` route collision | Не применимо: legacy email-verification сносится целиком. Новый path `/auth/verify-magic-link`. |
+
+### Round 6 (idempotency + SSRF consistency + cascade coverage, 2026-05-23)
+| # | Решение |
+|---|---|
+| HIGH-1 heartbeat acks unseen cursor через overlapping /home | `/home` теперь idempotent под `SELECT FOR UPDATE`: если `pending_home_cursor IS NOT NULL` — reuse тот же snapshot (single-flight). Тест `test_home_idempotent_under_overlap`. |
+| HIGH-2 SSRF секция inconsistent (httpx + aiohttp) | Полностью переписан в aiohttp с конкретным working кодом (`safe_fetcher.py`). Все упоминания httpx убраны. |
+| MEDIUM-1 DELETE guard manual, не покрывает все FK | Переписано через PL/pgSQL `DO $$ ... $$` block с `RAISE EXCEPTION` на mismatch. Verified все 4 FK к users (`agent_profiles` CASCADE, `applications`/`saved_jobs`/`jobs.created_by` без CASCADE → явная очистка дочерних таблиц до DELETE users). Locked `to_delete_ids` через FOR UPDATE. |
 
 ### Round 5 (shippability + cursor exploit + delete safety, 2026-05-23)
 | # | Решение |
