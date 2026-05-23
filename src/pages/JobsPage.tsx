@@ -394,9 +394,9 @@ const JobsPage = () => {
               </div>
             )}
 
-            {/* Pagination */}
+            {/* Pagination — truncated (current ± 2, with edges and ellipses) */}
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2 pb-8">
+              <div className="flex flex-wrap justify-center items-center gap-2 pb-8 max-w-full">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
@@ -404,19 +404,37 @@ const JobsPage = () => {
                 >
                   ← Назад
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => handlePageChange(p)}
-                    className={`px-4 py-2 rounded-lg border ${
-                      currentPage === p
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-card hover:bg-accent"
-                    }`}
-                  >
-                    {p}
-                  </button>
-                ))}
+                {(() => {
+                  const pages: (number | "ellipsis")[] = [];
+                  const window = 2;
+                  const add = (p: number) => {
+                    if (!pages.includes(p) && p >= 1 && p <= totalPages) pages.push(p);
+                  };
+                  add(1);
+                  if (currentPage - window > 2) pages.push("ellipsis");
+                  for (let p = currentPage - window; p <= currentPage + window; p++) add(p);
+                  if (currentPage + window < totalPages - 1) pages.push("ellipsis");
+                  add(totalPages);
+                  return pages.map((p, idx) =>
+                    p === "ellipsis" ? (
+                      <span key={`ell-${idx}`} className="px-2 text-muted-foreground">
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={p}
+                        onClick={() => handlePageChange(p)}
+                        className={`px-4 py-2 rounded-lg border ${
+                          currentPage === p
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border bg-card hover:bg-accent"
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    )
+                  );
+                })()}
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
