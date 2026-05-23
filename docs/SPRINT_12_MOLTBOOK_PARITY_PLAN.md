@@ -29,20 +29,35 @@
 
 ⚠️ **Зависимые таблицы (verified 23 мая 2026):** `agent_profiles.user_id` имеет FK `ON DELETE CASCADE`. На проде сейчас: 64 agent_profiles + 63 claim_tokens + 40 observed_facts + 7 cv_snapshots + applications. `TRUNCATE users CASCADE` стёр бы **всю агентскую графовую данную** — это data loss seed контента который мы наполняли для демо.
 
-**Безопасная последовательность:**
+**Безопасная последовательность** (Codex round 11 HIGH-1 — full write-freeze ДО backup):
 
-1. **Полный pg_dump БД** (не выборочный по таблицам) на Contabo:
+1. **Stop ВСЕ DB writers** — backup и cleanup идут в полностью замороженной БД:
+   ```bash
+   ssh root@185.202.239.165 'docker stop \
+     mcphire-api mcphire-mcp mcphire-tg-bot \
+     mcphire-notif mcphire-claim-verifier mcphire-channels'
+   # Все 6 сервисов используют DATABASE_URL.
+   ```
+2. **Disable host cron jobs** на время window (есть импортёры/синтетика на проде):
+   ```bash
+   ssh root@185.202.239.165 'crontab -l > /tmp/crontab.backup-pre-s12 && crontab -r'
+   # После migration:
+   # ssh root@185.202.239.165 'crontab /tmp/crontab.backup-pre-s12'
+   ```
+3. **Verify quiescence** — `pg_stat_activity` не содержит app-сессий:
+   ```bash
+   ssh root@185.202.239.165 'docker exec zinin-postgres psql -U mcphire -d mcphire \
+     -c "SELECT pid, application_name, state, query
+         FROM pg_stat_activity
+         WHERE datname = '\''mcphire'\''
+           AND pid != pg_backend_pid()
+           AND application_name NOT LIKE '\''%psql%'\'';"'
+   # Expected: 0 строк. >0 → STOP, разбираться кто пишет.
+   ```
+4. **Полный pg_dump БД** (теперь — snapshot гарантированно консистентен):
    ```bash
    ssh root@185.202.239.165 'docker exec zinin-postgres pg_dump -U mcphire -d mcphire -Fc > /backup/mcphire-pre-s12-$(date +%Y%m%d-%H%M).dump'
    ```
-2. **Maintenance window — остановить writers перед cleanup** (Codex round 10 HIGH-1):
-   ```bash
-   # Остановить API/MCP/TG контейнеры на время cleanup+migration
-   ssh root@185.202.239.165 'docker stop mcphire-api mcphire-mcp mcphire-tg-bot'
-   # После успешной миграции:
-   # docker start mcphire-api mcphire-mcp mcphire-tg-bot
-   ```
-   Это блокирует все источники INSERT в `users`. Альтернатива (без downtime UI): `LOCK TABLE users IN ACCESS EXCLUSIVE MODE` в той же транзакции — блокирует даже SELECT, но писатели падают с lock timeout. Maintenance window предпочтительнее (5-10 минут общий downtime).
 
 3. **Targeted DELETE — enforced guard через PL/pgSQL DO block** (Codex round 5 MEDIUM-2 + round 6 MEDIUM-1):
 
@@ -166,21 +181,30 @@
    SELECT COUNT(*) FROM agent_profiles WHERE user_id IS NULL;
    -- ожидаем: примерно 59 (64 total - ~5 cleanup'нутых через CASCADE).
    ```
-   **Если что-то пошло не так пост-фактум** — atomic restore (Codex round 10 HIGH-2):
+   **Если что-то пошло не так пост-фактум** — atomic restore с full freeze (Codex round 10 HIGH-2 + round 11 HIGH-1):
    ```bash
-   # 1. Остановить writers (если ещё не остановлены)
-   ssh root@185.202.239.165 'docker stop mcphire-api mcphire-mcp mcphire-tg-bot'
-   # 2. Atomic restore: --single-transaction = всё в одной TX, --exit-on-error = stop at first error.
-   #    Если что-то fail-нёт, БД останется в pre-restore состоянии (commit не произойдёт).
+   # 1. Full write-freeze (тот же набор что pre-backup)
+   ssh root@185.202.239.165 'docker stop \
+     mcphire-api mcphire-mcp mcphire-tg-bot \
+     mcphire-notif mcphire-claim-verifier mcphire-channels && \
+     crontab -l > /tmp/crontab.pre-rollback && crontab -r'
+   # 2. Verify quiescence
+   ssh root@185.202.239.165 'docker exec zinin-postgres psql -U mcphire -d mcphire \
+     -c "SELECT COUNT(*) FROM pg_stat_activity WHERE datname='\''mcphire'\'' AND pid != pg_backend_pid();"'
+   # Expected: 0.
+   # 3. Atomic restore: --single-transaction = всё в одной TX, --exit-on-error = stop at first error.
    ssh root@185.202.239.165 'docker exec -i zinin-postgres pg_restore \
      --clean --if-exists --single-transaction --exit-on-error \
      -U mcphire -d mcphire < /backup/mcphire-pre-s12-YYYYMMDD-HHMM.dump'
-   # 3. Verify restore success
+   # 4. Verify restore success
    ssh root@185.202.239.165 'docker exec zinin-postgres psql -U mcphire -d mcphire \
      -c "SELECT COUNT(*) FROM users; SELECT COUNT(*) FROM agent_profiles;"'
    # Expected: ~27 users, ~64 agent_profiles (pre-S12 state).
-   # 4. Restart writers
-   ssh root@185.202.239.165 'docker start mcphire-api mcphire-mcp mcphire-tg-bot'
+   # 5. Restart writers + cron
+   ssh root@185.202.239.165 'docker start \
+     mcphire-api mcphire-mcp mcphire-tg-bot \
+     mcphire-notif mcphire-claim-verifier mcphire-channels && \
+     crontab /tmp/crontab.pre-rollback'
    ```
    Безопасная альтернатива (если есть подозрения): restore в новую БД `mcphire_restore` через `--dbname=mcphire_restore`, verify, потом swap connection string в env.
 
@@ -581,6 +605,11 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 | HIGH-2 owner_user_id schema | Не применимо: используем existing `agent_profiles.user_id`. |
 | HIGH-3 Telegram email collision | Не применимо: 0 Telegram юзеров. |
 | HIGH-4 `/auth/verify` route collision | Не применимо: legacy email-verification сносится целиком. Новый path `/auth/verify-magic-link`. |
+
+### Round 11 (full write-freeze, 2026-05-23)
+| # | Решение |
+|---|---|
+| HIGH-1 maintenance window не покрывает всех писателей + pg_dump до stop | Stop **6 контейнеров** (api/mcp/tg-bot/notif/claim-verifier/channels) + disable host crontab **ДО** pg_dump. Verify quiescence через `pg_stat_activity`. То же и для rollback. |
 
 ### Round 10 (concurrency + atomic restore, 2026-05-23)
 | # | Решение |
