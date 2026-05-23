@@ -35,7 +35,16 @@
    ```bash
    ssh root@185.202.239.165 'docker exec zinin-postgres pg_dump -U mcphire -d mcphire -Fc > /backup/mcphire-pre-s12-$(date +%Y%m%d-%H%M).dump'
    ```
-2. **Targeted DELETE — enforced guard через PL/pgSQL DO block** (Codex round 5 MEDIUM-2 + round 6 MEDIUM-1):
+2. **Maintenance window — остановить writers перед cleanup** (Codex round 10 HIGH-1):
+   ```bash
+   # Остановить API/MCP/TG контейнеры на время cleanup+migration
+   ssh root@185.202.239.165 'docker stop mcphire-api mcphire-mcp mcphire-tg-bot'
+   # После успешной миграции:
+   # docker start mcphire-api mcphire-mcp mcphire-tg-bot
+   ```
+   Это блокирует все источники INSERT в `users`. Альтернатива (без downtime UI): `LOCK TABLE users IN ACCESS EXCLUSIVE MODE` в той же транзакции — блокирует даже SELECT, но писатели падают с lock timeout. Maintenance window предпочтительнее (5-10 минут общий downtime).
+
+3. **Targeted DELETE — enforced guard через PL/pgSQL DO block** (Codex round 5 MEDIUM-2 + round 6 MEDIUM-1):
 
    ⚠️ **Schema verified 23 мая 2026**, FK references к `users`:
    - `agent_profiles.user_id` → `ON DELETE CASCADE` (ok, cascade сам сработает).
@@ -157,11 +166,23 @@
    SELECT COUNT(*) FROM agent_profiles WHERE user_id IS NULL;
    -- ожидаем: примерно 59 (64 total - ~5 cleanup'нутых через CASCADE).
    ```
-   **Если что-то пошло не так пост-фактум** (сентинель потерян, applications сломаны) — restore из `pg_dump`:
+   **Если что-то пошло не так пост-фактум** — atomic restore (Codex round 10 HIGH-2):
    ```bash
-   ssh root@185.202.239.165 'docker exec -i zinin-postgres pg_restore -U mcphire -d mcphire -c < /backup/mcphire-pre-s12-YYYYMMDD-HHMM.dump'
+   # 1. Остановить writers (если ещё не остановлены)
+   ssh root@185.202.239.165 'docker stop mcphire-api mcphire-mcp mcphire-tg-bot'
+   # 2. Atomic restore: --single-transaction = всё в одной TX, --exit-on-error = stop at first error.
+   #    Если что-то fail-нёт, БД останется в pre-restore состоянии (commit не произойдёт).
+   ssh root@185.202.239.165 'docker exec -i zinin-postgres pg_restore \
+     --clean --if-exists --single-transaction --exit-on-error \
+     -U mcphire -d mcphire < /backup/mcphire-pre-s12-YYYYMMDD-HHMM.dump'
+   # 3. Verify restore success
+   ssh root@185.202.239.165 'docker exec zinin-postgres psql -U mcphire -d mcphire \
+     -c "SELECT COUNT(*) FROM users; SELECT COUNT(*) FROM agent_profiles;"'
+   # Expected: ~27 users, ~64 agent_profiles (pre-S12 state).
+   # 4. Restart writers
+   ssh root@185.202.239.165 'docker start mcphire-api mcphire-mcp mcphire-tg-bot'
    ```
-   Это полный restore + drop existing. Время ≤ 2 минут (БД < 100MB).
+   Безопасная альтернатива (если есть подозрения): restore в новую БД `mcphire_restore` через `--dbname=mcphire_restore`, verify, потом swap connection string в env.
 
 4. **Tim's email** (`timzinin@gmai.com` typo + `tim.zinin@gmail.com`) — в predicate **не попадают**, остаются. Magic-link login заработает на них.
 5. **⚠️ ДО Alembic миграции — убрать `email_verified` / `password_hash` / `telegram_id` из ВСЕГО кода** (Codex round 7 CRITICAL + round 8 HIGH-1):
@@ -560,6 +581,12 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 | HIGH-2 owner_user_id schema | Не применимо: используем existing `agent_profiles.user_id`. |
 | HIGH-3 Telegram email collision | Не применимо: 0 Telegram юзеров. |
 | HIGH-4 `/auth/verify` route collision | Не применимо: legacy email-verification сносится целиком. Новый path `/auth/verify-magic-link`. |
+
+### Round 10 (concurrency + atomic restore, 2026-05-23)
+| # | Решение |
+|---|---|
+| HIGH-1 FOR UPDATE не блокирует новых INSERT | Maintenance window: `docker stop mcphire-api mcphire-mcp mcphire-tg-bot` перед cleanup+migration. Writers off → нет источников новых test rows. Restart после успешного COMMIT. Downtime 5-10 мин. |
+| HIGH-2 pg_restore partial на ошибке | Команда расширена: `pg_restore --clean --if-exists --single-transaction --exit-on-error` — всё в одной TX, stop at first error, БД остаётся pre-restore при fail. Альтернатива: restore в новую БД + swap connection string. |
 
 ### Round 9 (grep paths + pre-commit assertions, 2026-05-23)
 | # | Решение |
