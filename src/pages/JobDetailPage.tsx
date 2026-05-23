@@ -129,9 +129,19 @@ const JobDetailPage = () => {
       <Helmet>
         <title>{job.title} в {companyName} | MCPHire Вакансии</title>
         <meta name="description" content={`${job.title} в компании ${companyName}. ${job.city}. Зарплата ${job.salaryFrom && job.salaryTo ? `${formatSalary(job.salaryFrom)} - ${formatSalary(job.salaryTo)} ${job.currency}` : ""}. ${job.description?.slice(0, 150)}`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="MCPHire" />
         <meta property="og:title" content={`${job.title} в ${companyName}`} />
         <meta property="og:description" content={`${job.city} · ${job.salaryFrom && job.salaryTo ? `${formatSalary(job.salaryFrom)} - ${formatSalary(job.salaryTo)} ${job.currency}` : ""}`} />
         <meta property="og:url" content={`https://mcphire.com/jobs/${job.slug || job.id}`} />
+        {/* Fallback to home og-image — Sprint 12 task 35. Dynamic per-job
+            OG image generation deferred to Sprint 14. */}
+        <meta property="og:image" content="https://mcphire.com/og-image.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${job.title} в ${companyName}`} />
+        <meta name="twitter:image" content="https://mcphire.com/og-image.png" />
         <link rel="canonical" href={`https://mcphire.com/jobs/${job.slug || job.id}`} />
       </Helmet>
 
