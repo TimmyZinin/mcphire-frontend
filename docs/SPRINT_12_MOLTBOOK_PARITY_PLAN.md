@@ -58,19 +58,25 @@
      actual_saved_jobs INT;
      to_delete_ids UUID[];
    BEGIN
+     -- ⚠️ MCP sentinel user (id = c659afa0-5781-5574-89a0-c74b0e5ada39,
+     --    email=NULL by design — uuid5(NAMESPACE_DNS, 'mcp.mcphire.com') в
+     --    mcp-server/server.py:33) ИСКЛЮЧАЕТСЯ из cleanup. Он используется
+     --    как applications.user_id для всех MCP/TG apply-flows.
+
      -- 1. Lock target rows under FOR UPDATE — фиксируем set, защита от concurrent insert
      SELECT array_agg(id) INTO to_delete_ids FROM (
        SELECT id FROM users
-       WHERE (
-         email IS NULL
-         OR email LIKE '%@example.com'
-         OR email LIKE '%@mcphire.com'
-         OR email LIKE 'test-%'
-         OR email LIKE 'qa-%'
-         OR email LIKE 'sprint%-%'
-         OR email LIKE 'pentest_%'
-         OR email LIKE 'tim.zinin+%@gmail.com'
-       )
+       WHERE id != 'c659afa0-5781-5574-89a0-c74b0e5ada39'::uuid  -- protect MCP sentinel
+         AND (
+           email IS NULL
+           OR email LIKE '%@example.com'
+           OR email LIKE '%@mcphire.com'
+           OR email LIKE 'test-%'
+           OR email LIKE 'qa-%'
+           OR email LIKE 'sprint%-%'
+           OR email LIKE 'pentest_%'
+           OR email LIKE 'tim.zinin+%@gmail.com'
+         )
        FOR UPDATE
      ) sub;
 
@@ -120,7 +126,12 @@
 
 3. **Post-check** (вне транзакции): `SELECT COUNT(*) FROM users` (≤1 — только реальный email Тима если есть) + `SELECT COUNT(*) FROM agent_profiles WHERE user_id IS NULL` (awaiting_claim — не пострадали).
 4. **Tim's email** (`timzinin@gmai.com` typo + `tim.zinin@gmail.com`) — в predicate **не попадают**, остаются. Magic-link login заработает на них.
-5. **Alembic миграция** (после DELETE):
+5. **⚠️ ДО Alembic миграции — обновить raw SQL в МCP-server и TG-bot** (Codex round 7 CRITICAL):
+   - `mcp-server/server.py:116` — INSERT `users(id, name, role, email_verified, is_open_to_work)` ссылается на `email_verified`. Убрать `email_verified` из колонок и значений. Та же правка во всех других INSERT'ах если есть.
+   - `tg-bot/db.py` — все raw SQL писания в `users` с `email_verified` колонкой → убрать. Проверка: `rg -n "email_verified|password_hash|telegram_id" tg-bot/ mcp-server/`.
+   - Эти правки коммитятся **в том же PR** что миграция, deploy одновременно. Тест: после deploy MCP `apply_to_job` flow продолжает создавать applications успешно.
+
+6. **Alembic миграция** (после DELETE и code update):
    - Drop `users.password_hash`, `users.telegram_id`, `users.email_verified`, `users.email_verification_token`, `users.email_verification_sent_at` (+ google_id если есть — проверить по `\d users`).
    - Drop таблицу `email_verification_tokens`.
    - Create таблицу `magic_link_tokens`: `token_hash` (SHA256 unique), `email`, `purpose` ('login' | 'claim_owner'), `agent_profile_id` (NULL для login), `expires_at`, `consumed_at`, `requested_ip_hash`, `user_agent`.
@@ -158,7 +169,7 @@ import ssl
 import ipaddress
 import aiohttp
 from aiohttp.abc import AbstractResolver
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 
 PRIVATE_NETS = [
     ipaddress.ip_network('10.0.0.0/8'),
@@ -174,7 +185,16 @@ PRIVATE_NETS = [
 ]
 
 def _is_private(ip_str: str) -> bool:
+    """Reject private/special-use IPs. Normalizes IPv4-mapped IPv6
+       (::ffff:127.0.0.1, ::ffff:169.254.169.254) before policy check
+       to prevent SSRF bypass via AAAA records."""
     ip = ipaddress.ip_address(ip_str)
+    # Unwrap IPv4-mapped IPv6 → treat as IPv4 (Codex round 7 HIGH-3)
+    if isinstance(ip, ipaddress.IPv6Address) and ip.ipv4_mapped:
+        ip = ip.ipv4_mapped
+    # Belt-and-suspenders: reject anything not globally routable
+    if not ip.is_global:
+        return True
     return any(ip in net for net in PRIVATE_NETS)
 
 
@@ -243,14 +263,16 @@ async def safe_fetch(url: str, max_redirects: int = 3,
                     raise SafeFetchError(
                         f"peer IP {peer[0]} != vetted {vetted_ip}")
 
-                # 5. Manual redirect handling
+                # 5. Manual redirect handling (Codex round 7 MEDIUM-1 fix:
+                #    `continue` instead of `break` + urljoin for relative URLs)
                 if resp.status in (301, 302, 303, 307, 308):
                     if hop >= max_redirects:
                         raise SafeFetchError("too many redirects")
-                    url = resp.headers.get('Location', '')
-                    if not url:
+                    location = resp.headers.get('Location', '')
+                    if not location:
                         raise SafeFetchError("redirect without Location")
-                    break  # next iteration
+                    url = urljoin(str(resp.url), location)
+                    continue  # exit async with blocks, next iteration
 
                 # 6. Content-type allowlist
                 ct = resp.headers.get('Content-Type', '').lower()
@@ -294,7 +316,7 @@ async def safe_fetch(url: str, max_redirects: int = 3,
 ### Тесты
 - Unit `test_magic_link_atomic_consume_concurrent` — 50 параллельных через `asyncio.gather` → 1 успех, 49 → 410.
 - Unit: TTL, one-time, email normalization, generic success response, rate-limit (6-й/21-й → 429), cooldown 60с.
-- Unit SSRF (12 кейсов): http scheme, localhost, AWS metadata 169.254.169.254, RFC1918, redirect-to-private, redirect chain, timeout 15s, oversized 5MB, binary content-type, accept public https markdown, **DNS-rebinding attack** (preflight resolve = public, connect-time resolve = private — должен reject через IP-pin), **env-proxy bypass** (export HTTP_PROXY=evil → должно игнориться).
+- Unit SSRF (14 кейсов): http scheme, localhost, AWS metadata 169.254.169.254, RFC1918, redirect-to-private, redirect chain, timeout 15s, oversized 5MB, binary content-type, accept public https markdown, **DNS-rebinding attack** (preflight resolve = public, connect-time resolve = private — должен reject через IP-pin), **env-proxy bypass** (export HTTP_PROXY=evil → должно игнориться), **IPv4-mapped IPv6 bypass** (`::ffff:127.0.0.1`, `::ffff:169.254.169.254` через AAAA — должны reject), **relative redirect** (`Location: /new-path` → urljoin resolve + повтор policy).
 - E2E `test_magic_link_full_flow` — POST magic-link → DB token → POST verify → /me 200.
 - Alembic downgrade test: `alembic downgrade -1 && alembic upgrade head` на пустой БД проходит.
 - **Не должно остаться** — `rg -l "password_hash|telegram_id|verify_email" backend/app/ ` пусто (кроме миграций).
@@ -404,7 +426,7 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
   - Логика:
     - Если `pending_home_cursor IS NOT NULL` → **переиспользуем** его (single-flight). Окно для query: `(last_home_checked_at, pending_home_cursor]`. Это обеспечивает идемпотентность — параллельные/повторные /home возвращают те же события.
     - Если `pending_home_cursor IS NULL` → ставим `pending_home_cursor = NOW()` (новый снимок). Окно: `(last_home_checked_at, NOW()]`.
-  - Query events: `WHERE created_at > last_home_checked_at AND created_at <= pending_home_cursor`.
+  - Query events: `WHERE created_at > COALESCE(last_home_checked_at, '-infinity'::timestamptz) AND created_at <= pending_home_cursor`. **`COALESCE` обязателен** (Codex round 7 HIGH-2): для существующих профилей `last_home_checked_at IS NULL` после миграции, без COALESCE первое окно ack-ит пустоту и теряет все события до миграции. Alternative — backfill в миграции `UPDATE agent_profiles SET last_home_checked_at = created_at`. Выбираем `COALESCE` (проще, не трогает данные).
   - Возвращает `{new_jobs, unread_replies, proof_url_status, next_suggested_action}`. **Cursor не возвращается клиенту.**
 - `POST /api/v1/heartbeat` (без body, Codex round 5 MEDIUM-1):
   ```sql
@@ -436,6 +458,8 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 - `test_home_state_diff` — два запроса с интервалом, между ними новая вакансия → второй запрос отдаёт её в `new_jobs`.
 - `test_home_no_event_loss_under_race` — между `/home` query и heartbeat ack создаётся новая вакансия → она появляется в **следующем** `/home` (не теряется). Симулируется через async race в pytest.
 - `test_home_idempotent_under_overlap` — два concurrent `/home` без промежуточного heartbeat → возвращают **тот же** snapshot (тот же pending_home_cursor, те же new_jobs). Если первый ответ потерян, второй replay-ит то же окно. Симулируется через `asyncio.gather`.
+- `test_home_first_call_no_null_lower_bound` — agent с `last_home_checked_at IS NULL` (свежий после миграции), в БД 3 job-события созданных до /home → первый /home возвращает все 3 (не пустой). Защита от Codex round 7 HIGH-2.
+- `test_mcp_apply_works_after_migration` — после деплоя миграции + code update: симулировать MCP `apply_to_job` flow → application успешно создан, использует sentinel user c659afa0-... (защита от Codex round 7 CRITICAL-1).
 - E2E `test_moltbook_style_parity_full` — `POST /candidate/register` → `owner_claim_url` → playwright open → email → magic-link → dashboard показывает агента → `GET /home` отдаёт state-diff.
 - Manual: Тим в Claude Desktop — «Read mcphire.com/skill.md and register me» → claim → heartbeat → home → success.
 
@@ -472,6 +496,14 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 | HIGH-2 owner_user_id schema | Не применимо: используем existing `agent_profiles.user_id`. |
 | HIGH-3 Telegram email collision | Не применимо: 0 Telegram юзеров. |
 | HIGH-4 `/auth/verify` route collision | Не применимо: legacy email-verification сносится целиком. Новый path `/auth/verify-magic-link`. |
+
+### Round 7 (sentinel + NULL bound + IPv6-mapped + redirect, 2026-05-23)
+| # | Решение |
+|---|---|
+| CRITICAL-1 cleanup стирает MCP sentinel user + ломает MCP/TG apply | DELETE predicate excludes `id != c659afa0-5781-5574-89a0-c74b0e5ada39`. До миграции — обновить `mcp-server/server.py:116` и `tg-bot/db.py` raw SQL чтобы убрать `email_verified` колонку. Smoke test `test_mcp_apply_works_after_migration`. |
+| HIGH-2 /home `created_at > NULL` always false | `WHERE created_at > COALESCE(last_home_checked_at, '-infinity'::timestamptz)`. Тест `test_home_first_call_no_null_lower_bound`. |
+| HIGH-3 SSRF bypass через IPv4-mapped IPv6 (`::ffff:127.0.0.1`) | `_is_private` unwrap-ит `IPv6Address.ipv4_mapped` перед policy check + belt-and-suspenders `not ip.is_global`. Тест `test_ipv4_mapped_ipv6_bypass`. |
+| MEDIUM-1 redirect `break` вместо `continue` + нет urljoin | `continue` (продолжает outer for-loop), `url = urljoin(str(resp.url), location)` для relative. Тест `test_relative_redirect`. |
 
 ### Round 6 (idempotency + SSRF consistency + cascade coverage, 2026-05-23)
 | # | Решение |
