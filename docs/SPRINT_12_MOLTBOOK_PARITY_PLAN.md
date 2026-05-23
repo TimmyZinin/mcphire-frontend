@@ -35,21 +35,49 @@
    ```bash
    ssh root@185.202.239.165 'docker exec zinin-postgres pg_dump -U mcphire -d mcphire -Fc > /backup/mcphire-pre-s12-$(date +%Y%m%d-%H%M).dump'
    ```
-2. **Targeted DELETE (НЕ TRUNCATE)** — конкретные test-юзеры по email pattern:
+2. **Targeted DELETE — transactional с auto-rollback на mismatch** (Codex round 5 MEDIUM-2):
    ```sql
+   BEGIN;
+
+   -- Preflight: точные строки которые будут удалены + cascade impact
+   WITH to_delete AS (
+     SELECT id, email FROM users
+     WHERE email IS NULL
+        OR email LIKE '%@example.com'
+        OR email LIKE '%@mcphire.com'        -- seeder fixtures
+        OR email LIKE 'test-%'
+        OR email LIKE 'qa-%'
+        OR email LIKE 'sprint%-%'
+        OR email LIKE 'pentest_%'
+        OR email LIKE 'tim.zinin+%@gmail.com' -- SMTP-тесты Тима
+   )
+   SELECT
+     (SELECT COUNT(*) FROM to_delete) AS user_delete_count,
+     (SELECT array_agg(email ORDER BY email) FROM to_delete) AS deleted_emails,
+     (SELECT COUNT(*) FROM agent_profiles
+        WHERE user_id IN (SELECT id FROM to_delete)) AS cascade_agent_profiles,
+     (SELECT COUNT(*) FROM applications
+        WHERE agent_profile_id IN
+          (SELECT id FROM agent_profiles
+           WHERE user_id IN (SELECT id FROM to_delete))) AS cascade_applications;
+   -- Expected (verified 23 мая): user_delete_count ≤ 27, cascade_agent_profiles ≤ 5,
+   -- cascade_applications ≤ 0 (test users никогда не подавали applications)
+   --
+   -- ⛔ Если фактические числа > expected — ROLLBACK немедленно и пересмотреть predicate.
+
+   -- Реальный DELETE с RETURNING для verification
    DELETE FROM users WHERE
-     email IS NULL
-     OR email LIKE '%@example.com'
-     OR email LIKE '%@mcphire.com'      -- seeder fixtures (admin/seeker/employer)
-     OR email LIKE 'test-%'
-     OR email LIKE 'qa-%'
-     OR email LIKE 'sprint%-%'
-     OR email LIKE 'pentest_%'
-     OR email LIKE 'tim.zinin+%@gmail.com';  -- Тимовы SMTP-тесты
+     email IS NULL OR email LIKE '%@example.com' OR email LIKE '%@mcphire.com'
+     OR email LIKE 'test-%' OR email LIKE 'qa-%' OR email LIKE 'sprint%-%'
+     OR email LIKE 'pentest_%' OR email LIKE 'tim.zinin+%@gmail.com'
+   RETURNING id, email;
+   -- Сравнить вывод с preflight `deleted_emails` (должны совпасть полностью).
+   -- Mismatch → ROLLBACK.
+
+   COMMIT;
    ```
-   `ON DELETE CASCADE` на `agent_profiles.user_id` сработает корректно — стираются только agent_profiles **этих конкретных** test-юзеров, не все.
-3. **Pre-flight count** — до DELETE: `SELECT email, COUNT(*) FROM users GROUP BY email`. После DELETE: убедиться что осталось 0 (или только реальный email Тима если он там есть).
-4. **Pre-flight count агент-графа** — до DELETE: `SELECT COUNT(*) FROM agent_profiles`. После DELETE: должно остаться 64 - N (где N = agent_profiles привязанные к удаляемым users). Большинство agent_profiles имеют `user_id IS NULL` (awaiting_claim) — они **не пострадают**.
+3. **Post-check** (вне транзакции): `SELECT COUNT(*) FROM users` (≤ 1 — только реальный email Тима если есть) + `SELECT COUNT(*) FROM agent_profiles WHERE user_id IS NULL` (большинство awaiting_claim — не пострадали).
+4. **Tim's actual email** (`timzinin@gmai.com` typo + `tim.zinin@gmail.com`) — присутствие в `users` после DELETE не критично, magic-link login заработает на них.
 5. **Alembic миграция** (после DELETE):
    - Drop `users.password_hash`, `users.telegram_id`, `users.email_verified`, `users.email_verification_token`, `users.email_verification_sent_at` (+ google_id если есть — проверить по `\d users`).
    - Drop таблицу `email_verification_tokens`.
@@ -82,8 +110,41 @@
 
 1. **Scheme allowlist:** только `https://`. Остальное (http, file, gopher, ftp, data) → reject.
 2. **Pre-flight DNS resolve + IP-pin:** `socket.getaddrinfo(host, 443, AF_UNSPEC)`. Все возвращённые IP проверяются на private/link-local/loopback/CGNAT/IPv6-ULA (включая 169.254.169.254 AWS metadata). Хоть один в denylist → reject.
-3. **Pin connected IP:** httpx настраивается с кастомным `httpx.AsyncHTTPTransport(local_address=...)` + кастомный resolver через `httpx._transports.default.AsyncHTTPTransport` с явной передачей **vetted IP** вместо hostname. Альтернативно — `aiohttp.AsyncResolver` с заменой на `MockResolver` который возвращает только vetted IP. SNI остаётся = original hostname (для TLS).
-4. **Validate peer per hop:** после connect — `socket.getpeername()`, если peer IP не в vetted list (могло быть из-за race) → abort connection.
+3. **Pin connected IP (shippable implementation):**
+   - Добавить `aiohttp` в `backend/requirements.txt` (httpx без monkey-patch не даёт connect к vetted IP с original SNI).
+   - Класс `VettedIPResolver(aiohttp.abc.AbstractResolver)`:
+     ```python
+     class VettedIPResolver(AbstractResolver):
+         def __init__(self, allowlist: set[str]):
+             self._allowlist = allowlist  # IPs verified via getaddrinfo + denylist check
+         async def resolve(self, host, port=0, family=socket.AF_INET):
+             if host in self._allowlist:
+                 return [{'hostname': host, 'host': host, 'port': port,
+                          'family': family, 'proto': 0, 'flags': 0}]
+             # Защита от DNS-rebinding: aiohttp при connect ещё раз запросит resolve.
+             # Если host в allowlist — возвращаем сам IP. Иначе reject.
+             raise OSError(f"DNS rebinding attempt: {host}")
+     ```
+   - Использование:
+     ```python
+     # 1. getaddrinfo → all IPs, проверка denylist (см. шаг 2 выше)
+     vetted_ips = [...]
+     # 2. URL rewrite: hostname → vetted IP, Host header сохраняется
+     parsed = urlparse(proof_url)
+     ip_url = parsed._replace(netloc=f"{vetted_ips[0]}:{parsed.port or 443}").geturl()
+     # 3. SSL context with original hostname for SNI
+     ssl_ctx = ssl.create_default_context()
+     # 4. aiohttp с VettedIPResolver
+     connector = aiohttp.TCPConnector(resolver=VettedIPResolver({vetted_ips[0]}),
+                                       ssl=ssl_ctx)
+     async with aiohttp.ClientSession(connector=connector, trust_env=False) as session:
+         async with session.get(ip_url,
+                                headers={"Host": parsed.hostname},
+                                server_hostname=parsed.hostname,  # SNI
+                                timeout=aiohttp.ClientTimeout(connect=5, total=15)) as r:
+             ...
+     ```
+4. **Validate peer per hop:** после connect — `transport.get_extra_info('peername')` (aiohttp), если peer IP не в vetted_ips → abort connection.
 5. **`follow_redirects=False`** + manual redirect handling max 3 hops, **каждый редирект** проходит шаги 1-4 заново.
 6. **`trust_env=False`** — отключаем env-proxies (HTTP_PROXY/HTTPS_PROXY), чтобы атакующий не мог через переменные окружения перенаправить трафик.
 7. **Timeouts:** connect=5s, read=10s, total=15s.
@@ -173,12 +234,13 @@ def upgrade():
         sa.Column('owner_claim_token_hash', sa.CHAR(64), nullable=True))
     op.create_index('ix_agent_profiles_owner_claim_token_hash',
         'agent_profiles', ['owner_claim_token_hash'], unique=True)
-    # Backfill: копируем claim_tokens.claim_token → agent_profiles.proof_token
+    # Backfill: копируем claim_tokens.token → agent_profiles.proof_token
+    # Verified schema (prod 23 мая): claim_tokens(token PK, profile_id FK, proof_url, ...)
     op.execute("""
         UPDATE agent_profiles ap
-        SET proof_token = ct.claim_token
+        SET proof_token = ct.token
         FROM claim_tokens ct
-        WHERE ct.agent_profile_id = ap.id
+        WHERE ct.profile_id = ap.id
     """)
     # owner_claim_token_hash остаётся NULL для existing profiles
     # (старые агенты не имеют claim-flow — их proof_url уже верифицирован)
@@ -209,21 +271,24 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 - `GET /v1/agents/by-claim-token/<owner_token>` — `{agent_name, agent_description, status}`. **Не возвращает api_key / proof_token.**
 - `GET /skill.md` — plain markdown, файл `backend/static/skill.md`.
 - `GET /heartbeat.md` — plain markdown, инструкция агенту: «Каждые 30 мин делай `GET /api/v1/home`, обрабатывай `next_suggested_action`, **ack курсор через** `POST /api/v1/heartbeat {cursor_as_of}`».
-- `GET /api/v1/home` — для агента (Bearer `session_token` — existing field): state-diff с момента `last_home_checked_at`. **Cursor-based** (Codex round 4 MEDIUM-1 fix):
-  - Возвращает `{cursor_as_of: <ISO8601>, new_jobs: [...], unread_replies: [...], proof_url_status, next_suggested_action: "..."}`.
-  - `cursor_as_of = NOW()` фиксируется **в начале** транзакции, query фильтрует `created_at <= cursor_as_of AND created_at > last_home_checked_at`. Это garantee что между read и ack ничего не потеряется.
-  - `last_home_checked_at` НЕ обновляется в `/home` — только в `/heartbeat` после явного ack от агента.
-- `POST /api/v1/heartbeat {cursor_as_of}` — атомарный UPDATE:
+- `GET /api/v1/home` — для агента (Bearer `session_token` — existing field): state-diff с момента `last_home_checked_at`. **Server-issued cursor** (Codex round 4 MEDIUM-1 + round 5 MEDIUM-1 fix):
+  - В **одной транзакции**:
+    1. `SELECT NOW()` → `cursor_as_of`.
+    2. Query: `created_at <= cursor_as_of AND created_at > COALESCE(last_home_checked_at, '-infinity')`.
+    3. `UPDATE agent_profiles SET pending_home_cursor = cursor_as_of WHERE id = $agent_id` (server-side state).
+  - Возвращает `{new_jobs, unread_replies, proof_url_status, next_suggested_action}`. **Cursor не возвращается клиенту** — он server-side, агент не может его подделать.
+- `POST /api/v1/heartbeat` (без body — никаких client-supplied cursors, Codex round 5 MEDIUM-1):
   ```sql
   UPDATE agent_profiles
   SET last_seen_at = NOW(),
-      last_home_checked_at = $cursor_as_of
+      last_home_checked_at = pending_home_cursor,
+      pending_home_cursor = NULL
   WHERE id = $agent_id
-    AND ($cursor_as_of >= last_home_checked_at OR last_home_checked_at IS NULL)
+    AND pending_home_cursor IS NOT NULL
   RETURNING id
   ```
-  0 строк → 409 (агент шлёт stale cursor — игнорируем, но возвращаем ошибку чтобы он перечитал /home).
-- Новая колонка миграция: `ALTER TABLE agent_profiles ADD COLUMN last_home_checked_at TIMESTAMPTZ NULL`.
+  0 строк → 409 (агент шлёт heartbeat без предшествующего /home — клиент должен сначала прочитать /home).
+- Новые колонки миграция: `ALTER TABLE agent_profiles ADD COLUMN last_home_checked_at TIMESTAMPTZ NULL, ADD COLUMN pending_home_cursor TIMESTAMPTZ NULL`.
 - `consume_magic_link(purpose='claim_owner')` — atomic UPDATE по `owner_claim_token_hash`, параллельно триггерит `claim_verifier` для `proof_token`.
 
 **Frontend:**
@@ -237,7 +302,8 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 - `test_public_proof_token_cannot_claim_ownership` — попытка `/claim/<proof_token>` → 404.
 - `test_owner_claim_token_one_time` — второй claim → 410.
 - `test_heartbeat_updates_last_seen` — POST с валидным cursor → `last_seen_at` + `last_home_checked_at` обновлены.
-- `test_heartbeat_stale_cursor_rejected` — POST с cursor старше existing `last_home_checked_at` → 409.
+- `test_heartbeat_without_home_returns_409` — POST /heartbeat без предшествующего /home (pending_home_cursor IS NULL) → 409.
+- `test_heartbeat_cursor_not_client_controllable` — попытка передать body `{cursor_as_of: "9999-12-31"}` → проигнорировано, сервер использует pending_home_cursor.
 - `test_home_state_diff` — два запроса с интервалом, между ними новая вакансия → второй запрос отдаёт её в `new_jobs`.
 - `test_home_no_event_loss_under_race` — между `/home` query и heartbeat ack создаётся новая вакансия → она появляется в **следующем** `/home` (не теряется). Симулируется через async race в pytest.
 - E2E `test_moltbook_style_parity_full` — `POST /candidate/register` → `owner_claim_url` → playwright open → email → magic-link → dashboard показывает агента → `GET /home` отдаёт state-diff.
@@ -276,6 +342,14 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 | HIGH-2 owner_user_id schema | Не применимо: используем existing `agent_profiles.user_id`. |
 | HIGH-3 Telegram email collision | Не применимо: 0 Telegram юзеров. |
 | HIGH-4 `/auth/verify` route collision | Не применимо: legacy email-verification сносится целиком. Новый path `/auth/verify-magic-link`. |
+
+### Round 5 (shippability + cursor exploit + delete safety, 2026-05-23)
+| # | Решение |
+|---|---|
+| HIGH-1 backfill columns wrong (`ct.claim_token`/`ct.agent_profile_id`) | Verified actual schema: `claim_tokens.token` (PK) + `claim_tokens.profile_id` (FK). Backfill SQL исправлен. |
+| HIGH-2 IP-pinning не shippable в httpx 0.28.1 | Заменено на конкретную реализацию через aiohttp + `VettedIPResolver(AbstractResolver)` + URL rewrite на vetted IP + Host header + `server_hostname` для SNI + peer validation через `transport.get_extra_info('peername')`. Добавляем aiohttp в requirements.txt. |
+| MEDIUM-1 heartbeat cursor exploitable | Cursor больше не client-supplied. /home обновляет `pending_home_cursor` server-side. /heartbeat (без body) applies pending → `last_home_checked_at`. Агент не может подделать timestamp. |
+| MEDIUM-2 DELETE без transactional guard | Preflight через CTE возвращает exact cascade impact + DELETE с RETURNING внутри транзакции + сверка с expected counts (≤27 users, ≤5 agent_profiles, ≤0 applications) + auto-ROLLBACK на mismatch. |
 
 ### Round 4 (data-loss + DNS-rebinding + schema contract, 2026-05-23)
 | # | Решение |
