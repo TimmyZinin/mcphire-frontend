@@ -124,12 +124,53 @@
 
    Запускается **внутри транзакции**: `BEGIN; DO $$ ... $$; COMMIT;`. Любой `RAISE EXCEPTION` откатывает всё. Безопаснее обычного SQL preflight.
 
-3. **Post-check** (вне транзакции): `SELECT COUNT(*) FROM users` (≤1 — только реальный email Тима если есть) + `SELECT COUNT(*) FROM agent_profiles WHERE user_id IS NULL` (awaiting_claim — не пострадали).
+3. **Post-check** (вне транзакции) — explicit assertions (Codex round 8 MEDIUM-1):
+   ```sql
+   -- (a) MCP sentinel сохранён
+   SELECT 1 FROM users WHERE id = 'c659afa0-5781-5574-89a0-c74b0e5ada39'::uuid;
+   -- ожидаем: 1 строка. 0 → миграция сломала sentinel → ROLLBACK всё.
+
+   -- (b) Predicate cleanup полный — ни одна строка matching predicate не осталась (кроме sentinel)
+   SELECT COUNT(*) FROM users
+   WHERE id != 'c659afa0-5781-5574-89a0-c74b0e5ada39'::uuid
+     AND (email IS NULL
+       OR email LIKE '%@example.com' OR email LIKE '%@mcphire.com'
+       OR email LIKE 'test-%' OR email LIKE 'qa-%' OR email LIKE 'sprint%-%'
+       OR email LIKE 'pentest_%' OR email LIKE 'tim.zinin+%@gmail.com');
+   -- ожидаем: 0. >0 → cleanup не доделан.
+
+   -- (c) Тимовы реальные emails сохранены (если были)
+   SELECT email FROM users
+   WHERE email IN ('timzinin@gmai.com', 'tim.zinin@gmail.com');
+   -- enumeration для record-keeping, не блокер.
+
+   -- (d) Agent-graph awaiting_claim не пострадал
+   SELECT COUNT(*) FROM agent_profiles WHERE user_id IS NULL;
+   -- ожидаем: примерно 59 (64 total - ~5 cleanup'нутых через CASCADE).
+   ```
 4. **Tim's email** (`timzinin@gmai.com` typo + `tim.zinin@gmail.com`) — в predicate **не попадают**, остаются. Magic-link login заработает на них.
-5. **⚠️ ДО Alembic миграции — обновить raw SQL в МCP-server и TG-bot** (Codex round 7 CRITICAL):
-   - `mcp-server/server.py:116` — INSERT `users(id, name, role, email_verified, is_open_to_work)` ссылается на `email_verified`. Убрать `email_verified` из колонок и значений. Та же правка во всех других INSERT'ах если есть.
-   - `tg-bot/db.py` — все raw SQL писания в `users` с `email_verified` колонкой → убрать. Проверка: `rg -n "email_verified|password_hash|telegram_id" tg-bot/ mcp-server/`.
-   - Эти правки коммитятся **в том же PR** что миграция, deploy одновременно. Тест: после deploy MCP `apply_to_job` flow продолжает создавать applications успешно.
+5. **⚠️ ДО Alembic миграции — убрать `email_verified` / `password_hash` / `telegram_id` из ВСЕГО кода** (Codex round 7 CRITICAL + round 8 HIGH-1):
+
+   **Backend (FastAPI ORM):**
+   - `backend/app/models/user.py:29` — убрать `email_verified: Mapped[bool]` column из ORM модели User. То же для `password_hash`, `telegram_id`, `email_verification_token`, `email_verification_sent_at`.
+   - `backend/app/schemas/auth.py` — убрать `email_verified` из `UserResponse`/`MeResponse` Pydantic schemas.
+   - `backend/app/services/auth_service.py` — все ссылки на `user.email_verified`, `user.password_hash`, `user.telegram_id` удаляются вместе с роутами `/register`, `/login`, `/telegram`, `/google`, `/verify-email`.
+   - `backend/app/dependencies.py` и любые `select(User)` — после ORM-фикса будут работать (просто не маппят дропнутые колонки).
+
+   **MCP-server:**
+   - `mcp-server/server.py:116` — INSERT `users(id, name, role, email_verified, is_open_to_work)` → убрать `email_verified`.
+
+   **TG-bot:**
+   - `tg-bot/db.py` — все raw SQL писания в `users` с `email_verified` колонкой → убрать.
+
+   **Pre-deploy verification grep** (должен дать **0 совпадений** в коде, allowed только в alembic versions/):
+   ```bash
+   rg -n "email_verified|password_hash|telegram_id|email_verification" \
+     backend/app mcp-server tg-bot frontend/src \
+     --glob '!**/alembic/versions/**'
+   ```
+
+   Все эти правки коммитятся **в том же PR** что миграция, deploy одновременно. Smoke после deploy: `/auth/me` (используя свежий magic-link токен) возвращает 200 (защита от Codex round 8 HIGH-1) + MCP `apply_to_job` создаёт application с sentinel user (защита от round 7 CRITICAL).
 
 6. **Alembic миграция** (после DELETE и code update):
    - Drop `users.password_hash`, `users.telegram_id`, `users.email_verified`, `users.email_verification_token`, `users.email_verification_sent_at` (+ google_id если есть — проверить по `\d users`).
@@ -496,6 +537,12 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 | HIGH-2 owner_user_id schema | Не применимо: используем existing `agent_profiles.user_id`. |
 | HIGH-3 Telegram email collision | Не применимо: 0 Telegram юзеров. |
 | HIGH-4 `/auth/verify` route collision | Не применимо: legacy email-verification сносится целиком. Новый path `/auth/verify-magic-link`. |
+
+### Round 8 (backend ORM + post-check correctness, 2026-05-23)
+| # | Решение |
+|---|---|
+| HIGH-1 backend ORM/schemas/services тоже маппят `email_verified` | Расширен pre-migration checklist: `User` model + `auth_service.py` + `schemas/auth.py` + `dependencies.py` правятся одновременно с MCP/TG. Verification grep расширен на `backend/app` + `frontend/src`. Smoke `/auth/me` после deploy. |
+| MEDIUM-1 post-check `users <= 1` conflict с sentinel preservation | Заменено на 4 explicit assertions: (a) sentinel UUID exists, (b) predicate cleanup полный кроме sentinel, (c) Тимовы emails enumerated, (d) agent-graph awaiting_claim не пострадал. |
 
 ### Round 7 (sentinel + NULL bound + IPv6-mapped + redirect, 2026-05-23)
 | # | Решение |
