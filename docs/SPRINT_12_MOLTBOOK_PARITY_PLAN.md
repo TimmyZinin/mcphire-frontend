@@ -118,36 +118,51 @@
      -- 5. Финальный DELETE users (agent_profiles каскадно)
      DELETE FROM users WHERE id = ANY(to_delete_ids);
 
+     -- 6. ⚠️ PRE-COMMIT assertions (Codex round 9 MEDIUM-1):
+     --    проверки внутри транзакции, так чтобы RAISE EXCEPTION откатил всё.
+
+     -- (a) MCP sentinel должен остаться
+     IF NOT EXISTS (
+       SELECT 1 FROM users
+       WHERE id = 'c659afa0-5781-5574-89a0-c74b0e5ada39'::uuid
+     ) THEN
+       RAISE EXCEPTION 'Sentinel MCP user lost — aborting';
+     END IF;
+
+     -- (b) Predicate cleanup полный кроме sentinel
+     IF EXISTS (
+       SELECT 1 FROM users
+       WHERE id != 'c659afa0-5781-5574-89a0-c74b0e5ada39'::uuid
+         AND (email IS NULL
+           OR email LIKE '%@example.com' OR email LIKE '%@mcphire.com'
+           OR email LIKE 'test-%' OR email LIKE 'qa-%' OR email LIKE 'sprint%-%'
+           OR email LIKE 'pentest_%' OR email LIKE 'tim.zinin+%@gmail.com')
+     ) THEN
+       RAISE EXCEPTION 'Predicate cleanup incomplete';
+     END IF;
+
      RAISE NOTICE 'Cleanup complete: % users deleted', actual_users;
    END $$;
    ```
 
-   Запускается **внутри транзакции**: `BEGIN; DO $$ ... $$; COMMIT;`. Любой `RAISE EXCEPTION` откатывает всё. Безопаснее обычного SQL preflight.
+   Запускается **внутри транзакции**: `BEGIN; DO $$ ... $$; COMMIT;`. Любой `RAISE EXCEPTION` в `DO` block откатывает всю транзакцию автоматически. Если COMMIT прошёл — все assertions удовлетворены.
 
-3. **Post-check** (вне транзакции) — explicit assertions (Codex round 8 MEDIUM-1):
+3. **Post-commit info queries** (вне транзакции — read-only, не блокеры):
    ```sql
-   -- (a) MCP sentinel сохранён
-   SELECT 1 FROM users WHERE id = 'c659afa0-5781-5574-89a0-c74b0e5ada39'::uuid;
-   -- ожидаем: 1 строка. 0 → миграция сломала sentinel → ROLLBACK всё.
-
-   -- (b) Predicate cleanup полный — ни одна строка matching predicate не осталась (кроме sentinel)
-   SELECT COUNT(*) FROM users
-   WHERE id != 'c659afa0-5781-5574-89a0-c74b0e5ada39'::uuid
-     AND (email IS NULL
-       OR email LIKE '%@example.com' OR email LIKE '%@mcphire.com'
-       OR email LIKE 'test-%' OR email LIKE 'qa-%' OR email LIKE 'sprint%-%'
-       OR email LIKE 'pentest_%' OR email LIKE 'tim.zinin+%@gmail.com');
-   -- ожидаем: 0. >0 → cleanup не доделан.
-
-   -- (c) Тимовы реальные emails сохранены (если были)
+   -- (a) Тимовы реальные emails остались — для record-keeping
    SELECT email FROM users
    WHERE email IN ('timzinin@gmai.com', 'tim.zinin@gmail.com');
-   -- enumeration для record-keeping, не блокер.
 
-   -- (d) Agent-graph awaiting_claim не пострадал
+   -- (b) Agent-graph awaiting_claim не пострадал (информативно)
    SELECT COUNT(*) FROM agent_profiles WHERE user_id IS NULL;
    -- ожидаем: примерно 59 (64 total - ~5 cleanup'нутых через CASCADE).
    ```
+   **Если что-то пошло не так пост-фактум** (сентинель потерян, applications сломаны) — restore из `pg_dump`:
+   ```bash
+   ssh root@185.202.239.165 'docker exec -i zinin-postgres pg_restore -U mcphire -d mcphire -c < /backup/mcphire-pre-s12-YYYYMMDD-HHMM.dump'
+   ```
+   Это полный restore + drop existing. Время ≤ 2 минут (БД < 100MB).
+
 4. **Tim's email** (`timzinin@gmai.com` typo + `tim.zinin@gmail.com`) — в predicate **не попадают**, остаются. Magic-link login заработает на них.
 5. **⚠️ ДО Alembic миграции — убрать `email_verified` / `password_hash` / `telegram_id` из ВСЕГО кода** (Codex round 7 CRITICAL + round 8 HIGH-1):
 
@@ -163,12 +178,20 @@
    **TG-bot:**
    - `tg-bot/db.py` — все raw SQL писания в `users` с `email_verified` колонкой → убрать.
 
-   **Pre-deploy verification grep** (должен дать **0 совпадений** в коде, allowed только в alembic versions/):
+   **Pre-deploy verification grep** (Codex round 9 HIGH-1 — paths правильные для split repos):
    ```bash
+   # Backend mono-repo (~/mcphire-mcp) — backend ORM/services + MCP + TG bot
    rg -n "email_verified|password_hash|telegram_id|email_verification" \
-     backend/app mcp-server tg-bot frontend/src \
+     ~/mcphire-mcp/backend/app ~/mcphire-mcp/mcp-server ~/mcphire-mcp/tg-bot \
      --glob '!**/alembic/versions/**'
+   # Expected: 0 matches.
+
+   # Frontend repo (~/mcphire-frontend)
+   rg -n "email_verified|password_hash|telegram_id|email_verification|TelegramLoginButton|GoogleLoginButton" \
+     ~/mcphire-frontend/src
+   # Expected: 0 matches.
    ```
+   **Оба grep должны вернуть 0 ДО** запуска alembic migration. Если ненулёвой результат — миграция не запускается.
 
    Все эти правки коммитятся **в том же PR** что миграция, deploy одновременно. Smoke после deploy: `/auth/me` (используя свежий magic-link токен) возвращает 200 (защита от Codex round 8 HIGH-1) + MCP `apply_to_job` создаёт application с sentinel user (защита от round 7 CRITICAL).
 
@@ -537,6 +560,12 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 | HIGH-2 owner_user_id schema | Не применимо: используем existing `agent_profiles.user_id`. |
 | HIGH-3 Telegram email collision | Не применимо: 0 Telegram юзеров. |
 | HIGH-4 `/auth/verify` route collision | Не применимо: legacy email-verification сносится целиком. Новый path `/auth/verify-magic-link`. |
+
+### Round 9 (grep paths + pre-commit assertions, 2026-05-23)
+| # | Решение |
+|---|---|
+| HIGH-1 grep paths cross-repo не работают | Разделено на 2 grep: один по `~/mcphire-mcp/{backend/app,mcp-server,tg-bot}`, второй по `~/mcphire-frontend/src`. Оба должны вернуть 0 ДО миграции. |
+| MEDIUM-1 «ROLLBACK после COMMIT» невозможен | Sentinel + predicate-cleanup assertions перенесены **внутрь** транзакции DO block (`RAISE EXCEPTION` если sentinel missing или predicate не пустой → auto-rollback). Post-commit queries теперь read-only info, не блокеры. Real recovery path = pg_restore из pg_dump backup. |
 
 ### Round 8 (backend ORM + post-check correctness, 2026-05-23)
 | # | Решение |
