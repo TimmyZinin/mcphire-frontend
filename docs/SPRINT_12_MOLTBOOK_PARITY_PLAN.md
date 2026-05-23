@@ -44,15 +44,16 @@
    # После migration:
    # ssh root@185.202.239.165 'crontab /tmp/crontab.backup-pre-s12'
    ```
-3. **Verify quiescence** — `pg_stat_activity` не содержит app-сессий:
+3. **Verify quiescence** — `pg_stat_activity` не содержит **никаких** app-сессий (Codex round 12 HIGH-1 — application_name filter убран, чтобы не скрыть ad-hoc psql writers):
    ```bash
    ssh root@185.202.239.165 'docker exec zinin-postgres psql -U mcphire -d mcphire \
-     -c "SELECT pid, application_name, state, query
+     -c "SELECT pid, usename, application_name, client_addr, state, xact_start, query
          FROM pg_stat_activity
          WHERE datname = '\''mcphire'\''
-           AND pid != pg_backend_pid()
-           AND application_name NOT LIKE '\''%psql%'\'';"'
-   # Expected: 0 строк. >0 → STOP, разбираться кто пишет.
+           AND pid != pg_backend_pid();"'
+   # Expected: 0 строк. >0 → STOP, разбираться (manual psql Тима? cron не остановлен?
+   # neglected docker container?). Закрыть/terminate сессию явно через
+   # pg_terminate_backend(pid) перед продолжением.
    ```
 4. **Полный pg_dump БД** (теперь — snapshot гарантированно консистентен):
    ```bash
@@ -76,11 +77,19 @@
      expected_agent_profiles_max INT := 5;
      expected_applications_max INT := 9;
      expected_saved_jobs_max INT := 1;
+     -- Cascade bounds для downstream FK (Codex round 12 HIGH-2):
+     expected_claim_tokens_max INT := 5;       -- из 63 total, ≤5 от cleanup profiles
+     expected_observed_facts_max INT := 5;     -- из 40 total
+     expected_cv_snapshots_max INT := 2;       -- из 7 total
      actual_users INT;
      actual_agent_profiles INT;
      actual_applications INT;
      actual_saved_jobs INT;
+     actual_claim_tokens INT;
+     actual_observed_facts INT;
+     actual_cv_snapshots INT;
      to_delete_ids UUID[];
+     to_cascade_profile_ids UUID[];
    BEGIN
      -- ⚠️ MCP sentinel user (id = c659afa0-5781-5574-89a0-c74b0e5ada39,
      --    email=NULL by design — uuid5(NAMESPACE_DNS, 'mcp.mcphire.com') в
@@ -106,15 +115,23 @@
 
      -- 2. Count exact cascade impact
      actual_users := COALESCE(array_length(to_delete_ids, 1), 0);
-     SELECT COUNT(*) INTO actual_agent_profiles
+     SELECT COUNT(*), array_agg(id) INTO actual_agent_profiles, to_cascade_profile_ids
        FROM agent_profiles WHERE user_id = ANY(to_delete_ids);
      SELECT COUNT(*) INTO actual_applications
        FROM applications WHERE user_id = ANY(to_delete_ids);
      SELECT COUNT(*) INTO actual_saved_jobs
        FROM saved_jobs WHERE user_id = ANY(to_delete_ids);
+     -- Downstream FK от cascade'нутых agent_profiles (Codex round 12 HIGH-2)
+     SELECT COUNT(*) INTO actual_claim_tokens
+       FROM claim_tokens WHERE profile_id = ANY(COALESCE(to_cascade_profile_ids, ARRAY[]::uuid[]));
+     SELECT COUNT(*) INTO actual_observed_facts
+       FROM observed_facts WHERE profile_id = ANY(COALESCE(to_cascade_profile_ids, ARRAY[]::uuid[]));
+     SELECT COUNT(*) INTO actual_cv_snapshots
+       FROM cv_snapshots WHERE profile_id = ANY(COALESCE(to_cascade_profile_ids, ARRAY[]::uuid[]));
 
-     RAISE NOTICE 'Preflight: users=%, agent_profiles=%, applications=%, saved_jobs=%',
-       actual_users, actual_agent_profiles, actual_applications, actual_saved_jobs;
+     RAISE NOTICE 'Preflight: users=%, agent_profiles=%, applications=%, saved_jobs=%, claim_tokens=%, observed_facts=%, cv_snapshots=%',
+       actual_users, actual_agent_profiles, actual_applications, actual_saved_jobs,
+       actual_claim_tokens, actual_observed_facts, actual_cv_snapshots;
 
      -- 3. Bounds enforcement — если что-то выше expected, AbortMission
      IF actual_users > expected_users_max THEN
@@ -131,6 +148,18 @@
      IF actual_saved_jobs > expected_saved_jobs_max THEN
        RAISE EXCEPTION 'Aborted: saved_jobs count % > expected %',
          actual_saved_jobs, expected_saved_jobs_max;
+     END IF;
+     IF actual_claim_tokens > expected_claim_tokens_max THEN
+       RAISE EXCEPTION 'Aborted: claim_tokens cascade count % > expected %',
+         actual_claim_tokens, expected_claim_tokens_max;
+     END IF;
+     IF actual_observed_facts > expected_observed_facts_max THEN
+       RAISE EXCEPTION 'Aborted: observed_facts cascade count % > expected %',
+         actual_observed_facts, expected_observed_facts_max;
+     END IF;
+     IF actual_cv_snapshots > expected_cv_snapshots_max THEN
+       RAISE EXCEPTION 'Aborted: cv_snapshots cascade count % > expected %',
+         actual_cv_snapshots, expected_cv_snapshots_max;
      END IF;
 
      -- 4. Очистка дочерних таблиц без CASCADE (по locked id set)
@@ -239,6 +268,32 @@
    **Оба grep должны вернуть 0 ДО** запуска alembic migration. Если ненулёвой результат — миграция не запускается.
 
    Все эти правки коммитятся **в том же PR** что миграция, deploy одновременно. Smoke после deploy: `/auth/me` (используя свежий magic-link токен) возвращает 200 (защита от Codex round 8 HIGH-1) + MCP `apply_to_job` создаёт application с sentinel user (защита от round 7 CRITICAL).
+
+**После Alembic upgrade + smoke OK** — обязательный success unfreeze (Codex round 12 MEDIUM-1):
+
+```bash
+# 1. Restart все 6 контейнеров
+ssh root@185.202.239.165 'docker start \
+  mcphire-api mcphire-mcp mcphire-tg-bot \
+  mcphire-notif mcphire-claim-verifier mcphire-channels'
+
+# 2. Wait + health check (≤30s)
+ssh root@185.202.239.165 'sleep 15 && docker ps --format "{{.Names}}\t{{.Status}}" | grep mcphire'
+# Expected: все 6 контейнеров "Up X seconds (healthy)".
+
+# 3. Restore host crontab
+ssh root@185.202.239.165 'crontab /tmp/crontab.backup-pre-s12'
+
+# 4. Smoke endpoints
+curl -sf https://api.mcphire.com/health
+curl -sf https://mcphire.com
+# Expected: 200 OK на обоих.
+
+# 5. Verify cron возобновлён (если есть синтетика, ждать 1 цикл и смотреть logs)
+ssh root@185.202.239.165 'crontab -l | head -3'
+```
+
+Если any step fails → run rollback procedure (см. ниже).
 
 6. **Alembic миграция** (после DELETE и code update):
    - Drop `users.password_hash`, `users.telegram_id`, `users.email_verified`, `users.email_verification_token`, `users.email_verification_sent_at` (+ google_id если есть — проверить по `\d users`).
@@ -605,6 +660,13 @@ Owner link — переиспользуем existing `agent_profiles.user_id` (�
 | HIGH-2 owner_user_id schema | Не применимо: используем existing `agent_profiles.user_id`. |
 | HIGH-3 Telegram email collision | Не применимо: 0 Telegram юзеров. |
 | HIGH-4 `/auth/verify` route collision | Не применимо: legacy email-verification сносится целиком. Новый path `/auth/verify-magic-link`. |
+
+### Round 12 (quiescence filter + cascade bounds + success unfreeze, 2026-05-23)
+| # | Решение |
+|---|---|
+| HIGH-1 quiescence filter скрывает manual psql | application_name filter убран. `pid != pg_backend_pid()` единственный exclude. Любая non-self session → STOP, terminate через `pg_terminate_backend(pid)`. |
+| HIGH-2 cascade preflight не покрывает downstream | DO block расширен: считаем claim_tokens (max 5), observed_facts (max 5), cv_snapshots (max 2) от cascade'нутых profile_ids. RAISE EXCEPTION на excess. |
+| MEDIUM-1 success path leaves prod frozen | Добавлен explicit unfreeze step: start 6 containers + sleep + health check + restore crontab + smoke endpoints. Если что-то fail — rollback. |
 
 ### Round 11 (full write-freeze, 2026-05-23)
 | # | Решение |
