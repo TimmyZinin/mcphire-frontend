@@ -9,12 +9,9 @@ export type UserRole = "seeker" | "employer" | "admin";
 export interface AuthUser {
   id: string;
   email: string | null;
-  telegramId: string | null;
-  telegramUsername: string | null;
   name: string;
   avatarUrl: string | null;
   role: UserRole;
-  emailVerified: boolean;
   createdAt: string;
 }
 
@@ -22,27 +19,6 @@ export interface AuthState {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-}
-
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface RegisterCredentials {
-  name: string;
-  email: string;
-  password: string;
-}
-
-export interface TelegramAuthData {
-  id: number;
-  first_name: string;
-  last_name?: string;
-  username?: string;
-  photo_url?: string;
-  auth_date: number;
-  hash: string;
 }
 
 export interface TokenResponse {

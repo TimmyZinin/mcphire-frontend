@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -40,8 +40,8 @@ const PricingPage = lazy(() => import("./pages/PricingPage"));
 
 // ---- Auth pages -------------------------------------------
 const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
-const PasswordResetPage = lazy(() => import("./pages/auth/PasswordResetPage"));
-const VerifyEmailPage = lazy(() => import("./pages/auth/VerifyEmailPage"));
+// PasswordResetPage removed in Sprint 12 task 33 — magic-link replaces it
+const VerifyMagicLinkPage = lazy(() => import("./pages/auth/VerifyMagicLinkPage"));
 
 // ---- Seeker pages -----------------------------------------
 // SeekerProfilePage already contains its own Navbar+Footer — rendered without DashboardLayout
@@ -155,9 +155,12 @@ const App = () => (
                       AuthLayout is provided for future new auth pages;
                       the existing AuthPage works as-is. ---- */}
                   <Route path="/auth/login" element={<AuthPage />} />
-                  <Route path="/auth/register" element={<AuthPage />} />
-                  <Route path="/auth/reset-password" element={<PasswordResetPage />} />
-                  <Route path="/auth/verify" element={<VerifyEmailPage />} />
+                  {/* Legacy /auth/register → magic-link login (Sprint 12 task 33) */}
+                  <Route path="/auth/register" element={<Navigate to="/auth/login" replace />} />
+                  {/* Legacy /auth/verify (email-verification) → login */}
+                  <Route path="/auth/verify" element={<Navigate to="/auth/login" replace />} />
+                  <Route path="/auth/reset-password" element={<Navigate to="/auth/login" replace />} />
+                  <Route path="/auth/verify-magic-link" element={<VerifyMagicLinkPage />} />
 
                   {/* ---- Seeker routes (protected) ----
                       NOTE: SeekerProfilePage already includes its own Navbar+Footer.

@@ -3,9 +3,6 @@
 // ============================================================
 
 import type {
-  LoginCredentials,
-  RegisterCredentials,
-  TelegramAuthData,
   TokenResponse,
   AuthUser,
   Job,
@@ -18,7 +15,6 @@ import type {
 } from "@/types";
 import { delay } from "./delay";
 import { db } from "./mockDb";
-import { MOCK_CREDENTIAL } from "@/data/mockUsers";
 
 // Re-export token management from real api (uses localStorage)
 import {
@@ -47,86 +43,45 @@ class ApiError extends Error {
 // Auth API
 // ============================================================
 
+// Sprint 12 task 33 — magic-link only. Real backend uses email; the mock
+// short-circuits and grants tokens immediately for the requested email so
+// dev with VITE_USE_MOCKS=true can still log in without a real inbox.
+
+const pendingMockTokens = new Map<string, string>();
+
 export const authApi = {
-  async login(credentials: LoginCredentials): Promise<TokenResponse> {
+  async requestMagicLink(email: string): Promise<{ sent: boolean }> {
     await delay();
-    const user = db.findUserByEmail(credentials.email);
-
-    // Check password (for mock, accept any password for existing users, or "password123")
+    const normalized = email.trim().toLowerCase();
+    let user = db.findUserByEmail(normalized);
     if (!user) {
-      throw new ApiError(401, "INVALID_CREDENTIALS", "Неверный email или пароль");
-    }
-
-    if (credentials.password !== MOCK_CREDENTIAL) {
-      throw new ApiError(401, "INVALID_CREDENTIALS", "Неверный email или пароль");
-    }
-
-    db.currentUser = user;
-    const tokens: TokenResponse = {
-      accessToken: `mock-token-${user.id}`,
-      refreshToken: `mock-refresh-${user.id}`,
-      expiresIn: 3600,
-    };
-    realSetTokens(tokens);
-    return tokens;
-  },
-
-  async register(credentials: RegisterCredentials): Promise<TokenResponse> {
-    await delay();
-
-    // Check if user already exists
-    const existing = db.findUserByEmail(credentials.email);
-    if (existing) {
-      throw new ApiError(400, "EMAIL_EXISTS", "Пользователь с таким email уже существует");
-    }
-
-    // Create new user
-    const newUser: AuthUser = {
-      id: `user-${Date.now()}`,
-      email: credentials.email,
-      telegramId: null,
-      telegramUsername: null,
-      name: credentials.name,
-      avatarUrl: null,
-      role: "seeker",
-      emailVerified: false,
-      createdAt: new Date().toISOString(),
-    };
-
-    db.users.push(newUser);
-    db.currentUser = newUser;
-
-    const tokens: TokenResponse = {
-      accessToken: `mock-token-${newUser.id}`,
-      refreshToken: `mock-refresh-${newUser.id}`,
-      expiresIn: 3600,
-    };
-    realSetTokens(tokens);
-    return tokens;
-  },
-
-  async loginWithTelegram(data: TelegramAuthData): Promise<TokenResponse> {
-    await delay();
-
-    // Find existing user or create new one
-    let user = db.users.find((u) => u.telegramId === String(data.id));
-
-    if (!user) {
-      // Create new user from Telegram data
-      user = {
-        id: `tg-${data.id}`,
-        email: null,
-        telegramId: String(data.id),
-        telegramUsername: data.username || null,
-        name: [data.first_name, data.last_name].filter(Boolean).join(" "),
-        avatarUrl: data.photo_url || null,
+      const newUser: AuthUser = {
+        id: `user-${Date.now()}`,
+        email: normalized,
+        name: normalized.split("@")[0],
+        avatarUrl: null,
         role: "seeker",
-        emailVerified: true,
         createdAt: new Date().toISOString(),
       };
-      db.users.push(user);
+      db.users.push(newUser);
+      user = newUser;
     }
+    // Mock magic-link token is the user id; in real backend it's a 256-bit nonce.
+    pendingMockTokens.set(user.id, normalized);
+    return { sent: true };
+  },
 
+  async verifyMagicLink(token: string): Promise<TokenResponse> {
+    await delay();
+    const email = pendingMockTokens.get(token);
+    if (!email) {
+      throw new ApiError(410, "GONE", "Ссылка устарела или уже использована");
+    }
+    pendingMockTokens.delete(token);
+    const user = db.findUserByEmail(email);
+    if (!user) {
+      throw new ApiError(404, "NOT_FOUND", "Пользователь не найден");
+    }
     db.currentUser = user;
     const tokens: TokenResponse = {
       accessToken: `mock-token-${user.id}`,

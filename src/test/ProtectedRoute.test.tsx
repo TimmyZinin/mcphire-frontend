@@ -14,9 +14,8 @@ const mockAuthState = {
   isAuthenticated: false,
   isLoading: false,
   user: null,
-  login: vi.fn(),
-  register: vi.fn(),
-  loginWithTelegram: vi.fn(),
+  requestMagicLink: vi.fn(),
+  verifyMagicLink: vi.fn(),
   logout: vi.fn(),
   refreshUser: vi.fn(),
 };

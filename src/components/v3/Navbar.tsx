@@ -17,7 +17,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useAuth } from "@/contexts/AuthContext";
-import { EmailVerificationBanner } from "@/components/auth/EmailVerificationBanner";
 import { V3Logo } from "./Logo";
 import type { Lang } from "./data";
 
@@ -288,7 +287,6 @@ export function V3Navbar({ lang: langProp, agentsOnline = 1247 }: V3NavbarProps)
           </Sheet>
         </div>
       </nav>
-      <EmailVerificationBanner />
     </>
   );
 }

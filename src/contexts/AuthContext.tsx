@@ -1,6 +1,7 @@
 // ============================================================
-// MCPHire — Auth Context
-// Handles JWT (localStorage), Telegram Widget, and Email auth.
+// MCPHire — Auth Context (Sprint 12 task 33 — magic-link only)
+// Removed: login/register/loginWithTelegram/loginWithGoogle.
+// New: requestMagicLink + verifyMagicLink.
 // ============================================================
 
 import {
@@ -19,28 +20,16 @@ import {
   getAccessToken,
 } from "@/lib/apiClient";
 import { queryKeys } from "@/lib/queryKeys";
-import type {
-  AuthUser,
-  AuthState,
-  LoginCredentials,
-  RegisterCredentials,
-  TelegramAuthData,
-} from "@/types";
-
-// ---- Context shape -----------------------------------------
+import type { AuthUser, AuthState } from "@/types";
 
 interface AuthContextValue extends AuthState {
-  login: (credentials: LoginCredentials) => Promise<void>;
-  register: (credentials: RegisterCredentials) => Promise<void>;
-  loginWithTelegram: (data: TelegramAuthData) => Promise<void>;
-  loginWithGoogle: (credential: string) => Promise<void>;
+  requestMagicLink: (email: string) => Promise<void>;
+  verifyMagicLink: (token: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
-
-// ---- Provider ----------------------------------------------
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -51,7 +40,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
   const qc = useQueryClient();
 
-  // On mount: try to restore session from stored token
   useEffect(() => {
     const token = getAccessToken();
     if (!token) {
@@ -66,32 +54,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const login = useCallback(async (credentials: LoginCredentials) => {
-    const tokens = await authApi.login(credentials);
-    setTokens(tokens);
-    const me = await authApi.me();
-    setUser(me);
-    qc.invalidateQueries({ queryKey: queryKeys.auth.me() });
-  }, [qc]);
+  const requestMagicLink = useCallback(async (email: string) => {
+    await authApi.requestMagicLink(email);
+  }, []);
 
-  const register = useCallback(async (credentials: RegisterCredentials) => {
-    const tokens = await authApi.register(credentials);
-    setTokens(tokens);
-    const me = await authApi.me();
-    setUser(me);
-    qc.invalidateQueries({ queryKey: queryKeys.auth.me() });
-  }, [qc]);
-
-  const loginWithTelegram = useCallback(async (data: TelegramAuthData) => {
-    const tokens = await authApi.loginWithTelegram(data);
-    setTokens(tokens);
-    const me = await authApi.me();
-    setUser(me);
-    qc.invalidateQueries({ queryKey: queryKeys.auth.me() });
-  }, [qc]);
-
-  const loginWithGoogle = useCallback(async (credential: string) => {
-    const tokens = await authApi.loginWithGoogle(credential);
+  const verifyMagicLink = useCallback(async (token: string) => {
+    const tokens = await authApi.verifyMagicLink(token);
     setTokens(tokens);
     const me = await authApi.me();
     setUser(me);
@@ -117,18 +85,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     user,
     isAuthenticated: !!user,
     isLoading,
-    login,
-    register,
-    loginWithTelegram,
-    loginWithGoogle,
+    requestMagicLink,
+    verifyMagicLink,
     logout,
     refreshUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
-// ---- Hook --------------------------------------------------
 
 export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext);

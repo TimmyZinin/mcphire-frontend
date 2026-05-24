@@ -24,7 +24,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
-import { EmailVerificationBanner } from "@/components/auth/EmailVerificationBanner";
 
 // ---- Nav links ---------------------------------------------
 
@@ -285,7 +284,6 @@ const JobBoardNavbar = () => {
         </div>
       </div>
     </nav>
-    <EmailVerificationBanner />
     </>
   );
 };

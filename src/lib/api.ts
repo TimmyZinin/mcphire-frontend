@@ -124,26 +124,20 @@ function getLocale(): string {
 // ============================================================
 
 export const authApi = {
-  login: (credentials: LoginCredentials) =>
-    request<TokenResponse>("/auth/login", {
+  // Sprint 12 task 33 — magic-link only.
+  requestMagicLink: (email: string) =>
+    request<{ sent: boolean }>("/auth/magic-link", {
       method: "POST",
-      body: JSON.stringify(credentials),
+      body: JSON.stringify({ email }),
     }),
 
-  register: (credentials: RegisterCredentials) =>
-    request<TokenResponse>("/auth/register", {
+  verifyMagicLink: (token: string) =>
+    request<TokenResponse>("/auth/verify-magic-link", {
       method: "POST",
-      body: JSON.stringify(credentials),
+      body: JSON.stringify({ token }),
     }),
 
-  loginWithTelegram: (data: TelegramAuthData) =>
-    request<TokenResponse>("/auth/telegram", {
-      method: "POST",
-      body: JSON.stringify(data),
-    }),
-
-  logout: () =>
-    request<void>("/auth/logout", { method: "POST" }),
+  logout: () => Promise.resolve(),
 
   refreshToken: () => {
     const refreshToken = localStorage.getItem(REFRESH_KEY);
@@ -154,23 +148,6 @@ export const authApi = {
   },
 
   me: () => request<AuthUser>("/auth/me"),
-
-  loginWithGoogle: (credential: string) =>
-    request<TokenResponse>("/auth/google", {
-      method: "POST",
-      body: JSON.stringify({ credential }),
-    }),
-
-  verifyEmail: (token: string) =>
-    request<AuthUser>("/auth/verify-email", {
-      method: "POST",
-      body: JSON.stringify({ token }),
-    }),
-
-  resendVerification: () =>
-    request<{ sent: boolean }>("/auth/resend-verification", {
-      method: "POST",
-    }),
 };
 
 // ============================================================
