@@ -1,10 +1,11 @@
 // ============================================================
 // MCPHire — Job Board Navbar
-// Auth-aware: shows user dropdown when authenticated.
+// Auth-aware: shows user dropdown when authenticated. Bilingual (RU/EN).
 // ============================================================
 
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Menu, LogOut, User, FileText, LayoutDashboard } from "lucide-react";
 import {
   Sheet,
@@ -28,10 +29,10 @@ import { useAuth } from "@/contexts/AuthContext";
 // ---- Nav links ---------------------------------------------
 
 const navLinks = [
-  { to: "/jobs", label: "Вакансии" },
-  { to: "/employers", label: "Для работодателей" },
-  { to: "/tools", label: "Инструменты" },
-  { to: "/mcp", label: "MCP" },
+  { to: "/jobs", labelRu: "Вакансии", labelEn: "Jobs" },
+  { to: "/employers", labelRu: "Для работодателей", labelEn: "For employers" },
+  { to: "/tools", labelRu: "Инструменты", labelEn: "Tools" },
+  { to: "/mcp", labelRu: "MCP", labelEn: "MCP" },
 ];
 
 // ---- Helpers -----------------------------------------------
@@ -50,6 +51,8 @@ function getInitials(name: string): string {
 const JobBoardNavbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
+  const L = i18n.language?.startsWith("en");
   const [open, setOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
 
@@ -77,7 +80,9 @@ const JobBoardNavbar = () => {
   const dashboardLink =
     user?.role === "employer" ? "/employer/dashboard" : "/profile";
   const dashboardLabel =
-    user?.role === "employer" ? "Дашборд" : "Мой профиль";
+    user?.role === "employer"
+      ? (L ? "Dashboard" : "Дашборд")
+      : (L ? "My profile" : "Мой профиль");
 
   return (
     <>
@@ -94,7 +99,7 @@ const JobBoardNavbar = () => {
         <div className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
             <Link key={link.to} to={link.to} className={linkClass(link.to)}>
-              {link.label}
+              {L ? link.labelEn : link.labelRu}
             </Link>
           ))}
         </div>
@@ -111,7 +116,7 @@ const JobBoardNavbar = () => {
               <DropdownMenuTrigger asChild>
                 <button
                   className="hidden md:flex items-center gap-2 px-2 py-1.5 rounded-full hover:bg-muted transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                  aria-label="Меню аккаунта"
+                  aria-label={L ? "Account menu" : "Меню аккаунта"}
                 >
                   <Avatar className="w-8 h-8">
                     <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
@@ -128,14 +133,14 @@ const JobBoardNavbar = () => {
                 <DropdownMenuItem asChild>
                   <Link to="/profile" className="flex items-center gap-2 cursor-pointer">
                     <User className="w-4 h-4" />
-                    Мой профиль
+                    {L ? "My profile" : "Мой профиль"}
                   </Link>
                 </DropdownMenuItem>
                 {user.role === "seeker" && (
                   <DropdownMenuItem asChild>
                     <Link to="/applications" className="flex items-center gap-2 cursor-pointer">
                       <FileText className="w-4 h-4" />
-                      Мои отклики
+                      {L ? "My applications" : "Мои отклики"}
                     </Link>
                   </DropdownMenuItem>
                 )}
@@ -143,7 +148,7 @@ const JobBoardNavbar = () => {
                   <DropdownMenuItem asChild>
                     <Link to="/employer/dashboard" className="flex items-center gap-2 cursor-pointer">
                       <LayoutDashboard className="w-4 h-4" />
-                      Дашборд
+                      {L ? "Dashboard" : "Дашборд"}
                     </Link>
                   </DropdownMenuItem>
                 )}
@@ -155,7 +160,7 @@ const JobBoardNavbar = () => {
                       className="flex items-center gap-2 cursor-pointer"
                     >
                       <LayoutDashboard className="w-4 h-4" />
-                      Стать работодателем
+                      {L ? "Become an employer" : "Стать работодателем"}
                     </Link>
                   </DropdownMenuItem>
                 )}
@@ -164,17 +169,17 @@ const JobBoardNavbar = () => {
                   onClick={handleLogout}
                 >
                   <LogOut className="w-4 h-4" />
-                  Выйти
+                  {L ? "Sign out" : "Выйти"}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            /* Unauthenticated: Telegram CTA */
+            /* Unauthenticated: sign-in CTA */
             <Link
               to="/auth/login"
               className="hidden md:inline-flex px-4 py-2 rounded-full text-sm font-semibold text-white bg-primary hover:bg-primary/90 transition-colors"
             >
-              Войти
+              {L ? "Sign in" : "Войти"}
             </Link>
           )}
 
@@ -182,7 +187,7 @@ const JobBoardNavbar = () => {
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
               className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-              aria-label="Меню"
+              aria-label={L ? "Menu" : "Меню"}
             >
               <Menu className="w-5 h-5" />
             </SheetTrigger>
@@ -202,7 +207,7 @@ const JobBoardNavbar = () => {
                     onClick={() => setOpen(false)}
                     className={mobileLinkClass(link.to)}
                   >
-                    {link.label}
+                    {L ? link.labelEn : link.labelRu}
                   </Link>
                 ))}
 
@@ -226,7 +231,9 @@ const JobBoardNavbar = () => {
                       <div className="min-w-0">
                         <p className="text-sm font-semibold truncate">{user.name}</p>
                         <p className="text-xs text-muted-foreground truncate">
-                          {user.role === "employer" ? "Работодатель" : "Соискатель"}
+                          {user.role === "employer"
+                            ? (L ? "Employer" : "Работодатель")
+                            : (L ? "Job seeker" : "Соискатель")}
                         </p>
                       </div>
                     </div>
@@ -246,7 +253,7 @@ const JobBoardNavbar = () => {
                           className="px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted transition-colors flex items-center gap-2"
                         >
                           <FileText className="w-4 h-4 text-muted-foreground" />
-                          Мои отклики
+                          {L ? "My applications" : "Мои отклики"}
                         </Link>
                         <Link
                           to="/employers"
@@ -254,7 +261,7 @@ const JobBoardNavbar = () => {
                           className="px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted transition-colors flex items-center gap-2"
                         >
                           <LayoutDashboard className="w-4 h-4 text-muted-foreground" />
-                          Стать работодателем
+                          {L ? "Become an employer" : "Стать работодателем"}
                         </Link>
                       </>
                     )}
@@ -266,7 +273,7 @@ const JobBoardNavbar = () => {
                       className="px-4 py-3 rounded-xl text-base font-medium text-destructive hover:bg-destructive/5 transition-colors flex items-center gap-2 text-left"
                     >
                       <LogOut className="w-4 h-4" />
-                      Выйти
+                      {L ? "Sign out" : "Выйти"}
                     </button>
                   </>
                 ) : (
@@ -275,7 +282,7 @@ const JobBoardNavbar = () => {
                     onClick={() => setOpen(false)}
                     className="px-4 py-3 rounded-xl text-base font-semibold text-white bg-primary text-center"
                   >
-                    Войти
+                    {L ? "Sign in" : "Войти"}
                   </Link>
                 )}
               </div>

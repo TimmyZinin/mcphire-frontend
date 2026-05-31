@@ -1,13 +1,17 @@
 // ============================================================
 // MCPHire V3 — footer
 // Reuses V3 tokens (warm cream surface, ink + mute text).
-// No partner cross-promo. M2M tagline on bottom bar.
+// No partner cross-promo. M2M tagline on bottom bar. Bilingual (RU/EN).
 // ============================================================
 
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { V3Logo } from "@/components/v3/Logo";
 
 const Footer = () => {
+  const { i18n } = useTranslation();
+  const L = i18n.language?.startsWith("en");
+
   return (
     <footer className="border-t mt-8" style={{ borderColor: "var(--v3-line2)", background: "rgba(241,236,227,.5)" }}>
       <div className="mx-auto px-4 md:px-8 py-12" style={{ maxWidth: 1320 }}>
@@ -16,7 +20,9 @@ const Footer = () => {
           <div className="col-span-2 md:col-span-1">
             <V3Logo />
             <p className="text-sm text-v3-ink2 leading-relaxed mt-3">
-              Первый MCP-маркетплейс IT-вакансий. Машина с машиной.
+              {L
+                ? "The first MCP marketplace for IT jobs. Machine to machine."
+                : "Первый MCP-маркетплейс IT-вакансий. Машина с машиной."}
             </p>
             <div className="flex gap-3 mt-4">
               <a href="https://t.me/mcphire" target="_blank" rel="noopener noreferrer" className="text-v3-ink2 hover:text-v3-ink transition-colors text-sm font-medium">
@@ -31,31 +37,31 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Кандидатам */}
+          {/* For candidates */}
           <div>
-            <h4 className="font-mono text-xs text-v3-mute mb-3 uppercase tracking-wider">Кандидатам</h4>
+            <h4 className="font-mono text-xs text-v3-mute mb-3 uppercase tracking-wider">{L ? "For candidates" : "Кандидатам"}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/jobs" className="text-v3-ink2 hover:text-v3-ink transition-colors">Вакансии</Link></li>
-              <li><Link to="/tools/salary" className="text-v3-ink2 hover:text-v3-ink transition-colors">Калькулятор зарплат</Link></li>
-              <li><Link to="/tools/resume-checklist" className="text-v3-ink2 hover:text-v3-ink transition-colors">Чеклист резюме</Link></li>
-              <li><Link to="/tools/resume-review" className="text-v3-ink2 hover:text-v3-ink transition-colors">AI-ревью резюме</Link></li>
-              <li><Link to="/knowledge" className="text-v3-ink2 hover:text-v3-ink transition-colors">База знаний</Link></li>
+              <li><Link to="/jobs" className="text-v3-ink2 hover:text-v3-ink transition-colors">{L ? "Jobs" : "Вакансии"}</Link></li>
+              <li><Link to="/tools/salary" className="text-v3-ink2 hover:text-v3-ink transition-colors">{L ? "Salary calculator" : "Калькулятор зарплат"}</Link></li>
+              <li><Link to="/tools/resume-checklist" className="text-v3-ink2 hover:text-v3-ink transition-colors">{L ? "Resume checklist" : "Чеклист резюме"}</Link></li>
+              <li><Link to="/tools/resume-review" className="text-v3-ink2 hover:text-v3-ink transition-colors">{L ? "AI resume review" : "AI-ревью резюме"}</Link></li>
+              <li><Link to="/knowledge" className="text-v3-ink2 hover:text-v3-ink transition-colors">{L ? "Knowledge base" : "База знаний"}</Link></li>
             </ul>
           </div>
 
-          {/* Работодателям */}
+          {/* For employers */}
           <div>
-            <h4 className="font-mono text-xs text-v3-mute mb-3 uppercase tracking-wider">Работодателям</h4>
+            <h4 className="font-mono text-xs text-v3-mute mb-3 uppercase tracking-wider">{L ? "For employers" : "Работодателям"}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/employers" className="text-v3-ink2 hover:text-v3-ink transition-colors">Разместить вакансию</Link></li>
-              <li><Link to="/employer/dashboard" className="text-v3-ink2 hover:text-v3-ink transition-colors">Дашборд</Link></li>
+              <li><Link to="/employers" className="text-v3-ink2 hover:text-v3-ink transition-colors">{L ? "Post a vacancy" : "Разместить вакансию"}</Link></li>
+              <li><Link to="/employer/dashboard" className="text-v3-ink2 hover:text-v3-ink transition-colors">{L ? "Dashboard" : "Дашборд"}</Link></li>
               <li><Link to="/mcp" className="text-v3-ink2 hover:text-v3-ink transition-colors">MCP API</Link></li>
             </ul>
           </div>
 
-          {/* MCP / агентам */}
+          {/* For agents */}
           <div>
-            <h4 className="font-mono text-xs text-v3-mute mb-3 uppercase tracking-wider">Агентам</h4>
+            <h4 className="font-mono text-xs text-v3-mute mb-3 uppercase tracking-wider">{L ? "For agents" : "Агентам"}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a
@@ -76,7 +82,7 @@ const Footer = () => {
                   llms.txt
                 </a>
               </li>
-              <li><Link to="/privacy" className="text-v3-ink2 hover:text-v3-ink transition-colors">Конфиденциальность</Link></li>
+              <li><Link to="/privacy" className="text-v3-ink2 hover:text-v3-ink transition-colors">{L ? "Privacy" : "Конфиденциальность"}</Link></li>
             </ul>
           </div>
         </div>
