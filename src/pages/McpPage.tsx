@@ -1,204 +1,223 @@
-import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Terminal, Code, Database, TrendingUp, ExternalLink } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Database, Building2, ExternalLink } from "lucide-react";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
+import { PromptCopyBlock } from "@/components/v3/PromptCopyBlock";
+
+const SSE_ENDPOINT = "https://mcp.mcphire.com/sse";
+
+// Real tool catalog (19) — keep in sync with mcp-server/server.py + server.json.
+const CANDIDATE_TOOLS = [
+  "search_jobs",
+  "get_job_details",
+  "apply_to_job",
+  "get_my_applications",
+  "get_salary_stats",
+  "get_registration_questions",
+  "register_profile",
+  "get_verification_status",
+  "list_my_matches",
+  "get_my_cv",
+  "delete_profile",
+];
+const EMPLOYER_TOOLS = [
+  "get_employer_questions",
+  "register_employer_profile",
+  "post_vacancy",
+  "publish_vacancy",
+  "get_my_vacancies",
+  "get_applicants",
+  "shortlist_candidate",
+  "send_interview_invite",
+];
+
+const CONFIG_SNIPPET = `{
+  "mcpServers": {
+    "mcphire": {
+      "type": "sse",
+      "url": "https://mcp.mcphire.com/sse"
+    }
+  }
+}`;
 
 const McpPage = () => {
-  const tools = [
-    {
-      icon: Database,
-      name: "salary_data",
-      description: "Зарплаты по ролям и городам (15 ролей × 5 городов)",
-      example: `// Запрос
-{ "tool": "salary_data", "params": { "role": "Frontend Developer", "city": "Москва" } }
-
-// Ответ
-{ "salaryFrom": 180000, "salaryTo": 350000, "currency": "₽", "level": "Middle" }`,
-    },
-    {
-      icon: Terminal,
-      name: "resume_review",
-      description: "Анализ резюме (15 критериев)",
-      example: `// Запрос
-{ "tool": "resume_review", "params": { "resumeText": "Опыт работы 5 лет..." } }
-
-// Ответ
-{ "score": 75, "categories": { "structure": 20, "experience": 20, "skills": 15, "formatting": 20 }, "recommendations": [...] }`,
-    },
-    {
-      icon: Code,
-      name: "job_search",
-      description: "Поиск IT-вакансий (50+ позиций)",
-      example: `// Запрос
-{ "tool": "job_search", "params": { "skills": ["React", "TypeScript"], "city": "Москва", "level": "Senior" } }
-
-// Ответ
-{ "jobs": [{ "id": "1", "title": "Senior Frontend...", "company": "Яндекс", "salaryFrom": 350000 }] }`,
-    },
-    {
-      icon: TrendingUp,
-      name: "market_trends",
-      description: "Тренды рынка труда",
-      example: `// Запрос
-{ "tool": "market_trends", "params": { "period": "2026-Q1" } }
-
-// Ответ
-{ "demand": { "React": "+15%", "Python": "+12%" }, "salaryDynamics": "+8%", "vacanciesCount": 1240 }`,
-    },
-  ];
+  const { i18n } = useTranslation();
+  const lang: "ru" | "en" = i18n.language?.startsWith("en") ? "en" : "ru";
+  const L = lang === "en";
 
   return (
     <main className="min-h-screen bg-background">
       <Helmet>
-        <title>MCP-сервер MCPHire — AI Job Search API | MCPHire</title>
+        <title>{L ? "MCPHire MCP Server — connect your AI agent" : "MCP-сервер MCPHire — подключи своего AI-агента"}</title>
         <meta
           name="description"
-          content="Подключите AI-агента к российскому рынку IT-вакансий через Model Context Protocol. Salary data, resume review, job search."
+          content={
+            L
+              ? "MCP-first two-sided job marketplace. Connect Claude Desktop, Cursor or any MCP client over SSE — 19 tools for candidates and employers."
+              : "MCP-first двусторонний job-маркетплейс. Подключи Claude Desktop, Cursor или любой MCP-клиент по SSE — 19 инструментов для кандидатов и работодателей."
+          }
         />
         <link rel="canonical" href="https://mcphire.com/mcp" />
-        <meta
-          property="og:title"
-          content="MCP-сервер MCPHire — AI Job Search API"
-        />
+        <meta property="og:title" content={L ? "MCPHire MCP Server" : "MCP-сервер MCPHire"} />
         <meta
           property="og:description"
-          content="Подключите AI-агента к российскому рынку IT-вакансий"
+          content={L ? "Connect your AI agent over MCP (SSE)." : "Подключи AI-агента по MCP (SSE)."}
         />
         <meta property="og:url" content="https://mcphire.com/mcp" />
       </Helmet>
 
-      {/* Header */}
       <JobBoardNavbar />
 
       {/* Hero */}
       <section className="py-16 bg-gradient-to-b from-background to-card/50">
-        <div className="max-w-[1280px] mx-auto px-8 text-center">
-          <h1 className="heading-xl mb-6">
-            MCP-сервер<br />карьерного поиска
+        <div className="max-w-3xl mx-auto px-4 md:px-8 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-6">
+            <span>🤖</span>
+            <span>MCP-first · M2M</span>
+          </div>
+          <h1 className="heading-xl mb-5">
+            {L ? "MCPHire MCP Server" : "MCP-сервер MCPHire"}
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Подключите AI-агента к российскому рынку IT-вакансий через Model Context Protocol
+          <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
+            {L
+              ? "An MCP-first, two-sided IT job marketplace. Your AI agent connects over SSE and gets 19 tools — search & apply to jobs as a candidate, or register a company & post vacancies as an employer."
+              : "MCP-first двусторонний маркетплейс IT-вакансий. Твой AI-агент подключается по SSE и получает 19 инструментов — искать и откликаться как кандидат, либо зарегистрировать компанию и постить вакансии как работодатель."}
           </p>
-        </div>
-      </section>
 
-      {/* Tools */}
-      <section className="py-16">
-        <div className="max-w-[1280px] mx-auto px-8">
-          <h2 className="heading-lg mb-8">ИНСТРУМЕНТЫ</h2>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {tools.map((tool) => {
-              const IconComponent = tool.icon;
-              return (
-                <div
-                  key={tool.name}
-                  className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <IconComponent size={24} className="text-primary" />
-                    <h3 className="font-bold text-lg">{tool.name}</h3>
-                  </div>
-                  <p className="text-muted-foreground mb-4">{tool.description}</p>
-                  <pre className="bg-muted p-4 rounded-lg text-xs overflow-x-auto">
-                    <code>{tool.example}</code>
-                  </pre>
-                </div>
-              );
-            })}
+          {/* Canonical prompt + copy */}
+          <div className="bg-card border-2 border-primary/30 rounded-2xl p-6 text-left shadow-lg">
+            <div className="text-xs uppercase tracking-wider text-primary mb-3 font-semibold">
+              {L ? "Send this to your agent" : "Отправь это своему агенту"}
+            </div>
+            <PromptCopyBlock prompt="Read https://mcphire.com/skill.md and register me" lang={lang} />
+            <p className="text-xs text-muted-foreground mt-3">
+              {L
+                ? "The full onboarding protocol is the single source of truth at "
+                : "Полный протокол онбординга — единственный источник правды: "}
+              <a href="https://mcphire.com/skill.md" className="text-primary hover:underline">skill.md</a>.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Connection */}
-      <section className="py-16">
-        <div className="max-w-[1280px] mx-auto px-8">
-          <h2 className="heading-lg mb-8">ПОДКЛЮЧЕНИЕ</h2>
+      {/* Connect */}
+      <section className="py-16 border-t border-border">
+        <div className="max-w-3xl mx-auto px-4 md:px-8">
+          <h2 className="heading-lg mb-8">{L ? "Connect" : "Подключение"}</h2>
 
-          <div className="space-y-8">
+          <p className="text-sm text-muted-foreground mb-4">
+            {L
+              ? "Claude Desktop does not auto-discover servers by URL — add this once and fully restart the client."
+              : "Claude Desktop не находит серверы по URL автоматически — добавь это один раз и полностью перезапусти клиент."}
+          </p>
+
+          <div className="space-y-6">
             <div>
-              <h3 className="font-bold text-xl mb-4">Claude Desktop</h3>
+              <h3 className="font-bold mb-2">Claude Desktop · Cursor</h3>
+              <p className="text-xs text-muted-foreground mb-2">
+                {L ? "Claude Desktop: " : "Claude Desktop: "}
+                <code>claude_desktop_config.json</code>{" · "}Cursor: <code>~/.cursor/mcp.json</code>
+              </p>
               <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-                <code>{`// claude_desktop_config.json
-{
-  "mcpServers": {
-    "mcphire": {
-      "url": "https://mcp.mcphire.com/mcp"
-    }
-  }
-}`}</code>
+                <code>{CONFIG_SNIPPET}</code>
               </pre>
             </div>
 
             <div>
-              <h3 className="font-bold text-xl mb-4">Cursor / Windsurf</h3>
+              <h3 className="font-bold mb-2">Claude Code</h3>
               <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-                <code>{`// .cursor/mcp.json
-{
-  "mcpServers": {
-    "mcphire": {
-      "url": "https://mcp.mcphire.com/mcp"
-    }
-  }
-}`}</code>
+                <code>{`claude mcp add --transport sse mcphire ${SSE_ENDPOINT}`}</code>
               </pre>
             </div>
 
             <div>
-              <h3 className="font-bold text-xl mb-4">Другие клиенты</h3>
-              <p className="text-muted-foreground mb-4">
-                Добавьте MCP сервер с URL:{" "}
-                <code className="bg-muted px-2 py-1 rounded">
-                  https://mcp.mcphire.com/mcp
-                </code>
+              <h3 className="font-bold mb-2">{L ? "Any other MCP client" : "Любой другой MCP-клиент"}</h3>
+              <p className="text-muted-foreground text-sm">
+                {L ? "Add an SSE MCP server with URL " : "Добавь SSE MCP-сервер с URL "}
+                <code className="bg-muted px-2 py-1 rounded">{SSE_ENDPOINT}</code>
+                {L
+                  ? ". Or run the one-liner: "
+                  : ". Или одной командой: "}
+                <code className="bg-muted px-2 py-1 rounded">curl -fsSL https://mcphire.com/install.sh | bash</code>
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Documentation */}
-      <section className="py-16">
-        <div className="max-w-[1280px] mx-auto px-8">
-          <h2 className="heading-lg mb-8">ДОКУМЕНТАЦИЯ</h2>
+      {/* Tools */}
+      <section className="py-16 border-t border-border">
+        <div className="max-w-3xl mx-auto px-4 md:px-8">
+          <h2 className="heading-lg mb-3">{L ? "Tools (19)" : "Инструменты (19)"}</h2>
+          <p className="text-sm text-muted-foreground mb-8">
+            {L ? "Full JSON schemas, parameters and examples are in " : "Полные JSON-схемы, параметры и примеры — в "}
+            <a href="https://mcphire.com/.well-known/mcp/server.json" className="text-primary hover:underline">server.json</a>.
+          </p>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
-              <h3 className="font-bold text-lg mb-3">Endpoint</h3>
-              <code className="text-primary">https://mcp.mcphire.com/mcp</code>
+            <div className="bg-card border border-border rounded-2xl p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Database size={20} className="text-primary" />
+                <h3 className="font-bold">{L ? "Candidate (11)" : "Кандидат (11)"}</h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {CANDIDATE_TOOLS.map((t) => (
+                  <code key={t} className="text-xs bg-muted px-2 py-1 rounded">{t}</code>
+                ))}
+              </div>
             </div>
-            <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
-              <h3 className="font-bold text-lg mb-3">Protocol</h3>
-              <p>JSON-RPC 2.0 over HTTP</p>
+
+            <div className="bg-card border border-border rounded-2xl p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Building2 size={20} className="text-primary" />
+                <h3 className="font-bold">{L ? "Employer (8)" : "Работодатель (8)"}</h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {EMPLOYER_TOOLS.map((t) => (
+                  <code key={t} className="text-xs bg-muted px-2 py-1 rounded">{t}</code>
+                ))}
+              </div>
             </div>
-            <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
-              <h3 className="font-bold text-lg mb-3">Transport</h3>
-              <p>HTTP (Streamable)</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Endpoint facts */}
+      <section className="py-16 border-t border-border">
+        <div className="max-w-3xl mx-auto px-4 md:px-8">
+          <h2 className="heading-lg mb-8">{L ? "Endpoint" : "Эндпоинт"}</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-card border border-border rounded-2xl p-6">
+              <h3 className="font-bold mb-2">Endpoint</h3>
+              <code className="text-primary break-all">{SSE_ENDPOINT}</code>
             </div>
-            <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
-              <h3 className="font-bold text-lg mb-3">Discovery</h3>
-              <a
-                href="/.well-known/mcp/server.json"
-                className="text-primary hover:underline flex items-center gap-1"
-              >
-                / .well-known/mcp/server.json
-                <ExternalLink size={14} />
+            <div className="bg-card border border-border rounded-2xl p-6">
+              <h3 className="font-bold mb-2">{L ? "Transport / Protocol" : "Транспорт / Протокол"}</h3>
+              <p className="text-sm text-muted-foreground">SSE (Server-Sent Events) · JSON-RPC 2.0</p>
+            </div>
+            <div className="bg-card border border-border rounded-2xl p-6">
+              <h3 className="font-bold mb-2">{L ? "Onboarding (canonical)" : "Онбординг (канон)"}</h3>
+              <a href="https://mcphire.com/skill.md" className="text-primary hover:underline inline-flex items-center gap-1">
+                skill.md <ExternalLink size={14} />
+              </a>
+            </div>
+            <div className="bg-card border border-border rounded-2xl p-6">
+              <h3 className="font-bold mb-2">Discovery</h3>
+              <a href="/.well-known/mcp/server.json" className="text-primary hover:underline inline-flex items-center gap-1">
+                /.well-known/mcp/server.json <ExternalLink size={14} />
               </a>
             </div>
           </div>
 
-          <div className="mt-8">
-            <a
-              href="/llms.txt"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-cta-hot text-white font-semibold hover:bg-cta-hot/90 transition-colors"
-            >
-              <ExternalLink size={16} />
-              Описание для LLM (llms.txt)
-            </a>
-          </div>
+          <p className="text-xs text-muted-foreground mt-8">
+            {L ? "No MCP client? REST fallback: " : "Нет MCP-клиента? REST fallback: "}
+            <code>https://api.mcphire.com/api/v1/</code>
+            {L ? " — the same tools over plain HTTP." : " — те же инструменты по обычному HTTP."}
+          </p>
         </div>
       </section>
+
       <Footer />
     </main>
   );
