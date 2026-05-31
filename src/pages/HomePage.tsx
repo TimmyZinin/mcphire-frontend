@@ -33,6 +33,7 @@ import { V3LogosStrip } from "@/components/v3/LogosStrip";
 import { V3HowSection } from "@/components/v3/HowSection";
 import { V3M2MManifesto } from "@/components/v3/M2MManifesto";
 import { V3InstallBlock } from "@/components/v3/InstallBlock";
+import { PromptCopyBlock } from "@/components/v3/PromptCopyBlock";
 import type { AudienceMode, Lang } from "@/components/v3/data";
 
 import Footer from "@/components/Footer";
@@ -203,9 +204,10 @@ const HomePage = () => {
                   <span className="inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle" style={{ background: "var(--v3-hot)" }} aria-hidden />
                   {lang === "ru" ? "Отправь это своему агенту" : "Send this to your agent"}
                 </div>
-                <pre className="font-mono text-[15px] md:text-base whitespace-pre-wrap leading-relaxed text-v3-ink">
-{`Read https://mcphire.com/skill.md and follow the instructions to register me on mcphire. Show me the approval screen before calling register_profile.`}
-                </pre>
+                <PromptCopyBlock
+                  prompt="Read https://mcphire.com/skill.md and register me as a candidate"
+                  lang={lang}
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-left mb-8">

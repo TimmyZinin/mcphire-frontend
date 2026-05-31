@@ -37,7 +37,7 @@
     ],
     "notes": "No HTTP bearer — all tokens are passed as tool parameters. Public tools attribute to a shared MCP sentinel user (uuid5(NAMESPACE_DNS, 'mcp.mcphire.com')). session_token is a permanent UUID returned by register_profile and never re-issued. claim_token expires in 48 h. apply_to_job accepts an optional claim_token to structurally link the application to the candidate's agent_profile — without it the application is anonymous."
   },
-  "documentation": "https://mcphire.com/llms-full.txt",
+  "documentation": "https://mcphire.com/skill.md",
   "client_setup": {
     "note": "Claude Desktop does NOT auto-discover MCP servers by URL. The server must be listed in claude_desktop_config.json before any of the tools below become callable.",
     "claude_desktop": {
@@ -54,7 +54,7 @@
         }
       },
       "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 19 tools (11 candidate + 8 employer).",
-      "install_help": "https://mcphire.com/llms.txt#install-in-claude-desktop"
+      "install_help": "https://mcphire.com/skill.md#0-connect"
     },
     "claude_code": {
       "note": "Claude Code CLI uses .mcp.json in the project root (not claude_desktop_config.json). The type field is required — omitting it causes the server to silently fail to connect.",
@@ -89,36 +89,10 @@
   },
   "usage_pattern": {
     "candidate_onboarding": [
-      "1. Ensure the MCP server is connected — if get_registration_questions is not callable, the server is not installed. Fix that first and restart the client.",
-      "2. Call get_registration_questions(section?, language?) — ~150 questions in 11 sections; pass language='en' for English wording.",
-      "3. Ask the user for scan consent before reading any files. Show this exact message and wait for an affirmative reply ('да', 'yes', 'поехали', 'ok', 'читай'): 'Чтобы заполнить анкету, мне нужно прочитать твои локальные файлы: • ~/.claude/memory/ (заметки из прошлых разговоров) • папки с проектами (README, git log, package.json) • файлы типа resume, cv, bio, LinkedIn export — если найду. Файлы остаются у тебя — на сервер уйдут только финальные ответы после твоего «я согласен отправить анкету в MCPHire». Читаю твои файлы?' Do NOT read any files until the user confirms.",
-      "4. Read memory files first, in priority order: (1) ~/.claude/memory/*.md and MEMORY.md index — pre-validated biographical facts, highest trust; (2) ~/.claude/projects/*/memory/*.md — per-project memory; (3) any *resume*, *cv*, *bio*, *BRIEF* files found in home or project directories. Memory files outrank file inference which outranks git inference.",
-      "5. Show the user a one-line list of directories found, then ask: 'Хочешь добавить что-то ещё? (Obsidian vault, notes/, linkedin-export/, Notion export, другие папки с проектами)' Wait for their reply — if nothing to add, proceed immediately.",
-      "6. Deep-scan all confirmed directories: glob **/*.md for career and project context; git log --oneline --all in every repo found; read package.json / pyproject.toml / Cargo.toml / go.mod for stack evidence; read LinkedIn export JSON if present. Collect all found projects for q_experience_shipped_products and q_stack_proof_links.",
-      "7. Attach provenance (source_excerpt + confidence) for critical fields (seniority, years, compensation). Collect observed_facts (SPO triples) as a side-channel while reading context.",
-      "8. Show the user an approval screen with all answers and facts. End the screen with this exact line: 'Чтобы отправить анкету, напиши: я согласен отправить анкету в MCPHire'. HARD STOP: entering data or correcting fields is NOT consent. Do NOT call register_profile until the user types the exact phrase 'я согласен отправить анкету в MCPHire' (EN: 'I agree to submit my profile to MCPHire'). Any other input — update the screen and wait again.",
-      "9. After consent phrase received — save a local copy of the final answers BEFORE calling register_profile: if Write tool is available (Claude Code CLI) write to ~/.claude/memory/mcphire_draft_<YYYY-MM-DD>.json containing {answers, provenance, observed_facts, saved_at}; otherwise render as a JSON code block so the user can copy it. This protects against data loss if the session crashes mid-flight.",
-      "10. Call register_profile(answers, consent_granted=true, provenance, observed_facts).",
-      "11. Immediately after register_profile returns — before anything else — write both tokens to ~/.claude/memory/mcphire.md: { profile_id, session_token, claim_token, cv_url, registered_at }. Do NOT proceed until this file is written. session_token is permanent and is the only key to get_my_cv / list_my_matches / delete_profile. claim_token expires in 48h and is needed for GitHub verification. Both are issued once and never re-issued — if lost, the profile becomes unmanageable.",
-      "12. User inserts the returned claim_token into GitHub bio / LinkedIn headline / pinned Gist (or Claude updates the bio via an appropriate MCP).",
-      "13. Poll get_verification_status(claim_token) until status is 'verified'.",
-      "14. Share cv_url — the user's auto-generated public resume.",
-      "15. Ask the user to open @mcphire_match_bot in Telegram and send /link <claim_token> to enable instant match pushes."
+      "Follow the canonical protocol at https://mcphire.com/skill.md (Track A). Do not rely on this manifest for the step-by-step flow."
     ],
     "employer_onboarding": [
-      "1. Get questions. get_employer_questions(section?, language='ru'|'en') — ~40 questions in 7 sections (company, team, culture, hiring_now, comp_band, process, integrations).",
-      "2. Ask scan consent. Before reading any local files, show the user this message and wait for an affirmative reply ('да', 'yes', 'ok', 'читай'): 'Чтобы заполнить анкету компании, мне нужно прочитать публичный контекст: README репозиториев организации, careers/about-страницы, package.json (стек), team page. Файлы остаются у тебя — на сервер уйдут только финальные ответы. Читаю?' Do NOT read any files until the user confirms.",
-      "3. Answer from context. Once consent granted, pull from GitHub org members + README, company website ('/about', '/team', '/careers'), package.json / pyproject.toml for stack evidence, team page for hiring contacts. Never invent — if a value isn't in context, mark `unknown`.",
-      "4. Provenance (optional but recommended). For critical fields (company legal name, team size, comp band) attach {source_excerpt, source_file, confidence} so the employer can spot fabrication during approval.",
-      "5. Show approval screen. Display all collected answers grouped by section (company / team / culture / hiring / comp / process / integrations). End with: 'Чтобы создать профиль компании, напиши: я согласен зарегистрировать компанию в MCPHire'. HARD STOP: do NOT call register_employer_profile until the user types the exact consent phrase (RU: 'я согласен зарегистрировать компанию в MCPHire'; EN: 'I agree to register the company on MCPHire'). The literal phrase is validated server-side (Sprint 8 P0-1). Any other input — update the screen and wait again.",
-      "6. Register. register_employer_profile(answers, consent_granted=true, consent_phrase='<literal phrase user typed>', provenance?) → {employer_id, employer_url, slug, name, verified, employer_session_token}. employer_session_token is a permanent UUID bearer — the new auth credential (Sprint 8 P0-2). It is issued ONCE at registration and never re-issued.",
-      "7. Save employer_id + employer_session_token. Write to ~/.claude/memory/mcphire_employer.md: { employer_id, employer_session_token, slug, employer_url, registered_at }. employer_session_token is the only authentic credential for post_vacancy / get_my_vacancies / get_applicants / shortlist_candidate / send_interview_invite / publish_vacancy. employer_id stays accepted as a deprecated fallback for 30 days.",
-      "8. Post a vacancy (draft for unverified). post_vacancy(title, description, employer_session_token=..., skills, salary_from, salary_to, currency, level, work_format, city) — currency is ISO-4217 (RUB, USD, EUR, AED, ...). Sprint 8 P0-3: vacancies posted by an unverified employer are saved with status='draft' and do NOT appear on /jobs until published.",
-      "9. Publish vacancy after verify. After the employer claim-token is verified (admin/manual review), call publish_vacancy(vacancy_id, employer_session_token=...) to flip drafts to active. Once active, the row triggers pg_notify('job_event') and the matching dispatcher pushes to candidate Telegram within 1-5 min. For already-verified employers, post_vacancy may create active rows directly (no separate publish step needed).",
-      "10. Monitor. get_my_vacancies(employer_session_token=...) for vacancy counts + applicant_count; get_applicants(vacancy_id, employer_session_token=...) returns each applicant with cv_url + stack_summary + seniority. Email/phone are never leaked from this tool — PII is gated behind explicit candidate consent (see below).",
-      "11. Shortlist + reveal. shortlist_candidate(profile_id, vacancy_id, employer_session_token=..., note) pushes a consent prompt to the candidate's Telegram. On candidate '💎 Interested', subsequent get_applicants calls return their email + phone + tg_username. Without that consent step, contact info stays masked.",
-      "12. Interview. send_interview_invite(profile_id, vacancy_id, employer_session_token=..., slots, message) — requires prior candidate_response='interested' (hard server-side gate). Candidate picks a slot, you receive email + phone + .ics Google Calendar invite.",
-      "13. Wind-down. There is no delete_employer_profile MCP tool today — for full employer-profile takedown contact support (Tim Zinin on Telegram: https://t.me/timofeyzinin). To close an individual vacancy use post_vacancy for replacements."
+      "Follow the canonical protocol at https://mcphire.com/skill.md (Track B). Do not rely on this manifest for the step-by-step flow."
     ],
     "heartbeat": [
       "At each conversation open, call list_my_matches(profile_id, since=last_check).",
@@ -414,7 +388,7 @@
               }
             ],
             "default": null,
-            "description": "Sprint 8 P0-1: exact phrase the user must say to confirm registration intent. See llms.txt for the required text per role (candidate must say 'я согласен отправить анкету в MCPHire' or 'I agree to submit my profile to MCPHire'). During the 30-day deprecation window this field is optional but a missing value emits a WARNING log; after the window, missing or mismatched phrase → HTTP 400 CONSENT_PHRASE_MISMATCH."
+            "description": "Sprint 8 P0-1: exact phrase the user must say to confirm registration intent. See https://mcphire.com/skill.md for the required text per role. During the 30-day deprecation window this field is optional but a missing value emits a WARNING log; after the window, missing or mismatched phrase → HTTP 400 CONSENT_PHRASE_MISMATCH."
           }
         },
         "required": [
@@ -628,7 +602,7 @@
               }
             ],
             "default": null,
-            "description": "Sprint 8 P0-1: exact phrase the user must say to confirm registration intent. See llms.txt for the required text per role (employer must say 'я согласен зарегистрировать компанию в MCPHire' or 'I agree to register the company on MCPHire'). During the 30-day deprecation window this field is optional but a missing value emits a WARNING log; after the window, missing or mismatched phrase → HTTP 400 CONSENT_PHRASE_MISMATCH."
+            "description": "Sprint 8 P0-1: exact phrase the user must say to confirm registration intent. See https://mcphire.com/skill.md for the required text per role. During the 30-day deprecation window this field is optional but a missing value emits a WARNING log; after the window, missing or mismatched phrase → HTTP 400 CONSENT_PHRASE_MISMATCH."
           }
         },
         "required": [

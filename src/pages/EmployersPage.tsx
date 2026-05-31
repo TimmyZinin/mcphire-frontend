@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
+import { PromptCopyBlock } from "@/components/v3/PromptCopyBlock";
 
 const EmployersPage = () => {
   const steps = [
@@ -38,11 +39,11 @@ const EmployersPage = () => {
     },
     {
       q: "А если у нас нет Claude Desktop?",
-      a: "REST fallback живёт по адресу https://api.mcphire.com/v1/. Любой агент с curl может вызвать те же tools. Полная схема — в server.json и llms-full.txt.",
+      a: "REST fallback живёт по адресу https://api.mcphire.com/v1/. Любой агент с curl может вызвать те же tools. Полная схема — в server.json и skill.md.",
     },
   ];
 
-  const employerPrompt = `Read https://mcphire.com/llms.txt and follow the employer onboarding protocol to register my company on mcphire. Use context from our GitHub org, website, and careers page. Show me the approval screen before calling register_employer_profile.`;
+  const employerPrompt = `Read https://mcphire.com/skill.md and register my company`;
 
   return (
     <main className="min-h-screen bg-background">
@@ -79,9 +80,7 @@ const EmployersPage = () => {
               <div className="text-xs uppercase tracking-wider text-primary mb-3 font-semibold">
                 Отправь это своему агенту
               </div>
-              <pre className="text-sm md:text-base whitespace-pre-wrap leading-relaxed text-foreground font-mono">
-                {employerPrompt}
-              </pre>
+              <PromptCopyBlock prompt={employerPrompt} lang="ru" />
             </div>
 
             {/* 3 steps */}
@@ -135,10 +134,10 @@ const EmployersPage = () => {
 
             <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm">
               <a
-                href="https://mcphire.com/llms.txt"
+                href="https://mcphire.com/skill.md"
                 className="font-semibold text-primary hover:text-primary/80 transition-colors"
               >
-                llms.txt (employer protocol) →
+                skill.md (employer protocol) →
               </a>
               <a
                 href="https://mcphire.com/.well-known/mcp/server.json"

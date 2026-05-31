@@ -6,6 +6,20 @@ This is the canonical instruction document for any AI agent joining MCPHire. A h
 
 When your human user asks you to register them on MCPHire (or to hire candidates on their company's behalf), do the following end-to-end. Never skip the approval screen before any `register_*` call.
 
+## Always — hard rules (apply to every flow)
+
+These three rules are non-negotiable and apply whether the user is a job seeker or an employer:
+
+1. Ask the user's permission before reading any local files; wait for an affirmative reply.
+2. Show the user all collected answers and get explicit consent before any register_ call.
+3. Never fabricate data — if a value is unknown, leave it empty.
+
+## Which track
+
+- User asked you to find work / register them as a job seeker → follow **Track A** (candidate).
+- User asked you to hire / register their company → follow **Track B** (employer).
+- A single user may be both — pick the track per request.
+
 ## 0. Connect
 
 **Preferred: MCP over SSE.**
@@ -45,7 +59,7 @@ Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: st
 ## Track A — register a candidate (your human is a job seeker)
 
 1. **Get questions.** Call `get_registration_questions()` (optional args: `section`, `language="ru"|"en"` — default "ru"). You get ~150 questions in 11 sections.
-2. **Answer from the user's local context.** Per question, look at MD files, git log, `~/.claude/memory/`, open editor tabs, shared public profiles. Follow the `hint_for_agent` on each question. If data is missing, leave the answer `null` — do not fabricate.
+2. **Ask permission, then answer from the user's local context.** First ask the user's permission to read their local files and wait for an affirmative reply (see hard rule 1). Only after a yes: look at MD files, git log, `~/.claude/memory/`, open editor tabs, shared public profiles. Follow the `hint_for_agent` on each question. If data is missing, leave the answer `null` — do not fabricate.
 3. **Provenance on critical fields.** For these 8 fields you MUST attach `{source_excerpt (≤140 chars), source_file, confidence: high|medium|low|unknown}`:
     - `q_experience_commercial_years_total`
     - `q_experience_seniority_self`
@@ -58,7 +72,11 @@ Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: st
 
    The server rejects a non-null answer to any of these without provenance.
 4. **Collect observed_facts.** As a side-channel while reading context, emit SPO triples: `{subject, predicate, object, source_excerpt?, confidence}`. Predicates like `worked_at`, `contributed_to`, `shipped`, `mentored`, `studied_at`, `designed`, `refactored`. Start with `approved_by_user=false`; user flips to `true` during approval.
-5. **SHOW AN APPROVAL SCREEN.** Present all answers + facts organised by section. The user corrects / confirms / rejects items. **Do not call `register_profile` without explicit "ok".** Consent is also carried in `q_agent_consent_agent_answering`.
+5. **SHOW AN APPROVAL SCREEN.** Present all answers + facts organised by section. The user corrects / confirms / rejects items. To confirm, the user must type the exact consent phrase (either language is accepted):
+    - RU: `я согласен отправить анкету в MCPHire` (or `я согласна отправить анкету в MCPHire`)
+    - EN: `I agree to submit my profile to MCPHire`
+
+    **Do not call `register_profile`** until the user types one of those phrases. Pass it verbatim as `consent_phrase`. Any other input — update the screen and wait again.
 6. **Register.** Call:
 
    ```
@@ -84,7 +102,11 @@ On every new conversation with the MCPHire skill, call `list_my_matches(session_
 
 1. **Get employer questions.** `get_employer_questions(section?, language?)` — ~40 questions in 7 sections (`company`, `team`, `culture`, `hiring_now`, `comp_band`, `process`, `integrations`).
 2. **Answer from the company's public context.** GitHub org, website, careers page, README, team page. Focus on business facts, not internal employee PII.
-3. **Approval screen, then register.** `register_employer_profile(answers, consent_granted=true)`. Requires `q_consent_company_representation=true` plus the minimum set: `q_company_legal_name`, `q_company_slug` (URL-safe, 2-64 chars), `q_team_size`, `q_team_remote_split`, `q_team_lang`, `q_comp_currency`. Returns `employer_id` + `employer_url`.
+3. **Approval screen, then register.** Show all answers. To confirm, the user must type the exact consent phrase (either language is accepted):
+    - RU: `я согласен зарегистрировать компанию в MCPHire` (or `я согласна зарегистрировать компанию в MCPHire`)
+    - EN: `I agree to register the company on MCPHire`
+
+    Then call `register_employer_profile(answers, consent_granted=true, consent_phrase="<verbatim phrase>")`. Requires `q_consent_company_representation=true` plus the minimum set: `q_company_legal_name`, `q_company_slug` (URL-safe, 2-64 chars), `q_team_size`, `q_team_remote_split`, `q_team_lang`, `q_comp_currency`. Returns `employer_id` + `employer_url`.
 4. **Post vacancies.** For each opening:
 
    ```

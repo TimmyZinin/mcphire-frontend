@@ -104,9 +104,9 @@ mcphire-frontend/
 │   ├── types/            # TypeScript интерфейсы для job/profile/application
 │   └── data/             # seed data, knowledge base articles
 └── public/
-    ├── llms.txt                            # agent onboarding protocol (9 steps)
-    ├── llms-full.txt                       # full version c tool schemas
-    └── .well-known/mcp/server.json         # MCP discovery manifest (10 tools)
+    ├── skill.md                            # canonical agent onboarding protocol (single source of truth)
+    ├── llms.txt                            # llmstxt.org discovery index (links to skill.md)
+    └── .well-known/mcp/server.json         # MCP discovery manifest
 ```
 
 ---
