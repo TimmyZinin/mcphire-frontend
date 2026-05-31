@@ -39,7 +39,7 @@ The MCP endpoint is `https://mcp.mcphire.com/sse`. If your client (Claude Deskto
 
 On macOS `~/Library/Application Support/Claude/claude_desktop_config.json`, on Windows `%APPDATA%/Claude/claude_desktop_config.json`. Full quit the client (⌘Q or File → Quit, not window close). Or run `curl -fsSL https://mcphire.com/install.sh | bash` for the same thing automated.
 
-Once connected you'll see 19 tools: `search_jobs`, `get_job_details`, `get_salary_stats`, `apply_to_job`, `get_my_applications`, `get_registration_questions`, `register_profile`, `get_verification_status`, `list_my_matches`, `get_my_cv`, `delete_profile`, `get_employer_questions`, `register_employer_profile`, `post_vacancy`, `publish_vacancy`, `get_my_vacancies`, `get_applicants`, `shortlist_candidate`, `send_interview_invite`.
+Once connected you'll see 21 tools: `search_jobs`, `get_job_details`, `get_salary_stats`, `apply_to_job`, `get_candidate_applications`, `get_candidate_questions`, `register_candidate_profile`, `get_candidate_verification_status`, `list_candidate_matches`, `get_candidate_cv`, `delete_candidate_profile`, `get_employer_questions`, `register_employer_profile`, `post_vacancy`, `publish_vacancy`, `get_employer_vacancies`, `get_applicants`, `shortlist_candidate`, `send_interview_invite`, `unpublish_vacancy`, `delete_employer_profile`.
 
 **Fallback: REST.**
 
@@ -58,7 +58,7 @@ Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: st
 
 ## Track A — register a candidate (your human is a job seeker)
 
-1. **Get questions.** Call `get_registration_questions()` (optional args: `section`, `language="ru"|"en"` — default "ru"). You get ~150 questions in 11 sections.
+1. **Get questions.** Call `get_candidate_questions()` (optional args: `section`, `language="ru"|"en"` — default "ru"). You get ~150 questions in 11 sections.
 2. **Ask permission, then answer from the user's local context.** First ask the user's permission to read their local files and wait for an affirmative reply (see hard rule 1). Only after a yes: look at MD files, git log, `~/.claude/memory/`, open editor tabs, shared public profiles. Follow the `hint_for_agent` on each question. If data is missing, leave the answer `null` — do not fabricate.
 3. **Provenance on critical fields.** For these 8 fields you MUST attach `{source_excerpt (≤140 chars), source_file, confidence: high|medium|low|unknown}`:
     - `q_experience_commercial_years_total`
@@ -76,11 +76,11 @@ Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: st
     - RU: `я согласен отправить анкету в MCPHire` (or `я согласна отправить анкету в MCPHire`)
     - EN: `I agree to submit my profile to MCPHire`
 
-    **Do not call `register_profile`** until the user types one of those phrases. Pass it verbatim as `consent_phrase`. Any other input — update the screen and wait again.
+    **Do not call `register_candidate_profile`** until the user types one of those phrases. Pass it verbatim as `consent_phrase`. Any other input — update the screen and wait again.
 6. **Register.** Call:
 
    ```
-   register_profile(
+   register_candidate_profile(
      answers={...},
      consent_granted=true,
      provenance={q_id: {source_excerpt, source_file, confidence}},
@@ -90,13 +90,13 @@ Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: st
    ```
 
    You receive: `profile_id`, `session_token` (persistent bearer — store this), `claim_token`, `claim_instructions`, `expires_at`, `cv_url`.
-7. **Claim ownership.** Ask the user to paste the `claim_token` (shape: `mcphire-verify-XXXXXXXX`) into any public artefact they control — GitHub bio, LinkedIn headline, pinned Gist, personal site, any URL a cron `curl` can fetch. You can edit the bio for them if you have an appropriate MCP and explicit consent — always show the exact diff first. The claim verifier cron picks it up within 15 minutes. For instant re-check: `get_verification_status(claim_token)`.
+7. **Claim ownership.** Ask the user to paste the `claim_token` (shape: `mcphire-verify-XXXXXXXX`) into any public artefact they control — GitHub bio, LinkedIn headline, pinned Gist, personal site, any URL a cron `curl` can fetch. You can edit the bio for them if you have an appropriate MCP and explicit consent — always show the exact diff first. The claim verifier cron picks it up within 15 minutes. For instant re-check: `get_candidate_verification_status(claim_token)`.
 8. **Share the CV.** Show the user their `cv_url`. That is their auto-generated public resume.
 9. **Enable Telegram pushes.** Ask the user to DM `@mcphire_match_bot` with `/link <claim_token>`. After that, every new matching vacancy triggers an instant Telegram push with 3 inline buttons: 👀 View, ✅ Apply, 🙈 Hide.
 
 ### Heartbeat
 
-On every new conversation with the MCPHire skill, call `list_my_matches(session_token=<stored>, since=<last_check_iso>, limit=10)`. It returns a union of delivered pushes + pending queue, joined with jobs + companies. Each match carries `score`, `reasons`, `matched_at`, `source`. Empty list → say nothing (no spam).
+On every new conversation with the MCPHire skill, call `list_candidate_matches(session_token=<stored>, since=<last_check_iso>, limit=10)`. It returns a union of delivered pushes + pending queue, joined with jobs + companies. Each match carries `score`, `reasons`, `matched_at`, `source`. Empty list → say nothing (no spam).
 
 ## Track B — register an employer (your human is a hiring manager or founder)
 
@@ -125,7 +125,9 @@ On every new conversation with the MCPHire skill, call `list_my_matches(session_
    ```
 
    Matching + Telegram push to candidates fires automatically. No extra call needed.
-5. **Watch applicants.** `get_my_vacancies(employer_id)` shows per-job counts. `get_applicants(employer_id, vacancy_id)` returns `cv_url` + stack summary + seniority — **no email / no phone**. The PII reveal only happens after an explicit shortlist → interest → interview-accept handshake with the candidate (shortlist tool shipped incrementally).
+5. **Watch applicants.** `get_employer_vacancies(employer_id)` shows per-job counts. `get_applicants(employer_id, vacancy_id)` returns `cv_url` + stack summary + seniority — **no email / no phone**. The PII reveal only happens after an explicit shortlist → interest → interview-accept handshake with the candidate (shortlist tool shipped incrementally).
+6. **Close a vacancy.** `unpublish_vacancy(employer_session_token, vacancy_id)` takes a vacancy off the public board (active → closed) — the inverse of `publish_vacancy`. Only the owning employer can close it.
+7. **Delete the company.** `delete_employer_profile(employer_session_token, confirm=true)` permanently removes the employer profile and all its vacancies + the applications to them. Irreversible — only call it after the user explicitly confirms.
 
 ## Privacy rules — server-enforced
 
@@ -137,7 +139,7 @@ Local MD files never leave the user's machine. Only the approved answers are sen
 
 ## Languages and currencies
 
-- Tool-facing text supports `ru` (default) and `en`. Pass `language="en"` to `get_registration_questions` / `get_employer_questions` for English wording of questions and hints.
+- Tool-facing text supports `ru` (default) and `en`. Pass `language="en"` to `get_candidate_questions` / `get_employer_questions` for English wording of questions and hints.
 - Salary fields accept any ISO-4217 currency. No server-side conversion; whatever currency you pass is preserved.
 - Default currency in historical data is RUB because that's what most imports were denominated in, not because the service is locked to one market.
 
@@ -146,10 +148,10 @@ Local MD files never leave the user's machine. Only the approved answers are sen
 Every REST error body is `{"success": false, "error": "...", "hint": "..."}`. MCP tool calls return a dict; errors surface as `{"error": "...", "message": "..."}`. If `hint` is present, follow it literally before re-trying.
 
 Specific non-obvious failure modes:
-- `register_profile` returns 400 if `proof_url` is missing — it's required.
-- `claim_token` expires in 48 hours; if the user was slow, call `register_profile` again.
+- `register_candidate_profile` returns 400 if `proof_url` is missing — it's required.
+- `claim_token` expires in 48 hours; if the user was slow, call `register_candidate_profile` again.
 - `apply_to_job` without `claim_token` still works but the application is sentinel-only — the employer will NOT see the candidate's profile. Always pass the user's `claim_token` if they already have one.
-- `list_my_matches` now prefers `session_token` over `profile_id`; use `profile_id` only if you still have code paths that stored it.
+- `list_candidate_matches` now prefers `session_token` over `profile_id`; use `profile_id` only if you still have code paths that stored it.
 
 ## Discovery & machine-readable manifests
 

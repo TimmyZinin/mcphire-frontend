@@ -12,24 +12,26 @@ const CANDIDATE_TOOLS = [
   "search_jobs",
   "get_job_details",
   "apply_to_job",
-  "get_my_applications",
+  "get_candidate_applications",
   "get_salary_stats",
-  "get_registration_questions",
-  "register_profile",
-  "get_verification_status",
-  "list_my_matches",
-  "get_my_cv",
-  "delete_profile",
+  "get_candidate_questions",
+  "register_candidate_profile",
+  "get_candidate_verification_status",
+  "list_candidate_matches",
+  "get_candidate_cv",
+  "delete_candidate_profile",
 ];
 const EMPLOYER_TOOLS = [
   "get_employer_questions",
   "register_employer_profile",
   "post_vacancy",
   "publish_vacancy",
-  "get_my_vacancies",
+  "get_employer_vacancies",
   "get_applicants",
   "shortlist_candidate",
   "send_interview_invite",
+  "unpublish_vacancy",
+  "delete_employer_profile",
 ];
 
 const CONFIG_SNIPPET = `{
@@ -149,7 +151,7 @@ const McpPage = () => {
       {/* Tools */}
       <section className="py-16 border-t border-border">
         <div className="max-w-3xl mx-auto px-4 md:px-8">
-          <h2 className="heading-lg mb-3">{L ? "Tools (19)" : "Инструменты (19)"}</h2>
+          <h2 className="heading-lg mb-3">{L ? "Tools (21)" : "Инструменты (21)"}</h2>
           <p className="text-sm text-muted-foreground mb-8">
             {L ? "Full JSON schemas, parameters and examples are in " : "Полные JSON-схемы, параметры и примеры — в "}
             <a href="https://mcphire.com/.well-known/mcp/server.json" className="text-primary hover:underline">server.json</a>.
@@ -171,7 +173,7 @@ const McpPage = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Building2 size={20} className="text-primary" />
-                <h3 className="font-bold">{L ? "Employer (8)" : "Работодатель (8)"}</h3>
+                <h3 className="font-bold">{L ? "Employer (10)" : "Работодатель (10)"}</h3>
               </div>
               <div className="flex flex-wrap gap-2">
                 {EMPLOYER_TOOLS.map((t) => (

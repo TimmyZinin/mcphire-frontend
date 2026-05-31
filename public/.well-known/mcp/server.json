@@ -1,7 +1,7 @@
 {
   "name": "mcphire",
   "version": "1.5.0-alpha",
-  "description": "MCPHire — MCP-first job marketplace. Two-sided: candidates register through Claude Desktop (11 tools, ~150-question onboarding) and employers register companies + post vacancies through Claude (8 tools, ~40-question onboarding). Primary audience today is Russian-speaking tech, but the data model, tools, and documentation are language- and currency-agnostic; any company can register and any candidate can apply regardless of location. Sprint 8: server-side consent_phrase validation, employer_session_token bearer, draft-status gate for unverified-employer vacancies.",
+  "description": "MCPHire — MCP-first job marketplace. Two-sided: candidates register through Claude Desktop (11 tools, ~150-question onboarding) and employers register companies + post vacancies through Claude (10 tools, ~40-question onboarding). Primary audience today is Russian-speaking tech, but the data model, tools, and documentation are language- and currency-agnostic; any company can register and any candidate can apply regardless of location. Sprint 8: server-side consent_phrase validation, employer_session_token bearer, draft-status gate for unverified-employer vacancies.",
   "endpoint": "https://mcp.mcphire.com/sse",
   "transport": "sse",
   "protocol": "JSON-RPC 2.0",
@@ -18,24 +18,24 @@
       "get_job_details",
       "get_salary_stats",
       "apply_to_job",
-      "get_my_applications",
-      "get_registration_questions",
+      "get_candidate_applications",
+      "get_candidate_questions",
       "get_employer_questions"
     ],
     "session_token_tools": [
-      "list_my_matches",
-      "get_my_cv",
-      "delete_profile"
+      "list_candidate_matches",
+      "get_candidate_cv",
+      "delete_candidate_profile"
     ],
     "claim_token_tools": [
-      "get_verification_status",
+      "get_candidate_verification_status",
       "apply_to_job"
     ],
     "consent_required_tools": [
-      "register_profile",
+      "register_candidate_profile",
       "register_employer_profile"
     ],
-    "notes": "No HTTP bearer — all tokens are passed as tool parameters. Public tools attribute to a shared MCP sentinel user (uuid5(NAMESPACE_DNS, 'mcp.mcphire.com')). session_token is a permanent UUID returned by register_profile and never re-issued. claim_token expires in 48 h. apply_to_job accepts an optional claim_token to structurally link the application to the candidate's agent_profile — without it the application is anonymous."
+    "notes": "No HTTP bearer — all tokens are passed as tool parameters. Public tools attribute to a shared MCP sentinel user (uuid5(NAMESPACE_DNS, 'mcp.mcphire.com')). session_token is a permanent UUID returned by register_candidate_profile and never re-issued. claim_token expires in 48 h. apply_to_job accepts an optional claim_token to structurally link the application to the candidate's agent_profile — without it the application is anonymous."
   },
   "documentation": "https://mcphire.com/skill.md",
   "client_setup": {
@@ -53,7 +53,7 @@
           }
         }
       },
-      "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 19 tools (11 candidate + 8 employer).",
+      "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 21 tools (11 candidate + 10 employer).",
       "install_help": "https://mcphire.com/skill.md#0-connect"
     },
     "claude_code": {
@@ -74,7 +74,7 @@
       "settings_snippet": {
         "enableAllProjectMcpServers": true
       },
-      "restart": "Close and reopen the Claude Code session in the project directory. Verify by asking: 'what mcphire tools are available?'. Expected: 19 tools (11 candidate + 8 employer)."
+      "restart": "Close and reopen the Claude Code session in the project directory. Verify by asking: 'what mcphire tools are available?'. Expected: 21 tools (11 candidate + 10 employer)."
     },
     "cursor": {
       "note": "Cursor supports SSE MCP servers via Settings → MCP. Use the same endpoint.",
@@ -95,7 +95,7 @@
       "Follow the canonical protocol at https://mcphire.com/skill.md (Track B). Do not rely on this manifest for the step-by-step flow."
     ],
     "heartbeat": [
-      "At each conversation open, call list_my_matches(profile_id, since=last_check).",
+      "At each conversation open, call list_candidate_matches(profile_id, since=last_check).",
       "Real matches are returned as a union of notification_deliveries (append-only log) and notification_queue (pending). Each match carries score, reasons, job metadata (title, company, salary, currency, slug) and a source flag ('delivered' | 'queued'). Instant pushes also fire into Telegram the moment a matching vacancy is indexed.",
       "Stay silent if empty — no spam."
     ]
@@ -266,7 +266,7 @@
       }
     },
     {
-      "name": "get_my_applications",
+      "name": "get_candidate_applications",
       "description": "List applications submitted in this MCP session via the shared sentinel user. No parameters.",
       "inputSchema": {
         "additionalProperties": false,
@@ -306,7 +306,7 @@
       }
     },
     {
-      "name": "get_registration_questions",
+      "name": "get_candidate_questions",
       "description": "Return the candidate onboarding catalog of ~150 questions grouped into 11 sections. Optional section filter; optional language ('ru' default, 'en' supported). Each question has id, section, localized text, type, options, matchable, provenance_required, and an agent hint.",
       "inputSchema": {
         "additionalProperties": false,
@@ -338,7 +338,7 @@
       }
     },
     {
-      "name": "register_profile",
+      "name": "register_candidate_profile",
       "description": "Create a candidate agent profile after the user has explicitly approved the compiled answers. Requires consent_granted=true, proof_url, and provenance for the critical fields. Returns profile_id, claim_token, claim_instructions, expires_at, cv_url.",
       "inputSchema": {
         "additionalProperties": false,
@@ -420,7 +420,7 @@
       }
     },
     {
-      "name": "get_verification_status",
+      "name": "get_candidate_verification_status",
       "description": "Check whether the claim_token has been detected in the candidate's proof_url. Triggers an immediate re-check in addition to the background 15-minute cron.",
       "inputSchema": {
         "additionalProperties": false,
@@ -443,8 +443,8 @@
       }
     },
     {
-      "name": "list_my_matches",
-      "description": "Heartbeat endpoint — call this at the start of every new conversation. Returns matches as a union of notification_deliveries (append-only log) and notification_queue (pending), joined with jobs + companies. Each match includes job_id, title, company, salary_from/to, currency, work_format, slug, score, reasons, matched_at, source ('delivered' | 'queued'). profile_id is a UUID returned by register_profile.",
+      "name": "list_candidate_matches",
+      "description": "Heartbeat endpoint — call this at the start of every new conversation. Returns matches as a union of notification_deliveries (append-only log) and notification_queue (pending), joined with jobs + companies. Each match includes job_id, title, company, salary_from/to, currency, work_format, slug, score, reasons, matched_at, source ('delivered' | 'queued'). profile_id is a UUID returned by register_candidate_profile.",
       "inputSchema": {
         "additionalProperties": false,
         "properties": {
@@ -482,7 +482,7 @@
       }
     },
     {
-      "name": "get_my_cv",
+      "name": "get_candidate_cv",
       "description": "Return the candidate's auto-generated CV URL plus photo, social links, and an observed_facts summary.",
       "inputSchema": {
         "additionalProperties": false,
@@ -504,8 +504,8 @@
       }
     },
     {
-      "name": "delete_profile",
-      "description": "Permanently delete the candidate's agent profile and all associated data (applications, matches, observed_facts, CV). Requires session_token (UUID returned by register_profile) and confirm=true as a safety gate. Cascades to all related rows — irreversible.",
+      "name": "delete_candidate_profile",
+      "description": "Permanently delete the candidate's agent profile and all associated data (applications, matches, observed_facts, CV). Requires session_token (UUID returned by register_candidate_profile) and confirm=true as a safety gate. Cascades to all related rows — irreversible.",
       "inputSchema": {
         "additionalProperties": false,
         "properties": {
@@ -774,7 +774,7 @@
       }
     },
     {
-      "name": "get_my_vacancies",
+      "name": "get_employer_vacancies",
       "description": "List open vacancies posted by this employer with per-job applicant_count (live COUNT over the applications table). Ordered by posted_at DESC.",
       "inputSchema": {
         "additionalProperties": false,
@@ -1016,6 +1016,34 @@
       "annotations": {
         "idempotentHint": true
       }
+    },
+    {
+      "name": "delete_employer_profile",
+      "description": "Permanently delete the employer profile and everything it owns (its vacancies + the applications to them; shortlists and interview-invites cascade). Requires employer_session_token and confirm=true as a safety gate. Irreversible. See https://mcphire.com/skill.md.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "employer_session_token": { "type": "string" },
+          "confirm": { "default": false, "type": "boolean" }
+        },
+        "required": ["employer_session_token"],
+        "type": "object"
+      },
+      "annotations": { "destructiveHint": true, "idempotentHint": true }
+    },
+    {
+      "name": "unpublish_vacancy",
+      "description": "Take a vacancy off the public board (active → closed). Inverse of publish_vacancy. Only the owning employer can close it; idempotent if the vacancy is already closed. Requires employer_session_token + vacancy_id.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "employer_session_token": { "type": "string" },
+          "vacancy_id": { "type": "string", "format": "uuid" }
+        },
+        "required": ["employer_session_token", "vacancy_id"],
+        "type": "object"
+      },
+      "annotations": { "destructiveHint": false, "idempotentHint": true }
     }
   ],
   "rate_limits": {

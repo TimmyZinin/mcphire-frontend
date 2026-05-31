@@ -87,13 +87,13 @@ const EmployersPage = () => {
 
   const cards = L
     ? [
-        { tag: "[MCP]", title: "Registration without forms", desc: "8 employer tools in prod: register_employer_profile, post_vacancy, publish_vacancy, get_my_vacancies, get_applicants, shortlist_candidate, send_interview_invite, get_employer_questions." },
+        { tag: "[MCP]", title: "Registration without forms", desc: "10 employer tools in prod: register_employer_profile, post_vacancy, publish_vacancy, unpublish_vacancy, get_employer_vacancies, get_applicants, shortlist_candidate, send_interview_invite, get_employer_questions, delete_employer_profile." },
         { tag: "[PUSH]", title: "Instant TG matches", desc: "After post_vacancy, relevant candidates get a Telegram push with an inline «Apply» button within 1-5 minutes." },
         { tag: "[SEO]", title: "Google for Jobs", desc: "Every vacancy is a public SSG page with JSON-LD JobPosting. Indexed by Google as a structured job posting." },
         { tag: "[PII]", title: "Privacy by default", desc: "get_applicants returns cv_url + stack without email/phone. PII is revealed only after shortlist → «Interested» → accept slot." },
       ]
     : [
-        { tag: "[MCP]", title: "Регистрация без форм", desc: "8 employer-tools в проде: register_employer_profile, post_vacancy, publish_vacancy, get_my_vacancies, get_applicants, shortlist_candidate, send_interview_invite, get_employer_questions." },
+        { tag: "[MCP]", title: "Регистрация без форм", desc: "10 employer-tools в проде: register_employer_profile, post_vacancy, publish_vacancy, unpublish_vacancy, get_employer_vacancies, get_applicants, shortlist_candidate, send_interview_invite, get_employer_questions, delete_employer_profile." },
         { tag: "[PUSH]", title: "Instant TG-матчи", desc: "После post_vacancy релевантные кандидаты получают пуш в Telegram с inline-кнопкой «Откликнуться» за 1-5 минут." },
         { tag: "[SEO]", title: "Google for Jobs", desc: "Каждая вакансия — публичная SSG-страница с JSON-LD JobPosting. Индексируется в Google как структурированная вакансия." },
         { tag: "[PII]", title: "Приватность по умолчанию", desc: "get_applicants возвращает cv_url + stack без email/phone. PII раскрывается только после shortlist → «Интересно» → accept slot." },
