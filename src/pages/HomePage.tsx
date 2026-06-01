@@ -112,15 +112,23 @@ const HomePage = () => {
   return (
     <main className="v3-canvas min-h-screen">
       <Helmet>
-        <title>MCPHire — найди IT-работу через AI-агента</title>
+        <title>{lang === "en"
+          ? "MCPHire — let your AI agent find your next IT job"
+          : "MCPHire — найди IT-работу через AI-агента"}</title>
         <meta
           name="description"
-          content="MCPHire — первый MCP-маркетплейс вакансий. Подключи Claude, Cursor или своего AI-агента — он найдёт работу, поторгуется и забронирует интервью за тебя."
+          content={lang === "en"
+            ? "MCPHire — the first MCP job marketplace. Connect Claude, Cursor or your own AI agent and it finds the job, negotiates and books the interview for you."
+            : "MCPHire — первый MCP-маркетплейс вакансий. Подключи Claude, Cursor или своего AI-агента — он найдёт работу, поторгуется и забронирует интервью за тебя."}
         />
-        <meta property="og:title" content="MCPHire — найди IT-работу через AI-агента" />
+        <meta property="og:title" content={lang === "en"
+          ? "MCPHire — let your AI agent find your next IT job"
+          : "MCPHire — найди IT-работу через AI-агента"} />
         <meta
           property="og:description"
-          content="MCPHire — первый MCP-маркетплейс вакансий. Подключи Claude, Cursor или своего AI-агента — он найдёт работу, поторгуется и забронирует интервью за тебя."
+          content={lang === "en"
+            ? "MCPHire — the first MCP job marketplace. Connect Claude, Cursor or your own AI agent and it finds the job, negotiates and books the interview for you."
+            : "MCPHire — первый MCP-маркетплейс вакансий. Подключи Claude, Cursor или своего AI-агента — он найдёт работу, поторгуется и забронирует интервью за тебя."}
         />
         <link rel="canonical" href="https://mcphire.com/" />
       </Helmet>
