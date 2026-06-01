@@ -89,6 +89,8 @@ Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: st
    )
    ```
 
+   **Required field:** `answers.q_artifacts_proof_url_primary` must be a public `https://` URL the user controls (GitHub profile or bio, pinned Gist, personal site, LinkedIn) — the claim-verifier `curl`s it to confirm ownership. Registration returns **400** if it is missing, so collect it before calling `register_candidate_profile`.
+
    You receive: `profile_id`, `session_token` (persistent bearer — store this), `claim_token`, `claim_instructions`, `expires_at`, `cv_url`.
 7. **Claim ownership.** Ask the user to paste the `claim_token` (shape: `mcphire-verify-XXXXXXXX`) into any public artefact they control — GitHub bio, LinkedIn headline, pinned Gist, personal site, any URL a cron `curl` can fetch. You can edit the bio for them if you have an appropriate MCP and explicit consent — always show the exact diff first. The claim verifier cron picks it up within 15 minutes. For instant re-check: `get_candidate_verification_status(claim_token)`.
 8. **Share the CV.** Show the user their `cv_url`. That is their auto-generated public resume.
