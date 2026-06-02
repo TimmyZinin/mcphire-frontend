@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:1200px; height:630px; }
+body {
+  font-family:'Inter Tight',system-ui,sans-serif;
+  background:#f7f2ec;
+  color:#181410;
+  position:relative;
+  overflow:hidden;
+}
+/* warm tint glows (echo of --v3-bg-tint) */
+.glow1 { position:absolute; width:760px; height:760px; right:-220px; top:-260px;
+  background:radial-gradient(circle, rgba(255,91,40,0.16) 0%, rgba(255,91,40,0) 62%); }
+.glow2 { position:absolute; width:620px; height:620px; left:-200px; bottom:-280px;
+  background:radial-gradient(circle, rgba(42,77,255,0.10) 0%, rgba(42,77,255,0) 62%); }
+/* subtle grain dots */
+.grid { position:absolute; inset:0;
+  background-image:radial-gradient(rgba(24,20,16,0.045) 1px, transparent 1px);
+  background-size:26px 26px; }
+
+.wrap { position:absolute; inset:0; padding:62px 68px; display:flex; flex-direction:column; }
+
+/* top bar */
+.top { display:flex; align-items:center; justify-content:space-between; }
+.brand { display:flex; align-items:center; gap:16px; }
+.mark { width:50px; height:50px; border-radius:13px;
+  background:linear-gradient(135deg,#ff7a3e 0%,#ff5b28 50%,#c93010 100%);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 8px 22px rgba(255,91,40,0.34); }
+.mark span { color:#fff; font-weight:900; font-size:30px; line-height:1; }
+.wordmark { font-weight:800; font-size:34px; letter-spacing:-0.02em; }
+.badge { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600;
+  color:#5a534b; border:1.5px solid #1814101a; border-radius:999px; padding:9px 17px;
+  background:#ffffffcc; }
+
+/* hero text */
+.hero { flex:1; display:flex; flex-direction:column; justify-content:center; max-width:720px; }
+h1 { font-weight:800; font-size:84px; line-height:0.99; letter-spacing:-0.035em; }
+h1 .serif { font-family:'Instrument Serif',serif; font-style:italic; font-weight:400;
+  letter-spacing:-0.01em; }
+h1 .hot { color:#ff5b28; }
+.sub { margin-top:26px; font-size:25px; line-height:1.4; color:#5a534b; font-weight:500; max-width:610px; }
+.sub b { color:#181410; font-weight:700; }
+
+/* chat card — echoes the site Hero */
+.chat { position:absolute; right:64px; top:188px; width:392px;
+  background:#ffffff; border:1px solid #1814101a; border-radius:22px;
+  padding:22px 22px 24px; box-shadow:0 26px 60px rgba(24,20,16,0.13);
+  display:flex; flex-direction:column; gap:13px; }
+.chat .who { font-family:'JetBrains Mono',monospace; font-size:13px; color:#9a9085;
+  font-weight:600; margin-bottom:-4px; }
+.bub { font-size:18.5px; line-height:1.32; padding:13px 16px; border-radius:15px; max-width:88%; font-weight:500; }
+.bub.agent { background:#181410; color:#f7f2ec; align-self:flex-start; border-bottom-left-radius:5px; }
+.bub.rec { background:#f1ece4; color:#181410; align-self:flex-end; border-bottom-right-radius:5px; }
+.bub.hot { background:linear-gradient(135deg,#ff7a3e,#ff5b28); color:#fff; align-self:flex-start;
+  border-bottom-left-radius:5px; font-weight:600; box-shadow:0 8px 20px rgba(255,91,40,0.3); }
+
+/* bottom */
+.bottom { display:flex; align-items:center; justify-content:space-between;
+  border-top:1.5px solid #1814101a; padding-top:22px; }
+.url { font-weight:700; font-size:23px; letter-spacing:-0.01em; }
+.flow { font-family:'JetBrains Mono',monospace; font-size:15px; color:#5a534b; font-weight:500; }
+.flow b { color:#ff5b28; }
+</style>
+</head>
+<body>
+  <div class="glow1"></div>
+  <div class="glow2"></div>
+  <div class="grid"></div>
+
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="mark"><span>M</span></div>
+        <div class="wordmark">MCPHire</div>
+      </div>
+      <div class="badge">MCP-native · job marketplace</div>
+    </div>
+
+    <div class="hero">
+      <h1>Don't <span class="serif">look</span><br>for jobs.<br><span class="hot">Your agent</span> does.</h1>
+      <div class="sub">Connect <b>Claude, Cursor</b> or your own AI agent — it registers you, finds matches, negotiates and books the interview.</div>
+    </div>
+
+    <div class="chat">
+      <div class="who">your agent ↔ recruiter</div>
+      <div class="bub agent">Registered. 47 live matches, top 5 shortlisted.</div>
+      <div class="bub rec">Salary expectations?</div>
+      <div class="bub hot">let's push for 10k more →</div>
+    </div>
+
+    <div class="bottom">
+      <div class="url">mcphire.com</div>
+      <div class="flow"><b>search_jobs</b> · apply · negotiate — over MCP</div>
+    </div>
+  </div>
+</body>
+</html>
