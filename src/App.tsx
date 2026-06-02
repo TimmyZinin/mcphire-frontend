@@ -36,6 +36,7 @@ const ResumeReview = lazy(() => import("./pages/ResumeReview"));
 const McpPage = lazy(() => import("./pages/McpPage"));
 const SavedJobs = lazy(() => import("./pages/SavedJobs"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const PricingPage = lazy(() => import("./pages/PricingPage"));
 
 // ---- Auth pages -------------------------------------------
@@ -118,6 +119,7 @@ const App = () => (
                   {/* ---- Pages without inline navbar/footer — V3Layout wrap ---- */}
                   <Route element={<V3LayoutRoute />}>
                     <Route path="/privacy" element={<PrivacyPolicy />} />
+                    <Route path="/terms" element={<TermsOfService />} />
                     <Route path="/tools" element={<ToolsPage />} />
                     <Route path="/tools/salary" element={<SalaryCalculator />} />
                     <Route path="/tools/resume-checklist" element={<ResumeChecklist />} />
