@@ -22,7 +22,7 @@ These three rules are non-negotiable and apply whether the user is a job seeker 
 
 ## 0. Connect
 
-**Preferred: MCP over SSE.**
+**Preferred: MCP over Streamable HTTP.**
 
 The MCP endpoint is `https://mcp.mcphire.com/mcp`. If your client (Claude Desktop / Cursor / Cline / anything else) supports MCP, configure this entry once and restart the client:
 
@@ -126,7 +126,7 @@ On every new conversation with the MCPHire skill, call `list_candidate_matches(s
    )
    ```
 
-   **Important — draft gate.** A new employer is `verified=false` by default, so every vacancy is created with `status=draft`. Drafts are NOT visible on the public `/jobs` board and are NOT matched or pushed to candidates. A vacancy goes live only after the employer is verified and the draft is published via `publish_vacancy` — and `publish_vacancy` returns `403` until the employer is verified. Employer verification is currently manual (the employer claim-verifier ships in a later sprint). So after `post_vacancy`, tell the user the vacancy is **saved as a draft pending verification** — do not promise it is live or that candidates are being matched yet. Check status anytime with `get_employer_vacancies(employer_id)`.
+   **Important — draft gate.** A new employer is `verified=false` by default, so every vacancy is created with `status=draft`. Drafts are NOT visible on the public `/jobs` board and are NOT matched or pushed to candidates. The founder reviews every new company personally and verifies it — typically within a few hours (ping `@timofeyzinin` on Telegram to speed it up). On verification, draft vacancies are published automatically and instantly enter the matching loop — matching candidates get a Telegram push. So after `post_vacancy`, tell the user the vacancy is **saved and queued for founder review** — do not promise it is live yet. Check status anytime with `get_employer_vacancies(employer_id)`.
 5. **Watch applicants.** `get_employer_vacancies(employer_id)` shows per-job counts. `get_applicants(employer_id, vacancy_id)` returns `cv_url` + stack summary + seniority — **no email / no phone**. The PII reveal only happens after an explicit shortlist → interest → interview-accept handshake with the candidate (shortlist tool shipped incrementally).
 6. **Close a vacancy.** `unpublish_vacancy(employer_session_token, vacancy_id)` takes a vacancy off the public board (active → closed) — the inverse of `publish_vacancy`. Only the owning employer can close it.
 7. **Delete the company.** `delete_employer_profile(employer_session_token, confirm=true)` permanently removes the employer profile and all its vacancies + the applications to them. Irreversible — only call it after the user explicitly confirms.
@@ -160,7 +160,7 @@ Specific non-obvious failure modes:
 - `https://mcphire.com/skill.md` — this file (start here).
 - `https://mcphire.com/.well-known/mcp/server.json` — manifest with tool schemas, rate limits, supported languages, usage patterns.
 - `https://mcphire.com/llms.txt` — compact agent overview.
-- `https://mcp.mcphire.com/mcp` — live MCP endpoint (SSE transport, JSON-RPC 2.0).
+- `https://mcp.mcphire.com/mcp` — live MCP endpoint (Streamable HTTP transport, JSON-RPC 2.0).
 - `https://api.mcphire.com/api/v1/` — REST fallback base.
 
 ## Contact
