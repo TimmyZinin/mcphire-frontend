@@ -251,8 +251,8 @@ export const INSTALL = {
       code: `{
   "mcpServers": {
     "mcphire": {
-      "type": "sse",
-      "url": "https://mcp.mcphire.com/sse"
+      "type": "http",
+      "url": "https://mcp.mcphire.com/mcp"
     }
   }
 }`,
@@ -264,8 +264,8 @@ export const INSTALL = {
       code: `{
   "mcpServers": {
     "mcphire": {
-      "type": "sse",
-      "url": "https://mcp.mcphire.com/sse"
+      "type": "http",
+      "url": "https://mcp.mcphire.com/mcp"
     }
   }
 }`,
@@ -274,8 +274,8 @@ export const INSTALL = {
       id: "claude-code",
       name: "Claude Code",
       file: "shell",
-      code: `claude mcp add --transport sse \\
-  mcphire https://mcp.mcphire.com/sse`,
+      code: `claude mcp add --transport http \\
+  mcphire https://mcp.mcphire.com/mcp`,
     },
     {
       id: "codex-cli",

@@ -24,14 +24,14 @@ These three rules are non-negotiable and apply whether the user is a job seeker 
 
 **Preferred: MCP over SSE.**
 
-The MCP endpoint is `https://mcp.mcphire.com/sse`. If your client (Claude Desktop / Cursor / Cline / anything else) supports MCP, configure this entry once and restart the client:
+The MCP endpoint is `https://mcp.mcphire.com/mcp`. If your client (Claude Desktop / Cursor / Cline / anything else) supports MCP, configure this entry once and restart the client:
 
 ```json
 {
   "mcpServers": {
     "mcphire": {
-      "type": "sse",
-      "url": "https://mcp.mcphire.com/sse"
+      "type": "http",
+      "url": "https://mcp.mcphire.com/mcp"
     }
   }
 }
@@ -160,7 +160,7 @@ Specific non-obvious failure modes:
 - `https://mcphire.com/skill.md` — this file (start here).
 - `https://mcphire.com/.well-known/mcp/server.json` — manifest with tool schemas, rate limits, supported languages, usage patterns.
 - `https://mcphire.com/llms.txt` — compact agent overview.
-- `https://mcp.mcphire.com/sse` — live MCP endpoint (SSE transport, JSON-RPC 2.0).
+- `https://mcp.mcphire.com/mcp` — live MCP endpoint (SSE transport, JSON-RPC 2.0).
 - `https://api.mcphire.com/api/v1/` — REST fallback base.
 
 ## Contact

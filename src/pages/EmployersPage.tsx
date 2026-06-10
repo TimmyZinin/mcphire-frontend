@@ -176,8 +176,8 @@ const EmployersPage = () => {
                   {`{
   "mcpServers": {
     "mcphire": {
-      "type": "sse",
-      "url": "https://mcp.mcphire.com/sse"
+      "type": "http",
+      "url": "https://mcp.mcphire.com/mcp"
     }
   }
 }`}

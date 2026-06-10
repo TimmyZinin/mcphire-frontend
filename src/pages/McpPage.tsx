@@ -5,7 +5,7 @@ import JobBoardNavbar from "@/components/JobBoardNavbar";
 import Footer from "@/components/Footer";
 import { PromptCopyBlock } from "@/components/v3/PromptCopyBlock";
 
-const SSE_ENDPOINT = "https://mcp.mcphire.com/sse";
+const SSE_ENDPOINT = "https://mcp.mcphire.com/mcp";
 
 // Real tool catalog (19) — keep in sync with mcp-server/server.py + server.json.
 const CANDIDATE_TOOLS = [
@@ -37,8 +37,8 @@ const EMPLOYER_TOOLS = [
 const CONFIG_SNIPPET = `{
   "mcpServers": {
     "mcphire": {
-      "type": "sse",
-      "url": "https://mcp.mcphire.com/sse"
+      "type": "http",
+      "url": "https://mcp.mcphire.com/mcp"
     }
   }
 }`;
@@ -129,7 +129,7 @@ const McpPage = () => {
             <div>
               <h3 className="font-bold mb-2">Claude Code</h3>
               <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-                <code>{`claude mcp add --transport sse mcphire ${SSE_ENDPOINT}`}</code>
+                <code>{`claude mcp add --transport http mcphire ${SSE_ENDPOINT}`}</code>
               </pre>
             </div>
 

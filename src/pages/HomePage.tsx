@@ -12,7 +12,7 @@
 // MCP-flow contracts NOT broken:
 //  - /skill.md link preserved
 //  - /.well-known/mcp/server.json link preserved
-//  - https://mcp.mcphire.com/sse SSE endpoint preserved
+//  - https://mcp.mcphire.com/mcp SSE endpoint preserved
 //  - REST fallback api.mcphire.com preserved
 //  - `agent-onboarding` anchor preserved (hero CTA + banner target)
 // ============================================================
@@ -277,8 +277,8 @@ const HomePage = () => {
 {`{
   "mcpServers": {
     "mcphire": {
-      "type": "sse",
-      "url": "https://mcp.mcphire.com/sse"
+      "type": "http",
+      "url": "https://mcp.mcphire.com/mcp"
     }
   }
 }`}

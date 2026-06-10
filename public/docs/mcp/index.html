@@ -76,7 +76,7 @@
   <h1>MCPHire — MCP Integration Guide</h1>
 
   <div class="tldr">
-    <strong>TL;DR:</strong> MCPHire — MCP-first IT job board для русского рынка (74,547 активных вакансий от 25,501 компании). Подключите его к Claude Desktop, Cursor или Cline за 2 минуты — получите <code>search_jobs</code>, <code>get_salary_stats</code>, <code>apply_to_job</code> прямо в чате. Эндпоинт: <code>https://mcp.mcphire.com/sse</code>.
+    <strong>TL;DR:</strong> MCPHire — MCP-first IT job board для русского рынка (74,547 активных вакансий от 25,501 компании). Подключите его к Claude Desktop, Cursor или Cline за 2 минуты — получите <code>search_jobs</code>, <code>get_salary_stats</code>, <code>apply_to_job</code> прямо в чате. Эндпоинт: <code>https://mcp.mcphire.com/mcp</code>.
   </div>
 
   <h2>Зачем это нужно</h2>
@@ -101,7 +101,7 @@
   "mcpServers": {
     "mcphire": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "https://mcp.mcphire.com/sse"]
+      "args": ["-y", "mcp-remote", "https://mcp.mcphire.com/mcp"]
     }
   }
 }</code></pre>
@@ -112,14 +112,14 @@
   <p>Settings → Cursor Settings → MCP → Add New MCP Server:</p>
   <pre><code>Name: mcphire
 Type: sse
-URL: https://mcp.mcphire.com/sse</code></pre>
+URL: https://mcp.mcphire.com/mcp</code></pre>
 
   <h3>Cline (VS Code extension)</h3>
   <p>Cline → MCP Servers → Edit:</p>
   <pre><code>{
   "mcphire": {
-    "url": "https://mcp.mcphire.com/sse",
-    "transport": "sse"
+    "url": "https://mcp.mcphire.com/mcp",
+    "transport": "streamable-http"
   }
 }</code></pre>
 

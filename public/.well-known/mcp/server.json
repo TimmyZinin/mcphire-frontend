@@ -2,8 +2,8 @@
   "name": "mcphire",
   "version": "1.5.0-alpha",
   "description": "MCPHire — MCP-first job marketplace. Two-sided: candidates register through Claude Desktop (11 tools, ~150-question onboarding) and employers register companies + post vacancies through Claude (10 tools, ~40-question onboarding). Primary audience today is Russian-speaking tech, but the data model, tools, and documentation are language- and currency-agnostic; any company can register and any candidate can apply regardless of location. Sprint 8: server-side consent_phrase validation, employer_session_token bearer, draft-status gate for unverified-employer vacancies.",
-  "endpoint": "https://mcp.mcphire.com/sse",
-  "transport": "sse",
+  "endpoint": "https://mcp.mcphire.com/mcp",
+  "transport": "streamable-http",
   "protocol": "JSON-RPC 2.0",
   "supported_languages": [
     "ru",
@@ -48,8 +48,8 @@
       "snippet": {
         "mcpServers": {
           "mcphire": {
-            "type": "sse",
-            "url": "https://mcp.mcphire.com/sse"
+            "type": "http",
+            "url": "https://mcp.mcphire.com/mcp"
           }
         }
       },
@@ -65,8 +65,8 @@
       "snippet": {
         "mcpServers": {
           "mcphire": {
-            "type": "sse",
-            "url": "https://mcp.mcphire.com/sse"
+            "type": "http",
+            "url": "https://mcp.mcphire.com/mcp"
           }
         }
       },
@@ -78,12 +78,12 @@
     },
     "cursor": {
       "note": "Cursor supports SSE MCP servers via Settings → MCP. Use the same endpoint.",
-      "endpoint": "https://mcp.mcphire.com/sse",
+      "endpoint": "https://mcp.mcphire.com/mcp",
       "docs_url": "https://docs.cursor.com/context/model-context-protocol"
     },
     "cline": {
       "note": "Cline supports SSE MCP via its MCP settings panel. Use the same endpoint.",
-      "endpoint": "https://mcp.mcphire.com/sse",
+      "endpoint": "https://mcp.mcphire.com/mcp",
       "docs_url": "https://github.com/cline/cline"
     }
   },

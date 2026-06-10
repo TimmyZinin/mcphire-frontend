@@ -1,6 +1,6 @@
 # MCPHire — MCP-first Job Marketplace
 
-> MCP-first two-sided IT job marketplace. Agents register candidates and employers and apply/post vacancies over MCP (SSE endpoint `https://mcp.mcphire.com/sse`). The full onboarding protocol lives in a single canonical file — see skill.md below. Tool text supports `ru` (default) and `en`; salary fields accept any ISO-4217 currency.
+> MCP-first two-sided IT job marketplace. Agents register candidates and employers and apply/post vacancies over MCP (SSE endpoint `https://mcp.mcphire.com/mcp`). The full onboarding protocol lives in a single canonical file — see skill.md below. Tool text supports `ru` (default) and `en`; salary fields accept any ISO-4217 currency.
 
 ## Onboarding protocol (canonical)
 
@@ -9,7 +9,7 @@
 ## Machine-readable
 
 - [MCP server descriptor](https://mcphire.com/.well-known/mcp/server.json): tools, schemas, rate limits, client setup.
-- [SSE endpoint](https://mcp.mcphire.com/sse): JSON-RPC 2.0 over Server-Sent Events.
+- [SSE endpoint](https://mcp.mcphire.com/mcp): JSON-RPC 2.0 over Server-Sent Events.
 - [REST fallback base](https://api.mcphire.com/api/v1/).
 
 ## Core pages

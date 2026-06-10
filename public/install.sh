@@ -13,7 +13,7 @@
 set -euo pipefail
 
 SERVER_NAME="mcphire"
-SSE_URL="https://mcp.mcphire.com/sse"
+SSE_URL="https://mcp.mcphire.com/mcp"
 
 say() { printf "\033[1;36m[mcphire]\033[0m %s\n" "$*"; }
 warn() { printf "\033[1;33m[mcphire]\033[0m %s\n" "$*" >&2; }
@@ -57,7 +57,7 @@ print_manual_snippet() {
   {
     "mcpServers": {
       "$SERVER_NAME": {
-        "type": "sse",
+        "type": "http",
         "url": "$SSE_URL"
       }
     }
@@ -99,7 +99,7 @@ if [ ! -f "$CONFIG" ]; then
 {
   "mcpServers": {
     "$SERVER_NAME": {
-      "type": "sse",
+      "type": "http",
       "url": "$SSE_URL"
     }
   }
@@ -112,7 +112,7 @@ else
   say "Backup: $backup"
   tmp="$(mktemp)"
   jq --arg name "$SERVER_NAME" --arg url "$SSE_URL" \
-    '.mcpServers = (.mcpServers // {}) | .mcpServers[$name] = {"type":"sse","url":$url}' \
+    '.mcpServers = (.mcpServers // {}) | .mcpServers[$name] = {"type":"http","url":$url}' \
     "$CONFIG" > "$tmp"
   mv "$tmp" "$CONFIG"
   say "Merged mcphire entry into existing config."
