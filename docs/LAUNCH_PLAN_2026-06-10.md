@@ -44,11 +44,12 @@
 - [x] Транспорт `/mcp` Streamable HTTP, endpoint жив, skill.md/install.sh 200
 - [x] skill.md = канон; server.json/install.sh синхронны
 - [x] Кандидатская петля А→матч→пинг работает (230 доставок)
-- [ ] **Employer fast-verify задеплоен** ← блокер №1 под завтра
-- [ ] **TTFW ≤ 10 мин прогнан 2 внешними людьми** (не я, не Тим) ← блокер №2
-- [ ] skill.md обновлён: «вакансия на ревью», убрать остаток про SSE в строке 163/26-27
-- [ ] Healthcheck-алерт MCP-endpoint → Telegram Тиму (initialize-проба)
-- [ ] Тестовые данные (69 агентов/65 работодателей — мусор) помечены/вычищены из публичных счётчиков
+- [x] **Employer fast-verify задеплоен** — `POST /api/v1/admin/employer/{id}/verify` (X-Admin-Token), E2E прогнан: verify→publish→trigger→match за 108 мс. Тест-данные откатаны.
+- [x] **Founder-notify при регистрации работодателя** — TG-пинг Тиму через @mcphire_match_bot с готовой fast-verify командой (E2E проверен, msg доставлен). Бонус: TG_ALERT_TOKEN был мёртв (не прокинут в контейнер + uptime-бот отозван, 401) — починен, 500-алерты теперь тоже живые.
+- [x] skill.md обновлён: «вакансия на ревью основателя», SSE-остатки убраны (строки 25/163), live проверен
+- [x] Healthcheck-алерт MCP-endpoint → Telegram Тиму — `/opt/mcphire-watch/check.sh`, cron */5, initialize-проба + api health + skill.md, кулдаун 30 мин. Старый uptime-monitor был мёртв с 3 марта (нет cron) — учтено.
+- [x] Тестовый мусор с публичной доски вычищен: 10 active «[TEST]/DO NOT APPLY» вакансий → closed; employer-posted active = 0
+- [ ] **TTFW ≤ 10 мин прогнан 2 внешними людьми** (не я, не Тим) ← остался ЕДИНСТВЕННЫЙ гейт-блокер
 - [ ] Демо-гифка терминала: одна строка → пинг в Telegram
 - [ ] Support-канал (@timofeyzinin) на видном месте каждой страницы
 
