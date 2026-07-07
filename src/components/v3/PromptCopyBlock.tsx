@@ -5,6 +5,7 @@
 // ============================================================
 
 import { useState } from "react";
+import { track } from "@/lib/track";
 import type { Lang } from "./data";
 
 interface PromptCopyBlockProps {
@@ -43,7 +44,10 @@ export function PromptCopyBlock({ prompt, lang }: PromptCopyBlockProps) {
       }
     }
     setCopied(ok);
-    if (ok) window.setTimeout(() => setCopied(false), 1500);
+    if (ok) {
+      track("skill_line_copy", { page: window.location.pathname });
+      window.setTimeout(() => setCopied(false), 1500);
+    }
   };
 
   return (
