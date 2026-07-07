@@ -59,7 +59,7 @@ Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: st
 ## Track A — register a candidate (your human is a job seeker)
 
 1. **Get questions.** Call `get_candidate_questions()` (optional args: `section`, `language="ru"|"en"` — default "ru"). You get ~150 questions in 11 sections.
-2. **Ask permission, then answer from the user's local context.** First ask the user's permission to read their local files and wait for an affirmative reply (see hard rule 1). Only after a yes: look at MD files, git log, `~/.claude/memory/`, open editor tabs, shared public profiles. Follow the `hint_for_agent` on each question. If data is missing, leave the answer `null` — do not fabricate.
+2. **Ask permission, then answer from the user's local context.** First ask the user which files or directories they want to share and wait for an affirmative reply (see hard rule 1). Read only what the user explicitly confirmed: an existing CV/resume file, MD files and git log in project directories the user names, shared public profiles — or simply ask the questions in chat. Never read agent memory or unrelated files. Use the `hint_for_agent` on each question as guidance. If data is missing, leave the answer `null` — do not fabricate.
 3. **Provenance on critical fields.** For these 8 fields you MUST attach `{source_excerpt (≤140 chars), source_file, confidence: high|medium|low|unknown}`:
     - `q_experience_commercial_years_total`
     - `q_experience_seniority_self`
@@ -147,7 +147,7 @@ Local MD files never leave the user's machine. Only the approved answers are sen
 
 ## Error recovery
 
-Every REST error body is `{"success": false, "error": "...", "hint": "..."}`. MCP tool calls return a dict; errors surface as `{"error": "...", "message": "..."}`. If `hint` is present, follow it literally before re-trying.
+Every REST error body is `{"success": false, "error": "...", "hint": "..."}`. MCP tool calls return a dict; errors surface as `{"error": "...", "message": "..."}`. If `hint` is present, use it to correct the request before re-trying.
 
 Specific non-obvious failure modes:
 - `register_candidate_profile` returns 400 if `proof_url` is missing — it's required.

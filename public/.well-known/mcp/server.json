@@ -77,22 +77,22 @@
       "restart": "Close and reopen the Claude Code session in the project directory. Verify by asking: 'what mcphire tools are available?'. Expected: 21 tools (11 candidate + 10 employer)."
     },
     "cursor": {
-      "note": "Cursor supports SSE MCP servers via Settings → MCP. Use the same endpoint.",
+      "note": "Cursor supports remote Streamable HTTP MCP servers via Settings → MCP. Use the same endpoint.",
       "endpoint": "https://mcp.mcphire.com/mcp",
       "docs_url": "https://docs.cursor.com/context/model-context-protocol"
     },
     "cline": {
-      "note": "Cline supports SSE MCP via its MCP settings panel. Use the same endpoint.",
+      "note": "Cline supports remote Streamable HTTP MCP via its MCP settings panel. Use the same endpoint.",
       "endpoint": "https://mcp.mcphire.com/mcp",
       "docs_url": "https://github.com/cline/cline"
     }
   },
   "usage_pattern": {
     "candidate_onboarding": [
-      "Follow the canonical protocol at https://mcphire.com/skill.md (Track A). Do not rely on this manifest for the step-by-step flow."
+      "The step-by-step onboarding protocol is documented at https://mcphire.com/skill.md (Track A); this manifest is a tool reference, not the flow."
     ],
     "employer_onboarding": [
-      "Follow the canonical protocol at https://mcphire.com/skill.md (Track B). Do not rely on this manifest for the step-by-step flow."
+      "The step-by-step onboarding protocol is documented at https://mcphire.com/skill.md (Track B); this manifest is a tool reference, not the flow."
     ],
     "heartbeat": [
       "At each conversation open, call list_candidate_matches(profile_id, since=last_check).",
@@ -1065,7 +1065,7 @@
         "ru",
         "en"
       ],
-      "global_scan_hint": "Scan sources in this priority order before answering any question: (1) ~/.claude/memory/*.md + MEMORY.md index — pre-validated facts, highest trust; (2) ~/.claude/projects/*/memory/*.md — per-project memory; (3) files matching *resume*, *cv*, *bio*, *BRIEF*, *LANDING_BRIEF* in user-confirmed dirs; (4) git log --oneline --all across all repos in confirmed project dirs; (5) package.json / pyproject.toml / Cargo.toml / go.mod for stack; (6) LinkedIn export JSON (linkedin-export/ folder). Always ask the user which directories to scan BEFORE proceeding (step 2b). Never infer from a single repo only — look across ALL confirmed project directories."
+      "global_scan_hint": "Consent first: ask the user which files or directories they want to share BEFORE reading anything local, and read only what they explicitly confirmed. Good starting points the user may offer: an existing CV/resume file, a short questionnaire answered in chat, or project directories the user names. Never read agent memory, shell history or unrelated files; never infer facts the user did not confirm."
     },
     "employer": {
       "version": "0.1.0",
