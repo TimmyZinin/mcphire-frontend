@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import DOMPurify from "dompurify";
 import { useJob, useSimilarJobs } from "@/hooks/useJobs";
 import { useAuth } from "@/contexts/AuthContext";
@@ -38,6 +39,8 @@ const JobDetailPage = () => {
   const { data: job, isLoading } = useJob(id || "");
   const { data: similarJobs = [] } = useSimilarJobs(id || "");
   const { isAuthenticated } = useAuth();
+  const { i18n } = useTranslation();
+  const L = i18n.language?.startsWith("en");
   const [applyOpen, setApplyOpen] = useState(false);
 
   // Deterministic 80-99 match score until real scoring is wired in
@@ -170,6 +173,7 @@ const JobDetailPage = () => {
           matchScore={isAuthenticated ? matchScore : null}
           matchLabel="матч"
           tags={[job.format, job.level, ...skills.slice(0, 3)].filter(Boolean)}
+          directLabel={job.isDirect ? (L ? "✓ Direct" : "✓ Прямая") : undefined}
           primaryAction={
             <button
               onClick={() => setApplyOpen(true)}

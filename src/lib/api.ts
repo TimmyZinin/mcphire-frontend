@@ -18,6 +18,7 @@ import type {
   Application,
   EmployerProfile,
   JobAnalytics,
+  CandidateListItem,
 } from "@/types";
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? "https://api.mcphire.com/v1";
@@ -157,6 +158,8 @@ export const authApi = {
 export type JobsQueryParams = Partial<JobFilters> & {
   page?: number;
   perPage?: number;
+  /** Sprint — show only jobs posted directly by the employer via MCPHire. */
+  directOnly?: boolean;
 };
 
 export const jobsApi = {
@@ -192,6 +195,63 @@ export const jobsApi = {
 
   stats: () =>
     request<{ totalJobs: number; citiesCount: number; categoriesCount: number; companiesCount: number }>("/jobs/stats"),
+};
+
+// ============================================================
+// CANDIDATES ENDPOINTS (public catalog — no auth, no PII)
+// ============================================================
+
+export type CandidatesQueryParams = Partial<{
+  stack: string; // comma-separated, e.g. "python,react"
+  seniority: string;
+  timezone: string;
+  limit: number;
+}>;
+
+// Backend may serialize as camelCase (CamelModel, matches every other MCPHire
+// endpoint) or snake_case if the wrapper is missed on this new route — accept
+// both defensively since this endpoint wasn't reachable in prod at write time.
+interface RawCandidate {
+  profile_id_masked?: string;
+  profileIdMasked?: string;
+  display_name?: string;
+  displayName?: string;
+  headline?: string;
+  cv_url?: string;
+  cvUrl?: string;
+  stack_summary?: string[];
+  stackSummary?: string[];
+  seniority?: string;
+  timezone?: string;
+  intent_horizon?: string | null;
+  intentHorizon?: string | null;
+}
+
+function normalizeCandidate(raw: RawCandidate): CandidateListItem {
+  return {
+    profileIdMasked: raw.profileIdMasked ?? raw.profile_id_masked ?? "",
+    displayName: raw.displayName ?? raw.display_name ?? "",
+    headline: raw.headline ?? "",
+    cvUrl: raw.cvUrl ?? raw.cv_url ?? "",
+    stackSummary: raw.stackSummary ?? raw.stack_summary ?? [],
+    seniority: raw.seniority ?? "",
+    timezone: raw.timezone ?? "",
+    intentHorizon: raw.intentHorizon ?? raw.intent_horizon ?? null,
+  };
+}
+
+export const candidatesApi = {
+  list: async (
+    params: CandidatesQueryParams = {}
+  ): Promise<{ candidates: CandidateListItem[]; count: number }> => {
+    const res = await request<{ candidates: RawCandidate[]; count: number }>("/candidates", {
+      params: params as Record<string, string | number | boolean | string[] | null | undefined>,
+    });
+    return {
+      candidates: (res.candidates ?? []).map(normalizeCandidate),
+      count: res.count ?? 0,
+    };
+  },
 };
 
 // ============================================================

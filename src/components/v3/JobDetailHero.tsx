@@ -16,6 +16,8 @@ interface JobDetailHeroProps {
   matchScore?: number | null;
   matchLabel?: string;       // "MATCH" / "match"
   tags?: string[];
+  /** Ready-to-render label e.g. "✓ Прямая" / "✓ Direct" — undefined hides the badge. */
+  directLabel?: string;
   primaryAction?: ReactNode; // existing Apply button injected verbatim
   secondaryAction?: ReactNode;
 }
@@ -30,6 +32,7 @@ export function V3JobDetailHero({
   matchScore,
   matchLabel = "match",
   tags = [],
+  directLabel,
   primaryAction,
   secondaryAction,
 }: JobDetailHeroProps) {
@@ -80,6 +83,14 @@ export function V3JobDetailHero({
               <div className="v3-mono text-xs opacity-70 mt-1">● {freshLabel}</div>
             )}
           </div>
+          {directLabel && (
+            <span
+              className="text-[11px] font-bold px-2.5 py-1 rounded-full uppercase whitespace-nowrap ml-auto"
+              style={{ background: "rgba(255,255,255,.9)", color: "var(--v3-leaf)", letterSpacing: ".06em" }}
+            >
+              {directLabel}
+            </span>
+          )}
         </div>
 
         <h1

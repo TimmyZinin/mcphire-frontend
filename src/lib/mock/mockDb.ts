@@ -83,6 +83,7 @@ function transformJob(old: OldJob): Job {
     mcpIndexed: true,
     isPremium: parseInt(old.id, 10) % 5 === 0, // every 5th job is premium
     responseLetterRequired: parseInt(old.id, 10) % 3 === 0, // every 3rd job requires cover letter
+    isDirect: parseInt(old.id, 10) % 4 === 0, // every 4th job posted directly via MCPHire
   };
 }
 
@@ -124,6 +125,7 @@ function toJobListItem(job: Job): JobListItem {
     status: job.status,
     category: job.category,
     isPremium: job.isPremium,
+    isDirect: job.isDirect,
   };
 }
 
@@ -163,6 +165,7 @@ export const db = {
     sortBy?: "relevance" | "salary_desc" | "salary_asc" | "date_desc" | "date_asc";
     page?: number;
     perPage?: number;
+    directOnly?: boolean;
   }): PaginatedResponse<JobListItem> {
     let filtered = [...this.jobs];
 
@@ -203,6 +206,11 @@ export const db = {
     // Filter by category
     if (params.category) {
       filtered = filtered.filter((j) => j.category === params.category);
+    }
+
+    // Filter by direct-only (posted by employer via MCPHire, not imported)
+    if (params.directOnly) {
+      filtered = filtered.filter((j) => j.isDirect);
     }
 
     // Filter by salary

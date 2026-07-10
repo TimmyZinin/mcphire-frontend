@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { SlidersHorizontal, X } from "lucide-react";
 import {
@@ -137,6 +137,23 @@ const JobsPage = () => {
   const { filters, page, setFilters, toggleArrayFilter, activeFilterCount } = useJobFilters();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
+  // "Только прямые" — independent of useJobFilters (kept in URL for shareability,
+  // not part of the shared JobFilters type since it's list-only, not a job facet).
+  const [searchParams, setSearchParams] = useSearchParams();
+  const directOnly = searchParams.get("directOnly") === "true";
+  const toggleDirectOnly = () => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (directOnly) next.delete("directOnly");
+        else next.set("directOnly", "true");
+        next.set("page", "1");
+        return next;
+      },
+      { replace: true }
+    );
+  };
+
   // Salary options
   const salaryOptions = [
     { label: "от 150K", value: 150000 },
@@ -161,6 +178,7 @@ const JobsPage = () => {
     salaryMax: filters.salaryMax || undefined,
     category: filters.category || undefined,
     sortBy: filters.sortBy,
+    directOnly: directOnly || undefined,
     page,
     perPage: 12,
   });
@@ -356,18 +374,29 @@ const JobsPage = () => {
               </div>
             )}
 
-            {/* Sort + count */}
-            <div className="flex items-center justify-between py-3">
-              <div className="flex gap-1">
-                {sortOptions.map((s) => (
-                  <button
-                    key={s.key}
-                    onClick={() => setFilters({ sortBy: s.key as any, page: 1 })}
-                    className={sortClass(filters.sortBy === s.key)}
-                  >
-                    {s.label}
-                  </button>
-                ))}
+            {/* Sort + direct-only toggle + count */}
+            <div className="flex items-center justify-between py-3 flex-wrap gap-2">
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex gap-1">
+                  {sortOptions.map((s) => (
+                    <button
+                      key={s.key}
+                      onClick={() => setFilters({ sortBy: s.key as any, page: 1 })}
+                      className={sortClass(filters.sortBy === s.key)}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+                <label className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={directOnly}
+                    onChange={toggleDirectOnly}
+                    className="w-4 h-4 rounded border-border accent-primary cursor-pointer"
+                  />
+                  Только прямые
+                </label>
               </div>
               <span className="text-sm text-muted-foreground hidden sm:inline">
                 {isLoading ? "Загрузка..." : `${startIndex}–${endIndex} из ${totalJobs}`}

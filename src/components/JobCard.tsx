@@ -5,12 +5,13 @@
 // ============================================================
 
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import type { JobListItem } from "@/types";
 import { formatSalaryRange, formatRelativeTime } from "@/lib/formatters";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface JobCardProps {
-  job: JobListItem & { isPremium?: boolean };
+  job: JobListItem & { isPremium?: boolean; isDirect?: boolean };
   showMatchScore?: boolean;
 }
 
@@ -39,6 +40,8 @@ function getMatchScore(id: string): number {
 
 export function JobCard({ job, showMatchScore = true }: JobCardProps) {
   const { isAuthenticated } = useAuth();
+  const { i18n } = useTranslation();
+  const L = i18n.language?.startsWith("en");
   const companyName = typeof job.company === "string" ? job.company : job.company.name;
   const matchScore = getMatchScore(job.id);
   const canShowMatch = showMatchScore && isAuthenticated;
@@ -52,14 +55,27 @@ export function JobCard({ job, showMatchScore = true }: JobCardProps) {
       to={`/jobs/${jobLinkParam}`}
       className="v3-card block p-5 relative overflow-hidden no-underline hover:-translate-y-0.5 transition-transform"
     >
-      {/* Premium badge — top right */}
-      {job.isPremium && (
-        <span
-          className="absolute top-4 right-4 v3-mono text-[10px] font-bold px-2 py-0.5 rounded-full uppercase"
-          style={{ background: "var(--v3-sun)", color: "var(--v3-ink)", letterSpacing: ".06em" }}
-        >
-          Premium
-        </span>
+      {/* Badges — stacked top right so they never overlap the avatar. */}
+      {(job.isPremium || job.isDirect) && (
+        <div className="absolute top-4 right-4 flex flex-col items-end gap-1.5">
+          {job.isPremium && (
+            <span
+              className="v3-mono text-[10px] font-bold px-2 py-0.5 rounded-full uppercase"
+              style={{ background: "var(--v3-sun)", color: "var(--v3-ink)", letterSpacing: ".06em" }}
+            >
+              Premium
+            </span>
+          )}
+          {/* Direct — posted by the employer via MCPHire (not imported from hh.ru etc). */}
+          {job.isDirect && (
+            <span
+              className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase whitespace-nowrap"
+              style={{ background: "rgba(10,138,82,.12)", color: "var(--v3-leaf)", letterSpacing: ".06em" }}
+            >
+              {L ? "✓ Direct" : "✓ Прямая"}
+            </span>
+          )}
+        </div>
       )}
 
       {/* Top row: gradient avatar + role + match score */}

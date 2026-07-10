@@ -39,7 +39,7 @@ The MCP endpoint is `https://mcp.mcphire.com/mcp`. If your client (Claude Deskto
 
 On macOS `~/Library/Application Support/Claude/claude_desktop_config.json`, on Windows `%APPDATA%/Claude/claude_desktop_config.json`. Full quit the client (⌘Q or File → Quit, not window close). Or run `curl -fsSL https://mcphire.com/install.sh | bash` for the same thing automated.
 
-Once connected you'll see 21 tools: `search_jobs`, `get_job_details`, `get_salary_stats`, `apply_to_job`, `get_candidate_applications`, `get_candidate_questions`, `register_candidate_profile`, `get_candidate_verification_status`, `list_candidate_matches`, `get_candidate_cv`, `delete_candidate_profile`, `get_employer_questions`, `register_employer_profile`, `post_vacancy`, `publish_vacancy`, `get_employer_vacancies`, `get_applicants`, `shortlist_candidate`, `send_interview_invite`, `unpublish_vacancy`, `delete_employer_profile`.
+Once connected you'll see 22 tools: `search_jobs`, `get_job_details`, `get_salary_stats`, `apply_to_job`, `get_candidate_applications`, `get_candidate_questions`, `register_candidate_profile`, `get_candidate_verification_status`, `list_candidate_matches`, `get_candidate_cv`, `delete_candidate_profile`, `get_employer_questions`, `register_employer_profile`, `post_vacancy`, `publish_vacancy`, `get_employer_vacancies`, `search_candidates`, `get_applicants`, `shortlist_candidate`, `send_interview_invite`, `unpublish_vacancy`, `delete_employer_profile`.
 
 **Fallback: REST.**
 
@@ -87,11 +87,13 @@ Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: st
      consent_granted=true,
      provenance={q_id: {source_excerpt, source_file, confidence}},
      observed_facts=[{..., approved_by_user: true}, ...],
-     questions_version="0.3.1"
+     questions_version="0.3.2"
    )
    ```
 
    **Required field:** `answers.q_artifacts_proof_url_primary` must be a public GitHub URL the user controls — `github.com/<user>` profile/bio, a pinned `gist.github.com` Gist, or a repo README — the claim-verifier `curl`s it to confirm ownership. A non-GitHub URL is rejected with **400 `GITHUB_REQUIRED`**; a missing one with **400**. Collect a valid GitHub URL before calling `register_candidate_profile`.
+
+   **Public catalog opt-in (`q_catalog_visibility`).** Default is `no`: the profile stays reachable by its direct `/cv/<slug>` link and appears in employers' private `search_candidates`, but is NOT listed in the public catalog at mcphire.com/candidates. Set `q_catalog_visibility="yes"` only if the user explicitly wants to be discoverable by anyone browsing the catalog. Ask; don't assume.
 
    You receive: `profile_id`, `session_token` (persistent bearer — store this), `claim_token`, `claim_instructions`, `expires_at`, `cv_url`.
 7. **Claim ownership (GitHub).** Ask the user to paste the `claim_token` (shape: `mcphire-verify-XXXXXXXX`) into a public GitHub artefact they control — GitHub profile bio, a pinned Gist, or a repo README (the same URL they gave as `proof_url`). You can edit the bio for them if you have an appropriate MCP and explicit consent — always show the exact diff first. The claim verifier cron picks it up within 15 minutes. For instant re-check: `get_candidate_verification_status(claim_token)`.
@@ -129,6 +131,10 @@ On every new conversation with the MCPHire skill, call `list_candidate_matches(s
    ```
 
    **Vacancy goes live immediately.** As of 2026-07-10 there is NO verification gate for employers: `post_vacancy` creates the vacancy with `status=active` — it is instantly visible at its public `/jobs/<slug>` URL, enters the matching loop right away (matching candidates get a Telegram push), and needs no founder review. `publish_vacancy` is kept as an idempotent no-op for backwards compatibility — calling it on an active vacancy simply returns `already_active: true`. Per-employer anti-spam caps apply (default 5 vacancies/hour, 20/day) — exceeding them returns 429. So after `post_vacancy`, tell the user the vacancy is **live** and share the `job_url`. Check anytime with `get_employer_vacancies`.
+
+   Vacancies posted directly through MCPHire (yours) carry a **direct** badge and rank above aggregator imports in search and listings — so a freshly posted vacancy surfaces on the first screen, not buried under scraped jobs.
+
+5. **Find candidates for a vacancy.** `search_candidates(employer_session_token, stack?, seniority?, timezone?, limit?)` searches the whole pool of verified candidates and returns masked cards: `profile_id_masked`, `cv_url` (public CV), `stack_summary`, `seniority`, `timezone`, `headline`. When the user says "find me a python engineer" / "найди мне питониста", call this with `stack=["python"]`. Contact details are never returned here — read the `cv_url`, then use `shortlist_candidate` to reach out; the candidate's contacts unlock only after they respond "interested" to the shortlist push. This tool is employer-only (needs a valid `employer_session_token`). The public, consent-only version of this pool is the catalog at **mcphire.com/candidates**.
 
 ## Privacy rules — server-enforced
 

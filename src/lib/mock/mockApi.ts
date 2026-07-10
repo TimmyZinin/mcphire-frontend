@@ -12,6 +12,7 @@ import type {
   Application,
   JobAnalytics,
   ApplicationStatus,
+  CandidateListItem,
 } from "@/types";
 import { delay } from "./delay";
 import { db } from "./mockDb";
@@ -139,6 +140,7 @@ export type JobsQueryParams = Partial<{
   sortBy: "relevance" | "salary_desc" | "salary_asc" | "date_desc" | "date_asc";
   page: number;
   perPage: number;
+  directOnly: boolean;
 }>;
 
 export const jobsApi = {
@@ -231,6 +233,79 @@ export const jobsApi = {
   async stats(): Promise<{ totalJobs: number; citiesCount: number; categoriesCount: number; companiesCount: number }> {
     await delay();
     return db.getStats();
+  },
+};
+
+// ============================================================
+// Candidates API (public catalog mock — no auth, no PII)
+// ============================================================
+
+export type CandidatesQueryParams = Partial<{
+  stack: string;
+  seniority: string;
+  timezone: string;
+  limit: number;
+}>;
+
+const mockCandidates: CandidateListItem[] = [
+  {
+    profileIdMasked: "cand-8f21",
+    displayName: "Кандидат #8f21",
+    headline: "Senior Backend Engineer, Python/Go",
+    cvUrl: "https://mock-mcphire.com/cv/8f21.pdf",
+    stackSummary: ["Python", "FastAPI", "PostgreSQL", "Docker"],
+    seniority: "senior",
+    timezone: "UTC+3",
+    intentHorizon: "2 недели",
+  },
+  {
+    profileIdMasked: "cand-3a90",
+    displayName: "Кандидат #3a90",
+    headline: "Frontend / React specialist",
+    cvUrl: "https://mock-mcphire.com/cv/3a90.pdf",
+    stackSummary: ["React", "TypeScript", "Next.js"],
+    seniority: "middle",
+    timezone: "UTC+4",
+    intentHorizon: "1 месяц",
+  },
+  {
+    profileIdMasked: "cand-c114",
+    displayName: "Кандидат #c114",
+    headline: "DevOps / SRE, Kubernetes",
+    cvUrl: "https://mock-mcphire.com/cv/c114.pdf",
+    stackSummary: ["Kubernetes", "Terraform", "AWS"],
+    seniority: "staff",
+    timezone: "UTC+2",
+    intentHorizon: "сразу",
+  },
+];
+
+export const candidatesApi = {
+  async list(
+    params: CandidatesQueryParams = {}
+  ): Promise<{ candidates: CandidateListItem[]; count: number }> {
+    await delay();
+    let filtered = [...mockCandidates];
+
+    if (params.stack) {
+      const wanted = params.stack.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+      if (wanted.length) {
+        filtered = filtered.filter((c) =>
+          c.stackSummary.some((s) => wanted.includes(s.toLowerCase()))
+        );
+      }
+    }
+    if (params.seniority) {
+      filtered = filtered.filter(
+        (c) => c.seniority.toLowerCase() === params.seniority!.toLowerCase()
+      );
+    }
+    if (params.timezone) {
+      filtered = filtered.filter((c) => c.timezone === params.timezone);
+    }
+
+    const limit = params.limit ?? filtered.length;
+    return { candidates: filtered.slice(0, limit), count: filtered.length };
   },
 };
 

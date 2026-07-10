@@ -3,7 +3,7 @@
 // Centralised so invalidations stay consistent.
 // ============================================================
 
-import type { JobsQueryParams } from "@/lib/api";
+import type { JobsQueryParams, CandidatesQueryParams } from "@/lib/api";
 
 export const queryKeys = {
   // Auth
@@ -24,6 +24,13 @@ export const queryKeys = {
     categories: () => [...queryKeys.jobs.all, "categories"] as const,
     cities: () => [...queryKeys.jobs.all, "cities"] as const,
     stats: () => [...queryKeys.jobs.all, "stats"] as const,
+  },
+
+  // Candidates (public catalog)
+  candidates: {
+    all: ["candidates"] as const,
+    lists: () => [...queryKeys.candidates.all, "list"] as const,
+    list: (params: CandidatesQueryParams) => [...queryKeys.candidates.lists(), params] as const,
   },
 
   // Seeker

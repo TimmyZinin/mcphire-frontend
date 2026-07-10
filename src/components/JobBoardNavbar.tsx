@@ -30,6 +30,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
   { to: "/jobs", labelRu: "Вакансии", labelEn: "Jobs" },
+  { to: "/candidates", labelRu: "Кандидаты", labelEn: "Candidates" },
   { to: "/employers", labelRu: "Для работодателей", labelEn: "For employers" },
   { to: "/tools", labelRu: "Инструменты", labelEn: "Tools" },
   { to: "/mcp", labelRu: "MCP", labelEn: "MCP" },

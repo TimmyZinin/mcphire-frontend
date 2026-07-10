@@ -15,10 +15,11 @@ export const authApi = api.authApi;
 export const jobsApi = api.jobsApi;
 export const seekerApi = api.seekerApi;
 export const employerApi = api.employerApi;
+export const candidatesApi = api.candidatesApi;
 export const getAccessToken = api.getAccessToken;
 export const setTokens = realApi.setTokens;
 export const clearTokens = api.clearTokens;
 export const ApiError = api.ApiError;
 
 // Re-export types
-export type { JobsQueryParams, CreateJobPayload } from "@/lib/api";
+export type { JobsQueryParams, CreateJobPayload, CandidatesQueryParams } from "@/lib/api";

@@ -24,9 +24,10 @@ import type { Lang } from "./data";
 // ("страница нужна в доработке, содержит непонятные инструменты").
 // Page remains reachable via direct link.
 const navLinks = [
-  { to: "/jobs",      labelRu: "Вакансии",        labelEn: "Jobs" },
-  { to: "/employers", labelRu: "Для работодателей", labelEn: "For employers" },
-  { to: "/mcp",       labelRu: "MCP",             labelEn: "MCP" },
+  { to: "/jobs",       labelRu: "Вакансии",         labelEn: "Jobs" },
+  { to: "/candidates", labelRu: "Кандидаты",        labelEn: "Candidates" },
+  { to: "/employers",  labelRu: "Для работодателей", labelEn: "For employers" },
+  { to: "/mcp",        labelRu: "MCP",              labelEn: "MCP" },
 ];
 
 function getInitials(name: string): string {

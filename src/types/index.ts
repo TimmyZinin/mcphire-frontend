@@ -84,6 +84,8 @@ export interface Job {
   mcpIndexed: boolean;
   isPremium: boolean;
   responseLetterRequired: boolean;
+  /** Posted directly by the employer through MCPHire (not imported from hh.ru etc). */
+  isDirect?: boolean;
 }
 
 export interface JobListItem {
@@ -103,6 +105,24 @@ export interface JobListItem {
   status: JobStatus;
   category: string;
   isPremium?: boolean;
+  /** Posted directly by the employer through MCPHire (not imported from hh.ru etc). */
+  isDirect?: boolean;
+}
+
+// ------ Candidates (public catalog) --------------------------
+
+export type CandidateSeniority = "junior" | "middle" | "senior" | "staff" | "principal" | "lead";
+
+/** Public candidate-catalog entry. No PII — masked profile id, no contacts. */
+export interface CandidateListItem {
+  profileIdMasked: string;
+  displayName: string;
+  headline: string;
+  cvUrl: string;
+  stackSummary: string[];
+  seniority: CandidateSeniority | string;
+  timezone: string;
+  intentHorizon: string | null;
 }
 
 // ------ Search & Filters ------------------------------------

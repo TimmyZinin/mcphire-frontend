@@ -27,6 +27,7 @@ const KnowledgeCategory = lazy(() => import("./pages/KnowledgeCategory"));
 const KnowledgeArticle = lazy(() => import("./pages/KnowledgeArticle"));
 const JobsByCity = lazy(() => import("./pages/JobsByCity"));
 const JobsByCategory = lazy(() => import("./pages/JobsByCategory"));
+const CandidatesPage = lazy(() => import("./pages/CandidatesPage"));
 const EmployersPage = lazy(() => import("./pages/EmployersPage"));
 const CompanyDetailPage = lazy(() => import("./pages/CompanyDetailPage"));
 const ToolsPage = lazy(() => import("./pages/ToolsPage"));
@@ -137,6 +138,13 @@ const App = () => (
                   <Route path="/jobs/city/:city" element={<JobsByCity />} />
                   <Route path="/jobs/category/:category" element={<JobsByCategory />} />
                   <Route path="/jobs/:id" element={<JobDetailPage />} />
+
+                  {/* ---- Public candidates catalog ----
+                      NOTE: CandidatesPage renders its own V3Navbar + Footer,
+                      same as JobsPage — /jobs itself is NOT inside the
+                      V3LayoutRoute wrapper below, so this route follows the
+                      real pattern rather than being nested in that block. ---- */}
+                  <Route path="/candidates" element={<CandidatesPage />} />
 
                   {/* ---- Employers landing ---- */}
                   <Route path="/employers" element={<EmployersPage />} />
