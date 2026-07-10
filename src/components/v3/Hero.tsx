@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import type { AudienceMode, Lang } from "./data";
 import { COPY, RECRUITER } from "./data";
 import { V3Bubble } from "./Bubble";
+import { track } from "@/lib/track";
 
 interface HeroProps {
   lang: Lang;
@@ -55,7 +56,13 @@ function HeroCandidate({ lang }: { lang: Lang }) {
             {copy.sub}
           </p>
           <div className="flex flex-wrap gap-2.5 mt-7">
-            <a href="#agent-onboarding" className="v3-btn v3-btn-primary">▶ {copy.ctaPrimary}</a>
+            <a
+              href="#agent-onboarding"
+              className="v3-btn v3-btn-primary"
+              onClick={() => track("hero_cta_click", { mode: "candidate", lang })}
+            >
+              ▶ {copy.ctaPrimary}
+            </a>
             <Link to="/jobs" className="v3-btn v3-btn-ghost">{copy.ctaSecondary} →</Link>
           </div>
           <div className="font-mono text-xs text-v3-mute mt-5">
@@ -147,7 +154,13 @@ function HeroRecruiter({ lang }: { lang: Lang }) {
             {r.sub}
           </p>
           <div className="flex flex-wrap gap-2.5 mt-7">
-            <Link to="/employers" className="v3-btn v3-btn-cool">▶ {r.ctaPrimary}</Link>
+            <Link
+              to="/employers"
+              className="v3-btn v3-btn-cool"
+              onClick={() => track("employer_post_click", { source: "hero", lang })}
+            >
+              ▶ {r.ctaPrimary}
+            </Link>
             <Link to="/employer/dashboard" className="v3-btn v3-btn-ghost">{r.ctaSecondary} →</Link>
           </div>
           <div className="font-mono text-xs text-v3-mute mt-5">

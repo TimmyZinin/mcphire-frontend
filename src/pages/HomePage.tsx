@@ -39,6 +39,7 @@ import type { AudienceMode, Lang } from "@/components/v3/data";
 import Footer from "@/components/Footer";
 import { JobCard, SkeletonGrid } from "@/components/JobCard";
 import { useJobs } from "@/hooks/useJobs";
+import { track } from "@/lib/track";
 
 // ---- Audience mode persistence -------------------------------
 // Source of truth (priority): URL ?mode=  →  localStorage  →  default candidate.
@@ -430,7 +431,12 @@ const HomePage = () => {
                   </div>
                 ))}
               </div>
-              <Link to="/employers" className="v3-btn v3-btn-primary" style={{ background: "var(--v3-hot)" }}>
+              <Link
+                to="/employers"
+                className="v3-btn v3-btn-primary"
+                style={{ background: "var(--v3-hot)" }}
+                onClick={() => track("employer_post_click", { source: "home_cta", lang })}
+              >
                 {lang === "ru" ? "Разместить вакансию бесплатно" : "Post a role free"}
               </Link>
             </div>

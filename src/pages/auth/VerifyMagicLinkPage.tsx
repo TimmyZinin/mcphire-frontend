@@ -9,6 +9,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageMeta } from "@/components/seo/PageMeta";
 import { useAuth } from "@/contexts/AuthContext";
+import { track } from "@/lib/track";
 
 type State = "checking" | "ok" | "error";
 
@@ -30,6 +31,7 @@ export default function VerifyMagicLinkPage() {
     (async () => {
       try {
         await verifyMagicLink(token);
+        track("register_done", { page: "verify_magic_link" });
         setState("ok");
         navigate("/", { replace: true });
       } catch (err) {

@@ -12,6 +12,7 @@ import { SkeletonCard } from "@/components/JobCard";
 import { ApplyDialog } from "@/components/jobs/ApplyDialog";
 import { JobPostingJsonLd } from "@/components/seo/JsonLd";
 import { V3JobDetailHero } from "@/components/v3/JobDetailHero";
+import { track } from "@/lib/track";
 
 /** Sanitize job description HTML: fix HH tags, strip dangerous content. */
 function sanitizeDescription(html: string): string {
@@ -176,7 +177,10 @@ const JobDetailPage = () => {
           directLabel={job.isDirect ? (L ? "✓ Direct" : "✓ Прямая") : undefined}
           primaryAction={
             <button
-              onClick={() => setApplyOpen(true)}
+              onClick={() => {
+                track("job_apply_click", { jobId: job.id, jobTitle: job.title, source: "hero" });
+                setApplyOpen(true);
+              }}
               className="v3-btn"
               style={{ background: "#fff", color: "var(--v3-ink)", boxShadow: "0 4px 0 rgba(0,0,0,.12)" }}
             >
@@ -331,7 +335,10 @@ const JobDetailPage = () => {
       <div className="fixed bottom-0 left-0 right-0 lg:hidden bg-background/95 backdrop-blur-lg border-t border-border px-4 py-3 z-40">
         <div className="flex gap-3 max-w-[600px] mx-auto">
           <button
-            onClick={() => setApplyOpen(true)}
+            onClick={() => {
+              track("job_apply_click", { jobId: job.id, jobTitle: job.title, source: "sticky_bar" });
+              setApplyOpen(true);
+            }}
             className="flex-1 px-6 py-3 rounded-full bg-cta-hot text-white text-sm font-semibold text-center hover:bg-cta-hot/90 transition-colors"
           >
             Откликнуться

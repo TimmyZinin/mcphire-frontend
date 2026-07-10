@@ -7,6 +7,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { V3Logo } from "@/components/v3/Logo";
+import { track } from "@/lib/track";
 
 const Footer = () => {
   const { i18n } = useTranslation();
@@ -25,7 +26,13 @@ const Footer = () => {
                 : "Первый MCP-маркетплейс IT-вакансий. Машина с машиной."}
             </p>
             <div className="flex gap-3 mt-4">
-              <a href="https://t.me/mcphire" target="_blank" rel="noopener noreferrer" className="text-v3-ink2 hover:text-v3-ink transition-colors text-sm font-medium">
+              <a
+                href="https://t.me/mcphire"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-v3-ink2 hover:text-v3-ink transition-colors text-sm font-medium"
+                onClick={() => track("tg_channel_click", { source: "footer" })}
+              >
                 Telegram
               </a>
               <a href="https://www.linkedin.com/in/timzinin/" target="_blank" rel="noopener noreferrer" className="text-v3-ink2 hover:text-v3-ink transition-colors text-sm font-medium">
@@ -53,7 +60,15 @@ const Footer = () => {
           <div>
             <h4 className="font-mono text-xs text-v3-mute mb-3 uppercase tracking-wider">{L ? "For employers" : "Работодателям"}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/employers" className="text-v3-ink2 hover:text-v3-ink transition-colors">{L ? "Post a vacancy" : "Разместить вакансию"}</Link></li>
+              <li>
+                <Link
+                  to="/employers"
+                  className="text-v3-ink2 hover:text-v3-ink transition-colors"
+                  onClick={() => track("employer_post_click", { source: "footer" })}
+                >
+                  {L ? "Post a vacancy" : "Разместить вакансию"}
+                </Link>
+              </li>
               <li><Link to="/employer/dashboard" className="text-v3-ink2 hover:text-v3-ink transition-colors">{L ? "Dashboard" : "Дашборд"}</Link></li>
               <li><Link to="/mcp" className="text-v3-ink2 hover:text-v3-ink transition-colors">MCP API</Link></li>
             </ul>

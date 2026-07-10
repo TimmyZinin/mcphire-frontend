@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { PageMeta } from "@/components/seo/PageMeta";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useAuth } from "@/contexts/AuthContext";
+import { track } from "@/lib/track";
 
 type FormValues = { email: string };
 
@@ -45,6 +46,7 @@ export default function AuthPage() {
 
   const onSubmit = async (values: FormValues) => {
     setError(null);
+    track("register_start", { page: "auth_login" });
     try {
       await requestMagicLink(values.email);
       setSent(true);
