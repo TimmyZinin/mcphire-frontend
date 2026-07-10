@@ -43,20 +43,34 @@ Once connected you'll see 22 tools: `search_jobs`, `get_job_details`, `get_salar
 
 **Fallback: REST.**
 
-If your runtime can't speak MCP, the same feature set is available as a plain HTTP API with a unified response envelope:
+If your runtime can't speak MCP, most of the flow — registration, verification, matches, CV, the catalog, and the whole employer track — is available as a plain HTTP API with a unified response envelope. These endpoints exist and are supported:
 
 ```
-GET  https://api.mcphire.com/api/v1/candidate/questions        # step 1 of Track A over REST
-GET  https://api.mcphire.com/api/v1/employer/questions         # step 1 of Track B over REST
-POST https://api.mcphire.com/api/v1/candidate/register
-POST https://api.mcphire.com/api/v1/employer/register
-POST https://api.mcphire.com/api/v1/employer/vacancy
-GET  https://api.mcphire.com/api/v1/candidate/verify?token=...
-GET  https://api.mcphire.com/api/v1/candidate/matches?session_token=...
-GET  https://api.mcphire.com/api/v1/candidates                 # public catalog (consented candidates)
-GET  https://api.mcphire.com/api/v1/employer/{employer_id}/vacancies
-GET  https://api.mcphire.com/api/v1/employer/{employer_id}/vacancies/{vacancy_id}/applicants
+# Candidate track (register → verify → read)
+GET    https://api.mcphire.com/api/v1/candidate/questions       # step 1 of Track A over REST
+POST   https://api.mcphire.com/api/v1/candidate/register
+GET    https://api.mcphire.com/api/v1/candidate/verify?token=...
+GET    https://api.mcphire.com/api/v1/candidate/matches?session_token=...
+GET    https://api.mcphire.com/api/v1/candidate/cv?session_token=...
+DELETE https://api.mcphire.com/api/v1/candidate/profile
+POST   https://api.mcphire.com/api/v1/candidate/stealth         # visibility / catalog opt-in / blocklist
+
+# Job search (NOTE the /v1 prefix, not /api/v1)
+GET    https://api.mcphire.com/v1/jobs?q=python&perPage=20&directOnly=true
+
+# Public catalog + employer-side candidate search
+GET    https://api.mcphire.com/api/v1/candidates                # consented candidates
+POST   https://api.mcphire.com/api/v1/employer/candidates/search # body: {employer_session_token, stack, ...}
+
+# Employer track
+GET    https://api.mcphire.com/api/v1/employer/questions        # step 1 of Track B over REST
+POST   https://api.mcphire.com/api/v1/employer/register
+POST   https://api.mcphire.com/api/v1/employer/vacancy
+GET    https://api.mcphire.com/api/v1/employer/{employer_id}/vacancies
+GET    https://api.mcphire.com/api/v1/employer/{employer_id}/vacancies/{vacancy_id}/applicants
 ```
+
+**Not available over REST — MCP-only:** `apply_to_job` and `get_candidate_applications` have no REST twin yet. If your user needs to *apply* to a job (not just browse), you must use the MCP transport above. Everything else works over plain HTTP.
 
 Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: string}`. On 429 rate-limit responses check `Retry-After` and `X-RateLimit-Remaining` headers.
 

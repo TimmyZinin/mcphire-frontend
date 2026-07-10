@@ -18,7 +18,6 @@
       "get_job_details",
       "get_salary_stats",
       "apply_to_job",
-      "get_candidate_applications",
       "get_candidate_questions",
       "get_employer_questions"
     ],
@@ -267,10 +266,19 @@
     },
     {
       "name": "get_candidate_applications",
-      "description": "List applications submitted in this MCP session via the shared sentinel user. No parameters.",
+      "description": "List the CALLER'S OWN job applications. Requires session_token (or claim_token) — without an identity token it returns nothing. Applications made without linking a profile are anonymous and not listable.",
       "inputSchema": {
         "additionalProperties": false,
-        "properties": {},
+        "properties": {
+          "session_token": {
+            "type": "string",
+            "description": "Persistent bearer from register_candidate_profile (preferred)."
+          },
+          "claim_token": {
+            "type": "string",
+            "description": "Alternative identity token (mcphire-verify-XXXXXXXX)."
+          }
+        },
         "type": "object"
       },
       "annotations": {
@@ -375,7 +383,7 @@
             "default": null
           },
           "questions_version": {
-            "default": "0.3.0",
+            "default": "0.3.3",
             "type": "string"
           },
           "consent_phrase": {
