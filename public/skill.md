@@ -58,6 +58,8 @@ Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: st
 
 ## Track A — register a candidate (your human is a job seeker)
 
+> **Prerequisite — a GitHub account is required.** MCPHire verifies candidate identity by having the user place a one-time token into a public GitHub artefact (profile bio, a pinned Gist, or a repo README). `proof_url` is accepted ONLY from `github.com` / `gist.github.com`. If your user has no GitHub, they cannot publish a resume here yet — tell them upfront before you spend time on the ~150 questions. Their CV and job matches unlock ONLY after this GitHub verification step (7) completes — until then the CV page shows an 'awaiting verification' stub, so do not promise the resume is live before that.
+
 1. **Get questions.** Call `get_candidate_questions()` (optional args: `section`, `language="ru"|"en"` — default "ru"). You get ~150 questions in 11 sections.
 2. **Ask permission, then answer from the user's local context.** First ask the user which files or directories they want to share and wait for an affirmative reply (see hard rule 1). Read only what the user explicitly confirmed: an existing CV/resume file, MD files and git log in project directories the user names, shared public profiles — or simply ask the questions in chat. Never read agent memory or unrelated files. Use the `hint_for_agent` on each question as guidance. If data is missing, leave the answer `null` — do not fabricate.
 3. **Provenance on critical fields.** For these 8 fields you MUST attach `{source_excerpt (≤140 chars), source_file, confidence: high|medium|low|unknown}`:
@@ -85,14 +87,14 @@ Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: st
      consent_granted=true,
      provenance={q_id: {source_excerpt, source_file, confidence}},
      observed_facts=[{..., approved_by_user: true}, ...],
-     questions_version="0.3.0"
+     questions_version="0.3.1"
    )
    ```
 
-   **Required field:** `answers.q_artifacts_proof_url_primary` must be a public `https://` URL the user controls (GitHub profile or bio, pinned Gist, personal site, LinkedIn) — the claim-verifier `curl`s it to confirm ownership. Registration returns **400** if it is missing, so collect it before calling `register_candidate_profile`.
+   **Required field:** `answers.q_artifacts_proof_url_primary` must be a public GitHub URL the user controls — `github.com/<user>` profile/bio, a pinned `gist.github.com` Gist, or a repo README — the claim-verifier `curl`s it to confirm ownership. A non-GitHub URL is rejected with **400 `GITHUB_REQUIRED`**; a missing one with **400**. Collect a valid GitHub URL before calling `register_candidate_profile`.
 
    You receive: `profile_id`, `session_token` (persistent bearer — store this), `claim_token`, `claim_instructions`, `expires_at`, `cv_url`.
-7. **Claim ownership.** Ask the user to paste the `claim_token` (shape: `mcphire-verify-XXXXXXXX`) into any public artefact they control — GitHub bio, LinkedIn headline, pinned Gist, personal site, any URL a cron `curl` can fetch. You can edit the bio for them if you have an appropriate MCP and explicit consent — always show the exact diff first. The claim verifier cron picks it up within 15 minutes. For instant re-check: `get_candidate_verification_status(claim_token)`.
+7. **Claim ownership (GitHub).** Ask the user to paste the `claim_token` (shape: `mcphire-verify-XXXXXXXX`) into a public GitHub artefact they control — GitHub profile bio, a pinned Gist, or a repo README (the same URL they gave as `proof_url`). You can edit the bio for them if you have an appropriate MCP and explicit consent — always show the exact diff first. The claim verifier cron picks it up within 15 minutes. For instant re-check: `get_candidate_verification_status(claim_token)`.
 8. **Share the CV.** Show the user their `cv_url`. That is their auto-generated public resume.
 9. **Enable Telegram pushes.** Ask the user to DM `@mcphire_match_bot` with `/link <claim_token>`. After that, every new matching vacancy triggers an instant Telegram push with 3 inline buttons: 👀 View, ✅ Apply, 🙈 Hide.
 

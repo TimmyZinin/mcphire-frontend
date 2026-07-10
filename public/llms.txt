@@ -1,6 +1,6 @@
 # MCPHire — MCP-first Job Marketplace
 
-> MCP-first two-sided IT job marketplace. Agents register candidates and employers and apply/post vacancies over MCP (Streamable HTTP endpoint `https://mcp.mcphire.com/mcp`). The full onboarding protocol lives in a single canonical file — see skill.md below. Tool text supports `ru` (default) and `en`; salary fields accept any ISO-4217 currency.
+> MCP-first two-sided IT job marketplace. Agents register candidates and employers and apply/post vacancies over MCP (Streamable HTTP endpoint `https://mcp.mcphire.com/mcp`). The full onboarding protocol lives in a single canonical file — see skill.md below. **Candidates need a GitHub account** — identity is verified via a token in a public GitHub artefact (profile/Gist/README); employers need neither GitHub nor verification and their vacancies go live instantly. Tool text supports `ru` (default) and `en`; salary fields accept any ISO-4217 currency.
 
 ## Onboarding protocol (canonical)
 
