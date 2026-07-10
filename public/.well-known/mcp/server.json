@@ -53,7 +53,7 @@
           }
         }
       },
-      "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 21 tools (11 candidate + 10 employer).",
+      "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 22 tools (11 candidate + 10 employer).",
       "install_help": "https://mcphire.com/skill.md#0-connect"
     },
     "claude_code": {
@@ -74,7 +74,7 @@
       "settings_snippet": {
         "enableAllProjectMcpServers": true
       },
-      "restart": "Close and reopen the Claude Code session in the project directory. Verify by asking: 'what mcphire tools are available?'. Expected: 21 tools (11 candidate + 10 employer)."
+      "restart": "Close and reopen the Claude Code session in the project directory. Verify by asking: 'what mcphire tools are available?'. Expected: 22 tools (11 candidate + 10 employer)."
     },
     "cursor": {
       "note": "Cursor supports remote Streamable HTTP MCP servers via Settings → MCP. Use the same endpoint.",
@@ -820,6 +820,10 @@
       }
     },
     {
+      "name": "search_candidates",
+      "description": "Employer-only: search the verified-candidate pool by stack/seniority/timezone. Returns masked cards (profile_id_masked, cv_url, stack_summary, seniority, timezone, headline) — no contact PII. Requires employer_session_token."
+    },
+    {
       "name": "get_applicants",
       "description": "List applicants for an employer's vacancy. Returns cv_url + stack_summary + seniority by default. Email, phone, and tg_username are gated: they appear only AFTER (a) the employer called shortlist_candidate for this (vacancy, profile) AND (b) the candidate replied 💎 Interested via Telegram inline buttons. Without that flow, contact PII stays masked. Returns 403 if the vacancy belongs to a different employer.",
       "inputSchema": {
@@ -1023,13 +1027,23 @@
       "inputSchema": {
         "additionalProperties": false,
         "properties": {
-          "employer_session_token": { "type": "string" },
-          "confirm": { "default": false, "type": "boolean" }
+          "employer_session_token": {
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          }
         },
-        "required": ["employer_session_token"],
+        "required": [
+          "employer_session_token"
+        ],
         "type": "object"
       },
-      "annotations": { "destructiveHint": true, "idempotentHint": true }
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": true
+      }
     },
     {
       "name": "unpublish_vacancy",
@@ -1037,13 +1051,24 @@
       "inputSchema": {
         "additionalProperties": false,
         "properties": {
-          "employer_session_token": { "type": "string" },
-          "vacancy_id": { "type": "string", "format": "uuid" }
+          "employer_session_token": {
+            "type": "string"
+          },
+          "vacancy_id": {
+            "type": "string",
+            "format": "uuid"
+          }
         },
-        "required": ["employer_session_token", "vacancy_id"],
+        "required": [
+          "employer_session_token",
+          "vacancy_id"
+        ],
         "type": "object"
       },
-      "annotations": { "destructiveHint": false, "idempotentHint": true }
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
     }
   ],
   "rate_limits": {
@@ -1058,8 +1083,8 @@
   },
   "questions_catalogs": {
     "candidate": {
-      "version": "0.3.0",
-      "total": 150,
+      "version": "0.3.3",
+      "total": 152,
       "sections": 11,
       "languages": [
         "ru",

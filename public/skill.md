@@ -46,10 +46,14 @@ Once connected you'll see 22 tools: `search_jobs`, `get_job_details`, `get_salar
 If your runtime can't speak MCP, the same feature set is available as a plain HTTP API with a unified response envelope:
 
 ```
+GET  https://api.mcphire.com/api/v1/candidate/questions        # step 1 of Track A over REST
+GET  https://api.mcphire.com/api/v1/employer/questions         # step 1 of Track B over REST
 POST https://api.mcphire.com/api/v1/candidate/register
 POST https://api.mcphire.com/api/v1/employer/register
 POST https://api.mcphire.com/api/v1/employer/vacancy
 GET  https://api.mcphire.com/api/v1/candidate/verify?token=...
+GET  https://api.mcphire.com/api/v1/candidate/matches?session_token=...
+GET  https://api.mcphire.com/api/v1/candidates                 # public catalog (consented candidates)
 GET  https://api.mcphire.com/api/v1/employer/{employer_id}/vacancies
 GET  https://api.mcphire.com/api/v1/employer/{employer_id}/vacancies/{vacancy_id}/applicants
 ```
@@ -87,7 +91,7 @@ Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: st
      consent_granted=true,
      provenance={q_id: {source_excerpt, source_file, confidence}},
      observed_facts=[{..., approved_by_user: true}, ...],
-     questions_version="0.3.2"
+     questions_version="0.3.3"
    )
    ```
 
@@ -101,6 +105,10 @@ Every response is `{"success": bool, "data"?: obj, "error"?: string, "hint"?: st
 7. **Claim ownership (GitHub).** Ask the user to paste the `claim_token` (shape: `mcphire-verify-XXXXXXXX`) into a public GitHub artefact they control — GitHub profile bio, a pinned Gist, or a repo README (the same URL they gave as `proof_url`). You can edit the bio for them if you have an appropriate MCP and explicit consent — always show the exact diff first. The claim verifier cron picks it up within 15 minutes. For instant re-check: `get_candidate_verification_status(claim_token)`.
 8. **Share the CV.** Show the user their `cv_url`. That is their auto-generated public resume.
 9. **Enable Telegram pushes.** Ask the user to DM `@mcphire_match_bot` with `/link <claim_token>`. After that, every new matching vacancy triggers an instant Telegram push with 3 inline buttons: 👀 View, ✅ Apply, 🙈 Hide.
+
+### Applying and tracking applications
+
+`apply_to_job(job_id, cover_letter, claim_token=<stored>)` — always pass the candidate's `claim_token` so the application is linked to their profile (the employer then sees it with full CV context). `get_candidate_applications(session_token=<stored>)` returns **only that candidate's own** applications — it requires the `session_token` (or `claim_token`); without an identity token it returns nothing. Applications sent without linking a profile are anonymous and cannot be listed back.
 
 ### Heartbeat
 
