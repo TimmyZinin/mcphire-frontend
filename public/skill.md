@@ -126,10 +126,7 @@ On every new conversation with the MCPHire skill, call `list_candidate_matches(s
    )
    ```
 
-   **Important — draft gate.** A new employer is `verified=false` by default, so every vacancy is created with `status=draft`. Drafts are NOT visible on the public `/jobs` board and are NOT matched or pushed to candidates. The founder reviews every new company personally and verifies it — typically within a few hours (ping `@timofeyzinin` on Telegram to speed it up). On verification, draft vacancies are published automatically and instantly enter the matching loop — matching candidates get a Telegram push. So after `post_vacancy`, tell the user the vacancy is **saved and queued for founder review** — do not promise it is live yet. Check status anytime with `get_employer_vacancies(employer_id)`.
-5. **Watch applicants.** `get_employer_vacancies(employer_id)` shows per-job counts. `get_applicants(employer_id, vacancy_id)` returns `cv_url` + stack summary + seniority — **no email / no phone**. The PII reveal only happens after an explicit shortlist → interest → interview-accept handshake with the candidate (shortlist tool shipped incrementally).
-6. **Close a vacancy.** `unpublish_vacancy(employer_session_token, vacancy_id)` takes a vacancy off the public board (active → closed) — the inverse of `publish_vacancy`. Only the owning employer can close it.
-7. **Delete the company.** `delete_employer_profile(employer_session_token, confirm=true)` permanently removes the employer profile and all its vacancies + the applications to them. Irreversible — only call it after the user explicitly confirms.
+   **Vacancy goes live immediately.** As of 2026-07-10 there is NO verification gate for employers: `post_vacancy` creates the vacancy with `status=active` — it is instantly visible at its public `/jobs/<slug>` URL, enters the matching loop right away (matching candidates get a Telegram push), and needs no founder review. `publish_vacancy` is kept as an idempotent no-op for backwards compatibility — calling it on an active vacancy simply returns `already_active: true`. Per-employer anti-spam caps apply (default 5 vacancies/hour, 20/day) — exceeding them returns 429. So after `post_vacancy`, tell the user the vacancy is **live** and share the `job_url`. Check anytime with `get_employer_vacancies`.
 
 ## Privacy rules — server-enforced
 
