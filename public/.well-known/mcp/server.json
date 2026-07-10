@@ -52,7 +52,7 @@
           }
         }
       },
-      "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 22 tools (11 candidate + 10 employer).",
+      "restart": "Quit Claude Desktop fully (⌘Q on macOS / File → Exit on Windows) and reopen. Verify with: 'what mcphire tools are available?'. Expected: 22 tools (11 candidate + 11 employer).",
       "install_help": "https://mcphire.com/skill.md#0-connect"
     },
     "claude_code": {
@@ -73,7 +73,7 @@
       "settings_snippet": {
         "enableAllProjectMcpServers": true
       },
-      "restart": "Close and reopen the Claude Code session in the project directory. Verify by asking: 'what mcphire tools are available?'. Expected: 22 tools (11 candidate + 10 employer)."
+      "restart": "Close and reopen the Claude Code session in the project directory. Verify by asking: 'what mcphire tools are available?'. Expected: 22 tools (11 candidate + 11 employer)."
     },
     "cursor": {
       "note": "Cursor supports remote Streamable HTTP MCP servers via Settings → MCP. Use the same endpoint.",

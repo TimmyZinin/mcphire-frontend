@@ -65,7 +65,7 @@ print_manual_snippet() {
 
   Then fully quit Claude Desktop (⌘Q on macOS, File → Quit on Windows) and
   reopen it. In a new chat ask "what tools do you have from mcphire?" —
-  you should see 19 tools.
+  you should see 22 tools.
 
 EOF
 }
