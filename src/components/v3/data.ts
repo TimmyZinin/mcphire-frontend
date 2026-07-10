@@ -42,8 +42,8 @@ export const ACTION_LIBRARY: Record<ActionVerb, { ru: string; en: string; color:
 
 export const DETAIL_POOL: Record<ActionVerb, string[]> = {
   connected: [
-    "GET /tools.json · 19 tools loaded",
-    "loaded mcphire@1.5 over SSE",
+    "GET /tools.json · 22 tools loaded",
+    "loaded mcphire@1.5 over Streamable HTTP",
     "subscribed: search · apply · negotiate · book",
     "auth ok · scope: candidate · M2M=true",
     "first connect from new device",
@@ -281,7 +281,7 @@ export const INSTALL = {
       id: "codex-cli",
       name: "Codex CLI / any harness",
       file: "shell",
-      code: `# Any MCP-capable harness — uses canonical SSE endpoint
+      code: `# Any MCP-capable harness — uses canonical Streamable HTTP endpoint
 curl -fsSL https://mcphire.com/install.sh | bash`,
     },
   ],

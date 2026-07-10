@@ -56,15 +56,15 @@ const McpPage = () => {
           name="description"
           content={
             L
-              ? "MCP-first two-sided job marketplace. Connect Claude Desktop, Cursor or any MCP client over SSE — 19 tools for candidates and employers."
-              : "MCP-first двусторонний job-маркетплейс. Подключи Claude Desktop, Cursor или любой MCP-клиент по SSE — 19 инструментов для кандидатов и работодателей."
+              ? "MCP-first two-sided job marketplace. Connect Claude Desktop, Cursor or any MCP client over Streamable HTTP — 22 tools for candidates and employers."
+              : "MCP-first двусторонний job-маркетплейс. Подключи Claude Desktop, Cursor или любой MCP-клиент по Streamable HTTP — 22 инструмента для кандидатов и работодателей."
           }
         />
         <link rel="canonical" href="https://mcphire.com/mcp" />
         <meta property="og:title" content={L ? "MCPHire MCP Server" : "MCP-сервер MCPHire"} />
         <meta
           property="og:description"
-          content={L ? "Connect your AI agent over MCP (SSE)." : "Подключи AI-агента по MCP (SSE)."}
+          content={L ? "Connect your AI agent over MCP (Streamable HTTP)." : "Подключи AI-агента по MCP (Streamable HTTP)."}
         />
         <meta property="og:url" content="https://mcphire.com/mcp" />
       </Helmet>
@@ -83,8 +83,8 @@ const McpPage = () => {
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
             {L
-              ? "An MCP-first, two-sided IT job marketplace. Your AI agent connects over SSE and gets 19 tools — search & apply to jobs as a candidate, or register a company & post vacancies as an employer."
-              : "MCP-first двусторонний маркетплейс IT-вакансий. Твой AI-агент подключается по SSE и получает 19 инструментов — искать и откликаться как кандидат, либо зарегистрировать компанию и постить вакансии как работодатель."}
+              ? "An MCP-first, two-sided IT job marketplace. Your AI agent connects over Streamable HTTP and gets 22 tools — search & apply to jobs as a candidate, or register a company & post vacancies as an employer."
+              : "MCP-first двусторонний маркетплейс IT-вакансий. Твой AI-агент подключается по Streamable HTTP и получает 22 инструмента — искать и откликаться как кандидат, либо зарегистрировать компанию и постить вакансии как работодатель."}
           </p>
 
           {/* Canonical prompt + copy */}
@@ -136,7 +136,7 @@ const McpPage = () => {
             <div>
               <h3 className="font-bold mb-2">{L ? "Any other MCP client" : "Любой другой MCP-клиент"}</h3>
               <p className="text-muted-foreground text-sm">
-                {L ? "Add an SSE MCP server with URL " : "Добавь SSE MCP-сервер с URL "}
+                {L ? "Add a Streamable-HTTP MCP server with URL " : "Добавь Streamable-HTTP MCP-сервер с URL "}
                 <code className="bg-muted px-2 py-1 rounded">{SSE_ENDPOINT}</code>
                 {L
                   ? ". Or run the one-liner: "
@@ -196,7 +196,7 @@ const McpPage = () => {
             </div>
             <div className="bg-card border border-border rounded-2xl p-6">
               <h3 className="font-bold mb-2">{L ? "Transport / Protocol" : "Транспорт / Протокол"}</h3>
-              <p className="text-sm text-muted-foreground">SSE (Server-Sent Events) · JSON-RPC 2.0</p>
+              <p className="text-sm text-muted-foreground">Streamable HTTP (POST) · JSON-RPC 2.0</p>
             </div>
             <div className="bg-card border border-border rounded-2xl p-6">
               <h3 className="font-bold mb-2">{L ? "Onboarding (canonical)" : "Онбординг (канон)"}</h3>

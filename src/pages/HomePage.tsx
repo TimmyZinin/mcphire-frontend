@@ -159,7 +159,7 @@ const HomePage = () => {
 
       {/* ---- Agent onboarding (CANONICAL MCP-flow affordance) ----
           This block is the entry point AI agents land on.
-          Preserves: /skill.md, server.json, mcp.mcphire.com/sse,
+          Preserves: /skill.md, server.json, mcp.mcphire.com/mcp,
           install.sh, REST fallback. Restyled in V3 surface idiom. */}
       <section id="agent-onboarding" className="px-4 py-16 scroll-mt-24">
         <div className="mx-auto" style={{ maxWidth: 1320 }}>
