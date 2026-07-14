@@ -346,7 +346,7 @@ const ResumeReview = () => {
                   Найти вакансии под ваш профиль →
                 </Link>
                 <a
-                  href="https://t.me/mcphire_bot"
+                  href="https://telegram.me/mcphire_bot"
                   className="cta-text text-center"
                 >
                   Получить детальный AI-разбор в боте →

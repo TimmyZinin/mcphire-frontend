@@ -256,7 +256,7 @@ const EmployersPage = () => {
         <div className="max-w-[1280px] mx-auto px-4 md:px-8 text-center text-xs text-muted-foreground">
           {L ? "Something broke in the MCP flow or need help with setup? " : "Сломалось что-то в MCP-flow или нужна помощь с настройкой? "}
           <a
-            href="https://t.me/mcphire_support"
+            href="https://telegram.me/mcphire_support"
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-foreground transition-colors"

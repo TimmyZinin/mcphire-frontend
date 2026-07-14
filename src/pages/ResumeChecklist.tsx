@@ -172,7 +172,7 @@ const ResumeChecklist = () => {
           <div className="text-center mt-12">
             <p className="text-lg mb-4">Хочешь профессиональную проверку?</p>
             <a
-              href="https://t.me/mcphire_bot"
+              href="https://telegram.me/mcphire_bot"
               className="cta-primary-nrc inline-block"
               target="_blank"
               rel="noopener noreferrer"

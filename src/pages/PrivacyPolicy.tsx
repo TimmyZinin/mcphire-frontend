@@ -105,7 +105,7 @@ const PrivacyPolicy = () => {
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Telegram: @mcphire_bot</li>
-              <li>Канал: <a href="https://t.me/mcphire" className="text-v3-ink underline decoration-2 underline-offset-4 hover:opacity-80" style={{textDecorationColor:"var(--v3-hot)"}}>@mcphire</a></li>
+              <li>Канал: <a href="https://telegram.me/mcphire" className="text-v3-ink underline decoration-2 underline-offset-4 hover:opacity-80" style={{textDecorationColor:"var(--v3-hot)"}}>@mcphire</a></li>
             </ul>
 
             <p className="mt-8 text-sm">

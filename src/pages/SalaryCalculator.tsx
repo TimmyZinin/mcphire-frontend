@@ -176,7 +176,7 @@ const SalaryCalculator = () => {
           <div className="text-center">
             <p className="text-lg mb-4">Хочешь больше?</p>
             <a
-              href="https://t.me/mcphire_bot"
+              href="https://telegram.me/mcphire_bot"
               className="cta-primary-nrc inline-block"
               target="_blank"
               rel="noopener noreferrer"
