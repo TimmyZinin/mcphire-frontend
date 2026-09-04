@@ -149,10 +149,3 @@ location / {
 ## License
 
 Private repo, closed source. Контакт: Tim Zinin.
-
-
-<!-- Security scan triggered at 2026-08-31 17:17:15 -->
-
-<!-- Security scan triggered at 2026-08-31 16:54:31 -->
-
-<!-- Security scan triggered at 2026-09-02 06:52:01 -->
